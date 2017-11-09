@@ -10,7 +10,7 @@ namespace Bridge.CustomUIMarkup.UI.Design
 
   
 
-    public class Binder
+    public class Binder 
     {
         #region Public Properties
         public virtual BinderEventAttributeResolver BinderEventAttributeResolver { get; set; } = new BinderEventAttributeResolver();
