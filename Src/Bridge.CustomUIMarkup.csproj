@@ -144,8 +144,7 @@
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>
-    </PostBuildEvent>
+    <PostBuildEvent>copy /y "$(TargetDir)Bridge\*.js"  "$(SolutionDir)Designer.Demo\Scripts\"</PostBuildEvent>
   </PropertyGroup>
   <Import Project="..\packages\Bridge.Min.16.4.1\build\Bridge.Min.targets" Condition="Exists('..\packages\Bridge.Min.16.4.1\build\Bridge.Min.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
