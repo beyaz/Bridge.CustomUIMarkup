@@ -4,26 +4,29 @@ namespace Bridge.CustomUIMarkup.SemanticUI
 {
     public class Button : ElementBase
     {
-        protected override string HtmlTag => "button";
-        protected override string HtmlClassName => "ui button";
+        #region Static Fields
+        public static readonly DependencyProperty TextProperty = DependencyProperty.Register("Text", typeof(string), typeof(Button), new PropertyMetadata(OnInnerHTMLChanged));
+        public static readonly DependencyProperty IsActiveProperty = DependencyProperty.Register("IsActive", typeof(bool), typeof(Button), new PropertyMetadata(IsActiveChanged));
+        #endregion
 
-        #region TextProperty
-        public static readonly DependencyProperty TextProperty = DependencyProperty.Register("Text", typeof(string), typeof(Button), new PropertyMetadata(TextChanged));
-
-        static void TextChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        #region Public Properties
+        public bool? IsActive
         {
-            ((FrameworkElement)d)._root.Html(e.NewValue as string);
+            get { return (bool?) GetValue(IsActiveProperty); }
+            set { SetValue(IsActiveProperty, value); }
         }
         #endregion
 
-        #region IsCenterAlignedProperty
-        public static readonly DependencyProperty IsActiveProperty = DependencyProperty.Register("IsActive", typeof(bool), typeof(Button), new PropertyMetadata(IsActiveChanged));
+        #region Properties
+        protected override string HtmlClassName => "ui button";
+        protected override string HtmlTag => "button";
+        #endregion
 
+        #region Methods
         static void IsActiveChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            ((Button)d).AddCssClassOnTrueElseRemove(e.NewValue, "active");
+            ((Button) d).AddCssClassOnTrueElseRemove(e.NewValue, "active");
         }
         #endregion
-       
     }
 }
