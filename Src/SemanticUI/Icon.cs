@@ -28,4 +28,22 @@ namespace Bridge.CustomUIMarkup.SemanticUI
         }
         #endregion
     }
+
+    class ui_divider : ElementBase
+    {
+        protected override string HtmlClassName => "ui divider";
+    }
+    class item : ElementBase
+    {
+        protected override string HtmlClassName => "item";
+    }
+    class ui_menu : ElementBase
+    {
+        protected override string HtmlClassName => "ui menu";
+    }
+
+    class ui_vertical_menu : ElementBase
+    {
+        protected override string HtmlClassName => "ui vertical menu";
+    }
 }

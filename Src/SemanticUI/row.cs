@@ -2,7 +2,7 @@
 
 namespace Bridge.CustomUIMarkup.SemanticUI
 {
-    public class Row : ElementContainer
+    public class Row : ElementBase
     {
         #region Properties
         protected override string HtmlClassName => "row";

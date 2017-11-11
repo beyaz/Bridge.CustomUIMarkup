@@ -3,7 +3,7 @@ using System.Windows;
 
 namespace Bridge.CustomUIMarkup.SemanticUI
 {
-    public class Column : ElementContainer
+    public class Column : ElementBase
     {
         #region Properties
         protected override string HtmlClassName => "column";

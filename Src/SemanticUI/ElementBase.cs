@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Markup;
 using Bridge.Html5;
 using Bridge.jQuery2;
 
@@ -86,25 +87,22 @@ namespace Bridge.CustomUIMarkup.SemanticUI
         {
             _root =  new jQuery(Document.CreateElement(HtmlTag)).AddClass(HtmlClassName);
 
-            AfterInitDOM();
-        }
-
-        protected virtual void AfterInitDOM()
-        {
             
         }
+
+       
     }
 
-    public class card: ElementContainer
+    public class card: ElementBase
     {
         protected override string HtmlClassName => "ui card";
 
     }
-    public class content : ElementContainer
+    public class content : ElementBase
     {
 
     }
-    public class ExtraContent : ElementContainer
+    public class ExtraContent : ElementBase
     {
         protected override string HtmlClassName => "extra content";
     }

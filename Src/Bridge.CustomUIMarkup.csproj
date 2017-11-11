@@ -55,7 +55,6 @@
     <Compile Include="Bridge.jQuery2\Extensions.cs" />
     <Compile Include="jssor\Carousel.cs" />
     <Compile Include="SemanticUI\Align.cs" />
-    <Compile Include="SemanticUI\ElementContainer.cs" />
     <Compile Include="SemanticUI\Field.cs" />
     <Compile Include="SemanticUI\Form.cs" />
     <Compile Include="SemanticUI\Header.cs" />
@@ -85,7 +84,7 @@
     <Compile Include="SemanticUI\ElementBase.cs" />
     <Compile Include="SemanticUI\row.cs" />
     <Compile Include="SemanticUI\VersionInfo.cs" />
-    <Compile Include="SemanticUI\Grid.cs" />
+    <Compile Include="SemanticUI\ui_grid.cs" />
     <Compile Include="SemanticUI\GroupBox.cs" />
     <Compile Include="SemanticUI\InputText.cs" />
     <Compile Include="SemanticUI\Modal.cs" />
@@ -103,6 +102,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="bridge.json" />
+    <Content Include="CodeMirror\CodeMirror.css">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <None Include="packages.config">
       <SubType>Designer</SubType>
     </None>
@@ -161,6 +163,10 @@
 copy /y "$(ProjectDir)jssor\*.js"  "$(SolutionDir)Designer.Demo\Scripts\"
 
 copy /y "$(ProjectDir)jssor\*.css"  "$(SolutionDir)Designer.Demo\css\"
+
+
+
+copy /y "$(ProjectDir)CodeMirror\*.css"  "$(SolutionDir)Designer.Demo\css\"
 
 
 </PostBuildEvent>

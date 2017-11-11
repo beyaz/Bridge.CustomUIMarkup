@@ -1,6 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel;
 using System.Windows.Data;
+using System.Windows.Markup;
+using Bridge.CustomUIMarkup.Common;
+using Bridge.Html5;
 using Bridge.jQuery2;
 
 namespace System.Windows
@@ -12,8 +15,31 @@ namespace System.Windows
         Wrap
     }
 
-    public class FrameworkElement : DependencyObject
+    public class FrameworkElement : DependencyObject, IAddChild
     {
+        protected virtual void AfterInitDOM()
+        {
+
+        }
+
+
+        protected virtual void BeforeAddChild(FrameworkElement element)
+        {
+
+        }
+        protected virtual void AfterAddChild(FrameworkElement element)
+        {
+
+        }
+        public void Add(FrameworkElement element)
+        {
+            element._root.AppendTo(_root);
+
+            AddChild(element);
+        }
+       
+
+
         #region ClassProperty
         public static readonly DependencyProperty ClassProperty = DependencyProperty.Register(nameof(Class), typeof(string), typeof(FrameworkElement), new PropertyMetadata(OnClassChanged));
 
@@ -115,17 +141,26 @@ namespace System.Windows
         #region Public Methods
         public virtual void InitDOM()
         {
+            
+            _root = DOM.div();
         }
         #endregion
 
         #region Methods
         protected virtual void AddChild(FrameworkElement element)
         {
+
+            BeforeAddChild(element);
+           
+
             if (_childeren == null)
             {
                 _childeren = new List<FrameworkElement>();
             }
             _childeren.Add(element);
+
+            
+            AfterAddChild(element);
         }
 
         protected virtual void BindPropertyToInnerHTML(string propertyName, jQuery targetElement)
@@ -563,4 +598,37 @@ namespace System.Windows
         }
         #endregion
     }
+
+    class html_div : FrameworkElement
+    {
+        public override void InitDOM()
+        {
+            _root = new jQuery(Document.CreateElement("div"));
+        }
+    }
+    class html_a : FrameworkElement
+    {
+        public override void InitDOM()
+        {
+            _root = new jQuery(Document.CreateElement("a"));
+        }
+
+        #region HrefProperty
+        public static readonly DependencyProperty HrefProperty = DependencyProperty.Register(nameof(Href), typeof(string), typeof(html_a), new PropertyMetadata(OnHrefChanged));
+
+        public string Href
+        {
+            get { return (string)GetValue(HrefProperty); }
+            set { SetValue(HrefProperty, value); }
+        }
+
+        static void OnHrefChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            var me = (html_a)d;
+
+            me._root.Attr("href", (string)e.NewValue);
+        }
+        #endregion
+    }
+    
 }

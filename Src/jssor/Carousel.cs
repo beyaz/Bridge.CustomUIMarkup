@@ -1,21 +1,28 @@
-﻿
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using Bridge.CustomUIMarkup.Common;
-using Bridge.Html5;
 using Bridge.jQuery2;
 
 namespace Bridge.CustomUIMarkup.jssor
 {
     public class Carousel : FrameworkElement
     {
+        #region Public Properties
+        public static IReadOnlyCollection<string> CssFiles => new List<string> {ScriptLoader.CssDirectory + "Carousel.css"};
+
+        public static IReadOnlyCollection<string> JsFiles => new List<string>
+        {
+            ScriptLoader.JsDirectory + "jssor.slider-26.5.0.min.js",
+            ScriptLoader.JsDirectory + "jssor.Carousel.js"
+        };
+
+        #endregion
+
+        #region Properties
         static string Template =>
-@"<div id='jssor_1' style='position:relative;margin:0 auto;top:0px;left:0px;width:980px;height:380px;overflow:hidden;visibility:hidden;'>
+            @"<div id='jssor_1' style='position:relative;margin:0 auto;top:0px;left:0px;width:980px;height:380px;overflow:hidden;visibility:hidden;'>
     <!-- Loading Screen 
     <div data-u='loading' class='jssorl-009-spin' style='position:absolute;top:0px;left:0px;width:100%;height:100%;text-align:center;background-color:rgba(0,0,0,0.7);'>
         <img style='margin-top:-19px;position:relative;top:50%;width:38px;height:38px;' src='img/spin.svg' />
@@ -47,64 +54,45 @@ namespace Bridge.CustomUIMarkup.jssor
         </svg>
     </div>
 </div>";
+
         jQuery imagesContainer => _root.Find("#imagesContainer");
+        #endregion
 
-
-       
-        public static IList<string> JsFiles => new List<string> {
-            ScriptLoader.JsDirectory + "jssor.slider-26.5.0.min.js",
-            ScriptLoader.JsDirectory + "jssor.Carousel.js" };
-        public static IList<string> CssFiles => new List<string> { ScriptLoader.CssDirectory + "Carousel.css" };
-
-
-
+        #region Public Methods
         public override void InitDOM()
         {
-            
-            _root = new jQuery(jQuery.ParseHtml(Template.Replace(Environment.NewLine,""),null).First());
+            _root = new jQuery(jQuery.ParseHtml(Template.Replace(Environment.NewLine, ""), null).First());
             _root.Attr("id", Id);
-
-          
-
-
-            
-            
         }
-
+        #endregion
 
         #region DataSourceProperty
         public static readonly DependencyProperty DataSourceProperty = DependencyProperty.Register(nameof(DataSource), typeof(string), typeof(Carousel), new PropertyMetadata(OnDataSourceChanged));
 
         public string DataSource
         {
-            get { return (string)GetValue(DataSourceProperty); }
+            get { return (string) GetValue(DataSourceProperty); }
             set { SetValue(DataSourceProperty, value); }
         }
 
         static void OnDataSourceChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            var me = (Carousel)d;
+            var me = (Carousel) d;
 
             me.imagesContainer.Empty();
 
-            var images = (string)e.NewValue;
-            foreach (var src in images.Split(','))
+            var images = (string) e.NewValue;
+            foreach (var src in images.Split(',').Where(x=>string.IsNullOrWhiteSpace(x) == false))
             {
                 DOM.div().AppendTo(me.imagesContainer).Append(DOM.img().Attr("data-u", "img").Attr("src", src));
             }
-
-
-
 
             jQuery.Ready(() =>
             {
                 var id = me.Id;
                 Script.Write("jssor_1_slider_init(id)");
             });
-
         }
         #endregion
-
-
     }
 }

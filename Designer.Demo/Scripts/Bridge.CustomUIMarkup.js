@@ -116,6 +116,10 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
         }
     });
 
+    Bridge.define("System.Windows.Markup.IAddChild", {
+        $kind: "interface"
+    });
+
     /**
      * @memberof System.ComponentModel
      * @callback System.ComponentModel.PropertyChangedEventHandler
@@ -718,17 +722,74 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
             GetIntellisenseInfos: function () {
                 return new (System.Collections.Generic.List$1(Bridge.CustomUIMarkup.UI.Design.XmlIntellisenseInfo)).ctor();
             },
-            BuildNode: function (xmlNode) {
-                var $t, $t1;
+            CreateInstance: function (xmlNode) {
                 var tag = xmlNode.nodeName.toUpperCase();
+
 
                 var controlType = this.CreateType(tag);
 
                 if (controlType == null) {
+                    if (xmlNode.nodeName.length <= 3) {
+                        return new System.Windows.FrameworkElement();
+                    }
+
                     throw new System.ArgumentException((System.String.format("NotRecognizedTag:", null) || "") + (tag || ""));
+
+
+
                 }
 
-                var instance = Bridge.createInstance(controlType);
+                return Bridge.createInstance(controlType);
+            },
+            ProcessAttribute: function (instance, name, value) {
+
+                if (Bridge.referenceEquals(name, "class")) {
+                    name = "Class";
+                }
+
+                var bi = System.Windows.Data.BindingInfo.TryParseExpression(value);
+                if (bi != null) {
+                    bi.Source = this.DataContext;
+                    bi.Target = instance;
+                    bi.TargetPropertyName = name;
+
+                    bi.Connect();
+
+                    return;
+                }
+
+                var targetProperty = System.ComponentModel.ReflectionHelper.FindProperty(instance, name);
+                if (targetProperty != null) {
+                    if (Bridge.Reflection.isEnum(targetProperty.rt)) {
+                        System.ComponentModel.ReflectionHelper.SetPropertyValue(instance, name, System.Enum.parse(targetProperty.rt, value, true));
+                        return;
+                    }
+
+                    var converterAttributes = System.Attribute.getCustomAttributes(targetProperty, System.ComponentModel.TypeConverterAttribute);
+                    var firstConverterAtribute = converterAttributes != null ? System.Linq.Enumerable.from(converterAttributes).firstOrDefault(null, null) : null;
+                    if (firstConverterAtribute != null) {
+                        var converter = Bridge.cast(firstConverterAtribute, System.ComponentModel.TypeConverterAttribute);
+                        var valueConverter = Bridge.cast(Bridge.createInstance(converter._type), System.Windows.Data.IValueConverter);
+                        var convertedValue = valueConverter.System$Windows$Data$IValueConverter$Convert(value, Bridge.Reflection.getMembers(Bridge.getType(instance), 16, 284, name).rt, null, System.Globalization.CultureInfo.getCurrentCulture());
+
+                        System.ComponentModel.ReflectionHelper.SetPropertyValue(instance, name, convertedValue);
+                        return;
+                    }
+
+                    System.ComponentModel.ReflectionHelper.SetPropertyValue(instance, name, Bridge.CustomUIMarkup.Common.ConvertHelper.ChangeType(value, targetProperty.rt));
+                    return;
+                }
+                var instanceAsBag = Bridge.as(instance, System.ComponentModel.Bag);
+                if (instanceAsBag != null) {
+                    instanceAsBag.SetValue(name, value);
+                    return;
+                }
+
+                throw new System.MissingMemberException(name);
+            },
+            BuildNode: function (xmlNode) {
+                var $t, $t1;
+                var instance = this.CreateInstance(xmlNode);
 
                 if (this["IsDesignMode"]) {
                     var lineNumber = Bridge.CustomUIMarkup.Common.Extensions.GetOriginalLineNumber(xmlNode, this._rootNode, this.XmlString);
@@ -740,54 +801,14 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
                 if (frameworkElement != null) {
                     frameworkElement.DataContext = this.DataContext;
                     frameworkElement.InitDOM();
+                    Bridge.Reflection.midel(Bridge.Reflection.getMembers(Bridge.getType(frameworkElement), 8, 36 | 256, "AfterInitDOM"), frameworkElement)(null);
                 }
 
                 $t = Bridge.getEnumerator(xmlNode.attributes);
                 try {
                     while ($t.moveNext()) {
                         var nodeAttribute = $t.Current;
-                        var name = nodeAttribute.nodeName;
-                        var value = nodeAttribute.nodeValue;
-
-                        var bi = System.Windows.Data.BindingInfo.TryParseExpression(value);
-                        if (bi != null) {
-                            bi.Source = this.DataContext;
-                            bi.Target = instance;
-                            bi.TargetPropertyName = name;
-
-                            bi.Connect();
-
-                            continue;
-                        }
-
-                        var targetProperty = System.ComponentModel.ReflectionHelper.FindProperty(instance, name);
-                        if (targetProperty != null) {
-                            if (Bridge.Reflection.isEnum(targetProperty.rt)) {
-                                System.ComponentModel.ReflectionHelper.SetPropertyValue(instance, name, System.Enum.parse(targetProperty.rt, value, true));
-                                continue;
-                            }
-
-                            var converterAttributes = System.Attribute.getCustomAttributes(targetProperty, System.ComponentModel.TypeConverterAttribute);
-                            var firstConverterAtribute = converterAttributes != null ? System.Linq.Enumerable.from(converterAttributes).firstOrDefault(null, null) : null;
-                            if (firstConverterAtribute != null) {
-                                var converter = Bridge.cast(firstConverterAtribute, System.ComponentModel.TypeConverterAttribute);
-                                var valueConverter = Bridge.cast(Bridge.createInstance(converter._type), System.Windows.Data.IValueConverter);
-                                var convertedValue = valueConverter.System$Windows$Data$IValueConverter$Convert(value, Bridge.Reflection.getMembers(Bridge.getType(instance), 16, 284, name).rt, null, System.Globalization.CultureInfo.getCurrentCulture());
-
-                                System.ComponentModel.ReflectionHelper.SetPropertyValue(instance, name, convertedValue);
-                                continue;
-                            }
-
-                            System.ComponentModel.ReflectionHelper.SetPropertyValue(instance, name, Bridge.CustomUIMarkup.Common.ConvertHelper.ChangeType(value, targetProperty.rt));
-                            continue;
-                        }
-                        var instanceAsBag = Bridge.as(instance, System.ComponentModel.Bag);
-                        if (instanceAsBag != null) {
-                            instanceAsBag.SetValue(name, value);
-                            continue;
-                        }
-
-                        throw new System.MissingMemberException(name);
+                        this.ProcessAttribute(instance, nodeAttribute.nodeName, nodeAttribute.nodeValue);
                     }
                 } finally {
                     if (Bridge.is($t, System.IDisposable)) {
@@ -833,17 +854,11 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
                     }
                 }
 
-                if (xmlNode.childNodes.length === 0) {
 
-                }
 
                 return instance;
             }
         }
-    });
-
-    Bridge.define("System.Windows.Markup.IAddChild", {
-        $kind: "interface"
     });
 
     Bridge.define("Bridge.CustomUIMarkup.SemanticUI.IconType", {
@@ -2394,6 +2409,13 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
             GetIntellisenseInfos: function () {
                 return function (_o1) {
                         var $t;
+                        _o1.add(new Bridge.CustomUIMarkup.UI.Design.XmlIntellisenseInfo("div", System.Windows.html_div));
+                        _o1.add(new Bridge.CustomUIMarkup.UI.Design.XmlIntellisenseInfo("a", System.Windows.html_a));
+                        _o1.add(new Bridge.CustomUIMarkup.UI.Design.XmlIntellisenseInfo("computer.tablet.only.row", Bridge.CustomUIMarkup.SemanticUI.computer_tablet_only_row));
+                        _o1.add(new Bridge.CustomUIMarkup.UI.Design.XmlIntellisenseInfo("ui.navbar.menu", Bridge.CustomUIMarkup.SemanticUI.ui_navbar_menu));
+                        _o1.add(new Bridge.CustomUIMarkup.UI.Design.XmlIntellisenseInfo("mobile.only.row", Bridge.CustomUIMarkup.SemanticUI.mobile_only_row));
+                        _o1.add(new Bridge.CustomUIMarkup.UI.Design.XmlIntellisenseInfo("right.menu", Bridge.CustomUIMarkup.SemanticUI.right_menu));
+                        _o1.add(new Bridge.CustomUIMarkup.UI.Design.XmlIntellisenseInfo("ui.page.grid", Bridge.CustomUIMarkup.SemanticUI.ui_page_grid));
                         _o1.add(new Bridge.CustomUIMarkup.UI.Design.XmlIntellisenseInfo("Button", Bridge.CustomUIMarkup.SemanticUI.Button));
                         _o1.add(new Bridge.CustomUIMarkup.UI.Design.XmlIntellisenseInfo("TabPanel", Bridge.CustomUIMarkup.SemanticUI.TabPanel));
                         _o1.add(new Bridge.CustomUIMarkup.UI.Design.XmlIntellisenseInfo("Tab", Bridge.CustomUIMarkup.SemanticUI.TabItem));
@@ -2403,6 +2425,10 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
                         _o1.add(new Bridge.CustomUIMarkup.UI.Design.XmlIntellisenseInfo("extra-content", Bridge.CustomUIMarkup.SemanticUI.ExtraContent));
                         _o1.add(new Bridge.CustomUIMarkup.UI.Design.XmlIntellisenseInfo("ui.basic.button", Bridge.CustomUIMarkup.SemanticUI.ui_basic_button));
                         _o1.add(new Bridge.CustomUIMarkup.UI.Design.XmlIntellisenseInfo("Carousel", Bridge.CustomUIMarkup.jssor.Carousel));
+                        _o1.add(new Bridge.CustomUIMarkup.UI.Design.XmlIntellisenseInfo("ui.divider", Bridge.CustomUIMarkup.SemanticUI.ui_divider));
+                        _o1.add(new Bridge.CustomUIMarkup.UI.Design.XmlIntellisenseInfo("ui.menu", Bridge.CustomUIMarkup.SemanticUI.ui_menu));
+                        _o1.add(new Bridge.CustomUIMarkup.UI.Design.XmlIntellisenseInfo("item", Bridge.CustomUIMarkup.SemanticUI.item));
+                        _o1.add(new Bridge.CustomUIMarkup.UI.Design.XmlIntellisenseInfo("ui.vertical.menu", Bridge.CustomUIMarkup.SemanticUI.ui_vertical_menu));
                         _o1.add(new Bridge.CustomUIMarkup.UI.Design.XmlIntellisenseInfo("TextInput", Bridge.CustomUIMarkup.SemanticUI.InputText));
                         _o1.add(new Bridge.CustomUIMarkup.UI.Design.XmlIntellisenseInfo("TextBox", Bridge.CustomUIMarkup.SemanticUI.InputText));
                         _o1.add(new Bridge.CustomUIMarkup.UI.Design.XmlIntellisenseInfo("Combo", Bridge.CustomUIMarkup.SemanticUI.Combo));
@@ -2412,7 +2438,8 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
                         _o1.add(new Bridge.CustomUIMarkup.UI.Design.XmlIntellisenseInfo("Container", Bridge.CustomUIMarkup.SemanticUI.Container));
                         _o1.add(new Bridge.CustomUIMarkup.UI.Design.XmlIntellisenseInfo("Stacked", Bridge.CustomUIMarkup.SemanticUI.stacked));
                         _o1.add(new Bridge.CustomUIMarkup.UI.Design.XmlIntellisenseInfo("GroupBox", Bridge.CustomUIMarkup.SemanticUI.GroupBox));
-                        _o1.add(($t = new Bridge.CustomUIMarkup.UI.Design.XmlIntellisenseInfo("Grid", Bridge.CustomUIMarkup.SemanticUI.Grid), $t.ChildrenTags = System.Array.init(["Row"], System.String), $t));
+                        _o1.add(($t = new Bridge.CustomUIMarkup.UI.Design.XmlIntellisenseInfo("Grid", Bridge.CustomUIMarkup.SemanticUI.ui_grid), $t.ChildrenTags = System.Array.init(["Row"], System.String), $t));
+                        _o1.add(new Bridge.CustomUIMarkup.UI.Design.XmlIntellisenseInfo("ui page grid", Bridge.CustomUIMarkup.SemanticUI.ui_page_grid));
                         _o1.add(new Bridge.CustomUIMarkup.UI.Design.XmlIntellisenseInfo("Field", Bridge.CustomUIMarkup.SemanticUI.Field));
                         _o1.add(new Bridge.CustomUIMarkup.UI.Design.XmlIntellisenseInfo("Form", Bridge.CustomUIMarkup.SemanticUI.Form));
                         _o1.add(($t = new Bridge.CustomUIMarkup.UI.Design.XmlIntellisenseInfo("Row", Bridge.CustomUIMarkup.SemanticUI.Row), $t.ChildrenTags = System.Array.init(["Column"], System.String), $t));
@@ -2551,7 +2578,7 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
     });
 
     Bridge.define("System.Windows.FrameworkElement", {
-        inherits: [System.Windows.DependencyObject],
+        inherits: [System.Windows.DependencyObject,System.Windows.Markup.IAddChild],
         statics: {
             fields: {
                 ClassProperty: null,
@@ -2965,6 +2992,7 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
                 }
             }
         },
+        alias: ["Add", "System$Windows$Markup$IAddChild$Add"],
         ctors: {
             ctor: function () {
                 this.$initialize();
@@ -2978,6 +3006,20 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
             }
         },
         methods: {
+            AfterInitDOM: function () {
+
+            },
+            BeforeAddChild: function (element) {
+
+            },
+            AfterAddChild: function (element) {
+
+            },
+            Add: function (element) {
+                element._root.appendTo(this._root);
+
+                this.AddChild(element);
+            },
             GetValue$1: function (dp) {
                 var value = this.getItem(dp.Name);
                 if (value == null) {
@@ -2994,12 +3036,22 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
             SetValue$1: function (dp, value) {
                 this.setItem(dp.Name, value);
             },
-            InitDOM: function () { },
+            InitDOM: function () {
+
+                this._root = Bridge.CustomUIMarkup.Common.DOM.div();
+            },
             AddChild: function (element) {
+
+                this.BeforeAddChild(element);
+
+
                 if (this._childeren == null) {
                     this._childeren = new (System.Collections.Generic.List$1(System.Windows.FrameworkElement)).ctor();
                 }
                 this._childeren.add(element);
+
+
+                this.AfterAddChild(element);
             },
             BindPropertyToInnerHTML: function (propertyName, targetElement) {
                 // TODO: remove
@@ -3022,12 +3074,12 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
             props: {
                 CssFiles: {
                     get: function () {
-                        return System.Array.init(["https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.31.0/codemirror.css", "https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.31.0/addon/hint/show-hint.css"], System.String);
+                        return System.Array.init(["https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.31.0/codemirror.css", "https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.31.0/addon/hint/show-hint.css", "https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.31.0/addon/fold/foldgutter.css", (Bridge.CustomUIMarkup.Common.ScriptLoader.CssDirectory || "") + "CodeMirror.css"], System.String);
                     }
                 },
                 Scripts: {
                     get: function () {
-                        return System.Array.init(["https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.31.0/codemirror.js", "https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.31.0/addon/hint/show-hint.js", "https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.31.0/addon/hint/xml-hint.js", "https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.31.0/mode/xml/xml.js", "https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.31.0/addon/edit/closetag.js", "https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.31.0/addon/fold/foldcode.js", "https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.31.0/addon/fold/xml-fold.js"], System.String);
+                        return System.Array.init(["https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.31.0/codemirror.js", "https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.31.0/mode/xml/xml.js", "https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.31.0/addon/hint/show-hint.js", "https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.31.0/addon/hint/xml-hint.js", "https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.31.0/addon/edit/closetag.js", "https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.31.0/addon/fold/foldcode.js", "https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.31.0/addon/fold/foldgutter.js", "https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.31.0/addon/fold/xml-fold.js", "https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.31.0/addon/fold/indent-fold.js", "https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.31.0/addon/fold/markdown-fold.js", "https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.31.0/mode/markdown/markdown.js"], System.String);
                     }
                 }
             },
@@ -3148,9 +3200,14 @@ function completeIfAfterLt(cm)
 
 function completeIfInTag(cm) 
 {
-	return completeAfter(cm, function() {
+	return completeAfter(cm, function() 
+    {
 	  var tok = cm.getTokenAt(cm.getCursor());
-	  if (tok.type == 'string' && (!/['']/.test(tok.string.charAt(tok.string.length - 1)) || tok.string.length == 1)) return false;
+
+	  if (tok.type == 'string' && (!/['']/.test(tok.string.charAt(tok.string.length - 1)) || tok.string.length == 1))
+      {
+            return false;
+      }
 	  var inner = CodeMirror.innerMode(cm.getMode(), tok.state).state;
 	  return inner.tagName;
 	});
@@ -3168,9 +3225,10 @@ this._editor = CodeMirror.fromTextArea(document.getElementById(id),
 	  'Ctrl-Space': 'autocomplete'
 	},
 	hintOptions: {schemaInfo: schemaInfo},
-    autoCloseTags:true
+    autoCloseTags:true,
 
-
+    foldGutter: true,
+    gutters: ['CodeMirror-linenumbers', 'CodeMirror-foldgutter']
 });
 
 var me = this;
@@ -3187,6 +3245,8 @@ var onCursorActivity= function(e)
 }
 
 this._editor.on('cursorActivity', onCursorActivity );
+
+
 
 
 
@@ -3353,7 +3413,7 @@ me._editor.display.wrapper.style.height = '95%';
                 System.Windows.FrameworkElement.ctor.call(this);
                 this.Examples = function (_o1) {
                         var $t;
-                        _o1.add(($t = new Bridge.CustomUIMarkup.DesignerSamples.ExampleInfo(), $t.Name = "Carousel", $t.XmlTemplate = "\r\n\r\n\r\n<container>\r\n    <Carousel DataSource='img/carousel_2.jpg,img/carousel_3.jpg' />\r\n</container>\r\n\r\n", $t));
+                        _o1.add(($t = new Bridge.CustomUIMarkup.DesignerSamples.ExampleInfo(), $t.Name = "Carousel", $t.XmlTemplate = "\r\n\r\n\r\n<container>\r\n    <Carousel DataSource='img/carousel_1.jpg,img/carousel_2.jpg,img/carousel_3.jpg' />\r\n</container>\r\n\r\n", $t));
                         _o1.add(($t = new Bridge.CustomUIMarkup.DesignerSamples.ExampleInfo(), $t.Name = "Card", $t.XmlTemplate = "\r\n\r\n\r\n<card>\r\n\t<image Src='http://www.samsunkorkuciftligi.com/upload/20170314__2069208026.jpg'/>\r\n\t<content Align='Center'>\r\n        <Header Align='Center' >Motor Safari</Header>\r\n        <description> Macera sizi bekliyor...</description>\r\n        <ui.basic.button Text='İncele' MarginTop='11' AddClass='yellow' />\r\n    </content>\t\r\n</card>\r\n\r\n", $t));
                         _o1.add(($t = new Bridge.CustomUIMarkup.DesignerSamples.ExampleInfo(), $t.Name = "copy", $t.XmlTemplate = "\r\n\r\n\r\n<Grid>\r\n  \r\n    <Column Width='27' Align='Center'>\r\n        <Icon Type='Setting' Color='#ffbb00' FontSize='17' />\r\n    </Column>\r\n  \r\n  \t<Column Width='80'>\r\n        <TextBlock Text='Start Date:' Color='#888888' FontSize='13' FontWeight='600' TextWrapping='NoWrap' />\r\n    </Column>\r\n  \t\r\n  \t<Column   Align='Left' >\r\n        <TextBlock Text='November 1, 2017 15:30' Color='#888888' FontSize='12' FontWeight='600' TextWrapping='NoWrap' />\r\n    </Column>\r\n</Grid>\r\n\r\n", $t));
                         _o1.add(($t = new Bridge.CustomUIMarkup.DesignerSamples.ExampleInfo(), $t.Name = "properties", $t.XmlTemplate = "\r\n<Grid>\n    <column IsRightAligned ='True' Wide='15'>\n        <Button Text='Aloha'  />    \n    </column>\n</Grid>\r\n\r\n", $t));
@@ -3407,26 +3467,26 @@ me._editor.display.wrapper.style.height = '95%';
                 DataSourceProperty: null
             },
             props: {
-                Template: {
-                    get: function () {
-                        return "<div id='jssor_1' style='position:relative;margin:0 auto;top:0px;left:0px;width:980px;height:380px;overflow:hidden;visibility:hidden;'>\r\n    <!-- Loading Screen \r\n    <div data-u='loading' class='jssorl-009-spin' style='position:absolute;top:0px;left:0px;width:100%;height:100%;text-align:center;background-color:rgba(0,0,0,0.7);'>\r\n        <img style='margin-top:-19px;position:relative;top:50%;width:38px;height:38px;' src='img/spin.svg' />\r\n    </div> -->\r\n    <div data-u='slides' id='imagesContainer' style='cursor:default;position:relative;top:0px;left:0px;width:980px;height:380px;overflow:hidden;'>\r\n        <!-- template\r\n        <div>\r\n            <img data-u='image' src='img/001.jpg' />\r\n        </div>\r\n        -->\r\n    </div>\r\n    <!-- Bullet Navigator -->\r\n    <div data-u='navigator' class='jssorb051' style='position:absolute;bottom:12px;right:12px;' data-autocenter='1' data-scale='0.5' data-scale-bottom='0.75'>\r\n        <div data-u='prototype' class='i' style='width:16px;height:16px;'>\r\n            <svg viewbox='0 0 16000 16000' style='position:absolute;top:0;left:0;width:100%;height:100%;'>\r\n                <circle class='b' cx='8000' cy='8000' r='5800'></circle>\r\n            </svg>\r\n        </div>\r\n    </div>\r\n    <!-- Arrow Navigator -->\r\n    <div data-u='arrowleft' class='jssora051' style='width:55px;height:55px;top:0px;left:25px;' data-autocenter='2' data-scale='0.75' data-scale-left='0.75'>\r\n        <svg viewbox='0 0 16000 16000' style='position:absolute;top:0;left:0;width:100%;height:100%;'>\r\n            <polyline class='a' points='11040,1920 4960,8000 11040,14080 '></polyline>\r\n        </svg>\r\n    </div>\r\n    <div data-u='arrowright' class='jssora051' style='width:55px;height:55px;top:0px;right:25px;' data-autocenter='2' data-scale='0.75' data-scale-right='0.75'>\r\n        <svg viewbox='0 0 16000 16000' style='position:absolute;top:0;left:0;width:100%;height:100%;'>\r\n            <polyline class='a' points='4960,1920 11040,8000 4960,14080 '></polyline>\r\n        </svg>\r\n    </div>\r\n</div>";
-                    }
-                },
-                JsFiles: {
+                CssFiles: {
                     get: function () {
                         return function (_o1) {
-                                _o1.add((Bridge.CustomUIMarkup.Common.ScriptLoader.JsDirectory || "") + "jssor.slider-26.5.0.min.js");
-                                _o1.add((Bridge.CustomUIMarkup.Common.ScriptLoader.JsDirectory || "") + "jssor.Carousel.js");
+                                _o1.add((Bridge.CustomUIMarkup.Common.ScriptLoader.CssDirectory || "") + "Carousel.css");
                                 return _o1;
                             }(new (System.Collections.Generic.List$1(System.String)).ctor());
                     }
                 },
-                CssFiles: {
+                JsFiles: {
                     get: function () {
                         return function (_o2) {
-                                _o2.add((Bridge.CustomUIMarkup.Common.ScriptLoader.CssDirectory || "") + "Carousel.css");
+                                _o2.add((Bridge.CustomUIMarkup.Common.ScriptLoader.JsDirectory || "") + "jssor.slider-26.5.0.min.js");
+                                _o2.add((Bridge.CustomUIMarkup.Common.ScriptLoader.JsDirectory || "") + "jssor.Carousel.js");
                                 return _o2;
                             }(new (System.Collections.Generic.List$1(System.String)).ctor());
+                    }
+                },
+                Template: {
+                    get: function () {
+                        return "<div id='jssor_1' style='position:relative;margin:0 auto;top:0px;left:0px;width:980px;height:380px;overflow:hidden;visibility:hidden;'>\r\n    <!-- Loading Screen \r\n    <div data-u='loading' class='jssorl-009-spin' style='position:absolute;top:0px;left:0px;width:100%;height:100%;text-align:center;background-color:rgba(0,0,0,0.7);'>\r\n        <img style='margin-top:-19px;position:relative;top:50%;width:38px;height:38px;' src='img/spin.svg' />\r\n    </div> -->\r\n    <div data-u='slides' id='imagesContainer' style='cursor:default;position:relative;top:0px;left:0px;width:980px;height:380px;overflow:hidden;'>\r\n        <!-- template\r\n        <div>\r\n            <img data-u='image' src='img/001.jpg' />\r\n        </div>\r\n        -->\r\n    </div>\r\n    <!-- Bullet Navigator -->\r\n    <div data-u='navigator' class='jssorb051' style='position:absolute;bottom:12px;right:12px;' data-autocenter='1' data-scale='0.5' data-scale-bottom='0.75'>\r\n        <div data-u='prototype' class='i' style='width:16px;height:16px;'>\r\n            <svg viewbox='0 0 16000 16000' style='position:absolute;top:0;left:0;width:100%;height:100%;'>\r\n                <circle class='b' cx='8000' cy='8000' r='5800'></circle>\r\n            </svg>\r\n        </div>\r\n    </div>\r\n    <!-- Arrow Navigator -->\r\n    <div data-u='arrowleft' class='jssora051' style='width:55px;height:55px;top:0px;left:25px;' data-autocenter='2' data-scale='0.75' data-scale-left='0.75'>\r\n        <svg viewbox='0 0 16000 16000' style='position:absolute;top:0;left:0;width:100%;height:100%;'>\r\n            <polyline class='a' points='11040,1920 4960,8000 11040,14080 '></polyline>\r\n        </svg>\r\n    </div>\r\n    <div data-u='arrowright' class='jssora051' style='width:55px;height:55px;top:0px;right:25px;' data-autocenter='2' data-scale='0.75' data-scale-right='0.75'>\r\n        <svg viewbox='0 0 16000 16000' style='position:absolute;top:0;left:0;width:100%;height:100%;'>\r\n            <polyline class='a' points='4960,1920 11040,8000 4960,14080 '></polyline>\r\n        </svg>\r\n    </div>\r\n</div>";
                     }
                 }
             },
@@ -3443,7 +3503,9 @@ me._editor.display.wrapper.style.height = '95%';
                     me.imagesContainer.empty();
 
                     var images = Bridge.cast(e.NewValue, System.String);
-                    $t = Bridge.getEnumerator(System.String.split(images, [44].map(function(i) {{ return String.fromCharCode(i); }})));
+                    $t = Bridge.getEnumerator(System.Linq.Enumerable.from(System.String.split(images, [44].map(function(i) {{ return String.fromCharCode(i); }}))).where(function (x) {
+                            return System.String.isNullOrWhiteSpace(x) === false;
+                        }));
                     try {
                         while ($t.moveNext()) {
                             var src = $t.Current;
@@ -3454,14 +3516,10 @@ me._editor.display.wrapper.style.height = '95%';
                             $t.System$IDisposable$dispose();
                         }
                     }
-
-
-
                     $(function () {
                             var id = me["Id"];
                             jssor_1_slider_init(id);
                         });
-
                 }
             }
         },
@@ -3482,15 +3540,8 @@ me._editor.display.wrapper.style.height = '95%';
         },
         methods: {
             InitDOM: function () {
-
                 this._root = $(System.Linq.Enumerable.from($.parseHTML(System.String.replaceAll(Bridge.CustomUIMarkup.jssor.Carousel.Template, "\n", ""),null)).first());
                 this._root.attr("id", this["Id"]);
-
-
-
-
-
-
             }
         }
     });
@@ -3576,9 +3627,6 @@ me._editor.display.wrapper.style.height = '95%';
             InitDOM: function () {
                 this._root = $(document.createElement(this.HtmlTag)).addClass(this.HtmlClassName);
 
-                this.AfterInitDOM();
-            },
-            AfterInitDOM: function () {
 
             }
         }
@@ -3797,9 +3845,8 @@ me._editor.display.wrapper.style.height = '95%';
                 }
             }
         },
-        alias: ["Add", "System$Windows$Markup$IAddChild$Add"],
         methods: {
-            Add: function (element) {
+            Add$1: function (element) {
                 this.AddChild(element);
 
                 this.ReOrderElements();
@@ -3871,9 +3918,8 @@ me._editor.display.wrapper.style.height = '95%';
                 }
             }
         },
-        alias: ["Add", "System$Windows$Markup$IAddChild$Add"],
         methods: {
-            Add: function (element) {
+            Add$1: function (element) {
                 element.Root.appendTo(this._container);
             },
             InitDOM: function () {
@@ -3908,9 +3954,8 @@ me._editor.display.wrapper.style.height = '95%';
                 }
             }
         },
-        alias: ["Add", "System$Windows$Markup$IAddChild$Add"],
         methods: {
-            Add: function (element) {
+            Add$1: function (element) {
                 this.content.append(element.Root);
             },
             InitDOM: function () {
@@ -3947,9 +3992,8 @@ me._editor.display.wrapper.style.height = '95%';
                 }
             }
         },
-        alias: ["Add", "System$Windows$Markup$IAddChild$Add"],
         methods: {
-            Add: function (element) {
+            Add$1: function (element) {
                 element.Root.appendTo(this._contentElement);
             },
             InitDOM: function () {
@@ -3978,14 +4022,13 @@ me._editor.display.wrapper.style.height = '95%';
             _tabs: null,
             _menuElement: null
         },
-        alias: ["Add", "System$Windows$Markup$IAddChild$Add"],
         ctors: {
             init: function () {
                 this._tabs = new (System.Collections.Generic.List$1(Bridge.CustomUIMarkup.SemanticUI.TabItem)).ctor();
             }
         },
         methods: {
-            Add: function (element) {
+            Add$1: function (element) {
                 var tabItem = Bridge.as(element, Bridge.CustomUIMarkup.SemanticUI.TabItem);
                 if (tabItem == null) {
                     throw new System.ArgumentException();
@@ -4045,7 +4088,6 @@ me._editor.display.wrapper.style.height = '95%';
                 }
             }
         },
-        alias: ["Add", "System$Windows$Markup$IAddChild$Add"],
         ctors: {
             ctor: function () {
                 this.$initialize();
@@ -4057,7 +4099,7 @@ me._editor.display.wrapper.style.height = '95%';
             getItem$1: function (columnIndex) {
                 return this._childeren.getItem(columnIndex);
             },
-            Add: function (element) {
+            Add$1: function (element) {
                 var columnDiv = Bridge.CustomUIMarkup.Common.DOM.div("column").appendTo(this.row);
 
                 element.Root.appendTo(columnDiv);
@@ -4097,6 +4139,51 @@ me._editor.display.wrapper.style.height = '95%';
         methods: {
             InitDOM: function () {
                 this._root = Bridge.jQuery2.Extensions.Css_display_Inline_Block($(document.createElement("TextBlock")));
+            }
+        }
+    });
+
+    Bridge.define("System.Windows.html_a", {
+        inherits: [System.Windows.FrameworkElement],
+        statics: {
+            fields: {
+                HrefProperty: null
+            },
+            ctors: {
+                init: function () {
+                    this.HrefProperty = System.Windows.DependencyProperty.Register$1("Href", System.String, System.Windows.html_a, new System.Windows.PropertyMetadata.$ctor1(System.Windows.html_a.OnHrefChanged));
+                }
+            },
+            methods: {
+                OnHrefChanged: function (d, e) {
+                    var me = Bridge.cast(d, System.Windows.html_a);
+
+                    me._root.attr("href", Bridge.cast(e.NewValue, System.String));
+                }
+            }
+        },
+        props: {
+            Href: {
+                get: function () {
+                    return Bridge.cast(this.GetValue$1(System.Windows.html_a.HrefProperty), System.String);
+                },
+                set: function (value) {
+                    this.SetValue$1(System.Windows.html_a.HrefProperty, value);
+                }
+            }
+        },
+        methods: {
+            InitDOM: function () {
+                this._root = $(document.createElement("a"));
+            }
+        }
+    });
+
+    Bridge.define("System.Windows.html_div", {
+        inherits: [System.Windows.FrameworkElement],
+        methods: {
+            InitDOM: function () {
+                this._root = $(document.createElement("div"));
             }
         }
     });
@@ -4142,84 +4229,114 @@ me._editor.display.wrapper.style.height = '95%';
         }
     });
 
-    Bridge.define("Bridge.CustomUIMarkup.SemanticUI.ElementContainer", {
-        inherits: [Bridge.CustomUIMarkup.SemanticUI.ElementBase,System.Windows.Markup.IAddChild],
-        alias: ["Add", "System$Windows$Markup$IAddChild$Add"],
-        methods: {
-            BeforeAddChild: function (element) {
-
-            },
-            AfterAddChild: function (element) {
-
-            },
-            Add: function (element) {
-                element._root.appendTo(this._root);
-
-                this.AddChild(element);
-            },
-            AddChild: function (element) {
-                this.BeforeAddChild(element);
-                Bridge.CustomUIMarkup.SemanticUI.ElementBase.prototype.AddChild.call(this, element);
-                this.AfterAddChild(element);
+    Bridge.define("Bridge.CustomUIMarkup.SemanticUI.card", {
+        inherits: [Bridge.CustomUIMarkup.SemanticUI.ElementBase],
+        props: {
+            HtmlClassName: {
+                get: function () {
+                    return "ui card";
+                }
             }
         }
+    });
+
+    Bridge.define("Bridge.CustomUIMarkup.SemanticUI.Column", {
+        inherits: [Bridge.CustomUIMarkup.SemanticUI.ElementBase],
+        statics: {
+            fields: {
+                WideProperty: null
+            },
+            ctors: {
+                init: function () {
+                    this.WideProperty = System.Windows.DependencyProperty.Register$1("Wide", System.Int32, Bridge.CustomUIMarkup.SemanticUI.Column, new System.Windows.PropertyMetadata.$ctor1(Bridge.CustomUIMarkup.SemanticUI.Column.WideChanged));
+                }
+            },
+            methods: {
+                WideChanged: function (d, e) {
+                    var oldValue = e.OldValue;
+                    var newValue = System.Extensions.ToInt32Nullable(e.NewValue);
+
+                    var fe = Bridge.cast(d, System.Windows.FrameworkElement);
+
+                    if (System.Extensions.IsNotNull(oldValue)) {
+                        fe._root.removeClass((Bridge.CustomUIMarkup.SemanticUI.NumberToWord.ToWord(System.Extensions.ToInt32(oldValue)) || "") + " wide");
+                    }
+
+                    if (System.Nullable.hasValue(newValue)) {
+                        if (System.Nullable.getValue(newValue) < 0 || System.Nullable.getValue(newValue) > 16) {
+                            throw new System.ArgumentException("Max wide is 16. @value:" + System.Nullable.getValue(newValue));
+                        }
+
+                        fe._root.addClass((Bridge.CustomUIMarkup.SemanticUI.NumberToWord.ToWord(System.Nullable.getValue(newValue)) || "") + " wide");
+                    }
+                }
+            }
+        },
+        props: {
+            HtmlClassName: {
+                get: function () {
+                    return "column";
+                }
+            },
+            Wide: {
+                get: function () {
+                    return System.Nullable.getValue(Bridge.cast(Bridge.unbox(this.GetValue$1(Bridge.CustomUIMarkup.SemanticUI.Column.WideProperty)), System.Int32));
+                },
+                set: function (value) {
+                    this.SetValue$1(Bridge.CustomUIMarkup.SemanticUI.Column.WideProperty, Bridge.box(value, System.Int32));
+                }
+            }
+        }
+    });
+
+    Bridge.define("Bridge.CustomUIMarkup.SemanticUI.computer_tablet_only_row", {
+        inherits: [Bridge.CustomUIMarkup.SemanticUI.ElementBase],
+        props: {
+            HtmlClassName: {
+                get: function () {
+                    return "computer tablet only row";
+                }
+            }
+        }
+    });
+
+    Bridge.define("Bridge.CustomUIMarkup.SemanticUI.Container", {
+        inherits: [Bridge.CustomUIMarkup.SemanticUI.ElementBase],
+        props: {
+            HtmlClassName: {
+                get: function () {
+                    return "ui container";
+                }
+            }
+        }
+    });
+
+    Bridge.define("Bridge.CustomUIMarkup.SemanticUI.content", {
+        inherits: [Bridge.CustomUIMarkup.SemanticUI.ElementBase]
     });
 
     Bridge.define("Bridge.CustomUIMarkup.SemanticUI.description", {
         inherits: [Bridge.CustomUIMarkup.SemanticUI.ElementBase]
     });
 
-    Bridge.define("Bridge.CustomUIMarkup.SemanticUI.Grid", {
-        inherits: [Bridge.CustomUIMarkup.SemanticUI.ElementBase,System.Windows.Markup.IAddChild],
+    Bridge.define("Bridge.CustomUIMarkup.SemanticUI.ExtraContent", {
+        inherits: [Bridge.CustomUIMarkup.SemanticUI.ElementBase],
         props: {
-            AllChildrenAreColumn: {
+            HtmlClassName: {
                 get: function () {
-                    var $t;
-                    $t = Bridge.getEnumerator(this.Childeren, System.Windows.FrameworkElement);
-                    try {
-                        while ($t.moveNext()) {
-                            var child = $t.Current;
-                            if (!(Bridge.is(child, Bridge.CustomUIMarkup.SemanticUI.Column))) {
-                                return false;
-                            }
-                        }
-                    } finally {
-                        if (Bridge.is($t, System.IDisposable)) {
-                            $t.System$IDisposable$dispose();
-                        }
-                    }
-                    return true;
-                }
-            },
-            ClassName: {
-                get: function () {
-                    if (this.ChildrenCount === 0) {
-                        return "ui grid";
-                    }
-
-                    if (this.AllChildrenAreColumn) {
-                        return "ui " + (Bridge.CustomUIMarkup.SemanticUI.NumberToWord.ToWord(System.Array.getCount(this.Childeren, System.Windows.FrameworkElement)) || "") + " column grid";
-                    }
-
-                    return "ui grid";
+                    return "extra content";
                 }
             }
-        },
-        alias: ["Add", "System$Windows$Markup$IAddChild$Add"],
-        methods: {
-            Add: function (element) {
-                element.Root.appendTo(this._root);
+        }
+    });
 
-                this.AddChild(element);
-
-                this.UpdateClassName();
-            },
-            InitDOM: function () {
-                this._root = Bridge.CustomUIMarkup.Common.DOM.div();
-                this.UpdateClassName();
-            },
-            UpdateClassName: function () {
-                this._root.attr("class", this.ClassName);
+    Bridge.define("Bridge.CustomUIMarkup.SemanticUI.Form", {
+        inherits: [Bridge.CustomUIMarkup.SemanticUI.ElementBase],
+        props: {
+            HtmlClassName: {
+                get: function () {
+                    return "ui form";
+                }
             }
         }
     });
@@ -4431,6 +4548,82 @@ me._editor.display.wrapper.style.height = '95%';
         }
     });
 
+    Bridge.define("Bridge.CustomUIMarkup.SemanticUI.item", {
+        inherits: [Bridge.CustomUIMarkup.SemanticUI.ElementBase],
+        props: {
+            HtmlClassName: {
+                get: function () {
+                    return "item";
+                }
+            }
+        }
+    });
+
+    Bridge.define("Bridge.CustomUIMarkup.SemanticUI.mobile_only_row", {
+        inherits: [Bridge.CustomUIMarkup.SemanticUI.ElementBase],
+        props: {
+            HtmlClassName: {
+                get: function () {
+                    return "mobile only row";
+                }
+            }
+        }
+    });
+
+    Bridge.define("Bridge.CustomUIMarkup.SemanticUI.right_menu", {
+        inherits: [Bridge.CustomUIMarkup.SemanticUI.ElementBase],
+        props: {
+            HtmlClassName: {
+                get: function () {
+                    return "right menu";
+                }
+            }
+        }
+    });
+
+    Bridge.define("Bridge.CustomUIMarkup.SemanticUI.Row", {
+        inherits: [Bridge.CustomUIMarkup.SemanticUI.ElementBase],
+        props: {
+            HtmlClassName: {
+                get: function () {
+                    return "row";
+                }
+            },
+            rowClass: {
+                get: function () {
+                    return (Bridge.CustomUIMarkup.SemanticUI.NumberToWord.ToWord(System.Array.getCount(this.Childeren, System.Windows.FrameworkElement)) || "") + " column row";
+                }
+            }
+        },
+        methods: {
+            AfterAddChild: function (element) {
+                this._root.attr("class", this.rowClass);
+            }
+        }
+    });
+
+    Bridge.define("Bridge.CustomUIMarkup.SemanticUI.Segment", {
+        inherits: [Bridge.CustomUIMarkup.SemanticUI.ElementBase],
+        props: {
+            HtmlClassName: {
+                get: function () {
+                    return "ui segment";
+                }
+            }
+        }
+    });
+
+    Bridge.define("Bridge.CustomUIMarkup.SemanticUI.stacked", {
+        inherits: [Bridge.CustomUIMarkup.SemanticUI.ElementBase],
+        props: {
+            HtmlClassName: {
+                get: function () {
+                    return "ui stacked";
+                }
+            }
+        }
+    });
+
     Bridge.define("Bridge.CustomUIMarkup.SemanticUI.UIEditor", {
         inherits: [Bridge.CustomUIMarkup.Design.UIEditor],
         ctors: {
@@ -4444,98 +4637,67 @@ me._editor.display.wrapper.style.height = '95%';
         }
     });
 
-    Bridge.define("Bridge.CustomUIMarkup.SemanticUI.card", {
-        inherits: [Bridge.CustomUIMarkup.SemanticUI.ElementContainer],
+    Bridge.define("Bridge.CustomUIMarkup.SemanticUI.ui_divider", {
+        inherits: [Bridge.CustomUIMarkup.SemanticUI.ElementBase],
         props: {
             HtmlClassName: {
                 get: function () {
-                    return "ui card";
+                    return "ui divider";
                 }
             }
         }
     });
 
-    Bridge.define("Bridge.CustomUIMarkup.SemanticUI.Column", {
-        inherits: [Bridge.CustomUIMarkup.SemanticUI.ElementContainer],
-        statics: {
-            fields: {
-                WideProperty: null
-            },
-            ctors: {
-                init: function () {
-                    this.WideProperty = System.Windows.DependencyProperty.Register$1("Wide", System.Int32, Bridge.CustomUIMarkup.SemanticUI.Column, new System.Windows.PropertyMetadata.$ctor1(Bridge.CustomUIMarkup.SemanticUI.Column.WideChanged));
-                }
-            },
-            methods: {
-                WideChanged: function (d, e) {
-                    var oldValue = e.OldValue;
-                    var newValue = System.Extensions.ToInt32Nullable(e.NewValue);
-
-                    var fe = Bridge.cast(d, System.Windows.FrameworkElement);
-
-                    if (System.Extensions.IsNotNull(oldValue)) {
-                        fe._root.removeClass((Bridge.CustomUIMarkup.SemanticUI.NumberToWord.ToWord(System.Extensions.ToInt32(oldValue)) || "") + " wide");
-                    }
-
-                    if (System.Nullable.hasValue(newValue)) {
-                        if (System.Nullable.getValue(newValue) < 0 || System.Nullable.getValue(newValue) > 16) {
-                            throw new System.ArgumentException("Max wide is 16. @value:" + System.Nullable.getValue(newValue));
-                        }
-
-                        fe._root.addClass((Bridge.CustomUIMarkup.SemanticUI.NumberToWord.ToWord(System.Nullable.getValue(newValue)) || "") + " wide");
-                    }
-                }
-            }
-        },
+    Bridge.define("Bridge.CustomUIMarkup.SemanticUI.ui_grid", {
+        inherits: [Bridge.CustomUIMarkup.SemanticUI.ElementBase],
         props: {
             HtmlClassName: {
                 get: function () {
-                    return "column";
-                }
-            },
-            Wide: {
-                get: function () {
-                    return System.Nullable.getValue(Bridge.cast(Bridge.unbox(this.GetValue$1(Bridge.CustomUIMarkup.SemanticUI.Column.WideProperty)), System.Int32));
-                },
-                set: function (value) {
-                    this.SetValue$1(Bridge.CustomUIMarkup.SemanticUI.Column.WideProperty, Bridge.box(value, System.Int32));
+                    return "ui grid";
                 }
             }
         }
     });
 
-    Bridge.define("Bridge.CustomUIMarkup.SemanticUI.Container", {
-        inherits: [Bridge.CustomUIMarkup.SemanticUI.ElementContainer],
+    Bridge.define("Bridge.CustomUIMarkup.SemanticUI.ui_menu", {
+        inherits: [Bridge.CustomUIMarkup.SemanticUI.ElementBase],
         props: {
             HtmlClassName: {
                 get: function () {
-                    return "ui container";
+                    return "ui menu";
                 }
             }
         }
     });
 
-    Bridge.define("Bridge.CustomUIMarkup.SemanticUI.content", {
-        inherits: [Bridge.CustomUIMarkup.SemanticUI.ElementContainer]
-    });
-
-    Bridge.define("Bridge.CustomUIMarkup.SemanticUI.ExtraContent", {
-        inherits: [Bridge.CustomUIMarkup.SemanticUI.ElementContainer],
+    Bridge.define("Bridge.CustomUIMarkup.SemanticUI.ui_navbar_menu", {
+        inherits: [Bridge.CustomUIMarkup.SemanticUI.ElementBase],
         props: {
             HtmlClassName: {
                 get: function () {
-                    return "extra content";
+                    return "ui navbar menu";
                 }
             }
         }
     });
 
-    Bridge.define("Bridge.CustomUIMarkup.SemanticUI.Form", {
-        inherits: [Bridge.CustomUIMarkup.SemanticUI.ElementContainer],
+    Bridge.define("Bridge.CustomUIMarkup.SemanticUI.ui_page_grid", {
+        inherits: [Bridge.CustomUIMarkup.SemanticUI.ElementBase],
         props: {
             HtmlClassName: {
                 get: function () {
-                    return "ui form";
+                    return "ui page grid";
+                }
+            }
+        }
+    });
+
+    Bridge.define("Bridge.CustomUIMarkup.SemanticUI.ui_vertical_menu", {
+        inherits: [Bridge.CustomUIMarkup.SemanticUI.ElementBase],
+        props: {
+            HtmlClassName: {
+                get: function () {
+                    return "ui vertical menu";
                 }
             }
         }
@@ -4584,49 +4746,6 @@ me._editor.display.wrapper.style.height = '95%';
             HtmlTag: {
                 get: function () {
                     return "h3";
-                }
-            }
-        }
-    });
-
-    Bridge.define("Bridge.CustomUIMarkup.SemanticUI.Row", {
-        inherits: [Bridge.CustomUIMarkup.SemanticUI.ElementContainer],
-        props: {
-            HtmlClassName: {
-                get: function () {
-                    return "row";
-                }
-            },
-            rowClass: {
-                get: function () {
-                    return (Bridge.CustomUIMarkup.SemanticUI.NumberToWord.ToWord(System.Array.getCount(this.Childeren, System.Windows.FrameworkElement)) || "") + " column row";
-                }
-            }
-        },
-        methods: {
-            AfterAddChild: function (element) {
-                this._root.attr("class", this.rowClass);
-            }
-        }
-    });
-
-    Bridge.define("Bridge.CustomUIMarkup.SemanticUI.Segment", {
-        inherits: [Bridge.CustomUIMarkup.SemanticUI.ElementContainer],
-        props: {
-            HtmlClassName: {
-                get: function () {
-                    return "ui segment";
-                }
-            }
-        }
-    });
-
-    Bridge.define("Bridge.CustomUIMarkup.SemanticUI.stacked", {
-        inherits: [Bridge.CustomUIMarkup.SemanticUI.ElementContainer],
-        props: {
-            HtmlClassName: {
-                get: function () {
-                    return "ui stacked";
                 }
             }
         }

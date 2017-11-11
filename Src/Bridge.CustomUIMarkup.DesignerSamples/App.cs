@@ -62,7 +62,7 @@ namespace Bridge.CustomUIMarkup.DesignerSamples
 
 
 <container>
-    <Carousel DataSource='img/carousel_2.jpg,img/carousel_3.jpg' />
+    <Carousel DataSource='img/carousel_1.jpg,img/carousel_2.jpg,img/carousel_3.jpg' />
 </container>
 
 "

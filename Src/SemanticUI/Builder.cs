@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Windows;
 using System.Windows.Controls;
 using Bridge.CustomUIMarkup.CodeMirror;
 using Bridge.CustomUIMarkup.Design;
@@ -18,6 +19,16 @@ namespace Bridge.CustomUIMarkup.SemanticUI
         {
             return new List<XmlIntellisenseInfo>
             {
+                new XmlIntellisenseInfo("div", typeof(html_div)),
+                new XmlIntellisenseInfo("a", typeof(html_a)),
+
+                new XmlIntellisenseInfo("computer.tablet.only.row", typeof(computer_tablet_only_row)),
+                new XmlIntellisenseInfo("ui.navbar.menu", typeof(ui_navbar_menu)),
+                new XmlIntellisenseInfo("mobile.only.row", typeof(mobile_only_row)),
+                new XmlIntellisenseInfo("right.menu", typeof(right_menu)),
+                new XmlIntellisenseInfo("ui.page.grid", typeof(ui_page_grid)),
+
+
                 new XmlIntellisenseInfo("Button", typeof(Button)),
                 new XmlIntellisenseInfo("TabPanel", typeof(TabPanel)),
                 new XmlIntellisenseInfo("Tab", typeof(TabItem)),
@@ -27,6 +38,11 @@ namespace Bridge.CustomUIMarkup.SemanticUI
                 new XmlIntellisenseInfo("extra-content", typeof(ExtraContent)),
                 new XmlIntellisenseInfo("ui.basic.button", typeof(ui_basic_button)),
                 new XmlIntellisenseInfo("Carousel", typeof(Bridge.CustomUIMarkup.jssor.Carousel)),
+                new XmlIntellisenseInfo("ui.divider", typeof(ui_divider)),
+                new XmlIntellisenseInfo("ui.menu", typeof(ui_menu)),
+                new XmlIntellisenseInfo("item", typeof(item)),
+                new XmlIntellisenseInfo("ui.vertical.menu", typeof(ui_vertical_menu)),
+                
 
 
 
@@ -41,7 +57,8 @@ namespace Bridge.CustomUIMarkup.SemanticUI
                 new XmlIntellisenseInfo("Container", typeof(Container)),
                 new XmlIntellisenseInfo("Stacked", typeof(stacked)),
                 new XmlIntellisenseInfo("GroupBox", typeof(GroupBox)),
-                new XmlIntellisenseInfo("Grid", typeof(Grid)) {ChildrenTags = new[] {"Row"}},
+                new XmlIntellisenseInfo("Grid", typeof(ui_grid)) {ChildrenTags = new[] {"Row"}},
+                new XmlIntellisenseInfo("ui page grid", typeof(ui_page_grid)) ,
                 new XmlIntellisenseInfo("Field", typeof(Field)),
                 new XmlIntellisenseInfo("Form", typeof(Form)),
 

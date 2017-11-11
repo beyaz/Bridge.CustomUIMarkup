@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
+using System.Reflection;
 using System.Windows;
 using System.Windows.Data;
 using System.Windows.Markup;
@@ -118,18 +119,85 @@ namespace Bridge.CustomUIMarkup.UI.Design
             }
         }
 
-        object BuildNode(XmlNode xmlNode)
+        object CreateInstance(XmlNode xmlNode)
         {
             var tag = xmlNode.Name.ToUpper();
+
 
             var controlType = CreateType(tag);
 
             if (controlType == null)
             {
-                throw new ArgumentException($"NotRecognizedTag:" + tag);
+                if (xmlNode.Name.Length <= 3)
+                {
+                    return  new FrameworkElement();
+                }
+                
+                    throw new ArgumentException($"NotRecognizedTag:" + tag);
+                
+
+
             }
 
-            var instance = Activator.CreateInstance(controlType);
+            return  Activator.CreateInstance(controlType);
+        }
+
+        void ProcessAttribute(object instance,string name,string value)
+        {
+
+            if (name=="class")
+            {
+                name = "Class";
+            }
+
+            var bi = BindingInfo.TryParseExpression(value);
+            if (bi != null)
+            {
+                bi.Source = DataContext;
+                bi.Target = instance;
+                bi.TargetPropertyName = name;
+
+                bi.Connect();
+
+                return;
+            }
+
+            var targetProperty = ReflectionHelper.FindProperty(instance, name);
+            if (targetProperty != null)
+            {
+                if (targetProperty.PropertyType.IsEnum)
+                {
+                    ReflectionHelper.SetPropertyValue(instance, name, Enum.Parse(targetProperty.PropertyType, value, true));
+                    return;
+                }
+
+                var converterAttributes = targetProperty.GetCustomAttributes(typeof(TypeConverterAttribute));
+                var firstConverterAtribute = converterAttributes?.FirstOrDefault();
+                if (firstConverterAtribute != null)
+                {
+                    var converter = (TypeConverterAttribute)firstConverterAtribute;
+                    var valueConverter = (IValueConverter)Activator.CreateInstance(converter._type);
+                    var convertedValue = valueConverter.Convert(value, instance.GetType().GetProperty(name).PropertyType, null, CultureInfo.CurrentCulture);
+
+                    ReflectionHelper.SetPropertyValue(instance, name, convertedValue);
+                    return;
+                }
+
+                ReflectionHelper.SetPropertyValue(instance, name, value.ChangeType(targetProperty.PropertyType));
+                return;
+            }
+            var instanceAsBag = instance as Bag;
+            if (instanceAsBag != null)
+            {
+                instanceAsBag.SetValue(name, value);
+                return;
+            }
+
+            throw new MissingMemberException(name);
+        }
+        object BuildNode(XmlNode xmlNode)
+        {
+            object instance = CreateInstance(xmlNode);
 
             if (IsDesignMode)
             {
@@ -143,57 +211,12 @@ namespace Bridge.CustomUIMarkup.UI.Design
             {
                 frameworkElement.DataContext = DataContext;
                 frameworkElement.InitDOM();
+                frameworkElement.GetType().GetMethod("AfterInitDOM", BindingFlags.NonPublic | BindingFlags.Instance).Invoke(frameworkElement);
             }
 
             foreach (var nodeAttribute in xmlNode.Attributes)
             {
-                var name = nodeAttribute.Name;
-                var value = nodeAttribute.Value;
-
-                var bi = BindingInfo.TryParseExpression(value);
-                if (bi != null)
-                {
-                    bi.Source = DataContext;
-                    bi.Target = instance;
-                    bi.TargetPropertyName = name;
-
-                    bi.Connect();
-
-                    continue;
-                }
-
-                var targetProperty = ReflectionHelper.FindProperty(instance, name);
-                if (targetProperty != null)
-                {
-                    if (targetProperty.PropertyType.IsEnum)
-                    {
-                        ReflectionHelper.SetPropertyValue(instance, name, Enum.Parse(targetProperty.PropertyType, value, true));
-                        continue;
-                    }
-
-                    var converterAttributes = targetProperty.GetCustomAttributes(typeof(TypeConverterAttribute));
-                    var firstConverterAtribute = converterAttributes?.FirstOrDefault();
-                    if (firstConverterAtribute != null)
-                    {
-                        var converter = (TypeConverterAttribute) firstConverterAtribute;
-                        var valueConverter = (IValueConverter) Activator.CreateInstance(converter._type);
-                        var convertedValue = valueConverter.Convert(value, instance.GetType().GetProperty(name).PropertyType, null, CultureInfo.CurrentCulture);
-
-                        ReflectionHelper.SetPropertyValue(instance, name, convertedValue);
-                        continue;
-                    }
-
-                    ReflectionHelper.SetPropertyValue(instance, name, value.ChangeType(targetProperty.PropertyType));
-                    continue;
-                }
-                var instanceAsBag = instance as Bag;
-                if (instanceAsBag != null)
-                {
-                    instanceAsBag.SetValue(name, value);
-                    continue;
-                }
-
-                throw new MissingMemberException(name);
+                ProcessAttribute(instance, nodeAttribute.Name, nodeAttribute.Value);
             }
 
             foreach (var childNode in xmlNode.ChildNodes)
@@ -233,10 +256,7 @@ namespace Bridge.CustomUIMarkup.UI.Design
             }
 
 
-            if (xmlNode.ChildNodes.Count ==0)
-            {
-                
-            }
+           
 
             return instance;
         }

@@ -55,18 +55,25 @@ namespace Bridge.CustomUIMarkup.CodeMirror
         public static IReadOnlyList<string> CssFiles => new[]
         {
             "https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.31.0/codemirror.css",
-            "https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.31.0/addon/hint/show-hint.css"
+            "https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.31.0/addon/hint/show-hint.css",
+            "https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.31.0/addon/fold/foldgutter.css",
+                ScriptLoader.CssDirectory + "CodeMirror.css"
         };
 
         public static IReadOnlyList<string> Scripts => new[]
         {
             "https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.31.0/codemirror.js",
+            "https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.31.0/mode/xml/xml.js",
             "https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.31.0/addon/hint/show-hint.js",
             "https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.31.0/addon/hint/xml-hint.js",
-            "https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.31.0/mode/xml/xml.js",
+           
             "https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.31.0/addon/edit/closetag.js",
             "https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.31.0/addon/fold/foldcode.js",
-            "https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.31.0/addon/fold/xml-fold.js"
+            "https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.31.0/addon/fold/foldgutter.js",
+            "https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.31.0/addon/fold/xml-fold.js",
+            "https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.31.0/addon/fold/indent-fold.js",
+            "https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.31.0/addon/fold/markdown-fold.js",
+            "https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.31.0/mode/markdown/markdown.js"
         };
         #endregion
 
@@ -152,9 +159,14 @@ function completeIfAfterLt(cm)
 
 function completeIfInTag(cm) 
 {
-	return completeAfter(cm, function() {
+	return completeAfter(cm, function() 
+    {
 	  var tok = cm.getTokenAt(cm.getCursor());
-	  if (tok.type == 'string' && (!/['']/.test(tok.string.charAt(tok.string.length - 1)) || tok.string.length == 1)) return false;
+
+	  if (tok.type == 'string' && (!/['']/.test(tok.string.charAt(tok.string.length - 1)) || tok.string.length == 1))
+      {
+            return false;
+      }
 	  var inner = CodeMirror.innerMode(cm.getMode(), tok.state).state;
 	  return inner.tagName;
 	});
@@ -172,9 +184,10 @@ this._editor = CodeMirror.fromTextArea(document.getElementById(id),
 	  'Ctrl-Space': 'autocomplete'
 	},
 	hintOptions: {schemaInfo: schemaInfo},
-    autoCloseTags:true
+    autoCloseTags:true,
 
-
+    foldGutter: true,
+    gutters: ['CodeMirror-linenumbers', 'CodeMirror-foldgutter']
 });
 
 var me = this;
@@ -191,6 +204,8 @@ var onCursorActivity= function(e)
 }
 
 this._editor.on('cursorActivity', onCursorActivity );
+
+
 
 
 
