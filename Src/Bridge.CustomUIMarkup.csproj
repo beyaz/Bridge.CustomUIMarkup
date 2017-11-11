@@ -63,6 +63,7 @@
     <Compile Include="SemanticUI\Image.cs" />
     <Compile Include="SemanticUI\Segment.cs" />
     <Compile Include="SemanticUI\Size.cs" />
+    <Compile Include="SemanticUI\UIEditor.cs" />
     <Compile Include="UI\Design\Binder.cs" />
     <Compile Include="UI\Design\BinderEventAttributeResolver.cs" />
     <Compile Include=".Net Override\System.Windows.Data\BindingMode.cs" />

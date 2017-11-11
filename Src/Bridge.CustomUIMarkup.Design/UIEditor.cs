@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Windows;
 using System.Xml;
-using Bridge.CustomUIMarkup.SemanticUI;
+using Bridge.CustomUIMarkup.UI.Design;
 using Bridge.jQuery2;
 
 namespace Bridge.CustomUIMarkup.Design
@@ -9,11 +9,16 @@ namespace Bridge.CustomUIMarkup.Design
     class UIEditor : FrameworkElement
     {
         #region Fields
-        Container UniformGrid;
+        Builder _builder;
+        #endregion
+
+        #region Public Properties
+        public Func<Builder> CreateBuilder { get; set; }
+        public FrameworkElement OutputElement { get; private set; }
         #endregion
 
         #region Properties
-        jQuery Container => UniformGrid.Childeren[1].Root;
+        jQuery Container => OutputElement.Childeren[1].Root;
 
         string Template => @"
 <Container>
@@ -28,15 +33,13 @@ namespace Bridge.CustomUIMarkup.Design
         #region Public Methods
         public override void InitDOM()
         {
-            var ui = new SemanticUI.Builder
-            {
-                XmlString = Template,
-                DataContext = this
-            }.Build();
+            var builder = CreateBuilder();
+            builder.XmlString = Template;
+            builder.DataContext = this;
 
-            UniformGrid = (Container) ui;
+            OutputElement = (FrameworkElement) builder.Build();
 
-            _root = UniformGrid.Root;
+            _root = OutputElement.Root;
         }
 
         public void OnCursorLineNumberChanged(int lineNumber)
@@ -44,38 +47,51 @@ namespace Bridge.CustomUIMarkup.Design
             _builder?.FocusToLine(lineNumber);
         }
 
-        SemanticUI.Builder _builder;
         public void OnTextChanged()
         {
-            Container.Empty();
+            ClearOutput();
 
             if (string.IsNullOrWhiteSpace(SourceText))
             {
                 return;
             }
 
-            _builder = new SemanticUI.Builder
-            {
-                XmlString = SourceText,
-                DataContext = SourceDataContext,
-                IsDesignMode = true
-            };
+            _builder = CreateBuilder();
+            _builder.XmlString = SourceText;
+            _builder.DataContext = SourceDataContext;
+            _builder.IsDesignMode = true;
 
             object component = null;
 
             try
             {
                 component = _builder.Build();
-                ((FrameworkElement) component).Root.AppendTo(Container);
+                SetOutput(((FrameworkElement) component).Root);
             }
             catch (XmlException)
             {
-                
             }
             catch (Exception e)
             {
-                Container.Html(e.ToString());
+                SetErrorMessage(e.ToString());
             }
+        }
+        #endregion
+
+        #region Methods
+        void ClearOutput()
+        {
+            Container.Empty();
+        }
+
+        void SetErrorMessage(string message)
+        {
+            Container.Html(message);
+        }
+
+        void SetOutput(jQuery element)
+        {
+            element.AppendTo(Container);
         }
         #endregion
 

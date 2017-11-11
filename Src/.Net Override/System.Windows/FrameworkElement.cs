@@ -14,6 +14,41 @@ namespace System.Windows
 
     public class FrameworkElement : DependencyObject
     {
+        #region ClassProperty
+        public static readonly DependencyProperty ClassProperty = DependencyProperty.Register(nameof(Class), typeof(string), typeof(FrameworkElement), new PropertyMetadata(OnClassChanged));
+
+        public string Class
+        {
+            get { return (string)GetValue(ClassProperty); }
+            set { SetValue(ClassProperty, value); }
+        }
+
+        protected static void OnClassChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            var me = (FrameworkElement)d;
+
+            me._root?.Attr("class", (string)e.NewValue);
+        }
+        #endregion
+
+        #region AddClassProperty
+        public static readonly DependencyProperty AddClassProperty = DependencyProperty.Register(nameof(AddClass), typeof(string), typeof(FrameworkElement), new PropertyMetadata(OnAddClassChanged));
+
+        public string AddClass
+        {
+            get { return (string)GetValue(AddClassProperty); }
+            set { SetValue(AddClassProperty, value); }
+        }
+
+        protected static void OnAddClassChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            var me = (FrameworkElement)d;
+
+            me._root?.AddClass((string)e.NewValue);
+        }
+        #endregion
+
+
         public object GetValue(DependencyProperty dp)
         {
             var value =  this[dp.Name];

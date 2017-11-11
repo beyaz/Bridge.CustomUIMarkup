@@ -1,21 +1,12 @@
 ﻿using System.Windows;
-using Bridge.CustomUIMarkup.Common;
-using Bridge.jQuery2;
 
 namespace Bridge.CustomUIMarkup.SemanticUI
 {
     public class Image : ElementBase
     {
-        #region Fields
-        jQuery _elementImage;
-        #endregion
-
-        #region Public Methods
-        public override void InitDOM()
-        {
-            _root = DOM.button("ui image");
-            _elementImage = DOM.img().AppendTo(_root);
-        }
+        #region Properties
+        protected override string HtmlClassName => "ui image";
+        protected override string HtmlTag => "img";
         #endregion
 
         #region SrcProperty
@@ -24,7 +15,7 @@ namespace Bridge.CustomUIMarkup.SemanticUI
         public string Src
         {
             get { return (string) GetValue(SrcProperty); }
-            set { SetValue(SrcProperty,value); }
+            set { SetValue(SrcProperty, value); }
         }
 
         static void OnSrcChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
@@ -33,10 +24,8 @@ namespace Bridge.CustomUIMarkup.SemanticUI
 
             var newValue = (string) e.NewValue;
 
-            me._elementImage.Attr("Src", newValue);
+            me._root.Attr("Src", newValue);
         }
         #endregion
-
-        
     }
 }

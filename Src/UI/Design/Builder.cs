@@ -198,11 +198,24 @@ namespace Bridge.CustomUIMarkup.UI.Design
 
             foreach (var childNode in xmlNode.ChildNodes)
             {
-                if (childNode.NodeType == NodeType.Text ||
-                    childNode.NodeType == NodeType.Comment)
+                if (childNode.NodeType == NodeType.Comment)
                 {
                     continue;
                 }
+
+                if (childNode.NodeType == NodeType.Text)
+                {
+                    var html = new jQuery(childNode).Text();
+                    if (string.IsNullOrWhiteSpace(html))
+                    {
+                        continue;
+                    }
+
+                    ((FrameworkElement) instance).InnerHTML = html;
+                    continue;
+                }
+               
+
 
                 var subControl = BuildNode(childNode);
 
@@ -217,6 +230,12 @@ namespace Bridge.CustomUIMarkup.UI.Design
                 }
 
                 throw new ArgumentException(subControl.GetType().FullName);
+            }
+
+
+            if (xmlNode.ChildNodes.Count ==0)
+            {
+                
             }
 
             return instance;

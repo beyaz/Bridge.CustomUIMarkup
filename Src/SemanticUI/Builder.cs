@@ -22,7 +22,14 @@ namespace Bridge.CustomUIMarkup.SemanticUI
                 new XmlIntellisenseInfo("TabPanel", typeof(TabPanel)),
                 new XmlIntellisenseInfo("Tab", typeof(TabItem)),
                 new XmlIntellisenseInfo("card", typeof(card)),
-                
+                new XmlIntellisenseInfo("description", typeof(description)),
+                new XmlIntellisenseInfo("content", typeof(content)),
+                new XmlIntellisenseInfo("extra-content", typeof(ExtraContent)),
+                new XmlIntellisenseInfo("ui.basic.button", typeof(ui_basic_button)),
+
+
+
+
 
                 new XmlIntellisenseInfo("TextInput", typeof(InputText)),
                 new XmlIntellisenseInfo("TextBox", typeof(InputText)),
@@ -42,12 +49,15 @@ namespace Bridge.CustomUIMarkup.SemanticUI
                 new XmlIntellisenseInfo("Header1", typeof(Header1)),
                 new XmlIntellisenseInfo("Header2", typeof(Header2)),
                 new XmlIntellisenseInfo("Header3", typeof(Header3)),
+                new XmlIntellisenseInfo("Header", typeof(Header)),
                 new XmlIntellisenseInfo("Image", typeof(Image)),
                 new XmlIntellisenseInfo("Icon", typeof(Icon)),
                 new XmlIntellisenseInfo("Segment", typeof(Segment)),
                 new XmlIntellisenseInfo("TextBlock", typeof(TextBlock)),
                 new XmlIntellisenseInfo("XmlEditor", typeof(XmlEditor)),
                 new XmlIntellisenseInfo("UIEditor", typeof(UIEditor)),
+
+                
             };
         }
         #endregion

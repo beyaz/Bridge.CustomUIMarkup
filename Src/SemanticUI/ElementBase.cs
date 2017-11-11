@@ -97,12 +97,18 @@ namespace Bridge.CustomUIMarkup.SemanticUI
 
     public class card: ElementContainer
     {
-        
+        protected override string HtmlClassName => "ui card";
+
     }
     public class content : ElementContainer
     {
 
     }
+    public class ExtraContent : ElementContainer
+    {
+        protected override string HtmlClassName => "extra content";
+    }
+    
 
     public class description : ElementBase
     {

@@ -29,4 +29,9 @@ namespace Bridge.CustomUIMarkup.SemanticUI
         }
         #endregion
     }
+
+    class ui_basic_button : Button
+    {
+        protected override string HtmlClassName => "ui basic button";
+    }
 }

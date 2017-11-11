@@ -56,20 +56,19 @@ namespace Bridge.CustomUIMarkup.DesignerSamples
             {
                 new ExampleInfo
                 {
-                    Name = "StackPanel",
+                    Name = "Card",
                     XmlTemplate =
                         @"
 
 
-<StackPanel Orientation='Horizontal'>
-  
-    <Icon Type='Setting' Color='#ffbb00' FontSize='17' />
-  
-  	<TextBlock Width='80' Text='Start Date:' Color='#888888' FontSize='13' FontWeight='600' TextWrapping='NoWrap' />
-  	
-  	<TextBlock Text='November 1, 2017 15:30' Color='#888888' FontSize='12' FontWeight='600' TextWrapping='NoWrap' />
-
-</StackPanel>
+<card>
+	<image Src='http://www.samsunkorkuciftligi.com/upload/20170314__2069208026.jpg'/>
+	<content Align='Center'>
+        <Header Align='Center' >Motor Safari</Header>
+        <description> Macera sizi bekliyor...</description>
+        <ui.basic.button Text='İncele' MarginTop='11' AddClass='yellow' />
+    </content>	
+</card>
 
 "
                 },
