@@ -53,6 +53,7 @@
     <Compile Include="Bridge.CustomUIMarkup.DesignerSamples\App.cs" />
     <Compile Include="Bridge.CustomUIMarkup.Design\UIEditor.cs" />
     <Compile Include="Bridge.jQuery2\Extensions.cs" />
+    <Compile Include="jssor\Carousel.cs" />
     <Compile Include="SemanticUI\Align.cs" />
     <Compile Include="SemanticUI\ElementContainer.cs" />
     <Compile Include="SemanticUI\Field.cs" />
@@ -142,10 +143,27 @@
       <Private>True</Private>
     </Reference>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Content Include="jssor\jssor.Carousel.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="jssor\Carousel.css">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="jssor\jssor.slider-26.5.0.min.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>copy /y "$(TargetDir)Bridge\*.js"  "$(SolutionDir)Designer.Demo\Scripts\"</PostBuildEvent>
+    <PostBuildEvent>copy /y "$(TargetDir)Bridge\*.js"  "$(SolutionDir)Designer.Demo\Scripts\"
+
+copy /y "$(ProjectDir)jssor\*.js"  "$(SolutionDir)Designer.Demo\Scripts\"
+
+copy /y "$(ProjectDir)jssor\*.css"  "$(SolutionDir)Designer.Demo\css\"
+
+
+</PostBuildEvent>
   </PropertyGroup>
   <Import Project="..\packages\Bridge.Min.16.5.0\build\Bridge.Min.targets" Condition="Exists('..\packages\Bridge.Min.16.5.0\build\Bridge.Min.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

@@ -23,6 +23,19 @@
 
             return query;
         }
+
+        public static jQuery Css_width_max(this jQuery query)
+        {
+            query.Css("width", "100%");
+
+            return query;
+        }
+        public static jQuery Css_height_max(this jQuery query)
+        {
+            query.Css("height", "100%");
+
+            return query;
+        }
         #endregion
     }
 }

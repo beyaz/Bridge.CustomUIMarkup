@@ -26,6 +26,7 @@ namespace Bridge.CustomUIMarkup.SemanticUI
                 new XmlIntellisenseInfo("content", typeof(content)),
                 new XmlIntellisenseInfo("extra-content", typeof(ExtraContent)),
                 new XmlIntellisenseInfo("ui.basic.button", typeof(ui_basic_button)),
+                new XmlIntellisenseInfo("Carousel", typeof(Bridge.CustomUIMarkup.jssor.Carousel)),
 
 
 

@@ -6,6 +6,9 @@ namespace Bridge.CustomUIMarkup.Common
 {
     public class ScriptLoader
     {
+        public static string JsDirectory => "Scripts/";
+        public static string CssDirectory => "css/";
+
         #region Fields
         int index;
         #endregion

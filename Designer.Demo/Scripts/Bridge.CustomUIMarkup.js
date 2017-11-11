@@ -552,6 +552,18 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
 
     Bridge.define("Bridge.CustomUIMarkup.Common.ScriptLoader", {
         statics: {
+            props: {
+                JsDirectory: {
+                    get: function () {
+                        return "Scripts/";
+                    }
+                },
+                CssDirectory: {
+                    get: function () {
+                        return "css/";
+                    }
+                }
+            },
             methods: {
                 LoadCssFile: function (url) {
                     $("head").append("<link rel='stylesheet' href='" + (url || "") + "' type='text/css' />");
@@ -601,10 +613,12 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
                     var $t;
                     Bridge.CustomUIMarkup.Common.ScriptLoader.LoadCssFile(Bridge.CustomUIMarkup.SemanticUI.VersionInfo.CssFile);
                     Bridge.CustomUIMarkup.Common.ScriptLoader.LoadCssFiles(Bridge.CustomUIMarkup.CodeMirror.XmlEditor.CssFiles);
+                    Bridge.CustomUIMarkup.Common.ScriptLoader.LoadCssFiles(Bridge.CustomUIMarkup.jssor.Carousel.CssFiles);
 
                     var scripts = new (System.Collections.Generic.List$1(System.String)).ctor();
                     scripts.addRange(Bridge.CustomUIMarkup.SemanticUI.VersionInfo.Scripts);
                     scripts.addRange(Bridge.CustomUIMarkup.CodeMirror.XmlEditor.Scripts);
+                    scripts.addRange(Bridge.CustomUIMarkup.jssor.Carousel.JsFiles);
 
                     ($t = new Bridge.CustomUIMarkup.Common.ScriptLoader(), $t.Scripts = scripts, $t.OnLoacCompleted = Bridge.CustomUIMarkup.DesignerSamples.App.RenderUIEditor, $t).Load();
                 });
@@ -1114,6 +1128,16 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
                 },
                 Css_width: function (query, value) {
                     query.css("width", value);
+
+                    return query;
+                },
+                Css_width_max: function (query) {
+                    query.css("width", "100%");
+
+                    return query;
+                },
+                Css_height_max: function (query) {
+                    query.css("height", "100%");
 
                     return query;
                 }
@@ -2378,6 +2402,7 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
                         _o1.add(new Bridge.CustomUIMarkup.UI.Design.XmlIntellisenseInfo("content", Bridge.CustomUIMarkup.SemanticUI.content));
                         _o1.add(new Bridge.CustomUIMarkup.UI.Design.XmlIntellisenseInfo("extra-content", Bridge.CustomUIMarkup.SemanticUI.ExtraContent));
                         _o1.add(new Bridge.CustomUIMarkup.UI.Design.XmlIntellisenseInfo("ui.basic.button", Bridge.CustomUIMarkup.SemanticUI.ui_basic_button));
+                        _o1.add(new Bridge.CustomUIMarkup.UI.Design.XmlIntellisenseInfo("Carousel", Bridge.CustomUIMarkup.jssor.Carousel));
                         _o1.add(new Bridge.CustomUIMarkup.UI.Design.XmlIntellisenseInfo("TextInput", Bridge.CustomUIMarkup.SemanticUI.InputText));
                         _o1.add(new Bridge.CustomUIMarkup.UI.Design.XmlIntellisenseInfo("TextBox", Bridge.CustomUIMarkup.SemanticUI.InputText));
                         _o1.add(new Bridge.CustomUIMarkup.UI.Design.XmlIntellisenseInfo("Combo", Bridge.CustomUIMarkup.SemanticUI.Combo));
@@ -3328,7 +3353,8 @@ me._editor.display.wrapper.style.height = '95%';
                 System.Windows.FrameworkElement.ctor.call(this);
                 this.Examples = function (_o1) {
                         var $t;
-                        _o1.add(($t = new Bridge.CustomUIMarkup.DesignerSamples.ExampleInfo(), $t.Name = "Card", $t.XmlTemplate = "\r\n\r\n\r\n<card>\r\n\t<image Src='http://www.samsunkorkuciftligi.com/upload/20170314__2069208026.jpg'/>\r\n\t<content>\r\n        <Header Align='Center' >Motor Safari</Header>\r\n        <description> Macera sizi bekliyor...</description>\r\n        <ui.basic.button Text='İncele' AddClass='yellow' />\r\n    </content>\r\n\t\r\n\t\r\n</card>\r\n\r\n", $t));
+                        _o1.add(($t = new Bridge.CustomUIMarkup.DesignerSamples.ExampleInfo(), $t.Name = "Carousel", $t.XmlTemplate = "\r\n\r\n\r\n<container>\r\n    <Carousel DataSource='img/carousel_2.jpg,img/carousel_3.jpg' />\r\n</container>\r\n\r\n", $t));
+                        _o1.add(($t = new Bridge.CustomUIMarkup.DesignerSamples.ExampleInfo(), $t.Name = "Card", $t.XmlTemplate = "\r\n\r\n\r\n<card>\r\n\t<image Src='http://www.samsunkorkuciftligi.com/upload/20170314__2069208026.jpg'/>\r\n\t<content Align='Center'>\r\n        <Header Align='Center' >Motor Safari</Header>\r\n        <description> Macera sizi bekliyor...</description>\r\n        <ui.basic.button Text='İncele' MarginTop='11' AddClass='yellow' />\r\n    </content>\t\r\n</card>\r\n\r\n", $t));
                         _o1.add(($t = new Bridge.CustomUIMarkup.DesignerSamples.ExampleInfo(), $t.Name = "copy", $t.XmlTemplate = "\r\n\r\n\r\n<Grid>\r\n  \r\n    <Column Width='27' Align='Center'>\r\n        <Icon Type='Setting' Color='#ffbb00' FontSize='17' />\r\n    </Column>\r\n  \r\n  \t<Column Width='80'>\r\n        <TextBlock Text='Start Date:' Color='#888888' FontSize='13' FontWeight='600' TextWrapping='NoWrap' />\r\n    </Column>\r\n  \t\r\n  \t<Column   Align='Left' >\r\n        <TextBlock Text='November 1, 2017 15:30' Color='#888888' FontSize='12' FontWeight='600' TextWrapping='NoWrap' />\r\n    </Column>\r\n</Grid>\r\n\r\n", $t));
                         _o1.add(($t = new Bridge.CustomUIMarkup.DesignerSamples.ExampleInfo(), $t.Name = "properties", $t.XmlTemplate = "\r\n<Grid>\n    <column IsRightAligned ='True' Wide='15'>\n        <Button Text='Aloha'  />    \n    </column>\n</Grid>\r\n\r\n", $t));
                         _o1.add(($t = new Bridge.CustomUIMarkup.DesignerSamples.ExampleInfo(), $t.Name = "Layout", $t.XmlTemplate = "\r\n\r\n<GroupBox Header='Yellow -> GroupBox' Background='Yellow' >\r\n    <Container Background='Blue' Height='300'>\r\n        <Grid  Background='Green'>\r\n            <Row> \r\n\t            <Container  Background='Yellow' Height='30'/>\r\n\t            <Container  Background='Yellow' Height='30'/>\r\n            </Row>\r\n            <Row> \r\n\t            <Container  Background='Yellow' Height='30'/>\r\n            </Row>\r\n            <Row> \r\n\t            <Container  Background='Yellow' Height='30'/>\r\n\t            <Container  Background='Yellow' Height='30' /> \r\n            </Row>\r\n            <Row> \r\n\t            <StackPanel  Background='Red' Height='50'>\r\n\t                <Container  Background='Blue' Height='10' />     \r\n\t                <Container  Background='Yellow' Height='10' />     \r\n\t                <StackPanel  Background='Blue' Height='10' />     \r\n\t            </StackPanel>\r\n            </Row>\r\n        </Grid>\r\n    </Container> \r\n\r\n</GroupBox>\r\n", $t));
@@ -3370,6 +3396,101 @@ me._editor.display.wrapper.style.height = '95%';
                         this.OnPropertyChanged("XmlTemplate");
                     }
                 }
+            }
+        }
+    });
+
+    Bridge.define("Bridge.CustomUIMarkup.jssor.Carousel", {
+        inherits: [System.Windows.FrameworkElement],
+        statics: {
+            fields: {
+                DataSourceProperty: null
+            },
+            props: {
+                Template: {
+                    get: function () {
+                        return "<div id='jssor_1' style='position:relative;margin:0 auto;top:0px;left:0px;width:980px;height:380px;overflow:hidden;visibility:hidden;'>\r\n    <!-- Loading Screen \r\n    <div data-u='loading' class='jssorl-009-spin' style='position:absolute;top:0px;left:0px;width:100%;height:100%;text-align:center;background-color:rgba(0,0,0,0.7);'>\r\n        <img style='margin-top:-19px;position:relative;top:50%;width:38px;height:38px;' src='img/spin.svg' />\r\n    </div> -->\r\n    <div data-u='slides' id='imagesContainer' style='cursor:default;position:relative;top:0px;left:0px;width:980px;height:380px;overflow:hidden;'>\r\n        <!-- template\r\n        <div>\r\n            <img data-u='image' src='img/001.jpg' />\r\n        </div>\r\n        -->\r\n    </div>\r\n    <!-- Bullet Navigator -->\r\n    <div data-u='navigator' class='jssorb051' style='position:absolute;bottom:12px;right:12px;' data-autocenter='1' data-scale='0.5' data-scale-bottom='0.75'>\r\n        <div data-u='prototype' class='i' style='width:16px;height:16px;'>\r\n            <svg viewbox='0 0 16000 16000' style='position:absolute;top:0;left:0;width:100%;height:100%;'>\r\n                <circle class='b' cx='8000' cy='8000' r='5800'></circle>\r\n            </svg>\r\n        </div>\r\n    </div>\r\n    <!-- Arrow Navigator -->\r\n    <div data-u='arrowleft' class='jssora051' style='width:55px;height:55px;top:0px;left:25px;' data-autocenter='2' data-scale='0.75' data-scale-left='0.75'>\r\n        <svg viewbox='0 0 16000 16000' style='position:absolute;top:0;left:0;width:100%;height:100%;'>\r\n            <polyline class='a' points='11040,1920 4960,8000 11040,14080 '></polyline>\r\n        </svg>\r\n    </div>\r\n    <div data-u='arrowright' class='jssora051' style='width:55px;height:55px;top:0px;right:25px;' data-autocenter='2' data-scale='0.75' data-scale-right='0.75'>\r\n        <svg viewbox='0 0 16000 16000' style='position:absolute;top:0;left:0;width:100%;height:100%;'>\r\n            <polyline class='a' points='4960,1920 11040,8000 4960,14080 '></polyline>\r\n        </svg>\r\n    </div>\r\n</div>";
+                    }
+                },
+                JsFiles: {
+                    get: function () {
+                        return function (_o1) {
+                                _o1.add((Bridge.CustomUIMarkup.Common.ScriptLoader.JsDirectory || "") + "jssor.slider-26.5.0.min.js");
+                                _o1.add((Bridge.CustomUIMarkup.Common.ScriptLoader.JsDirectory || "") + "jssor.Carousel.js");
+                                return _o1;
+                            }(new (System.Collections.Generic.List$1(System.String)).ctor());
+                    }
+                },
+                CssFiles: {
+                    get: function () {
+                        return function (_o2) {
+                                _o2.add((Bridge.CustomUIMarkup.Common.ScriptLoader.CssDirectory || "") + "Carousel.css");
+                                return _o2;
+                            }(new (System.Collections.Generic.List$1(System.String)).ctor());
+                    }
+                }
+            },
+            ctors: {
+                init: function () {
+                    this.DataSourceProperty = System.Windows.DependencyProperty.Register$1("DataSource", System.String, Bridge.CustomUIMarkup.jssor.Carousel, new System.Windows.PropertyMetadata.$ctor1(Bridge.CustomUIMarkup.jssor.Carousel.OnDataSourceChanged));
+                }
+            },
+            methods: {
+                OnDataSourceChanged: function (d, e) {
+                    var $t;
+                    var me = Bridge.cast(d, Bridge.CustomUIMarkup.jssor.Carousel);
+
+                    me.imagesContainer.empty();
+
+                    var images = Bridge.cast(e.NewValue, System.String);
+                    $t = Bridge.getEnumerator(System.String.split(images, [44].map(function(i) {{ return String.fromCharCode(i); }})));
+                    try {
+                        while ($t.moveNext()) {
+                            var src = $t.Current;
+                            Bridge.CustomUIMarkup.Common.DOM.div().appendTo(me.imagesContainer).append(Bridge.CustomUIMarkup.Common.DOM.img().attr("data-u", "img").attr("src", src));
+                        }
+                    } finally {
+                        if (Bridge.is($t, System.IDisposable)) {
+                            $t.System$IDisposable$dispose();
+                        }
+                    }
+
+
+
+                    $(function () {
+                            var id = me["Id"];
+                            jssor_1_slider_init(id);
+                        });
+
+                }
+            }
+        },
+        props: {
+            imagesContainer: {
+                get: function () {
+                    return this._root.find("#imagesContainer");
+                }
+            },
+            DataSource: {
+                get: function () {
+                    return Bridge.cast(this.GetValue$1(Bridge.CustomUIMarkup.jssor.Carousel.DataSourceProperty), System.String);
+                },
+                set: function (value) {
+                    this.SetValue$1(Bridge.CustomUIMarkup.jssor.Carousel.DataSourceProperty, value);
+                }
+            }
+        },
+        methods: {
+            InitDOM: function () {
+
+                this._root = $(System.Linq.Enumerable.from($.parseHTML(System.String.replaceAll(Bridge.CustomUIMarkup.jssor.Carousel.Template, "\n", ""),null)).first());
+                this._root.attr("id", this["Id"]);
+
+
+
+
+
+
             }
         }
     });

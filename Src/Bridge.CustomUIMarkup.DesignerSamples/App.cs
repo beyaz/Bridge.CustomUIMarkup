@@ -56,6 +56,20 @@ namespace Bridge.CustomUIMarkup.DesignerSamples
             {
                 new ExampleInfo
                 {
+                    Name = "Carousel",
+                    XmlTemplate =
+                        @"
+
+
+<container>
+    <Carousel DataSource='img/carousel_2.jpg,img/carousel_3.jpg' />
+</container>
+
+"
+                },
+
+                new ExampleInfo
+                {
                     Name = "Card",
                     XmlTemplate =
                         @"
@@ -340,10 +354,12 @@ namespace Bridge.CustomUIMarkup.DesignerSamples
             {
                 ScriptLoader.LoadCssFile(VersionInfo.CssFile);
                 ScriptLoader.LoadCssFiles(XmlEditor.CssFiles);
+                ScriptLoader.LoadCssFiles(Bridge.CustomUIMarkup.jssor.Carousel.CssFiles); 
 
                 var scripts = new List<string>();
                 scripts.AddRange(VersionInfo.Scripts);
                 scripts.AddRange(XmlEditor.Scripts);
+                scripts.AddRange(Bridge.CustomUIMarkup.jssor.Carousel.JsFiles);
 
                 new ScriptLoader
                 {
