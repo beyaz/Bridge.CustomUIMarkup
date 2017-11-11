@@ -27,6 +27,9 @@ namespace Bridge.CustomUIMarkup.SemanticUI
                 new XmlIntellisenseInfo("mobile.only.row", typeof(mobile_only_row)),
                 new XmlIntellisenseInfo("right.menu", typeof(right_menu)),
                 new XmlIntellisenseInfo("ui.page.grid", typeof(ui_page_grid)),
+                new XmlIntellisenseInfo("left.menu", typeof(left_menu)),
+                new XmlIntellisenseInfo("ui.text.menu.navbar", typeof(ui_text_menu_navbar)),
+                
 
 
                 new XmlIntellisenseInfo("Button", typeof(Button)),

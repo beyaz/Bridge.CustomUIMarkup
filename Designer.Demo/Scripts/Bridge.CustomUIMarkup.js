@@ -2416,6 +2416,8 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
                         _o1.add(new Bridge.CustomUIMarkup.UI.Design.XmlIntellisenseInfo("mobile.only.row", Bridge.CustomUIMarkup.SemanticUI.mobile_only_row));
                         _o1.add(new Bridge.CustomUIMarkup.UI.Design.XmlIntellisenseInfo("right.menu", Bridge.CustomUIMarkup.SemanticUI.right_menu));
                         _o1.add(new Bridge.CustomUIMarkup.UI.Design.XmlIntellisenseInfo("ui.page.grid", Bridge.CustomUIMarkup.SemanticUI.ui_page_grid));
+                        _o1.add(new Bridge.CustomUIMarkup.UI.Design.XmlIntellisenseInfo("left.menu", Bridge.CustomUIMarkup.SemanticUI.left_menu));
+                        _o1.add(new Bridge.CustomUIMarkup.UI.Design.XmlIntellisenseInfo("ui.text.menu.navbar", Bridge.CustomUIMarkup.SemanticUI.ui_text_menu_navbar));
                         _o1.add(new Bridge.CustomUIMarkup.UI.Design.XmlIntellisenseInfo("Button", Bridge.CustomUIMarkup.SemanticUI.Button));
                         _o1.add(new Bridge.CustomUIMarkup.UI.Design.XmlIntellisenseInfo("TabPanel", Bridge.CustomUIMarkup.SemanticUI.TabPanel));
                         _o1.add(new Bridge.CustomUIMarkup.UI.Design.XmlIntellisenseInfo("Tab", Bridge.CustomUIMarkup.SemanticUI.TabItem));
@@ -3413,6 +3415,7 @@ me._editor.display.wrapper.style.height = '95%';
                 System.Windows.FrameworkElement.ctor.call(this);
                 this.Examples = function (_o1) {
                         var $t;
+                        _o1.add(($t = new Bridge.CustomUIMarkup.DesignerSamples.ExampleInfo(), $t.Name = "All", $t.XmlTemplate = "\r\n\r\n\r\n<ui.page.grid>\r\n   <Container>\r\n      <ui.text.menu.navbar FontSize='18'>\r\n         <left.menu>\r\n            <item>Project Name</item>\r\n         </left.menu>\r\n         <right.menu>\r\n            <item>Home</item>\r\n            <item>About</item>\r\n            <item>Contact</item>\r\n         </right.menu>\r\n      </ui.text.menu.navbar>\r\n      <ui.divider MarginBottom='10' />\r\n      <Carousel DataSource='img/carousel_1.jpg,img/carousel_2.jpg,img/carousel_3.jpg' />\r\n      <ui.divider MarginBottom='10' />\r\n      <card>\r\n         <image Src='http://www.samsunkorkuciftligi.com/upload/20170314__2069208026.jpg' />\r\n         <content Align='Center'>\r\n            <Header Align='Center'>Motor Safari</Header>\r\n            <description>Macera sizi bekliyor...</description>\r\n            <ui.basic.button Text='İncele' MarginTop='11' AddClass='yellow' />\r\n         </content>\r\n      </card>\r\n   </Container>\r\n</ui.page.grid>\r\n\r\n", $t));
                         _o1.add(($t = new Bridge.CustomUIMarkup.DesignerSamples.ExampleInfo(), $t.Name = "Carousel", $t.XmlTemplate = "\r\n\r\n\r\n<container>\r\n    <Carousel DataSource='img/carousel_1.jpg,img/carousel_2.jpg,img/carousel_3.jpg' />\r\n</container>\r\n\r\n", $t));
                         _o1.add(($t = new Bridge.CustomUIMarkup.DesignerSamples.ExampleInfo(), $t.Name = "Card", $t.XmlTemplate = "\r\n\r\n\r\n<card>\r\n\t<image Src='http://www.samsunkorkuciftligi.com/upload/20170314__2069208026.jpg'/>\r\n\t<content Align='Center'>\r\n        <Header Align='Center' >Motor Safari</Header>\r\n        <description> Macera sizi bekliyor...</description>\r\n        <ui.basic.button Text='İncele' MarginTop='11' AddClass='yellow' />\r\n    </content>\t\r\n</card>\r\n\r\n", $t));
                         _o1.add(($t = new Bridge.CustomUIMarkup.DesignerSamples.ExampleInfo(), $t.Name = "copy", $t.XmlTemplate = "\r\n\r\n\r\n<Grid>\r\n  \r\n    <Column Width='27' Align='Center'>\r\n        <Icon Type='Setting' Color='#ffbb00' FontSize='17' />\r\n    </Column>\r\n  \r\n  \t<Column Width='80'>\r\n        <TextBlock Text='Start Date:' Color='#888888' FontSize='13' FontWeight='600' TextWrapping='NoWrap' />\r\n    </Column>\r\n  \t\r\n  \t<Column   Align='Left' >\r\n        <TextBlock Text='November 1, 2017 15:30' Color='#888888' FontSize='12' FontWeight='600' TextWrapping='NoWrap' />\r\n    </Column>\r\n</Grid>\r\n\r\n", $t));
@@ -4559,6 +4562,17 @@ me._editor.display.wrapper.style.height = '95%';
         }
     });
 
+    Bridge.define("Bridge.CustomUIMarkup.SemanticUI.left_menu", {
+        inherits: [Bridge.CustomUIMarkup.SemanticUI.ElementBase],
+        props: {
+            HtmlClassName: {
+                get: function () {
+                    return "left menu";
+                }
+            }
+        }
+    });
+
     Bridge.define("Bridge.CustomUIMarkup.SemanticUI.mobile_only_row", {
         inherits: [Bridge.CustomUIMarkup.SemanticUI.ElementBase],
         props: {
@@ -4687,6 +4701,17 @@ me._editor.display.wrapper.style.height = '95%';
             HtmlClassName: {
                 get: function () {
                     return "ui page grid";
+                }
+            }
+        }
+    });
+
+    Bridge.define("Bridge.CustomUIMarkup.SemanticUI.ui_text_menu_navbar", {
+        inherits: [Bridge.CustomUIMarkup.SemanticUI.ElementBase],
+        props: {
+            HtmlClassName: {
+                get: function () {
+                    return "ui text menu navbar";
                 }
             }
         }
