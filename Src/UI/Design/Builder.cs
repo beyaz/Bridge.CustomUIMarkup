@@ -144,11 +144,12 @@ namespace Bridge.CustomUIMarkup.UI.Design
 
         void ProcessAttribute(object instance,string name,string value)
         {
-
             if (name=="class")
             {
                 name = "Class";
             }
+
+            var fe = instance as FrameworkElement;
 
             var bi = BindingInfo.TryParseExpression(value);
             if (bi != null)
@@ -186,6 +187,25 @@ namespace Bridge.CustomUIMarkup.UI.Design
                 ReflectionHelper.SetPropertyValue(instance, name, value.ChangeType(targetProperty.PropertyType));
                 return;
             }
+
+            if (name.StartsWith("on."))
+            {
+                var eventName = name.RemoveFromStart("on.");
+
+                var methodInfo = this.Caller.GetType().GetMethod(value);
+
+                fe?.On(eventName, () => { methodInfo.Invoke(Caller); });
+                return;
+            }
+
+            if (name == "x.Name")
+            {
+                var fi = this.Caller.GetType().GetField(value);
+
+                fi.SetValue(Caller,instance);
+                return;
+            }
+
             var instanceAsBag = instance as Bag;
             if (instanceAsBag != null)
             {

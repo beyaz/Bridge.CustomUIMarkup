@@ -54,6 +54,7 @@
     <Compile Include="Bridge.CustomUIMarkup.DesignerSamples\App.cs" />
     <Compile Include="Bridge.CustomUIMarkup.Design\UIEditor.cs" />
     <Compile Include="Bridge.jQuery2\Extensions.cs" />
+    <Compile Include="Common\FileUtil.cs" />
     <Compile Include="jssor\Carousel.cs" />
     <Compile Include="SemanticUI\Align.cs" />
     <Compile Include="SemanticUI\Field.cs" />

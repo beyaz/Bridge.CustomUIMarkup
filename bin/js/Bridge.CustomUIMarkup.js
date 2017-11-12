@@ -554,6 +554,18 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
         }
     });
 
+    Bridge.define("Bridge.CustomUIMarkup.Common.FileUtil", {
+        statics: {
+            methods: {
+                ReadAsync: function (url, success) {
+                    $.ajax({ async: false, url: url, success: function (o, s, arg3) {
+                        success(arg3.responseText);
+                    } });
+                }
+            }
+        }
+    });
+
     Bridge.define("Bridge.CustomUIMarkup.Common.ScriptLoader", {
         statics: {
             fields: {
@@ -740,10 +752,11 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
                 return Bridge.createInstance(controlType);
             },
             ProcessAttribute: function (instance, name, value) {
-
                 if (Bridge.referenceEquals(name, "class")) {
                     name = "Class";
                 }
+
+                var fe = Bridge.as(instance, System.Windows.FrameworkElement);
 
                 var bi = System.Windows.Data.BindingInfo.TryParseExpression(value);
                 if (bi != null) {
@@ -777,6 +790,25 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
                     System.ComponentModel.ReflectionHelper.SetPropertyValue(instance, name, Bridge.CustomUIMarkup.Common.ConvertHelper.ChangeType(value, targetProperty.rt));
                     return;
                 }
+
+                if (System.String.startsWith(name, "on.")) {
+                    var eventName = System.Extensions.RemoveFromStart(name, "on.");
+
+                    var methodInfo = Bridge.Reflection.getMembers(Bridge.getType(this.Caller), 8, 284, value);
+
+                    fe != null ? fe.On(eventName, Bridge.fn.bind(this, function () {
+                            Bridge.Reflection.midel(methodInfo, Bridge.unbox(this.Caller))(null);
+                        })) : null;
+                    return;
+                }
+
+                if (Bridge.referenceEquals(name, "x.Name")) {
+                    var fi = Bridge.Reflection.getMembers(Bridge.getType(this.Caller), 4, 284, value);
+
+                    Bridge.Reflection.fieldAccess(fi, Bridge.unbox(this.Caller), Bridge.unbox(instance));
+                    return;
+                }
+
                 var instanceAsBag = Bridge.as(instance, System.ComponentModel.Bag);
                 if (instanceAsBag != null) {
                     instanceAsBag.SetValue(name, value);
@@ -2634,6 +2666,7 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
                 FontWeightProperty: null,
                 FontSizeProperty: null,
                 WidthProperty: null,
+                WidthPercentProperty: null,
                 ColorProperty: null,
                 "InnerHTMLProperty": null,
                 VisibilityProperty: null,
@@ -2660,6 +2693,9 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
                     this.FontWeightProperty = System.Windows.DependencyProperty.Register$1("FontWeight", System.Double, System.Windows.FrameworkElement, System.Windows.FrameworkElement.CreateJQueryCssUpdater("fontWeight"));
                     this.FontSizeProperty = System.Windows.DependencyProperty.Register$1("FontSize", System.Double, System.Windows.FrameworkElement, System.Windows.FrameworkElement.CreateJQueryCssUpdater("fontSize"));
                     this.WidthProperty = System.Windows.DependencyProperty.Register$1("Width", System.Double, System.Windows.FrameworkElement, System.Windows.FrameworkElement.CreateJQueryCssUpdater("width"));
+                    this.WidthPercentProperty = System.Windows.DependencyProperty.Register$1("WidthPercent", System.Double, System.Windows.FrameworkElement, System.Windows.FrameworkElement.CreateJQueryCssUpdater$1("width", function (v) {
+                        return System.String.concat(v, "%");
+                    }));
                     this.ColorProperty = System.Windows.DependencyProperty.Register$1("Color", System.String, System.Windows.FrameworkElement, System.Windows.FrameworkElement.CreateJQueryCssUpdater("color"));
                     this["InnerHTMLProperty"] = System.Windows.DependencyProperty.Register$1("InnerHTML", System.String, System.Windows.FrameworkElement, new System.Windows.PropertyMetadata.$ctor1(System.Windows.FrameworkElement.OnInnerHTMLChanged));
                     this.VisibilityProperty = System.Windows.DependencyProperty.Register$1("Visibility", System.Windows.Visibility, System.Windows.FrameworkElement, new System.Windows.PropertyMetadata.$ctor1(System.Windows.FrameworkElement.OnVisibilityChanged));
@@ -2680,6 +2716,13 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
                         var me = Bridge.cast(d, System.Windows.FrameworkElement);
 
                         me._root.css(jqueryCssAttribute, Bridge.unbox(e.NewValue));
+                    });
+                },
+                CreateJQueryCssUpdater$1: function (jqueryCssAttribute, valueConverter) {
+                    return new System.Windows.PropertyMetadata.$ctor1(function (d, e) {
+                        var me = Bridge.cast(d, System.Windows.FrameworkElement);
+
+                        me._root.css(jqueryCssAttribute, Bridge.unbox(valueConverter(e.NewValue)));
                     });
                 },
                 OnAddClassChanged: function (d, e) {
@@ -2890,10 +2933,18 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
             },
             Width: {
                 get: function () {
-                    return System.Nullable.getValue(Bridge.cast(Bridge.unbox(this.getItem("Width")), System.Double));
+                    return System.Nullable.getValue(Bridge.cast(Bridge.unbox(this.GetValue$1(System.Windows.FrameworkElement.WidthProperty)), System.Double));
                 },
                 set: function (value) {
-                    this.setItem("Width", Bridge.box(value, System.Double, System.Double.format, System.Double.getHashCode));
+                    this.SetValue$1(System.Windows.FrameworkElement.WidthProperty, Bridge.box(value, System.Double, System.Double.format, System.Double.getHashCode));
+                }
+            },
+            WidthPercent: {
+                get: function () {
+                    return System.Nullable.getValue(Bridge.cast(Bridge.unbox(this.GetValue$1(System.Windows.FrameworkElement.WidthPercentProperty)), System.Double));
+                },
+                set: function (value) {
+                    this.SetValue$1(System.Windows.FrameworkElement.WidthPercentProperty, Bridge.box(value, System.Double, System.Double.format, System.Double.getHashCode));
                 }
             },
             Color: {
@@ -2963,6 +3014,9 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
             }
         },
         methods: {
+            On: function (eventName, handler) {
+                this._root.on(eventName, handler);
+            },
             Add: function (element) {
                 element._root.appendTo(this._root);
 

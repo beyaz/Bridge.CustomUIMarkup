@@ -16,6 +16,12 @@ namespace System.Windows
 
     public class FrameworkElement : DependencyObject, IAddChild
     {
+        public void On(string eventName,Action handler)
+        {
+            _root.On(eventName, handler);
+        }
+
+
         #region Fields
         protected internal jQuery _root;
 
@@ -113,6 +119,15 @@ namespace System.Windows
                 me._root.Css(jqueryCssAttribute, e.NewValue);
             });
         }
+        protected static PropertyMetadata CreateJQueryCssUpdater(string jqueryCssAttribute,Func<object,object> valueConverter)
+        {
+            return new PropertyMetadata((d, e) =>
+            {
+                var me = (FrameworkElement)d;
+
+                me._root.Css(jqueryCssAttribute,  valueConverter(e.NewValue));
+            });
+        }
 
         protected virtual void AddChild(FrameworkElement element)
         {
@@ -197,14 +212,13 @@ namespace System.Windows
         #region Margin
         #region MarginProperty
         public static readonly DependencyProperty MarginProperty = DependencyProperty.Register(nameof(Margin),
-                                                                                                   typeof(double?),
-                                                                                                   typeof(FrameworkElement),
-                                                                                                   CreateJQueryCssUpdater("margin"));
-
+                                                                                               typeof(double?),
+                                                                                               typeof(FrameworkElement),
+                                                                                               CreateJQueryCssUpdater("margin"));
 
         public double? Margin
         {
-            get { return (double?)GetValue(MarginProperty); }
+            get { return (double?) GetValue(MarginProperty); }
             set { SetValue(MarginProperty, value); }
         }
         #endregion
@@ -215,10 +229,9 @@ namespace System.Windows
                                                                                                    typeof(FrameworkElement),
                                                                                                    CreateJQueryCssUpdater("marginLeft"));
 
-       
         public double? MarginLeft
         {
-            get { return (double?)GetValue(MarginLeftProperty); }
+            get { return (double?) GetValue(MarginLeftProperty); }
             set { SetValue(MarginLeftProperty, value); }
         }
         #endregion
@@ -229,14 +242,11 @@ namespace System.Windows
                                                                                                     typeof(FrameworkElement),
                                                                                                     CreateJQueryCssUpdater("marginRight"));
 
-       
-
         public double? MarginRight
         {
-            get { return (double?)GetValue(MarginRightProperty); }
+            get { return (double?) GetValue(MarginRightProperty); }
             set { SetValue(MarginRightProperty, value); }
         }
-
         #endregion
 
         #region MarginBottomProperty
@@ -245,10 +255,9 @@ namespace System.Windows
                                                                                                      typeof(FrameworkElement),
                                                                                                      CreateJQueryCssUpdater("marginBottom"));
 
-      
         public double? MarginBottom
         {
-            get { return (double?)GetValue(MarginBottomProperty); }
+            get { return (double?) GetValue(MarginBottomProperty); }
             set { SetValue(MarginBottomProperty, value); }
         }
         #endregion
@@ -261,11 +270,9 @@ namespace System.Windows
 
         public double? MarginTop
         {
-            get { return (double?)GetValue(MarginTopProperty); }
+            get { return (double?) GetValue(MarginTopProperty); }
             set { SetValue(MarginTopProperty, value); }
         }
-        
-
         #endregion
         #endregion
 
@@ -275,10 +282,9 @@ namespace System.Windows
                                                                                                     typeof(FrameworkElement),
                                                                                                     CreateJQueryCssUpdater("paddingLeft"));
 
-       
         public double? PaddingLeft
         {
-            get { return (double?)GetValue(PaddingLeftProperty); }
+            get { return (double?) GetValue(PaddingLeftProperty); }
             set { SetValue(PaddingLeftProperty, value); }
         }
         #endregion
@@ -288,10 +294,9 @@ namespace System.Windows
                                                                                                      typeof(double?), typeof(FrameworkElement),
                                                                                                      CreateJQueryCssUpdater("paddingRight"));
 
-        
         public double? PaddingRight
         {
-            get { return (double?)GetValue(PaddingRightProperty); }
+            get { return (double?) GetValue(PaddingRightProperty); }
             set { SetValue(PaddingRightProperty, value); }
         }
         #endregion
@@ -302,10 +307,9 @@ namespace System.Windows
                                                                                                       typeof(FrameworkElement),
                                                                                                       CreateJQueryCssUpdater("paddingBottom"));
 
-        
         public double? PaddingBottom
         {
-            get { return (double?)GetValue(PaddingBottomProperty); }
+            get { return (double?) GetValue(PaddingBottomProperty); }
             set { SetValue(PaddingBottomProperty, value); }
         }
         #endregion
@@ -315,24 +319,23 @@ namespace System.Windows
                                                                                                    typeof(double?), typeof(FrameworkElement),
                                                                                                    CreateJQueryCssUpdater("paddingTop"));
 
-       
         public double? PaddingTop
         {
-            get { return (double?)GetValue(PaddingTopProperty); }
+            get { return (double?) GetValue(PaddingTopProperty); }
             set { SetValue(PaddingTopProperty, value); }
         }
         #endregion
 
         #region PaddingBottomProperty
         public static readonly DependencyProperty PaddingProperty = DependencyProperty.Register(nameof(Padding),
-                                                                                                      typeof(double?),
-                                                                                                      typeof(FrameworkElement),
-                                                                                                      CreateJQueryCssUpdater("padding"));
+                                                                                                typeof(double?),
+                                                                                                typeof(FrameworkElement),
+                                                                                                CreateJQueryCssUpdater("padding"));
 
         public double? Padding
         {
-            get { return (double?)GetValue(PaddingProperty); }
-            set { SetValue(PaddingProperty,value); }
+            get { return (double?) GetValue(PaddingProperty); }
+            set { SetValue(PaddingProperty, value); }
         }
         #endregion
         #endregion
@@ -400,8 +403,21 @@ namespace System.Windows
 
         public double Width
         {
-            get { return (double) this[nameof(Width)]; }
-            set { this[nameof(Width)] = value; }
+            get { return (double) GetValue(WidthProperty); }
+            set { SetValue(WidthProperty, value); }
+        }
+        #endregion
+
+        #region WidthProperty
+        public static readonly DependencyProperty WidthPercentProperty = DependencyProperty.Register(nameof(WidthPercent),
+                                                                                                     typeof(double),
+                                                                                                     typeof(FrameworkElement),
+                                                                                                     CreateJQueryCssUpdater("width",v=>v+"%"));
+
+        public double WidthPercent
+        {
+            get { return (double) GetValue(WidthPercentProperty); }
+            set { SetValue(WidthPercentProperty, value); }
         }
         #endregion
 
