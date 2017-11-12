@@ -631,7 +631,7 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
             props: {
                 "TestUI": {
                     get: function () {
-                        return "\r\n\r\n<Container >\r\n    \r\n    <ComboBox \r\n            ItemsSource = '{Binding Examples}' \r\n            DisplayMemberPath = 'Name'\r\n            SelectedValuePath = 'XmlTemplate' \r\n\t\t    SelectedValue = '{Binding CurrentTemplate}' />\r\n        \r\n    <UIEditor SourceText = '{CurrentTemplate}'  />\r\n        \r\n</Container>\r\n\r\n\r\n";
+                        return "\r\n\r\n<ui.container>\r\n    \r\n    <ComboBox \r\n            ItemsSource = '{Binding Examples}' \r\n            DisplayMemberPath = 'Name'\r\n            SelectedValuePath = 'XmlTemplate' \r\n\t\t    SelectedValue = '{Binding CurrentTemplate}' />\r\n        \r\n    <UIEditor SourceText = '{CurrentTemplate}'  />\r\n        \r\n</ui.container>\r\n\r\n\r\n";
                     }
                 }
             },
@@ -2490,7 +2490,7 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
                         _o1.add(new Bridge.CustomUIMarkup.UI.Design.XmlIntellisenseInfo("Icon", Bridge.CustomUIMarkup.SemanticUI.Icon));
                         _o1.add(new Bridge.CustomUIMarkup.UI.Design.XmlIntellisenseInfo("ui.segment", Bridge.CustomUIMarkup.SemanticUI.ui_segment));
                         _o1.add(new Bridge.CustomUIMarkup.UI.Design.XmlIntellisenseInfo("TextBlock", System.Windows.Controls.TextBlock));
-                        _o1.add(new Bridge.CustomUIMarkup.UI.Design.XmlIntellisenseInfo("XmlEditor", Bridge.CustomUIMarkup.CodeMirror.XmlEditor));
+                        _o1.add(new Bridge.CustomUIMarkup.UI.Design.XmlIntellisenseInfo("XmlEditor", Bridge.CustomUIMarkup.SemanticUI.XmlEditor));
                         _o1.add(new Bridge.CustomUIMarkup.UI.Design.XmlIntellisenseInfo("UIEditor", Bridge.CustomUIMarkup.SemanticUI.UIEditor));
                         return _o1;
                     }(new (System.Collections.Generic.List$1(Bridge.CustomUIMarkup.UI.Design.XmlIntellisenseInfo)).ctor());
@@ -2963,7 +2963,7 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
                 return value;
             },
             InitDOM: function () {
-                this._root = Bridge.CustomUIMarkup.Common.DOM.div();
+                this._root = $(document.createElement("div"));
             },
             SetValue$1: function (dp, value) {
                 this.setItem(dp.Name, value);
@@ -3034,7 +3034,8 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
         fields: {
             _editor: null,
             isFiring_OnTextChanged: false,
-            _cursorCurrentLineNumber: 0
+            _cursorCurrentLineNumber: 0,
+            "SchemaInfo": null
         },
         events: {
             OnTextChanged: null,
@@ -3054,7 +3055,6 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
             ctor: function () {
                 this.$initialize();
                 System.Windows.FrameworkElement.ctor.call(this);
-                this.FontSize = 12;
                 System.ComponentModel.Extensions.OnPropertyChanged(this, "FontSize", Bridge.fn.cacheBind(this, this.FontSizeChanged));
             }
         },
@@ -3089,10 +3089,9 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
                     }));
             },
             Render$1: function (id) {
-                var fontSize = this.FontSize;
+                var fontSize = this.getItem("FontSize") == null ? 12 : this.FontSize;
 
-                var xmlIntellisenseInfos = new Bridge.CustomUIMarkup.SemanticUI.Builder().GetIntellisenseInfos();
-                var schemaInfo = Bridge.CustomUIMarkup.CodeMirror.SchemaInfo.CreateFrom(xmlIntellisenseInfos).ToJson();
+                var schemaInfo = this["SchemaInfo"];
 
                 
 
@@ -3217,7 +3216,7 @@ me._editor.display.wrapper.style.height = '95%';
             },
             Template: {
                 get: function () {
-                    return "\r\n<Container>\r\n    <XmlEditor Text ='{SourceText}' \r\n        OnTextChanged = '{OnTextChanged}' \r\n        OnCursorLineNumberChanged = '{OnCursorLineNumberChanged}' \r\n        Height='400' />\r\n    <Container Border = '1px solid Green' />\r\n</Container>";
+                    return "\r\n<ui.container>\r\n    <XmlEditor Text ='{SourceText}' \r\n        OnTextChanged = '{OnTextChanged}' \r\n        OnCursorLineNumberChanged = '{OnCursorLineNumberChanged}' \r\n        Height='400' />\r\n    <ui.container Border = '1px solid Green' />\r\n</ui.container>";
                 }
             },
             SourceText: {
@@ -4573,6 +4572,18 @@ me._editor.display.wrapper.style.height = '95%';
             HtmlClassName: {
                 get: function () {
                     return "ui vertical menu";
+                }
+            }
+        }
+    });
+
+    Bridge.define("Bridge.CustomUIMarkup.SemanticUI.XmlEditor", {
+        inherits: [Bridge.CustomUIMarkup.CodeMirror.XmlEditor],
+        props: {
+            "SchemaInfo": {
+                get: function () {
+                    var xmlIntellisenseInfos = new Bridge.CustomUIMarkup.SemanticUI.Builder().GetIntellisenseInfos();
+                    return Bridge.CustomUIMarkup.CodeMirror.SchemaInfo.CreateFrom(xmlIntellisenseInfos).ToJson();
                 }
             }
         }

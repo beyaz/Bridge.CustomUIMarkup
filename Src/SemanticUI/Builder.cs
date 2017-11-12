@@ -76,7 +76,7 @@ namespace Bridge.CustomUIMarkup.SemanticUI
                 new XmlIntellisenseInfo("Icon", typeof(Icon)),
                 new XmlIntellisenseInfo("ui.segment", typeof(ui_segment)),
                 new XmlIntellisenseInfo("TextBlock", typeof(TextBlock)),
-                new XmlIntellisenseInfo("XmlEditor", typeof(XmlEditor)),
+                new XmlIntellisenseInfo("XmlEditor", typeof(Bridge.CustomUIMarkup.SemanticUI.XmlEditor)),
                 new XmlIntellisenseInfo("UIEditor", typeof(UIEditor)),
 
                 

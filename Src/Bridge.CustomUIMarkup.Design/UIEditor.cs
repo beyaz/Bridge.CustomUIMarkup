@@ -21,13 +21,13 @@ namespace Bridge.CustomUIMarkup.Design
         jQuery Container => OutputElement.Childeren[1].Root;
 
         string Template => @"
-<Container>
+<ui.container>
     <XmlEditor Text ='{" + nameof(SourceText) + @"}' 
         OnTextChanged = '{" + nameof(OnTextChanged) + @"}' 
         OnCursorLineNumberChanged = '{" + nameof(OnCursorLineNumberChanged) + @"}' 
         Height='400' />
-    <Container Border = '1px solid Green' />
-</Container>";
+    <ui.container Border = '1px solid Green' />
+</ui.container>";
         #endregion
 
         #region Public Methods

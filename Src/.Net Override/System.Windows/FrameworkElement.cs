@@ -85,7 +85,7 @@ namespace System.Windows
 
         public virtual void InitDOM()
         {
-            _root = DOM.div();
+            _root = new jQuery(Document.CreateElement("div"));
         }
 
         public void SetValue(DependencyProperty dp, object value)

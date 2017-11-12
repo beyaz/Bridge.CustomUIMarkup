@@ -1,12 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.Windows;
-using Bridge.CustomUIMarkup;
-using Bridge.CustomUIMarkup.CodeMirror;
 using Bridge.CustomUIMarkup.Common;
 using Bridge.CustomUIMarkup.SemanticUI;
 using Bridge.Html5;
 using Bridge.jQuery2;
-
+using XmlEditor = Bridge.CustomUIMarkup.CodeMirror.XmlEditor;
 
 namespace Bridge.CustomUIMarkup.DesignerSamples
 {
@@ -383,7 +381,7 @@ namespace Bridge.CustomUIMarkup.DesignerSamples
         #region Properties
         static string TestUI => @"
 
-<Container >
+<ui.container>
     
     <ComboBox 
             ItemsSource = '{Binding Examples}' 
@@ -393,7 +391,7 @@ namespace Bridge.CustomUIMarkup.DesignerSamples
         
     <UIEditor SourceText = '{CurrentTemplate}'  />
         
-</Container>
+</ui.container>
 
 
 ";
@@ -405,13 +403,13 @@ namespace Bridge.CustomUIMarkup.DesignerSamples
             jQuery.Ready(() =>
             {
                 ScriptLoader.LoadCssFile(VersionInfo.CssFile);
-                ScriptLoader.LoadCssFiles(XmlEditor.CssFiles);
-                ScriptLoader.LoadCssFiles(Bridge.CustomUIMarkup.jssor.Carousel.CssFiles); 
+                ScriptLoader.LoadCssFiles(CodeMirror.XmlEditor.CssFiles);
+                ScriptLoader.LoadCssFiles(jssor.Carousel.CssFiles); 
 
                 var scripts = new List<string>();
                 scripts.AddRange(VersionInfo.Scripts);
                 scripts.AddRange(XmlEditor.Scripts);
-                scripts.AddRange(Bridge.CustomUIMarkup.jssor.Carousel.JsFiles);
+                scripts.AddRange(jssor.Carousel.JsFiles);
 
                 new ScriptLoader
                 {

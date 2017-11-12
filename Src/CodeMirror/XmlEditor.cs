@@ -11,7 +11,6 @@ namespace Bridge.CustomUIMarkup.CodeMirror
     {
         public XmlEditor()
         {
-            FontSize = 12;
             this.OnPropertyChanged(nameof(FontSize), FontSizeChanged);
         }
         #region FontSizeProperty
@@ -121,12 +120,13 @@ namespace Bridge.CustomUIMarkup.CodeMirror
         }
 
 
+        public virtual object SchemaInfo { get; set; }
+
         void Render(string id)
         {
-            var fontSize = FontSize;
-
-            var xmlIntellisenseInfos = new Bridge.CustomUIMarkup.SemanticUI.Builder().GetIntellisenseInfos();
-            var schemaInfo = SchemaInfo.CreateFrom(xmlIntellisenseInfos).ToJson();
+            var fontSize = this[nameof(FontSize)] == null ? 12:FontSize;
+            
+            var schemaInfo = SchemaInfo;
 
             Script.Write(
                 @"
