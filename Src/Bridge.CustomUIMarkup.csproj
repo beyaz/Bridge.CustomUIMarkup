@@ -60,8 +60,8 @@
     <Compile Include="SemanticUI\Header.cs" />
     <Compile Include="SemanticUI\Icon.cs" />
     <Compile Include="SemanticUI\IconType.cs" />
-    <Compile Include="SemanticUI\Image.cs" />
-    <Compile Include="SemanticUI\Segment.cs" />
+    <Compile Include="SemanticUI\ui_image.cs" />
+    <Compile Include="SemanticUI\ui_segment.cs" />
     <Compile Include="SemanticUI\Size.cs" />
     <Compile Include="SemanticUI\UIEditor.cs" />
     <Compile Include="UI\Design\Binder.cs" />
@@ -89,7 +89,7 @@
     <Compile Include="SemanticUI\InputText.cs" />
     <Compile Include="SemanticUI\Modal.cs" />
     <Compile Include="SemanticUI\NumberToWord.cs" />
-    <Compile Include="SemanticUI\stacked.cs" />
+    <Compile Include="SemanticUI\ui_stacked.cs" />
     <Compile Include="SemanticUI\TabItem.cs" />
     <Compile Include="SemanticUI\TabPanel.cs" />
     <Compile Include="SemanticUI\TextArea.cs" />

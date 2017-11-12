@@ -21,7 +21,7 @@ namespace Bridge.CustomUIMarkup.SemanticUI
         #endregion
 
         #region Public Methods
-        public void Add(FrameworkElement element)
+        public new void Add(FrameworkElement element)
         {
             var tabItem = element as TabItem;
             if (tabItem == null)

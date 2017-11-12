@@ -1,20 +1,20 @@
 ﻿namespace Bridge.CustomUIMarkup.SemanticUI
 {
-     class stacked : ElementBase
+    class ui_stacked : ElementBase
     {
         #region Properties
         protected override string HtmlClassName => "ui stacked";
         #endregion
     }
 
-     class computer_tablet_only_row : ElementBase
+    class computer_tablet_only_row : ElementBase
     {
         #region Properties
         protected override string HtmlClassName => "computer tablet only row";
         #endregion
     }
 
-     class ui_navbar_menu : ElementBase
+    class ui_navbar_menu : ElementBase
     {
         #region Properties
         protected override string HtmlClassName => "ui navbar menu";
@@ -24,9 +24,8 @@
     class mobile_only_row : ElementBase
     {
         #region Properties
-    protected override string HtmlClassName => "mobile only row";
-    #endregion
-
+        protected override string HtmlClassName => "mobile only row";
+        #endregion
     }
 
     class right_menu : ElementBase
@@ -35,11 +34,4 @@
         protected override string HtmlClassName => "right menu";
         #endregion
     }
-
-   
-    
-
-
-
-
 }

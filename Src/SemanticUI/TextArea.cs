@@ -17,8 +17,8 @@ namespace Bridge.CustomUIMarkup.SemanticUI
 
         public int? Rows
         {
-            get { return (int?)this[nameof(Rows)]; }
-            set { this[nameof(Rows)] = value; }
+            get { return (int?)GetValue(RowsProperty); }
+            set { SetValue(RowsProperty,value); }
         }
 
         static void OnRowsChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)

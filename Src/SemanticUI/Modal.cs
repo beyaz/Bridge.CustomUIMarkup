@@ -8,7 +8,7 @@ using Retyped;
 
 namespace Bridge.CustomUIMarkup.SemanticUI
 {
-    public class Modal : FrameworkElement, IAddChild
+    public class Modal : ElementBase, IAddChild
     {
         #region Fields
         jQuery content;
@@ -17,7 +17,7 @@ namespace Bridge.CustomUIMarkup.SemanticUI
         #endregion
 
         #region Public Methods
-        public void Add(FrameworkElement element)
+        public new void Add(FrameworkElement element)
         {
             content.Append(element.Root);
         }

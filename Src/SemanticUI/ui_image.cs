@@ -2,7 +2,7 @@
 
 namespace Bridge.CustomUIMarkup.SemanticUI
 {
-    public class Image : ElementBase
+    public class ui_image : ElementBase
     {
         #region Properties
         protected override string HtmlClassName => "ui image";
@@ -10,7 +10,7 @@ namespace Bridge.CustomUIMarkup.SemanticUI
         #endregion
 
         #region SrcProperty
-        public static readonly DependencyProperty SrcProperty = DependencyProperty.Register(nameof(Src), typeof(string), typeof(Image), CreateHtmlAttributeUpdater("src"));
+        public static readonly DependencyProperty SrcProperty = DependencyProperty.Register(nameof(Src), typeof(string), typeof(ui_image), CreateHtmlAttributeUpdater("src"));
 
         public string Src
         {
