@@ -19,8 +19,8 @@ namespace Bridge.CustomUIMarkup.UI.Design
         #region Constructors
         public XmlIntellisenseInfo(string tagName, Type type)
         {
-            if (tagName == null) throw new ArgumentNullException(nameof(tagName));
-            if (type == null) throw new ArgumentNullException(nameof(type));
+            if (tagName == null){ throw new ArgumentNullException(nameof(tagName));}
+            if (type == null) {throw new ArgumentNullException(nameof(type));}
 
             TagName = tagName;
             Type = type;

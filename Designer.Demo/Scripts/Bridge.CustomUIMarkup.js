@@ -1244,6 +1244,43 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
         }
     });
 
+    /** @namespace System */
+
+    /**
+     * @memberof System
+     * @callback System.Action
+     * @return  {void}
+     */
+
+    Bridge.define("System.ComponentModel.Extensions", {
+        statics: {
+            methods: {
+                /**
+                 * invoke action when propertyName raised
+                 *
+                 * @static
+                 * @public
+                 * @this System.ComponentModel.Extensions
+                 * @memberof System.ComponentModel.Extensions
+                 * @param   {System.ComponentModel.INotifyPropertyChanged}    notifyPropertyChanged    
+                 * @param   {string}                                          propertyName             
+                 * @param   {System.Action}                                   action
+                 * @return  {void}
+                 */
+                OnPropertyChanged: function (notifyPropertyChanged, propertyName, action) {
+                    if (notifyPropertyChanged == null) {
+                        throw new System.ArgumentNullException("notifyPropertyChanged");
+                    }
+                    notifyPropertyChanged.System$ComponentModel$INotifyPropertyChanged$addPropertyChanged(function (s, e) {
+                        if (Bridge.referenceEquals(e.propertyName, propertyName)) {
+                            action();
+                        }
+                    });
+                }
+            }
+        }
+    });
+
     Bridge.define("System.ComponentModel.ReflectionHelper", {
         statics: {
             props: {
@@ -1660,8 +1697,6 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
             }
         }
     });
-
-    /** @namespace System */
 
     /**
      * The extensions
@@ -2829,10 +2864,10 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
             },
             FontSize: {
                 get: function () {
-                    return System.Nullable.getValue(Bridge.cast(Bridge.unbox(this.getItem("FontSize")), System.Double));
+                    return System.Nullable.getValue(Bridge.cast(Bridge.unbox(this.GetValue$1(System.Windows.FrameworkElement.FontSizeProperty)), System.Double));
                 },
                 set: function (value) {
-                    this.setItem("FontSize", Bridge.box(value, System.Double, System.Double.format, System.Double.getHashCode));
+                    this.SetValue$1(System.Windows.FrameworkElement.FontSizeProperty, Bridge.box(value, System.Double, System.Double.format, System.Double.getHashCode));
                 }
             },
             Width: {
@@ -2961,7 +2996,6 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
         inherits: [System.Windows.FrameworkElement],
         statics: {
             fields: {
-                FontSizeProperty: null,
                 TextProperty: null
             },
             props: {
@@ -2978,25 +3012,10 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
             },
             ctors: {
                 init: function () {
-                    this.FontSizeProperty = System.Windows.DependencyProperty.Register$1("FontSize", System.Int32, Bridge.CustomUIMarkup.CodeMirror.XmlEditor, new System.Windows.PropertyMetadata.$ctor1(Bridge.CustomUIMarkup.CodeMirror.XmlEditor.FontSizeChanged));
                     this.TextProperty = System.Windows.DependencyProperty.Register$1("Text", System.String, Bridge.CustomUIMarkup.CodeMirror.XmlEditor, new System.Windows.PropertyMetadata.$ctor1(Bridge.CustomUIMarkup.CodeMirror.XmlEditor.TextChanged));
                 }
             },
             methods: {
-                FontSizeChanged: function (d, e) {
-                    var fontSize = System.Nullable.getValue(Bridge.cast(Bridge.unbox(e.NewValue), System.Int32));
-
-                    var me = Bridge.cast(d, Bridge.CustomUIMarkup.CodeMirror.XmlEditor);
-
-                    if (me._editor != null) {
-                        if (me.isFiring_OnTextChanged) {
-                            return;
-                        }
-
-                        me._editor.display.wrapper.style.fontSize = fontSize + 'px';
-                        me._editor.refresh();
-                    }
-                },
                 TextChanged: function (d, e) {
                     var newValue = Bridge.cast(e.NewValue, System.String);
 
@@ -3022,14 +3041,6 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
             OnCursorLineNumberChanged: null
         },
         props: {
-            FontSize$1: {
-                get: function () {
-                    return System.Nullable.getValue(Bridge.cast(Bridge.unbox(this.getItem("FontSize")), System.Int32));
-                },
-                set: function (value) {
-                    this.setItem("FontSize", Bridge.box(value, System.Int32));
-                }
-            },
             Text: {
                 get: function () {
                     return Bridge.cast(this.getItem("Text"), System.String);
@@ -3043,10 +3054,25 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
             ctor: function () {
                 this.$initialize();
                 System.Windows.FrameworkElement.ctor.call(this);
-                this.FontSize$1 = 12;
+                this.FontSize = 12;
+                System.ComponentModel.Extensions.OnPropertyChanged(this, "FontSize", Bridge.fn.cacheBind(this, this.FontSizeChanged));
             }
         },
         methods: {
+            FontSizeChanged: function () {
+                var fontSize = this.FontSize;
+
+                var me = this;
+
+                if (me._editor != null) {
+                    if (me.isFiring_OnTextChanged) {
+                        return;
+                    }
+
+                    me._editor.display.wrapper.style.fontSize = fontSize + 'px';
+                    me._editor.refresh();
+                }
+            },
             InitDOM: function () {
                 this._root = Bridge.CustomUIMarkup.Common.DOM.div();
                 this.Render();
@@ -3063,7 +3089,7 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
                     }));
             },
             Render$1: function (id) {
-                var fontSize = this.FontSize$1;
+                var fontSize = this.FontSize;
 
                 var xmlIntellisenseInfos = new Bridge.CustomUIMarkup.SemanticUI.Builder().GetIntellisenseInfos();
                 var schemaInfo = Bridge.CustomUIMarkup.CodeMirror.SchemaInfo.CreateFrom(xmlIntellisenseInfos).ToJson();

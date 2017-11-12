@@ -7,9 +7,6 @@ using Bridge.jQuery2;
 
 namespace Bridge.CustomUIMarkup.UI.Design
 {
-
-  
-
     public class Binder 
     {
         #region Public Properties
