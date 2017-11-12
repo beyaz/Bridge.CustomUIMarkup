@@ -51,7 +51,7 @@ namespace Bridge.CustomUIMarkup.CodeMirror
             "https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.31.0/codemirror.css",
             "https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.31.0/addon/hint/show-hint.css",
             "https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.31.0/addon/fold/foldgutter.css",
-                ScriptLoader.CssDirectory + "CodeMirror.css"
+            ScriptLoader.CssDirectory + "CodeMirror.css"
         };
 
         public static IReadOnlyList<string> Scripts => new[]

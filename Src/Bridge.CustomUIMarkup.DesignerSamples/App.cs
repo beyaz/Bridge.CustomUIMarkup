@@ -279,7 +279,7 @@ namespace Bridge.CustomUIMarkup.DesignerSamples
         #endregion
 
         #region Public Methods
-        public static void Main()
+        public static void Init()
         {
             jQuery.Ready(() =>
             {

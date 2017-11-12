@@ -556,16 +556,14 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
 
     Bridge.define("Bridge.CustomUIMarkup.Common.ScriptLoader", {
         statics: {
-            props: {
-                JsDirectory: {
-                    get: function () {
-                        return "Scripts/";
-                    }
-                },
-                CssDirectory: {
-                    get: function () {
-                        return "css/";
-                    }
+            fields: {
+                JsDirectory: null,
+                CssDirectory: null
+            },
+            ctors: {
+                init: function () {
+                    this.JsDirectory = "Scripts/";
+                    this.CssDirectory = "css/";
                 }
             },
             methods: {
@@ -612,21 +610,6 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
     });
 
     Bridge.define("Bridge.CustomUIMarkup.DesignerSamples.App", {
-        main: function Main () {
-            $(function () {
-                    var $t;
-                    Bridge.CustomUIMarkup.Common.ScriptLoader.LoadCssFile(Bridge.CustomUIMarkup.SemanticUI.VersionInfo.CssFile);
-                    Bridge.CustomUIMarkup.Common.ScriptLoader.LoadCssFiles(Bridge.CustomUIMarkup.CodeMirror.XmlEditor.CssFiles);
-                    Bridge.CustomUIMarkup.Common.ScriptLoader.LoadCssFiles(Bridge.CustomUIMarkup.jssor.Carousel.CssFiles);
-
-                    var scripts = new (System.Collections.Generic.List$1(System.String)).ctor();
-                    scripts.addRange(Bridge.CustomUIMarkup.SemanticUI.VersionInfo.Scripts);
-                    scripts.addRange(Bridge.CustomUIMarkup.CodeMirror.XmlEditor.Scripts);
-                    scripts.addRange(Bridge.CustomUIMarkup.jssor.Carousel.JsFiles);
-
-                    ($t = new Bridge.CustomUIMarkup.Common.ScriptLoader(), $t.Scripts = scripts, $t.OnLoacCompleted = Bridge.CustomUIMarkup.DesignerSamples.App.RenderUIEditor, $t).Load();
-                });
-        },
         statics: {
             props: {
                 "TestUI": {
@@ -636,6 +619,21 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
                 }
             },
             methods: {
+                Init: function () {
+                    $(function () {
+                            var $t;
+                            Bridge.CustomUIMarkup.Common.ScriptLoader.LoadCssFile(Bridge.CustomUIMarkup.SemanticUI.VersionInfo.CssFile);
+                            Bridge.CustomUIMarkup.Common.ScriptLoader.LoadCssFiles(Bridge.CustomUIMarkup.CodeMirror.XmlEditor.CssFiles);
+                            Bridge.CustomUIMarkup.Common.ScriptLoader.LoadCssFiles(Bridge.CustomUIMarkup.jssor.Carousel.CssFiles);
+
+                            var scripts = new (System.Collections.Generic.List$1(System.String)).ctor();
+                            scripts.addRange(Bridge.CustomUIMarkup.SemanticUI.VersionInfo.Scripts);
+                            scripts.addRange(Bridge.CustomUIMarkup.CodeMirror.XmlEditor.Scripts);
+                            scripts.addRange(Bridge.CustomUIMarkup.jssor.Carousel.JsFiles);
+
+                            ($t = new Bridge.CustomUIMarkup.Common.ScriptLoader(), $t.Scripts = scripts, $t.OnLoacCompleted = Bridge.CustomUIMarkup.DesignerSamples.App.RenderUIEditor, $t).Load();
+                        });
+                },
                 RenderUIEditor: function () {
                     var $t;
                     var builder = ($t = new Bridge.CustomUIMarkup.SemanticUI.Builder(), $t.DataContext = new Bridge.CustomUIMarkup.DesignerSamples.ExampleDataContext(), $t.XmlString = Bridge.CustomUIMarkup.DesignerSamples.App["TestUI"], $t);
