@@ -2463,35 +2463,35 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
                         _o1.add(new Bridge.CustomUIMarkup.UI.Design.XmlIntellisenseInfo("content", Bridge.CustomUIMarkup.SemanticUI.content));
                         _o1.add(new Bridge.CustomUIMarkup.UI.Design.XmlIntellisenseInfo("extra-content", Bridge.CustomUIMarkup.SemanticUI.ExtraContent));
                         _o1.add(new Bridge.CustomUIMarkup.UI.Design.XmlIntellisenseInfo("ui.basic.button", Bridge.CustomUIMarkup.SemanticUI.ui_basic_button));
-                        _o1.add(new Bridge.CustomUIMarkup.UI.Design.XmlIntellisenseInfo("Carousel", Bridge.CustomUIMarkup.jssor.Carousel));
+                        _o1.add(new Bridge.CustomUIMarkup.UI.Design.XmlIntellisenseInfo("carousel", Bridge.CustomUIMarkup.jssor.Carousel));
                         _o1.add(new Bridge.CustomUIMarkup.UI.Design.XmlIntellisenseInfo("ui.divider", Bridge.CustomUIMarkup.SemanticUI.ui_divider));
                         _o1.add(new Bridge.CustomUIMarkup.UI.Design.XmlIntellisenseInfo("ui.menu", Bridge.CustomUIMarkup.SemanticUI.ui_menu));
                         _o1.add(new Bridge.CustomUIMarkup.UI.Design.XmlIntellisenseInfo("item", Bridge.CustomUIMarkup.SemanticUI.item));
                         _o1.add(new Bridge.CustomUIMarkup.UI.Design.XmlIntellisenseInfo("ui.vertical.menu", Bridge.CustomUIMarkup.SemanticUI.ui_vertical_menu));
-                        _o1.add(new Bridge.CustomUIMarkup.UI.Design.XmlIntellisenseInfo("TextInput", Bridge.CustomUIMarkup.SemanticUI.InputText));
-                        _o1.add(new Bridge.CustomUIMarkup.UI.Design.XmlIntellisenseInfo("TextBox", Bridge.CustomUIMarkup.SemanticUI.InputText));
-                        _o1.add(new Bridge.CustomUIMarkup.UI.Design.XmlIntellisenseInfo("Combo", Bridge.CustomUIMarkup.SemanticUI.Combo));
-                        _o1.add(new Bridge.CustomUIMarkup.UI.Design.XmlIntellisenseInfo("ComboBox", Bridge.CustomUIMarkup.SemanticUI.Combo));
+                        _o1.add(new Bridge.CustomUIMarkup.UI.Design.XmlIntellisenseInfo("textInput", Bridge.CustomUIMarkup.SemanticUI.InputText));
+                        _o1.add(new Bridge.CustomUIMarkup.UI.Design.XmlIntellisenseInfo("textBox", Bridge.CustomUIMarkup.SemanticUI.InputText));
+                        _o1.add(new Bridge.CustomUIMarkup.UI.Design.XmlIntellisenseInfo("combo", Bridge.CustomUIMarkup.SemanticUI.Combo));
+                        _o1.add(new Bridge.CustomUIMarkup.UI.Design.XmlIntellisenseInfo("comboBox", Bridge.CustomUIMarkup.SemanticUI.Combo));
                         _o1.add(new Bridge.CustomUIMarkup.UI.Design.XmlIntellisenseInfo("ui.equal.width.grid", Bridge.CustomUIMarkup.SemanticUI.ui_equal_width_grid));
-                        _o1.add(new Bridge.CustomUIMarkup.UI.Design.XmlIntellisenseInfo("TextArea", Bridge.CustomUIMarkup.SemanticUI.TextArea));
+                        _o1.add(new Bridge.CustomUIMarkup.UI.Design.XmlIntellisenseInfo("textArea", Bridge.CustomUIMarkup.SemanticUI.TextArea));
                         _o1.add(new Bridge.CustomUIMarkup.UI.Design.XmlIntellisenseInfo("ui.container", Bridge.CustomUIMarkup.SemanticUI.ui_container));
                         _o1.add(new Bridge.CustomUIMarkup.UI.Design.XmlIntellisenseInfo("ui.stacked", Bridge.CustomUIMarkup.SemanticUI.ui_stacked));
                         _o1.add(($t = new Bridge.CustomUIMarkup.UI.Design.XmlIntellisenseInfo("ui.grid", Bridge.CustomUIMarkup.SemanticUI.ui_grid), $t.ChildrenTags = System.Array.init(["Row"], System.String), $t));
                         _o1.add(new Bridge.CustomUIMarkup.UI.Design.XmlIntellisenseInfo("ui page grid", Bridge.CustomUIMarkup.SemanticUI.ui_page_grid));
-                        _o1.add(new Bridge.CustomUIMarkup.UI.Design.XmlIntellisenseInfo("Field", Bridge.CustomUIMarkup.SemanticUI.Field));
+                        _o1.add(new Bridge.CustomUIMarkup.UI.Design.XmlIntellisenseInfo("field", Bridge.CustomUIMarkup.SemanticUI.Field));
                         _o1.add(new Bridge.CustomUIMarkup.UI.Design.XmlIntellisenseInfo("ui.form", Bridge.CustomUIMarkup.SemanticUI.ui_form));
-                        _o1.add(($t = new Bridge.CustomUIMarkup.UI.Design.XmlIntellisenseInfo("Row", Bridge.CustomUIMarkup.SemanticUI.Row), $t.ChildrenTags = System.Array.init(["Column"], System.String), $t));
+                        _o1.add(($t = new Bridge.CustomUIMarkup.UI.Design.XmlIntellisenseInfo("row", Bridge.CustomUIMarkup.SemanticUI.Row), $t.ChildrenTags = System.Array.init(["column"], System.String), $t));
                         _o1.add(new Bridge.CustomUIMarkup.UI.Design.XmlIntellisenseInfo("column", Bridge.CustomUIMarkup.SemanticUI.column));
                         _o1.add(new Bridge.CustomUIMarkup.UI.Design.XmlIntellisenseInfo("ui.header.1", Bridge.CustomUIMarkup.SemanticUI.ui_header_1));
                         _o1.add(new Bridge.CustomUIMarkup.UI.Design.XmlIntellisenseInfo("ui.header.2", Bridge.CustomUIMarkup.SemanticUI.ui_header_2));
                         _o1.add(new Bridge.CustomUIMarkup.UI.Design.XmlIntellisenseInfo("ui.header.3", Bridge.CustomUIMarkup.SemanticUI.ui_header_3));
                         _o1.add(new Bridge.CustomUIMarkup.UI.Design.XmlIntellisenseInfo("header", Bridge.CustomUIMarkup.SemanticUI.header));
                         _o1.add(new Bridge.CustomUIMarkup.UI.Design.XmlIntellisenseInfo("ui.image", Bridge.CustomUIMarkup.SemanticUI.ui_image));
-                        _o1.add(new Bridge.CustomUIMarkup.UI.Design.XmlIntellisenseInfo("Icon", Bridge.CustomUIMarkup.SemanticUI.Icon));
+                        _o1.add(new Bridge.CustomUIMarkup.UI.Design.XmlIntellisenseInfo("icon", Bridge.CustomUIMarkup.SemanticUI.Icon));
                         _o1.add(new Bridge.CustomUIMarkup.UI.Design.XmlIntellisenseInfo("ui.segment", Bridge.CustomUIMarkup.SemanticUI.ui_segment));
-                        _o1.add(new Bridge.CustomUIMarkup.UI.Design.XmlIntellisenseInfo("TextBlock", System.Windows.Controls.TextBlock));
-                        _o1.add(new Bridge.CustomUIMarkup.UI.Design.XmlIntellisenseInfo("XmlEditor", Bridge.CustomUIMarkup.SemanticUI.XmlEditor));
-                        _o1.add(new Bridge.CustomUIMarkup.UI.Design.XmlIntellisenseInfo("UIEditor", Bridge.CustomUIMarkup.SemanticUI.UIEditor));
+                        _o1.add(new Bridge.CustomUIMarkup.UI.Design.XmlIntellisenseInfo("textBlock", System.Windows.Controls.TextBlock));
+                        _o1.add(new Bridge.CustomUIMarkup.UI.Design.XmlIntellisenseInfo("xmlEditor", Bridge.CustomUIMarkup.SemanticUI.XmlEditor));
+                        _o1.add(new Bridge.CustomUIMarkup.UI.Design.XmlIntellisenseInfo("uiEditor", Bridge.CustomUIMarkup.SemanticUI.UIEditor));
                         return _o1;
                     }(new (System.Collections.Generic.List$1(Bridge.CustomUIMarkup.UI.Design.XmlIntellisenseInfo)).ctor());
             },
@@ -2622,6 +2622,7 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
                 BorderProperty: null,
                 ClassProperty: null,
                 AddClassProperty: null,
+                MarginProperty: null,
                 MarginLeftProperty: null,
                 MarginRightProperty: null,
                 MarginBottomProperty: null,
@@ -2630,6 +2631,7 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
                 PaddingRightProperty: null,
                 PaddingBottomProperty: null,
                 PaddingTopProperty: null,
+                PaddingProperty: null,
                 TextWrappingProperty: null,
                 FontWeightProperty: null,
                 FontSizeProperty: null,
@@ -2646,6 +2648,7 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
                     this.BorderProperty = System.Windows.DependencyProperty.Register$1("Border", System.String, System.Windows.FrameworkElement, System.Windows.FrameworkElement.CreateJQueryCssUpdater("border"));
                     this.ClassProperty = System.Windows.DependencyProperty.Register$1("Class", System.String, System.Windows.FrameworkElement, System.Windows.FrameworkElement.CreateHtmlAttributeUpdater("class"));
                     this.AddClassProperty = System.Windows.DependencyProperty.Register$1("AddClass", System.String, System.Windows.FrameworkElement, new System.Windows.PropertyMetadata.$ctor1(System.Windows.FrameworkElement.OnAddClassChanged));
+                    this.MarginProperty = System.Windows.DependencyProperty.Register$1("Margin", System.Nullable$1(System.Double), System.Windows.FrameworkElement, System.Windows.FrameworkElement.CreateJQueryCssUpdater("margin"));
                     this.MarginLeftProperty = System.Windows.DependencyProperty.Register$1("MarginLeft", System.Nullable$1(System.Double), System.Windows.FrameworkElement, System.Windows.FrameworkElement.CreateJQueryCssUpdater("marginLeft"));
                     this.MarginRightProperty = System.Windows.DependencyProperty.Register$1("MarginRight", System.Nullable$1(System.Double), System.Windows.FrameworkElement, System.Windows.FrameworkElement.CreateJQueryCssUpdater("marginRight"));
                     this.MarginBottomProperty = System.Windows.DependencyProperty.Register$1("MarginBottom", System.Nullable$1(System.Double), System.Windows.FrameworkElement, System.Windows.FrameworkElement.CreateJQueryCssUpdater("marginBottom"));
@@ -2654,6 +2657,7 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
                     this.PaddingRightProperty = System.Windows.DependencyProperty.Register$1("PaddingRight", System.Nullable$1(System.Double), System.Windows.FrameworkElement, System.Windows.FrameworkElement.CreateJQueryCssUpdater("paddingRight"));
                     this.PaddingBottomProperty = System.Windows.DependencyProperty.Register$1("PaddingBottom", System.Nullable$1(System.Double), System.Windows.FrameworkElement, System.Windows.FrameworkElement.CreateJQueryCssUpdater("paddingBottom"));
                     this.PaddingTopProperty = System.Windows.DependencyProperty.Register$1("PaddingTop", System.Nullable$1(System.Double), System.Windows.FrameworkElement, System.Windows.FrameworkElement.CreateJQueryCssUpdater("paddingTop"));
+                    this.PaddingProperty = System.Windows.DependencyProperty.Register$1("Padding", System.Nullable$1(System.Double), System.Windows.FrameworkElement, System.Windows.FrameworkElement.CreateJQueryCssUpdater("padding"));
                     this.TextWrappingProperty = System.Windows.DependencyProperty.Register$1("TextWrapping", System.Windows.TextWrapping, System.Windows.FrameworkElement, new System.Windows.PropertyMetadata.$ctor1(System.Windows.FrameworkElement.OnTextWrappingChanged));
                     this.FontWeightProperty = System.Windows.DependencyProperty.Register$1("FontWeight", System.Double, System.Windows.FrameworkElement, System.Windows.FrameworkElement.CreateJQueryCssUpdater("fontWeight"));
                     this.FontSizeProperty = System.Windows.DependencyProperty.Register$1("FontSize", System.Double, System.Windows.FrameworkElement, System.Windows.FrameworkElement.CreateJQueryCssUpdater("fontSize"));
@@ -2782,68 +2786,84 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
                     this.SetValue$1(System.Windows.FrameworkElement.AddClassProperty, value);
                 }
             },
-            MarginLeft: {
+            Margin: {
                 get: function () {
-                    return Bridge.cast(Bridge.unbox(this.getItem("MarginLeft")), System.Double, true);
+                    return Bridge.cast(Bridge.unbox(this.GetValue$1(System.Windows.FrameworkElement.MarginProperty)), System.Double, true);
                 },
                 set: function (value) {
-                    this.setItem("MarginLeft", Bridge.box(value, System.Double, System.Nullable.toStringFn(System.Double.format), System.Nullable.getHashCodeFn(System.Double.getHashCode)));
+                    this.SetValue$1(System.Windows.FrameworkElement.MarginProperty, Bridge.box(value, System.Double, System.Nullable.toStringFn(System.Double.format), System.Nullable.getHashCodeFn(System.Double.getHashCode)));
+                }
+            },
+            MarginLeft: {
+                get: function () {
+                    return Bridge.cast(Bridge.unbox(this.GetValue$1(System.Windows.FrameworkElement.MarginLeftProperty)), System.Double, true);
+                },
+                set: function (value) {
+                    this.SetValue$1(System.Windows.FrameworkElement.MarginLeftProperty, Bridge.box(value, System.Double, System.Nullable.toStringFn(System.Double.format), System.Nullable.getHashCodeFn(System.Double.getHashCode)));
                 }
             },
             MarginRight: {
                 get: function () {
-                    return Bridge.cast(Bridge.unbox(this.getItem("MarginRight")), System.Double, true);
+                    return Bridge.cast(Bridge.unbox(this.GetValue$1(System.Windows.FrameworkElement.MarginRightProperty)), System.Double, true);
                 },
                 set: function (value) {
-                    this.setItem("MarginRight", Bridge.box(value, System.Double, System.Nullable.toStringFn(System.Double.format), System.Nullable.getHashCodeFn(System.Double.getHashCode)));
+                    this.SetValue$1(System.Windows.FrameworkElement.MarginRightProperty, Bridge.box(value, System.Double, System.Nullable.toStringFn(System.Double.format), System.Nullable.getHashCodeFn(System.Double.getHashCode)));
                 }
             },
             MarginBottom: {
                 get: function () {
-                    return Bridge.cast(Bridge.unbox(this.getItem("MarginBottom")), System.Double, true);
+                    return Bridge.cast(Bridge.unbox(this.GetValue$1(System.Windows.FrameworkElement.MarginBottomProperty)), System.Double, true);
                 },
                 set: function (value) {
-                    this.setItem("MarginBottom", Bridge.box(value, System.Double, System.Nullable.toStringFn(System.Double.format), System.Nullable.getHashCodeFn(System.Double.getHashCode)));
+                    this.SetValue$1(System.Windows.FrameworkElement.MarginBottomProperty, Bridge.box(value, System.Double, System.Nullable.toStringFn(System.Double.format), System.Nullable.getHashCodeFn(System.Double.getHashCode)));
                 }
             },
             MarginTop: {
                 get: function () {
-                    return Bridge.cast(Bridge.unbox(this.getItem("MarginTop")), System.Double, true);
+                    return Bridge.cast(Bridge.unbox(this.GetValue$1(System.Windows.FrameworkElement.MarginTopProperty)), System.Double, true);
                 },
                 set: function (value) {
-                    this.setItem("MarginTop", Bridge.box(value, System.Double, System.Nullable.toStringFn(System.Double.format), System.Nullable.getHashCodeFn(System.Double.getHashCode)));
+                    this.SetValue$1(System.Windows.FrameworkElement.MarginTopProperty, Bridge.box(value, System.Double, System.Nullable.toStringFn(System.Double.format), System.Nullable.getHashCodeFn(System.Double.getHashCode)));
                 }
             },
             PaddingLeft: {
                 get: function () {
-                    return Bridge.cast(Bridge.unbox(this.getItem("PaddingLeft")), System.Double, true);
+                    return Bridge.cast(Bridge.unbox(this.GetValue$1(System.Windows.FrameworkElement.PaddingLeftProperty)), System.Double, true);
                 },
                 set: function (value) {
-                    this.setItem("PaddingLeft", Bridge.box(value, System.Double, System.Nullable.toStringFn(System.Double.format), System.Nullable.getHashCodeFn(System.Double.getHashCode)));
+                    this.SetValue$1(System.Windows.FrameworkElement.PaddingLeftProperty, Bridge.box(value, System.Double, System.Nullable.toStringFn(System.Double.format), System.Nullable.getHashCodeFn(System.Double.getHashCode)));
                 }
             },
             PaddingRight: {
                 get: function () {
-                    return Bridge.cast(Bridge.unbox(this.getItem("PaddingRight")), System.Double, true);
+                    return Bridge.cast(Bridge.unbox(this.GetValue$1(System.Windows.FrameworkElement.PaddingRightProperty)), System.Double, true);
                 },
                 set: function (value) {
-                    this.setItem("PaddingRight", Bridge.box(value, System.Double, System.Nullable.toStringFn(System.Double.format), System.Nullable.getHashCodeFn(System.Double.getHashCode)));
+                    this.SetValue$1(System.Windows.FrameworkElement.PaddingRightProperty, Bridge.box(value, System.Double, System.Nullable.toStringFn(System.Double.format), System.Nullable.getHashCodeFn(System.Double.getHashCode)));
                 }
             },
             PaddingBottom: {
                 get: function () {
-                    return Bridge.cast(Bridge.unbox(this.getItem("PaddingBottom")), System.Double, true);
+                    return Bridge.cast(Bridge.unbox(this.GetValue$1(System.Windows.FrameworkElement.PaddingBottomProperty)), System.Double, true);
                 },
                 set: function (value) {
-                    this.setItem("PaddingBottom", Bridge.box(value, System.Double, System.Nullable.toStringFn(System.Double.format), System.Nullable.getHashCodeFn(System.Double.getHashCode)));
+                    this.SetValue$1(System.Windows.FrameworkElement.PaddingBottomProperty, Bridge.box(value, System.Double, System.Nullable.toStringFn(System.Double.format), System.Nullable.getHashCodeFn(System.Double.getHashCode)));
                 }
             },
             PaddingTop: {
                 get: function () {
-                    return Bridge.cast(Bridge.unbox(this.getItem("PaddingTop")), System.Double, true);
+                    return Bridge.cast(Bridge.unbox(this.GetValue$1(System.Windows.FrameworkElement.PaddingTopProperty)), System.Double, true);
                 },
                 set: function (value) {
-                    this.setItem("PaddingTop", Bridge.box(value, System.Double, System.Nullable.toStringFn(System.Double.format), System.Nullable.getHashCodeFn(System.Double.getHashCode)));
+                    this.SetValue$1(System.Windows.FrameworkElement.PaddingTopProperty, Bridge.box(value, System.Double, System.Nullable.toStringFn(System.Double.format), System.Nullable.getHashCodeFn(System.Double.getHashCode)));
+                }
+            },
+            Padding: {
+                get: function () {
+                    return Bridge.cast(Bridge.unbox(this.GetValue$1(System.Windows.FrameworkElement.PaddingProperty)), System.Double, true);
+                },
+                set: function (value) {
+                    this.SetValue$1(System.Windows.FrameworkElement.PaddingProperty, Bridge.box(value, System.Double, System.Nullable.toStringFn(System.Double.format), System.Nullable.getHashCodeFn(System.Double.getHashCode)));
                 }
             },
             TextWrapping: {
@@ -3331,16 +3351,11 @@ me._editor.display.wrapper.style.height = '95%';
                 System.Windows.FrameworkElement.ctor.call(this);
                 this.Examples = function (_o1) {
                         var $t;
-                        _o1.add(($t = new Bridge.CustomUIMarkup.DesignerSamples.ExampleInfo(), $t.Name = "All", $t.XmlTemplate = "\r\n\r\n\r\n<ui.page.grid>\r\n   <Container>\r\n      <ui.text.menu.navbar FontSize='18'>\r\n         <left.menu>\r\n            <item>Project Name</item>\r\n         </left.menu>\r\n         <right.menu>\r\n            <item>Home</item>\r\n            <item>About</item>\r\n            <item>Contact</item>\r\n         </right.menu>\r\n      </ui.text.menu.navbar>\r\n      <ui.divider MarginBottom='10' />\r\n      <Carousel DataSource='img/carousel_1.jpg,img/carousel_2.jpg,img/carousel_3.jpg' />\r\n      <ui.divider MarginBottom='10' />\r\n\t  <ui.cards>\r\n\t  \r\n\t\t  <card>\r\n\t\t\t <image Src='http://www.samsunkorkuciftligi.com/upload/20170314__2069208026.jpg' />\r\n\t\t\t <content Align='Center'>\r\n\t\t\t\t<Header Align='Center'>Motor Safari</Header>\r\n\t\t\t\t<description>Macera sizi bekliyor...</description>\r\n\t\t\t\t<ui.basic.button Text='İncele' MarginTop='11' AddClass='yellow' />\r\n\t\t\t </content>\r\n\t\t  </card>\r\n\t\t  \r\n\t\t  <card>\r\n\t\t\t <image Src='http://www.samsunkorkuciftligi.com/upload/20170314__2069208026.jpg' />\r\n\t\t\t <content Align='Center'>\r\n\t\t\t\t<Header Align='Center'>Motor Safari</Header>\r\n\t\t\t\t<description>Macera sizi bekliyor...</description>\r\n\t\t\t\t<ui.basic.button Text='İncele' MarginTop='11' AddClass='yellow' />\r\n\t\t\t </content>\r\n\t\t  </card>\r\n\t\t  \r\n\t  </ui.cards>\r\n   </Container>\r\n</ui.page.grid>\r\n\r\n", $t));
-                        _o1.add(($t = new Bridge.CustomUIMarkup.DesignerSamples.ExampleInfo(), $t.Name = "Carousel", $t.XmlTemplate = "\r\n\r\n\r\n<container>\r\n    <Carousel DataSource='img/carousel_1.jpg,img/carousel_2.jpg,img/carousel_3.jpg' />\r\n</container>\r\n\r\n", $t));
+                        _o1.add(($t = new Bridge.CustomUIMarkup.DesignerSamples.ExampleInfo(), $t.Name = "All", $t.XmlTemplate = "\r\n\r\n\r\n\r\n\r\n\r\n<ui.page.grid>\r\n   <ui.container>\r\n      <ui.text.menu.navbar FontSize='18'>\r\n         <left.menu>\r\n            <item>Project Name</item>\r\n         </left.menu>\r\n         <right.menu>\r\n            <item>Home</item>\r\n            <item>About</item>\r\n            <item>Contact</item>\r\n         </right.menu>\r\n      </ui.text.menu.navbar>\r\n      <ui.divider MarginBottom='10' />\r\n      <Carousel DataSource='img/carousel_1.jpg,img/carousel_2.jpg,img/carousel_3.jpg' />\r\n      <ui.divider MarginBottom='10' />\r\n\t  <ui.cards>\r\n\t  \r\n\t\t  <card>\r\n\t\t\t <ui.image Src='http://www.samsunkorkuciftligi.com/upload/20170314__2069208026.jpg' />\r\n\t\t\t <content Align='Center'>\r\n\t\t\t\t<Header Align='Center'>Motor Safari</Header>\r\n\t\t\t\t<description>Macera sizi bekliyor...</description>\r\n\t\t\t\t<ui.basic.button Text='İncele' MarginTop='11' AddClass='yellow' />\r\n\t\t\t </content>\r\n\t\t  </card>\r\n\t\t  \r\n\t\t  <card>\r\n\t\t\t <ui.image Src='http://www.samsunkorkuciftligi.com/upload/20170314__2069208026.jpg' />\r\n\t\t\t <content Align='Center'>\r\n\t\t\t\t<Header Align='Center'>Motor Safari</Header>\r\n\t\t\t\t<description>Macera sizi bekliyor...</description>\r\n\t\t\t\t<ui.basic.button Text='İncele' MarginTop='11' AddClass='yellow' />\r\n\t\t\t </content>\r\n\t\t  </card>\r\n\t\t  \r\n\t  </ui.cards>\r\n   </ui.container>\r\n</ui.page.grid>\r\n\r\n\r\n\r\n", $t));
+                        _o1.add(($t = new Bridge.CustomUIMarkup.DesignerSamples.ExampleInfo(), $t.Name = "Carousel", $t.XmlTemplate = "\r\n\r\n\r\n<ui.container>\r\n    <Carousel DataSource='img/carousel_1.jpg,img/carousel_2.jpg,img/carousel_3.jpg' />\r\n</ui.container>\r\n\r\n", $t));
                         _o1.add(($t = new Bridge.CustomUIMarkup.DesignerSamples.ExampleInfo(), $t.Name = "Card", $t.XmlTemplate = "\r\n\r\n<ui.cards>\r\n\r\n    <card>\r\n\t    <ui.image Src='http://www.samsunkorkuciftligi.com/upload/20170314__2069208026.jpg'/>\r\n\t    <content Align='Center'>\r\n            <Header Align='Center' >Motor Safari</Header>\r\n            <description> Macera sizi bekliyor...</description>\r\n            <ui.basic.button Text='İncele' MarginTop='11' AddClass='yellow' />\r\n        </content>\t\r\n    </card>\r\n\r\n</ui.cards>\r\n", $t));
-                        _o1.add(($t = new Bridge.CustomUIMarkup.DesignerSamples.ExampleInfo(), $t.Name = "copy", $t.XmlTemplate = "\r\n\r\n\r\n<Grid>\r\n  \r\n    <Column Width='27' Align='Center'>\r\n        <Icon Type='Setting' Color='#ffbb00' FontSize='17' />\r\n    </Column>\r\n  \r\n  \t<Column Width='80'>\r\n        <TextBlock Text='Start Date:' Color='#888888' FontSize='13' FontWeight='600' TextWrapping='NoWrap' />\r\n    </Column>\r\n  \t\r\n  \t<Column   Align='Left' >\r\n        <TextBlock Text='November 1, 2017 15:30' Color='#888888' FontSize='12' FontWeight='600' TextWrapping='NoWrap' />\r\n    </Column>\r\n</Grid>\r\n\r\n", $t));
-                        _o1.add(($t = new Bridge.CustomUIMarkup.DesignerSamples.ExampleInfo(), $t.Name = "properties", $t.XmlTemplate = "\r\n<ui.grid>\n    <column IsRightAligned ='True' Wide='15'>\n        <ui.button Text='Aloha'  />    \n    </column>\n</ui.grid>\r\n\r\n", $t));
-                        _o1.add(($t = new Bridge.CustomUIMarkup.DesignerSamples.ExampleInfo(), $t.Name = "Layout", $t.XmlTemplate = "\r\n\r\n<GroupBox Header='Yellow -> GroupBox' Background='Yellow' >\r\n    <Container Background='Blue' Height='300'>\r\n        <Grid  Background='Green'>\r\n            <Row> \r\n\t            <Container  Background='Yellow' Height='30'/>\r\n\t            <Container  Background='Yellow' Height='30'/>\r\n            </Row>\r\n            <Row> \r\n\t            <Container  Background='Yellow' Height='30'/>\r\n            </Row>\r\n            <Row> \r\n\t            <Container  Background='Yellow' Height='30'/>\r\n\t            <Container  Background='Yellow' Height='30' /> \r\n            </Row>\r\n            <Row> \r\n\t            <StackPanel  Background='Red' Height='50'>\r\n\t                <Container  Background='Blue' Height='10' />     \r\n\t                <Container  Background='Yellow' Height='10' />     \r\n\t                <StackPanel  Background='Blue' Height='10' />     \r\n\t            </StackPanel>\r\n            </Row>\r\n        </Grid>\r\n    </Container> \r\n\r\n</GroupBox>\r\n", $t));
-                        _o1.add(($t = new Bridge.CustomUIMarkup.DesignerSamples.ExampleInfo(), $t.Name = "Simple", $t.XmlTemplate = "\r\n\r\n<GroupBox Header='Group Header'>\r\n    <Container>\r\n\r\n        <UniformGrid>\r\n\t        <textInput Value ='A'  PlaceHolder='Write 1' />\r\n\t        <textInput   PlaceHolder='Write 2' />\r\n            \r\n        </UniformGrid>\r\n\r\n        <TextArea PlaceHolder='Write your ui here' Rows='5' />\r\n\r\n    </Container>\r\n\r\n</GroupBox>\r\n\r\n\r\n", $t));
-                        _o1.add(($t = new Bridge.CustomUIMarkup.DesignerSamples.ExampleInfo(), $t.Name = "Form", $t.XmlTemplate = "\r\n\r\n\r\n<Form>\r\n       \r\n       <Field Value ='A'  Label='yy' PlaceHolder='Write 1' />\r\n       <Field Value ='A'  PlaceHolder='Write 1' />\r\n       <StackPanel>\r\n           <Field Value ='A'  PlaceHolder='Write 1' />\r\n       </StackPanel>\r\n       \r\n       <UniformGrid>\r\n           <Field Value ='1' Label='1' PlaceHolder='Write 1' />\r\n           <Field Value ='2'  PlaceHolder='Write 1' />\r\n           <Field Value ='2'  PlaceHolder='Write 1' />\r\n           <Field Value ='2'  PlaceHolder='Write 1' />\r\n       </UniformGrid>\r\n       \r\n        <Container>\r\n           <Field Value ='1'  PlaceHolder='Write 1' />\r\n           <Field Value ='2'  PlaceHolder='Write 1' />\r\n       </Container>\r\n\r\n</Form>\r\n\r\n\r\n\r\n\r\n", $t));
-                        _o1.add(($t = new Bridge.CustomUIMarkup.DesignerSamples.ExampleInfo(), $t.Name = "Gravity in Columns", $t.XmlTemplate = "\r\n<Grid  Background='Black'>\r\n    <Row> \r\n        <Column  Background='Yellow'   Gravity='2' >\r\n           \r\n        </Column>\r\n        <Column  Background='REd'    />\r\n        \r\n        <!-- stretch max height  -->\r\n        <Column  Background='Blue' Height='200' Gravity='2'   />\r\n    </Row> \r\n    \r\n</Grid>\r\n\r\n", $t));
-                        _o1.add(($t = new Bridge.CustomUIMarkup.DesignerSamples.ExampleInfo(), $t.Name = "Form 2", $t.XmlTemplate = "\r\n\n\n<Form>\n    <Container>\n  \n    <GroupBox Header='İrtibat Bilgileri'>\n        <Grid>\n            <Row> \n                <Column >\n                   <Field Label='E-Posta'/>\n                   <Field Label='Telefon'/>\n                </Column>\n            </Row> \n        </Grid>\n    </GroupBox>\n    \n    <GroupBox Header='TESLİMAT BİLGİLERİ'>\n        <Grid>\n            <Row> \n                <Column >\n                    <Field Label='Adı'/>\n                    <Field Label='Soy Adı'/>\n                    <Field Label='Şehir'/>\n                     <Field Label='İlçe'/>\n                      <Field Label='Adres'/>\n                      <Field Label='TC Kimlik No (İsteğe Bağlı)'/>\n                </Column>\n            </Row> \n        </Grid>\n    </GroupBox>\n    \n    <Grid>\n        <Row>\n            <Column Gravity='7' />\n           \n            <Column >\n                <Button Text='İlerle'/>                \n            </Column>\n        </Row>\n    \n    </Grid>\n    \n    \n  </Container>\n</Form>\n\n\r\n", $t));
+                        _o1.add(($t = new Bridge.CustomUIMarkup.DesignerSamples.ExampleInfo(), $t.Name = "Grid.column", $t.XmlTemplate = "\r\n\r\n\r\n<ui.grid>\r\n  \r\n    <column Width='27' Align='Center'>\r\n        <Icon Type='Setting' Color='#ffbb00' FontSize='17' />\r\n    </column>\r\n  \r\n  \t<Column Width='80'>\r\n        <TextBlock Text='Start Date:' Color='#888888' FontSize='13' FontWeight='600' TextWrapping='NoWrap' />\r\n    </Column>\r\n  \t\r\n  \t<Column   Align='Left' >\r\n        <TextBlock Text='November 1, 2017 15:30' Color='#888888' FontSize='12' FontWeight='600' TextWrapping='NoWrap' />\r\n    </Column>\r\n</ui.grid>\r\n\r\n", $t));
+                        _o1.add(($t = new Bridge.CustomUIMarkup.DesignerSamples.ExampleInfo(), $t.Name = "Form", $t.XmlTemplate = "\r\n\r\n\r\n<ui.segment>\r\n  <ui.page.grid Align='Center' MarginTop='5'>\r\n      <ui.form  Padding='55' Border='1px solid #ddd'>\r\n        <ui.header.3>Input form</ui.header.3>\r\n     <Field Value='A' Label='yy'>\r\n        <TextBox PlaceHolder='Write 1' />\r\n     </Field>\r\n     <ui.stacked>\r\n        <Field Value='A' Label='yy' >\r\n           <TextBox PlaceHolder='Write 1' IsMandatory='True' />\r\n        </Field>\r\n     </ui.stacked>\r\n     <ui.equal.width.grid>\r\n        <column>\r\n           <Field Value='A' Label='yy'>\r\n              <TextBox PlaceHolder='Write 1' />\r\n           </Field>\r\n        </column>\r\n        <column>\r\n           <Field Value='A' Label='yy'>\r\n              <TextBox PlaceHolder='Write 1' />\r\n           </Field>\r\n        </column>\r\n     </ui.equal.width.grid>\r\n        \r\n        <ui.grid>\r\n          <column Align='Right'>\r\n        \t\t<ui.button Text='No'   />\r\n            \t<ui.button Text='Yes'  AddClass='positive'  />\r\n            </column>\r\n        </ui.grid>\r\n  </ui.form>\r\n  </ui.page.grid>\r\n</ui.segment>\r\n\r\n\r\n\r\n\r\n", $t));
                         return _o1;
                     }(new (System.Collections.Generic.List$1(Bridge.CustomUIMarkup.DesignerSamples.ExampleInfo)).ctor());
             }

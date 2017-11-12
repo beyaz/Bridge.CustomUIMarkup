@@ -60,8 +60,11 @@ namespace Bridge.CustomUIMarkup.DesignerSamples
                         @"
 
 
+
+
+
 <ui.page.grid>
-   <Container>
+   <ui.container>
       <ui.text.menu.navbar FontSize='18'>
          <left.menu>
             <item>Project Name</item>
@@ -78,7 +81,7 @@ namespace Bridge.CustomUIMarkup.DesignerSamples
 	  <ui.cards>
 	  
 		  <card>
-			 <image Src='http://www.samsunkorkuciftligi.com/upload/20170314__2069208026.jpg' />
+			 <ui.image Src='http://www.samsunkorkuciftligi.com/upload/20170314__2069208026.jpg' />
 			 <content Align='Center'>
 				<Header Align='Center'>Motor Safari</Header>
 				<description>Macera sizi bekliyor...</description>
@@ -87,7 +90,7 @@ namespace Bridge.CustomUIMarkup.DesignerSamples
 		  </card>
 		  
 		  <card>
-			 <image Src='http://www.samsunkorkuciftligi.com/upload/20170314__2069208026.jpg' />
+			 <ui.image Src='http://www.samsunkorkuciftligi.com/upload/20170314__2069208026.jpg' />
 			 <content Align='Center'>
 				<Header Align='Center'>Motor Safari</Header>
 				<description>Macera sizi bekliyor...</description>
@@ -96,8 +99,10 @@ namespace Bridge.CustomUIMarkup.DesignerSamples
 		  </card>
 		  
 	  </ui.cards>
-   </Container>
+   </ui.container>
 </ui.page.grid>
+
+
 
 "
                 },
@@ -109,9 +114,9 @@ namespace Bridge.CustomUIMarkup.DesignerSamples
                         @"
 
 
-<container>
+<ui.container>
     <Carousel DataSource='img/carousel_1.jpg,img/carousel_2.jpg,img/carousel_3.jpg' />
-</container>
+</ui.container>
 
 "
                 },
@@ -138,16 +143,16 @@ namespace Bridge.CustomUIMarkup.DesignerSamples
                 },
                 new ExampleInfo
                 {
-                    Name = "copy",
+                    Name = "Grid.column",
                     XmlTemplate =
                         @"
 
 
-<Grid>
+<ui.grid>
   
-    <Column Width='27' Align='Center'>
+    <column Width='27' Align='Center'>
         <Icon Type='Setting' Color='#ffbb00' FontSize='17' />
-    </Column>
+    </column>
   
   	<Column Width='80'>
         <TextBlock Text='Start Date:' Color='#888888' FontSize='13' FontWeight='600' TextWrapping='NoWrap' />
@@ -156,47 +161,13 @@ namespace Bridge.CustomUIMarkup.DesignerSamples
   	<Column   Align='Left' >
         <TextBlock Text='November 1, 2017 15:30' Color='#888888' FontSize='12' FontWeight='600' TextWrapping='NoWrap' />
     </Column>
-</Grid>
-
-"
-                },
-                new ExampleInfo
-                {
-                    Name = "properties",
-                    XmlTemplate =
-                    @"
-<ui.grid>
-    <column IsRightAligned ='True' Wide='15'>
-        <ui.button Text='Aloha'  />    
-    </column>
 </ui.grid>
 
 "
                 },
+                
                
-                new ExampleInfo
-                {
-                    Name = "Simple",
-                    XmlTemplate = @"
-
-<GroupBox Header='Group Header'>
-    <Container>
-
-        <UniformGrid>
-	        <textInput Value ='A'  PlaceHolder='Write 1' />
-	        <textInput   PlaceHolder='Write 2' />
-            
-        </UniformGrid>
-
-        <TextArea PlaceHolder='Write your ui here' Rows='5' />
-
-    </Container>
-
-</GroupBox>
-
-
-"
-                },
+                
                 new ExampleInfo
                 {
                     Name = "Form",
@@ -204,106 +175,49 @@ namespace Bridge.CustomUIMarkup.DesignerSamples
 @"
 
 
-<Form>
-       
-       <Field Value ='A'  Label='yy' PlaceHolder='Write 1' />
-       <Field Value ='A'  PlaceHolder='Write 1' />
-       <StackPanel>
-           <Field Value ='A'  PlaceHolder='Write 1' />
-       </StackPanel>
-       
-       <UniformGrid>
-           <Field Value ='1' Label='1' PlaceHolder='Write 1' />
-           <Field Value ='2'  PlaceHolder='Write 1' />
-           <Field Value ='2'  PlaceHolder='Write 1' />
-           <Field Value ='2'  PlaceHolder='Write 1' />
-       </UniformGrid>
-       
-        <Container>
-           <Field Value ='1'  PlaceHolder='Write 1' />
-           <Field Value ='2'  PlaceHolder='Write 1' />
-       </Container>
-
-</Form>
-
-
-
-
-"
-                },
-
-                new ExampleInfo
-                {
-                    Name = "Gravity in Columns",
-                    XmlTemplate = @"
-<Grid  Background='Black'>
-    <Row> 
-        <Column  Background='Yellow'   Gravity='2' >
-           
-        </Column>
-        <Column  Background='REd'    />
+<ui.segment>
+  <ui.page.grid Align='Center' MarginTop='5'>
+      <ui.form  Padding='55' Border='1px solid #ddd'>
+        <ui.header.3>Input form</ui.header.3>
+     <Field Value='A' Label='yy'>
+        <TextBox PlaceHolder='Write 1' />
+     </Field>
+     <ui.stacked>
+        <Field Value='A' Label='yy' >
+           <TextBox PlaceHolder='Write 1' IsMandatory='True' />
+        </Field>
+     </ui.stacked>
+     <ui.equal.width.grid>
+        <column>
+           <Field Value='A' Label='yy'>
+              <TextBox PlaceHolder='Write 1' />
+           </Field>
+        </column>
+        <column>
+           <Field Value='A' Label='yy'>
+              <TextBox PlaceHolder='Write 1' />
+           </Field>
+        </column>
+     </ui.equal.width.grid>
         
-        <!-- stretch max height  -->
-        <Column  Background='Blue' Height='200' Gravity='2'   />
-    </Row> 
-    
-</Grid>
+        <ui.grid>
+          <column Align='Right'>
+        		<ui.button Text='No'   />
+            	<ui.button Text='Yes'  AddClass='positive'  />
+            </column>
+        </ui.grid>
+  </ui.form>
+  </ui.page.grid>
+</ui.segment>
+
+
+
 
 "
                 },
-                new ExampleInfo
-                {
-                    Name = "Form 2",
-                    XmlTemplate = @"
 
-
-<Form>
-    <Container>
-  
-    <GroupBox Header='İrtibat Bilgileri'>
-        <Grid>
-            <Row> 
-                <Column >
-                   <Field Label='E-Posta'/>
-                   <Field Label='Telefon'/>
-                </Column>
-            </Row> 
-        </Grid>
-    </GroupBox>
-    
-    <GroupBox Header='TESLİMAT BİLGİLERİ'>
-        <Grid>
-            <Row> 
-                <Column >
-                    <Field Label='Adı'/>
-                    <Field Label='Soy Adı'/>
-                    <Field Label='Şehir'/>
-                     <Field Label='İlçe'/>
-                      <Field Label='Adres'/>
-                      <Field Label='TC Kimlik No (İsteğe Bağlı)'/>
-                </Column>
-            </Row> 
-        </Grid>
-    </GroupBox>
-    
-    <Grid>
-        <Row>
-            <Column Gravity='7' />
-           
-            <Column >
-                <Button Text='İlerle'/>                
-            </Column>
-        </Row>
-    
-    </Grid>
-    
-    
-  </Container>
-</Form>
-
-
-"
-                }
+               
+               
             };
         }
         #endregion
@@ -370,7 +284,7 @@ namespace Bridge.CustomUIMarkup.DesignerSamples
             jQuery.Ready(() =>
             {
                 ScriptLoader.LoadCssFile(VersionInfo.CssFile);
-                ScriptLoader.LoadCssFiles(CodeMirror.XmlEditor.CssFiles);
+                ScriptLoader.LoadCssFiles(XmlEditor.CssFiles);
                 ScriptLoader.LoadCssFiles(jssor.Carousel.CssFiles); 
 
                 var scripts = new List<string>();

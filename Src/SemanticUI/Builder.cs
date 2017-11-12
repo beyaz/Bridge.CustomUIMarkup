@@ -2,8 +2,6 @@
 using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
-using Bridge.CustomUIMarkup.CodeMirror;
-using Bridge.CustomUIMarkup.Design;
 using Bridge.CustomUIMarkup.UI.Design;
 
 namespace Bridge.CustomUIMarkup.SemanticUI
@@ -42,7 +40,7 @@ namespace Bridge.CustomUIMarkup.SemanticUI
                 new XmlIntellisenseInfo("content", typeof(content)),
                 new XmlIntellisenseInfo("extra-content", typeof(ExtraContent)),
                 new XmlIntellisenseInfo("ui.basic.button", typeof(ui_basic_button)),
-                new XmlIntellisenseInfo("Carousel", typeof(Bridge.CustomUIMarkup.jssor.Carousel)),
+                new XmlIntellisenseInfo("carousel", typeof(Bridge.CustomUIMarkup.jssor.Carousel)),
                 new XmlIntellisenseInfo("ui.divider", typeof(ui_divider)),
                 new XmlIntellisenseInfo("ui.menu", typeof(ui_menu)),
                 new XmlIntellisenseInfo("item", typeof(item)),
@@ -53,31 +51,31 @@ namespace Bridge.CustomUIMarkup.SemanticUI
 
 
 
-                new XmlIntellisenseInfo("TextInput", typeof(InputText)),
-                new XmlIntellisenseInfo("TextBox", typeof(InputText)),
-                new XmlIntellisenseInfo("Combo", typeof(Combo)),
-                new XmlIntellisenseInfo("ComboBox", typeof(Combo)),
+                new XmlIntellisenseInfo("textInput", typeof(InputText)),
+                new XmlIntellisenseInfo("textBox", typeof(InputText)),
+                new XmlIntellisenseInfo("combo", typeof(Combo)),
+                new XmlIntellisenseInfo("comboBox", typeof(Combo)),
                 new XmlIntellisenseInfo("ui.equal.width.grid", typeof(ui_equal_width_grid)),
-                new XmlIntellisenseInfo("TextArea", typeof(TextArea)),
+                new XmlIntellisenseInfo("textArea", typeof(TextArea)),
                 new XmlIntellisenseInfo("ui.container", typeof(ui_container)),
                 new XmlIntellisenseInfo("ui.stacked", typeof(ui_stacked)),
                 new XmlIntellisenseInfo("ui.grid", typeof(ui_grid)) {ChildrenTags = new[] {"Row"}},
                 new XmlIntellisenseInfo("ui page grid", typeof(ui_page_grid)) ,
-                new XmlIntellisenseInfo("Field", typeof(Field)),
+                new XmlIntellisenseInfo("field", typeof(Field)),
                 new XmlIntellisenseInfo("ui.form", typeof(ui_form)),
 
-                new XmlIntellisenseInfo("Row", typeof(Row)) {ChildrenTags = new[] {"Column"}},
+                new XmlIntellisenseInfo("row", typeof(Row)) {ChildrenTags = new[] {"column"}},
                 new XmlIntellisenseInfo("column", typeof(column)),
                 new XmlIntellisenseInfo("ui.header.1", typeof(ui_header_1)),
                 new XmlIntellisenseInfo("ui.header.2", typeof(ui_header_2)),
                 new XmlIntellisenseInfo("ui.header.3", typeof(ui_header_3)),
                 new XmlIntellisenseInfo("header", typeof(header)),
                 new XmlIntellisenseInfo("ui.image", typeof(ui_image)),
-                new XmlIntellisenseInfo("Icon", typeof(Icon)),
+                new XmlIntellisenseInfo("icon", typeof(Icon)),
                 new XmlIntellisenseInfo("ui.segment", typeof(ui_segment)),
-                new XmlIntellisenseInfo("TextBlock", typeof(TextBlock)),
-                new XmlIntellisenseInfo("XmlEditor", typeof(Bridge.CustomUIMarkup.SemanticUI.XmlEditor)),
-                new XmlIntellisenseInfo("UIEditor", typeof(UIEditor)),
+                new XmlIntellisenseInfo("textBlock", typeof(TextBlock)),
+                new XmlIntellisenseInfo("xmlEditor", typeof(Bridge.CustomUIMarkup.SemanticUI.XmlEditor)),
+                new XmlIntellisenseInfo("uiEditor", typeof(UIEditor)),
 
                 
             };
