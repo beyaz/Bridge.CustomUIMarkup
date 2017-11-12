@@ -77,14 +77,27 @@ namespace Bridge.CustomUIMarkup.DesignerSamples
       <ui.divider MarginBottom='10' />
       <Carousel DataSource='img/carousel_1.jpg,img/carousel_2.jpg,img/carousel_3.jpg' />
       <ui.divider MarginBottom='10' />
-      <card>
-         <image Src='http://www.samsunkorkuciftligi.com/upload/20170314__2069208026.jpg' />
-         <content Align='Center'>
-            <Header Align='Center'>Motor Safari</Header>
-            <description>Macera sizi bekliyor...</description>
-            <ui.basic.button Text='İncele' MarginTop='11' AddClass='yellow' />
-         </content>
-      </card>
+	  <ui.cards>
+	  
+		  <card>
+			 <image Src='http://www.samsunkorkuciftligi.com/upload/20170314__2069208026.jpg' />
+			 <content Align='Center'>
+				<Header Align='Center'>Motor Safari</Header>
+				<description>Macera sizi bekliyor...</description>
+				<ui.basic.button Text='İncele' MarginTop='11' AddClass='yellow' />
+			 </content>
+		  </card>
+		  
+		  <card>
+			 <image Src='http://www.samsunkorkuciftligi.com/upload/20170314__2069208026.jpg' />
+			 <content Align='Center'>
+				<Header Align='Center'>Motor Safari</Header>
+				<description>Macera sizi bekliyor...</description>
+				<ui.basic.button Text='İncele' MarginTop='11' AddClass='yellow' />
+			 </content>
+		  </card>
+		  
+	  </ui.cards>
    </Container>
 </ui.page.grid>
 
@@ -111,16 +124,18 @@ namespace Bridge.CustomUIMarkup.DesignerSamples
                     XmlTemplate =
                         @"
 
+<ui.cards>
 
-<card>
-	<image Src='http://www.samsunkorkuciftligi.com/upload/20170314__2069208026.jpg'/>
-	<content Align='Center'>
-        <Header Align='Center' >Motor Safari</Header>
-        <description> Macera sizi bekliyor...</description>
-        <ui.basic.button Text='İncele' MarginTop='11' AddClass='yellow' />
-    </content>	
-</card>
+    <card>
+	    <image Src='http://www.samsunkorkuciftligi.com/upload/20170314__2069208026.jpg'/>
+	    <content Align='Center'>
+            <Header Align='Center' >Motor Safari</Header>
+            <description> Macera sizi bekliyor...</description>
+            <ui.basic.button Text='İncele' MarginTop='11' AddClass='yellow' />
+        </content>	
+    </card>
 
+</ui.cards>
 "
                 },
                 new ExampleInfo

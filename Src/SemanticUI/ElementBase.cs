@@ -86,17 +86,24 @@ namespace Bridge.CustomUIMarkup.SemanticUI
         public override void InitDOM()
         {
             _root =  new jQuery(Document.CreateElement(HtmlTag)).AddClass(HtmlClassName);
-
-            
         }
+
+
 
        
     }
 
-    public class card: ElementBase
+     class card: ElementBase
+    {
+        protected override string HtmlClassName => "card";
+    }
+     class ui_card : ElementBase
     {
         protected override string HtmlClassName => "ui card";
-
+    }
+    class ui_cards : ElementBase
+    {
+        protected override string HtmlClassName => "ui cards";
     }
     public class content : ElementBase
     {

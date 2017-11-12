@@ -56,7 +56,7 @@
     <Compile Include="jssor\Carousel.cs" />
     <Compile Include="SemanticUI\Align.cs" />
     <Compile Include="SemanticUI\Field.cs" />
-    <Compile Include="SemanticUI\Form.cs" />
+    <Compile Include="SemanticUI\ui_form.cs" />
     <Compile Include="SemanticUI\Header.cs" />
     <Compile Include="SemanticUI\Icon.cs" />
     <Compile Include="SemanticUI\IconType.cs" />

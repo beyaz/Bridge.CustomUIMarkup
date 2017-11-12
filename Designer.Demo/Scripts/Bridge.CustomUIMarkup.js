@@ -2422,6 +2422,8 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
                         _o1.add(new Bridge.CustomUIMarkup.UI.Design.XmlIntellisenseInfo("TabPanel", Bridge.CustomUIMarkup.SemanticUI.TabPanel));
                         _o1.add(new Bridge.CustomUIMarkup.UI.Design.XmlIntellisenseInfo("Tab", Bridge.CustomUIMarkup.SemanticUI.TabItem));
                         _o1.add(new Bridge.CustomUIMarkup.UI.Design.XmlIntellisenseInfo("card", Bridge.CustomUIMarkup.SemanticUI.card));
+                        _o1.add(new Bridge.CustomUIMarkup.UI.Design.XmlIntellisenseInfo("ui.card", Bridge.CustomUIMarkup.SemanticUI.ui_card));
+                        _o1.add(new Bridge.CustomUIMarkup.UI.Design.XmlIntellisenseInfo("ui.cards", Bridge.CustomUIMarkup.SemanticUI.ui_cards));
                         _o1.add(new Bridge.CustomUIMarkup.UI.Design.XmlIntellisenseInfo("description", Bridge.CustomUIMarkup.SemanticUI.description));
                         _o1.add(new Bridge.CustomUIMarkup.UI.Design.XmlIntellisenseInfo("content", Bridge.CustomUIMarkup.SemanticUI.content));
                         _o1.add(new Bridge.CustomUIMarkup.UI.Design.XmlIntellisenseInfo("extra-content", Bridge.CustomUIMarkup.SemanticUI.ExtraContent));
@@ -2443,7 +2445,7 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
                         _o1.add(($t = new Bridge.CustomUIMarkup.UI.Design.XmlIntellisenseInfo("Grid", Bridge.CustomUIMarkup.SemanticUI.ui_grid), $t.ChildrenTags = System.Array.init(["Row"], System.String), $t));
                         _o1.add(new Bridge.CustomUIMarkup.UI.Design.XmlIntellisenseInfo("ui page grid", Bridge.CustomUIMarkup.SemanticUI.ui_page_grid));
                         _o1.add(new Bridge.CustomUIMarkup.UI.Design.XmlIntellisenseInfo("Field", Bridge.CustomUIMarkup.SemanticUI.Field));
-                        _o1.add(new Bridge.CustomUIMarkup.UI.Design.XmlIntellisenseInfo("Form", Bridge.CustomUIMarkup.SemanticUI.Form));
+                        _o1.add(new Bridge.CustomUIMarkup.UI.Design.XmlIntellisenseInfo("ui.form", Bridge.CustomUIMarkup.SemanticUI.ui_form));
                         _o1.add(($t = new Bridge.CustomUIMarkup.UI.Design.XmlIntellisenseInfo("Row", Bridge.CustomUIMarkup.SemanticUI.Row), $t.ChildrenTags = System.Array.init(["Column"], System.String), $t));
                         _o1.add(new Bridge.CustomUIMarkup.UI.Design.XmlIntellisenseInfo("Column", Bridge.CustomUIMarkup.SemanticUI.Column));
                         _o1.add(new Bridge.CustomUIMarkup.UI.Design.XmlIntellisenseInfo("Header1", Bridge.CustomUIMarkup.SemanticUI.Header1));
@@ -2583,6 +2585,7 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
         inherits: [System.Windows.DependencyObject,System.Windows.Markup.IAddChild],
         statics: {
             fields: {
+                BorderProperty: null,
                 ClassProperty: null,
                 AddClassProperty: null,
                 MarginLeftProperty: null,
@@ -2606,133 +2609,47 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
             },
             ctors: {
                 init: function () {
-                    this.ClassProperty = System.Windows.DependencyProperty.Register$1("Class", System.String, System.Windows.FrameworkElement, new System.Windows.PropertyMetadata.$ctor1(System.Windows.FrameworkElement.OnClassChanged));
+                    this.BorderProperty = System.Windows.DependencyProperty.Register$1("Border", System.String, System.Windows.FrameworkElement, System.Windows.FrameworkElement.CreateJQueryCssUpdater("border"));
+                    this.ClassProperty = System.Windows.DependencyProperty.Register$1("Class", System.String, System.Windows.FrameworkElement, System.Windows.FrameworkElement.CreateHtmlAttributeUpdater("class"));
                     this.AddClassProperty = System.Windows.DependencyProperty.Register$1("AddClass", System.String, System.Windows.FrameworkElement, new System.Windows.PropertyMetadata.$ctor1(System.Windows.FrameworkElement.OnAddClassChanged));
-                    this.MarginLeftProperty = System.Windows.DependencyProperty.Register$1("MarginLeft", System.Nullable$1(System.Double), System.Windows.FrameworkElement, new System.Windows.PropertyMetadata.$ctor1(System.Windows.FrameworkElement.OnMarginLeftChanged));
-                    this.MarginRightProperty = System.Windows.DependencyProperty.Register$1("MarginRight", System.Nullable$1(System.Double), System.Windows.FrameworkElement, new System.Windows.PropertyMetadata.$ctor1(System.Windows.FrameworkElement.OnMarginRightChanged));
-                    this.MarginBottomProperty = System.Windows.DependencyProperty.Register$1("MarginBottom", System.Nullable$1(System.Double), System.Windows.FrameworkElement, new System.Windows.PropertyMetadata.$ctor1(System.Windows.FrameworkElement.OnMarginBottomChanged));
-                    this.MarginTopProperty = System.Windows.DependencyProperty.Register$1("MarginTop", System.Nullable$1(System.Double), System.Windows.FrameworkElement, new System.Windows.PropertyMetadata.$ctor1(System.Windows.FrameworkElement.OnMarginTopChanged));
-                    this.PaddingLeftProperty = System.Windows.DependencyProperty.Register$1("PaddingLeft", System.Nullable$1(System.Double), System.Windows.FrameworkElement, new System.Windows.PropertyMetadata.$ctor1(System.Windows.FrameworkElement.OnPaddingLeftChanged));
-                    this.PaddingRightProperty = System.Windows.DependencyProperty.Register$1("PaddingRight", System.Nullable$1(System.Double), System.Windows.FrameworkElement, new System.Windows.PropertyMetadata.$ctor1(System.Windows.FrameworkElement.OnPaddingRightChanged));
-                    this.PaddingBottomProperty = System.Windows.DependencyProperty.Register$1("PaddingBottom", System.Nullable$1(System.Double), System.Windows.FrameworkElement, new System.Windows.PropertyMetadata.$ctor1(System.Windows.FrameworkElement.OnPaddingBottomChanged));
-                    this.PaddingTopProperty = System.Windows.DependencyProperty.Register$1("PaddingTop", System.Nullable$1(System.Double), System.Windows.FrameworkElement, new System.Windows.PropertyMetadata.$ctor1(System.Windows.FrameworkElement.OnPaddingTopChanged));
+                    this.MarginLeftProperty = System.Windows.DependencyProperty.Register$1("MarginLeft", System.Nullable$1(System.Double), System.Windows.FrameworkElement, System.Windows.FrameworkElement.CreateJQueryCssUpdater("marginLeft"));
+                    this.MarginRightProperty = System.Windows.DependencyProperty.Register$1("MarginRight", System.Nullable$1(System.Double), System.Windows.FrameworkElement, System.Windows.FrameworkElement.CreateJQueryCssUpdater("marginRight"));
+                    this.MarginBottomProperty = System.Windows.DependencyProperty.Register$1("MarginBottom", System.Nullable$1(System.Double), System.Windows.FrameworkElement, System.Windows.FrameworkElement.CreateJQueryCssUpdater("marginBottom"));
+                    this.MarginTopProperty = System.Windows.DependencyProperty.Register$1("MarginTop", System.Nullable$1(System.Double), System.Windows.FrameworkElement, System.Windows.FrameworkElement.CreateJQueryCssUpdater("marginTop"));
+                    this.PaddingLeftProperty = System.Windows.DependencyProperty.Register$1("PaddingLeft", System.Nullable$1(System.Double), System.Windows.FrameworkElement, System.Windows.FrameworkElement.CreateJQueryCssUpdater("paddingLeft"));
+                    this.PaddingRightProperty = System.Windows.DependencyProperty.Register$1("PaddingRight", System.Nullable$1(System.Double), System.Windows.FrameworkElement, System.Windows.FrameworkElement.CreateJQueryCssUpdater("paddingRight"));
+                    this.PaddingBottomProperty = System.Windows.DependencyProperty.Register$1("PaddingBottom", System.Nullable$1(System.Double), System.Windows.FrameworkElement, System.Windows.FrameworkElement.CreateJQueryCssUpdater("paddingBottom"));
+                    this.PaddingTopProperty = System.Windows.DependencyProperty.Register$1("PaddingTop", System.Nullable$1(System.Double), System.Windows.FrameworkElement, System.Windows.FrameworkElement.CreateJQueryCssUpdater("paddingTop"));
                     this.TextWrappingProperty = System.Windows.DependencyProperty.Register$1("TextWrapping", System.Windows.TextWrapping, System.Windows.FrameworkElement, new System.Windows.PropertyMetadata.$ctor1(System.Windows.FrameworkElement.OnTextWrappingChanged));
-                    this.FontWeightProperty = System.Windows.DependencyProperty.Register$1("FontWeight", System.Double, System.Windows.FrameworkElement, new System.Windows.PropertyMetadata.$ctor1(System.Windows.FrameworkElement.OnFontWeightChanged));
-                    this.FontSizeProperty = System.Windows.DependencyProperty.Register$1("FontSize", System.Double, System.Windows.FrameworkElement, new System.Windows.PropertyMetadata.$ctor1(System.Windows.FrameworkElement.OnFontSizeChanged));
-                    this.WidthProperty = System.Windows.DependencyProperty.Register$1("Width", System.Double, System.Windows.FrameworkElement, new System.Windows.PropertyMetadata.$ctor1(System.Windows.FrameworkElement.OnWidthChanged));
-                    this.ColorProperty = System.Windows.DependencyProperty.Register$1("Color", System.String, System.Windows.FrameworkElement, new System.Windows.PropertyMetadata.$ctor1(System.Windows.FrameworkElement.OnColorChanged));
+                    this.FontWeightProperty = System.Windows.DependencyProperty.Register$1("FontWeight", System.Double, System.Windows.FrameworkElement, System.Windows.FrameworkElement.CreateJQueryCssUpdater("fontWeight"));
+                    this.FontSizeProperty = System.Windows.DependencyProperty.Register$1("FontSize", System.Double, System.Windows.FrameworkElement, System.Windows.FrameworkElement.CreateJQueryCssUpdater("fontSize"));
+                    this.WidthProperty = System.Windows.DependencyProperty.Register$1("Width", System.Double, System.Windows.FrameworkElement, System.Windows.FrameworkElement.CreateJQueryCssUpdater("width"));
+                    this.ColorProperty = System.Windows.DependencyProperty.Register$1("Color", System.String, System.Windows.FrameworkElement, System.Windows.FrameworkElement.CreateJQueryCssUpdater("color"));
                     this["InnerHTMLProperty"] = System.Windows.DependencyProperty.Register$1("InnerHTML", System.String, System.Windows.FrameworkElement, new System.Windows.PropertyMetadata.$ctor1(System.Windows.FrameworkElement.OnInnerHTMLChanged));
                     this.VisibilityProperty = System.Windows.DependencyProperty.Register$1("Visibility", System.Windows.Visibility, System.Windows.FrameworkElement, new System.Windows.PropertyMetadata.$ctor1(System.Windows.FrameworkElement.OnVisibilityChanged));
-                    this.HeightProperty = System.Windows.DependencyProperty.Register$1("Height", System.Double, System.Windows.FrameworkElement, new System.Windows.PropertyMetadata.$ctor1(System.Windows.FrameworkElement.OnHeightChanged));
+                    this.HeightProperty = System.Windows.DependencyProperty.Register$1("Height", System.Double, System.Windows.FrameworkElement, System.Windows.FrameworkElement.CreateJQueryCssUpdater("height"));
                     this.BackgroundProperty = System.Windows.DependencyProperty.Register$1("Background", System.String, System.Windows.FrameworkElement, new System.Windows.PropertyMetadata.$ctor1(System.Windows.FrameworkElement.OnBackgroundChanged));
                 }
             },
             methods: {
-                OnClassChanged: function (d, e) {
-                    var me = Bridge.cast(d, System.Windows.FrameworkElement);
+                CreateHtmlAttributeUpdater: function (htmlAttribute) {
+                    return new System.Windows.PropertyMetadata.$ctor1(function (d, e) {
+                        var me = Bridge.cast(d, System.Windows.FrameworkElement);
 
-                    me._root != null ? me._root.attr("class", Bridge.cast(e.NewValue, System.String)) : null;
+                        me._root.attr(htmlAttribute, Bridge.cast(e.NewValue, System.String));
+                    });
+                },
+                CreateJQueryCssUpdater: function (jqueryCssAttribute) {
+                    return new System.Windows.PropertyMetadata.$ctor1(function (d, e) {
+                        var me = Bridge.cast(d, System.Windows.FrameworkElement);
+
+                        me._root.css(jqueryCssAttribute, Bridge.unbox(e.NewValue));
+                    });
                 },
                 OnAddClassChanged: function (d, e) {
                     var me = Bridge.cast(d, System.Windows.FrameworkElement);
 
                     me._root != null ? me._root.addClass(Bridge.cast(e.NewValue, System.String)) : null;
-                },
-                OnMarginLeftChanged: function (d, e) {
-                    var me = Bridge.cast(d, System.Windows.FrameworkElement);
-
-                    var value = Bridge.cast(Bridge.unbox(e.NewValue), System.Double, true);
-
-                    if (value == null) {
-                        me._root.css("marginLeft", "");
-                        return;
-                    }
-
-                    me._root.css("marginLeft", System.Nullable.toString(value, System.Double.format) + "px");
-                },
-                OnMarginRightChanged: function (d, e) {
-                    var me = Bridge.cast(d, System.Windows.FrameworkElement);
-
-                    var value = Bridge.cast(Bridge.unbox(e.NewValue), System.Double, true);
-
-                    if (value == null) {
-                        me._root.css("marginRight", "");
-                        return;
-                    }
-
-                    me._root.css("marginRight", System.Nullable.toString(value, System.Double.format) + "px");
-                },
-                OnMarginBottomChanged: function (d, e) {
-                    var me = Bridge.cast(d, System.Windows.FrameworkElement);
-
-                    var value = Bridge.cast(Bridge.unbox(e.NewValue), System.Double, true);
-
-                    if (value == null) {
-                        me._root.css("marginBottom", "");
-                        return;
-                    }
-
-                    me._root.css("marginBottom", System.Nullable.toString(value, System.Double.format) + "px");
-                },
-                OnMarginTopChanged: function (d, e) {
-                    var me = Bridge.cast(d, System.Windows.FrameworkElement);
-
-                    var value = Bridge.cast(Bridge.unbox(e.NewValue), System.Double, true);
-
-                    if (value == null) {
-                        me._root.css("marginTop", "");
-                        return;
-                    }
-
-                    me._root.css("marginTop", System.Nullable.toString(value, System.Double.format) + "px");
-                },
-                OnPaddingLeftChanged: function (d, e) {
-                    var me = Bridge.cast(d, System.Windows.FrameworkElement);
-
-                    var value = Bridge.cast(Bridge.unbox(e.NewValue), System.Double, true);
-
-                    if (value == null) {
-                        me._root.css("PaddingLeft", "");
-                        return;
-                    }
-
-                    me._root.css("paddingLeft", System.Nullable.toString(value, System.Double.format) + "px");
-                },
-                OnPaddingRightChanged: function (d, e) {
-                    var me = Bridge.cast(d, System.Windows.FrameworkElement);
-
-                    var value = Bridge.cast(Bridge.unbox(e.NewValue), System.Double, true);
-
-                    if (value == null) {
-                        me._root.css("PaddingRight", "");
-                        return;
-                    }
-
-                    me._root.css("paddingRight", System.Nullable.toString(value, System.Double.format) + "px");
-                },
-                OnPaddingBottomChanged: function (d, e) {
-                    var me = Bridge.cast(d, System.Windows.FrameworkElement);
-
-                    var value = Bridge.cast(Bridge.unbox(e.NewValue), System.Double, true);
-
-                    if (value == null) {
-                        me._root.css("PaddingBottom", "");
-                        return;
-                    }
-
-                    me._root.css("paddingBottom", System.Nullable.toString(value, System.Double.format) + "px");
-                },
-                OnPaddingTopChanged: function (d, e) {
-                    var me = Bridge.cast(d, System.Windows.FrameworkElement);
-
-                    var value = Bridge.cast(Bridge.unbox(e.NewValue), System.Double, true);
-
-                    if (value == null) {
-                        me._root.css("PaddingTop", "");
-                        return;
-                    }
-
-                    me._root.css("paddingTop", System.Nullable.toString(value, System.Double.format) + "px");
                 },
                 OnTextWrappingChanged: function (d, e) {
                     var me = Bridge.cast(d, System.Windows.FrameworkElement);
@@ -2749,26 +2666,6 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
 
                     throw new System.ArgumentException(System.Enum.toString(System.Windows.TextWrapping, value));
                 },
-                OnFontWeightChanged: function (d, e) {
-                    var me = Bridge.cast(d, System.Windows.FrameworkElement);
-
-                    me._root.css("fontWeight", Bridge.unbox(e.NewValue));
-                },
-                OnFontSizeChanged: function (d, e) {
-                    var me = Bridge.cast(d, System.Windows.FrameworkElement);
-
-                    me._root.css("fontSize", System.Nullable.getValue(Bridge.cast(Bridge.unbox(e.NewValue), System.Double)));
-                },
-                OnWidthChanged: function (d, e) {
-                    var me = Bridge.cast(d, System.Windows.FrameworkElement);
-
-                    me._root.css("width", Bridge.unbox(e.NewValue));
-                },
-                OnColorChanged: function (d, e) {
-                    var me = Bridge.cast(d, System.Windows.FrameworkElement);
-
-                    me._root.css("color", Bridge.unbox(e.NewValue));
-                },
                 OnInnerHTMLChanged: function (d, e) {
                     var me = Bridge.cast(d, System.Windows.FrameworkElement);
 
@@ -2783,16 +2680,6 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
                     } else {
                         me._root.css("visibility", "hidden");
                     }
-                },
-                OnHeightChanged: function (d, e) {
-                    var fe = Bridge.cast(d, System.Windows.FrameworkElement);
-
-                    if (e.NewValue == null) {
-                        fe._root.css("height", "");
-                        return;
-                    }
-
-                    fe._root.css("height", Bridge.unbox(e.NewValue));
                 },
                 OnBackgroundChanged: function (d, e) {
                     var fe = Bridge.cast(d, System.Windows.FrameworkElement);
@@ -2818,22 +2705,6 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
             _dataContext: null
         },
         props: {
-            Class: {
-                get: function () {
-                    return Bridge.cast(this.GetValue$1(System.Windows.FrameworkElement.ClassProperty), System.String);
-                },
-                set: function (value) {
-                    this.SetValue$1(System.Windows.FrameworkElement.ClassProperty, value);
-                }
-            },
-            AddClass: {
-                get: function () {
-                    return Bridge.cast(this.GetValue$1(System.Windows.FrameworkElement.AddClassProperty), System.String);
-                },
-                set: function (value) {
-                    this.SetValue$1(System.Windows.FrameworkElement.AddClassProperty, value);
-                }
-            },
             Childeren: {
                 get: function () {
                     if (this._childeren == null) {
@@ -2851,6 +2722,30 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
             ChildrenCount: {
                 get: function () {
                     return System.Nullable.getValueOrDefault((this._childeren != null ? this._childeren.Count : null), 0);
+                }
+            },
+            Border: {
+                get: function () {
+                    return Bridge.cast(this.GetValue$1(System.Windows.FrameworkElement.BorderProperty), System.String);
+                },
+                set: function (value) {
+                    this.SetValue$1(System.Windows.FrameworkElement.BorderProperty, value);
+                }
+            },
+            Class: {
+                get: function () {
+                    return Bridge.cast(this.GetValue$1(System.Windows.FrameworkElement.ClassProperty), System.String);
+                },
+                set: function (value) {
+                    this.SetValue$1(System.Windows.FrameworkElement.ClassProperty, value);
+                }
+            },
+            AddClass: {
+                get: function () {
+                    return Bridge.cast(this.GetValue$1(System.Windows.FrameworkElement.AddClassProperty), System.String);
+                },
+                set: function (value) {
+                    this.SetValue$1(System.Windows.FrameworkElement.AddClassProperty, value);
                 }
             },
             MarginLeft: {
@@ -2973,6 +2868,14 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
                     this.setItem("Visibility", Bridge.box(value, System.Windows.Visibility, System.Enum.toStringFn(System.Windows.Visibility)));
                 }
             },
+            Height: {
+                get: function () {
+                    return System.Nullable.getValue(Bridge.cast(Bridge.unbox(this.GetValue$1(System.Windows.FrameworkElement.HeightProperty)), System.Double));
+                },
+                set: function (value) {
+                    this.SetValue$1(System.Windows.FrameworkElement.HeightProperty, Bridge.box(value, System.Double, System.Double.format, System.Double.getHashCode));
+                }
+            },
             "Id": {
                 get: function () {
                     var $t;
@@ -3008,15 +2911,6 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
             }
         },
         methods: {
-            AfterInitDOM: function () {
-
-            },
-            BeforeAddChild: function (element) {
-
-            },
-            AfterAddChild: function (element) {
-
-            },
             Add: function (element) {
                 element._root.appendTo(this._root);
 
@@ -3031,30 +2925,28 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
                     if (Bridge.Reflection.isEnum(dp.PropertyType)) {
                         return System.Enum.parse(dp.PropertyType, "0");
                     }
-
                 }
                 return value;
+            },
+            InitDOM: function () {
+                this._root = Bridge.CustomUIMarkup.Common.DOM.div();
             },
             SetValue$1: function (dp, value) {
                 this.setItem(dp.Name, value);
             },
-            InitDOM: function () {
-
-                this._root = Bridge.CustomUIMarkup.Common.DOM.div();
-            },
             AddChild: function (element) {
-
                 this.BeforeAddChild(element);
-
 
                 if (this._childeren == null) {
                     this._childeren = new (System.Collections.Generic.List$1(System.Windows.FrameworkElement)).ctor();
                 }
                 this._childeren.add(element);
 
-
                 this.AfterAddChild(element);
             },
+            AfterAddChild: function (element) { },
+            AfterInitDOM: function () { },
+            BeforeAddChild: function (element) { },
             BindPropertyToInnerHTML: function (propertyName, targetElement) {
                 // TODO: remove
                 this.addPropertyChanged(Bridge.fn.bind(this, function (s, a) {
@@ -3300,7 +3192,7 @@ me._editor.display.wrapper.style.height = '95%';
             },
             Template: {
                 get: function () {
-                    return "\r\n<Container>\r\n    <XmlEditor Text ='{SourceText}' \r\n        OnTextChanged = '{OnTextChanged}' \r\n        OnCursorLineNumberChanged = '{OnCursorLineNumberChanged}' \r\n        Height='400' />\r\n    <Container Background='#f3f5f6' />\r\n</Container>";
+                    return "\r\n<Container>\r\n    <XmlEditor Text ='{SourceText}' \r\n        OnTextChanged = '{OnTextChanged}' \r\n        OnCursorLineNumberChanged = '{OnCursorLineNumberChanged}' \r\n        Height='400' />\r\n    <Container Border = '1px solid Green' />\r\n</Container>";
                 }
             },
             SourceText: {
@@ -3415,9 +3307,9 @@ me._editor.display.wrapper.style.height = '95%';
                 System.Windows.FrameworkElement.ctor.call(this);
                 this.Examples = function (_o1) {
                         var $t;
-                        _o1.add(($t = new Bridge.CustomUIMarkup.DesignerSamples.ExampleInfo(), $t.Name = "All", $t.XmlTemplate = "\r\n\r\n\r\n<ui.page.grid>\r\n   <Container>\r\n      <ui.text.menu.navbar FontSize='18'>\r\n         <left.menu>\r\n            <item>Project Name</item>\r\n         </left.menu>\r\n         <right.menu>\r\n            <item>Home</item>\r\n            <item>About</item>\r\n            <item>Contact</item>\r\n         </right.menu>\r\n      </ui.text.menu.navbar>\r\n      <ui.divider MarginBottom='10' />\r\n      <Carousel DataSource='img/carousel_1.jpg,img/carousel_2.jpg,img/carousel_3.jpg' />\r\n      <ui.divider MarginBottom='10' />\r\n      <card>\r\n         <image Src='http://www.samsunkorkuciftligi.com/upload/20170314__2069208026.jpg' />\r\n         <content Align='Center'>\r\n            <Header Align='Center'>Motor Safari</Header>\r\n            <description>Macera sizi bekliyor...</description>\r\n            <ui.basic.button Text='İncele' MarginTop='11' AddClass='yellow' />\r\n         </content>\r\n      </card>\r\n   </Container>\r\n</ui.page.grid>\r\n\r\n", $t));
+                        _o1.add(($t = new Bridge.CustomUIMarkup.DesignerSamples.ExampleInfo(), $t.Name = "All", $t.XmlTemplate = "\r\n\r\n\r\n<ui.page.grid>\r\n   <Container>\r\n      <ui.text.menu.navbar FontSize='18'>\r\n         <left.menu>\r\n            <item>Project Name</item>\r\n         </left.menu>\r\n         <right.menu>\r\n            <item>Home</item>\r\n            <item>About</item>\r\n            <item>Contact</item>\r\n         </right.menu>\r\n      </ui.text.menu.navbar>\r\n      <ui.divider MarginBottom='10' />\r\n      <Carousel DataSource='img/carousel_1.jpg,img/carousel_2.jpg,img/carousel_3.jpg' />\r\n      <ui.divider MarginBottom='10' />\r\n\t  <ui.cards>\r\n\t  \r\n\t\t  <card>\r\n\t\t\t <image Src='http://www.samsunkorkuciftligi.com/upload/20170314__2069208026.jpg' />\r\n\t\t\t <content Align='Center'>\r\n\t\t\t\t<Header Align='Center'>Motor Safari</Header>\r\n\t\t\t\t<description>Macera sizi bekliyor...</description>\r\n\t\t\t\t<ui.basic.button Text='İncele' MarginTop='11' AddClass='yellow' />\r\n\t\t\t </content>\r\n\t\t  </card>\r\n\t\t  \r\n\t\t  <card>\r\n\t\t\t <image Src='http://www.samsunkorkuciftligi.com/upload/20170314__2069208026.jpg' />\r\n\t\t\t <content Align='Center'>\r\n\t\t\t\t<Header Align='Center'>Motor Safari</Header>\r\n\t\t\t\t<description>Macera sizi bekliyor...</description>\r\n\t\t\t\t<ui.basic.button Text='İncele' MarginTop='11' AddClass='yellow' />\r\n\t\t\t </content>\r\n\t\t  </card>\r\n\t\t  \r\n\t  </ui.cards>\r\n   </Container>\r\n</ui.page.grid>\r\n\r\n", $t));
                         _o1.add(($t = new Bridge.CustomUIMarkup.DesignerSamples.ExampleInfo(), $t.Name = "Carousel", $t.XmlTemplate = "\r\n\r\n\r\n<container>\r\n    <Carousel DataSource='img/carousel_1.jpg,img/carousel_2.jpg,img/carousel_3.jpg' />\r\n</container>\r\n\r\n", $t));
-                        _o1.add(($t = new Bridge.CustomUIMarkup.DesignerSamples.ExampleInfo(), $t.Name = "Card", $t.XmlTemplate = "\r\n\r\n\r\n<card>\r\n\t<image Src='http://www.samsunkorkuciftligi.com/upload/20170314__2069208026.jpg'/>\r\n\t<content Align='Center'>\r\n        <Header Align='Center' >Motor Safari</Header>\r\n        <description> Macera sizi bekliyor...</description>\r\n        <ui.basic.button Text='İncele' MarginTop='11' AddClass='yellow' />\r\n    </content>\t\r\n</card>\r\n\r\n", $t));
+                        _o1.add(($t = new Bridge.CustomUIMarkup.DesignerSamples.ExampleInfo(), $t.Name = "Card", $t.XmlTemplate = "\r\n\r\n<ui.cards>\r\n\r\n    <card>\r\n\t    <image Src='http://www.samsunkorkuciftligi.com/upload/20170314__2069208026.jpg'/>\r\n\t    <content Align='Center'>\r\n            <Header Align='Center' >Motor Safari</Header>\r\n            <description> Macera sizi bekliyor...</description>\r\n            <ui.basic.button Text='İncele' MarginTop='11' AddClass='yellow' />\r\n        </content>\t\r\n    </card>\r\n\r\n</ui.cards>\r\n", $t));
                         _o1.add(($t = new Bridge.CustomUIMarkup.DesignerSamples.ExampleInfo(), $t.Name = "copy", $t.XmlTemplate = "\r\n\r\n\r\n<Grid>\r\n  \r\n    <Column Width='27' Align='Center'>\r\n        <Icon Type='Setting' Color='#ffbb00' FontSize='17' />\r\n    </Column>\r\n  \r\n  \t<Column Width='80'>\r\n        <TextBlock Text='Start Date:' Color='#888888' FontSize='13' FontWeight='600' TextWrapping='NoWrap' />\r\n    </Column>\r\n  \t\r\n  \t<Column   Align='Left' >\r\n        <TextBlock Text='November 1, 2017 15:30' Color='#888888' FontSize='12' FontWeight='600' TextWrapping='NoWrap' />\r\n    </Column>\r\n</Grid>\r\n\r\n", $t));
                         _o1.add(($t = new Bridge.CustomUIMarkup.DesignerSamples.ExampleInfo(), $t.Name = "properties", $t.XmlTemplate = "\r\n<Grid>\n    <column IsRightAligned ='True' Wide='15'>\n        <Button Text='Aloha'  />    \n    </column>\n</Grid>\r\n\r\n", $t));
                         _o1.add(($t = new Bridge.CustomUIMarkup.DesignerSamples.ExampleInfo(), $t.Name = "Layout", $t.XmlTemplate = "\r\n\r\n<GroupBox Header='Yellow -> GroupBox' Background='Yellow' >\r\n    <Container Background='Blue' Height='300'>\r\n        <Grid  Background='Green'>\r\n            <Row> \r\n\t            <Container  Background='Yellow' Height='30'/>\r\n\t            <Container  Background='Yellow' Height='30'/>\r\n            </Row>\r\n            <Row> \r\n\t            <Container  Background='Yellow' Height='30'/>\r\n            </Row>\r\n            <Row> \r\n\t            <Container  Background='Yellow' Height='30'/>\r\n\t            <Container  Background='Yellow' Height='30' /> \r\n            </Row>\r\n            <Row> \r\n\t            <StackPanel  Background='Red' Height='50'>\r\n\t                <Container  Background='Blue' Height='10' />     \r\n\t                <Container  Background='Yellow' Height='10' />     \r\n\t                <StackPanel  Background='Blue' Height='10' />     \r\n\t            </StackPanel>\r\n            </Row>\r\n        </Grid>\r\n    </Container> \r\n\r\n</GroupBox>\r\n", $t));
@@ -3629,8 +3521,6 @@ me._editor.display.wrapper.style.height = '95%';
             },
             InitDOM: function () {
                 this._root = $(document.createElement(this.HtmlTag)).addClass(this.HtmlClassName);
-
-
             }
         }
     });
@@ -4154,14 +4044,7 @@ me._editor.display.wrapper.style.height = '95%';
             },
             ctors: {
                 init: function () {
-                    this.HrefProperty = System.Windows.DependencyProperty.Register$1("Href", System.String, System.Windows.html_a, new System.Windows.PropertyMetadata.$ctor1(System.Windows.html_a.OnHrefChanged));
-                }
-            },
-            methods: {
-                OnHrefChanged: function (d, e) {
-                    var me = Bridge.cast(d, System.Windows.html_a);
-
-                    me._root.attr("href", Bridge.cast(e.NewValue, System.String));
+                    this.HrefProperty = System.Windows.DependencyProperty.Register$1("Href", System.String, System.Windows.html_a, System.Windows.FrameworkElement.CreateHtmlAttributeUpdater("href"));
                 }
             }
         },
@@ -4237,7 +4120,7 @@ me._editor.display.wrapper.style.height = '95%';
         props: {
             HtmlClassName: {
                 get: function () {
-                    return "ui card";
+                    return "card";
                 }
             }
         }
@@ -4333,17 +4216,6 @@ me._editor.display.wrapper.style.height = '95%';
         }
     });
 
-    Bridge.define("Bridge.CustomUIMarkup.SemanticUI.Form", {
-        inherits: [Bridge.CustomUIMarkup.SemanticUI.ElementBase],
-        props: {
-            HtmlClassName: {
-                get: function () {
-                    return "ui form";
-                }
-            }
-        }
-    });
-
     Bridge.define("Bridge.CustomUIMarkup.SemanticUI.Header", {
         inherits: [Bridge.CustomUIMarkup.SemanticUI.ElementBase],
         statics: {
@@ -4420,16 +4292,7 @@ me._editor.display.wrapper.style.height = '95%';
             },
             ctors: {
                 init: function () {
-                    this.SrcProperty = System.Windows.DependencyProperty.Register$1("Src", System.String, Bridge.CustomUIMarkup.SemanticUI.Image, new System.Windows.PropertyMetadata.$ctor1(Bridge.CustomUIMarkup.SemanticUI.Image.OnSrcChanged));
-                }
-            },
-            methods: {
-                OnSrcChanged: function (d, e) {
-                    var me = Bridge.cast(d, Bridge.CustomUIMarkup.SemanticUI.Image);
-
-                    var newValue = Bridge.cast(e.NewValue, System.String);
-
-                    me._root.attr("Src", newValue);
+                    this.SrcProperty = System.Windows.DependencyProperty.Register$1("Src", System.String, Bridge.CustomUIMarkup.SemanticUI.Image, System.Windows.FrameworkElement.CreateHtmlAttributeUpdater("src"));
                 }
             }
         },
@@ -4651,12 +4514,45 @@ me._editor.display.wrapper.style.height = '95%';
         }
     });
 
+    Bridge.define("Bridge.CustomUIMarkup.SemanticUI.ui_card", {
+        inherits: [Bridge.CustomUIMarkup.SemanticUI.ElementBase],
+        props: {
+            HtmlClassName: {
+                get: function () {
+                    return "ui card";
+                }
+            }
+        }
+    });
+
+    Bridge.define("Bridge.CustomUIMarkup.SemanticUI.ui_cards", {
+        inherits: [Bridge.CustomUIMarkup.SemanticUI.ElementBase],
+        props: {
+            HtmlClassName: {
+                get: function () {
+                    return "ui cards";
+                }
+            }
+        }
+    });
+
     Bridge.define("Bridge.CustomUIMarkup.SemanticUI.ui_divider", {
         inherits: [Bridge.CustomUIMarkup.SemanticUI.ElementBase],
         props: {
             HtmlClassName: {
                 get: function () {
                     return "ui divider";
+                }
+            }
+        }
+    });
+
+    Bridge.define("Bridge.CustomUIMarkup.SemanticUI.ui_form", {
+        inherits: [Bridge.CustomUIMarkup.SemanticUI.ElementBase],
+        props: {
+            HtmlClassName: {
+                get: function () {
+                    return "ui form";
                 }
             }
         }

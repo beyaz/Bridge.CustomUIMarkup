@@ -26,7 +26,7 @@ namespace Bridge.CustomUIMarkup.Design
         OnTextChanged = '{" + nameof(OnTextChanged) + @"}' 
         OnCursorLineNumberChanged = '{" + nameof(OnCursorLineNumberChanged) + @"}' 
         Height='400' />
-    <Container Background='#f3f5f6' />
+    <Container Border = '1px solid Green' />
 </Container>";
         #endregion
 

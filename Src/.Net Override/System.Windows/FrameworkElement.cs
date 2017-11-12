@@ -17,90 +17,10 @@ namespace System.Windows
 
     public class FrameworkElement : DependencyObject, IAddChild
     {
-        protected virtual void AfterInitDOM()
-        {
-
-        }
-
-
-        protected virtual void BeforeAddChild(FrameworkElement element)
-        {
-
-        }
-        protected virtual void AfterAddChild(FrameworkElement element)
-        {
-
-        }
-        public void Add(FrameworkElement element)
-        {
-            element._root.AppendTo(_root);
-
-            AddChild(element);
-        }
-       
-
-
-        #region ClassProperty
-        public static readonly DependencyProperty ClassProperty = DependencyProperty.Register(nameof(Class), typeof(string), typeof(FrameworkElement), new PropertyMetadata(OnClassChanged));
-
-        public string Class
-        {
-            get { return (string)GetValue(ClassProperty); }
-            set { SetValue(ClassProperty, value); }
-        }
-
-        protected static void OnClassChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-        {
-            var me = (FrameworkElement)d;
-
-            me._root?.Attr("class", (string)e.NewValue);
-        }
-        #endregion
-
-        #region AddClassProperty
-        public static readonly DependencyProperty AddClassProperty = DependencyProperty.Register(nameof(AddClass), typeof(string), typeof(FrameworkElement), new PropertyMetadata(OnAddClassChanged));
-
-        public string AddClass
-        {
-            get { return (string)GetValue(AddClassProperty); }
-            set { SetValue(AddClassProperty, value); }
-        }
-
-        protected static void OnAddClassChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-        {
-            var me = (FrameworkElement)d;
-
-            me._root?.AddClass((string)e.NewValue);
-        }
-        #endregion
-
-
-        public object GetValue(DependencyProperty dp)
-        {
-            var value =  this[dp.Name];
-            if (value == null )
-            {
-                if (dp.PropertyMetadata.DefaultValue != null)
-                {
-                    return dp.PropertyMetadata.DefaultValue;
-                }
-                if (dp.PropertyType.IsEnum)
-                {
-                    return Enum.Parse(dp.PropertyType, "0");
-                }
-                
-            }
-            return value;
-        }
-        public void SetValue(DependencyProperty dp,object value)
-        {
-            this[dp.Name] = value;
-        }
-
         #region Fields
         protected internal jQuery _root;
 
-        protected List<FrameworkElement> _childeren; 
+        protected List<FrameworkElement> _childeren;
         #endregion
 
         #region Constructors
@@ -139,19 +59,65 @@ namespace System.Windows
         #endregion
 
         #region Public Methods
+        public void Add(FrameworkElement element)
+        {
+            element._root.AppendTo(_root);
+
+            AddChild(element);
+        }
+
+        public object GetValue(DependencyProperty dp)
+        {
+            var value = this[dp.Name];
+            if (value == null)
+            {
+                if (dp.PropertyMetadata.DefaultValue != null)
+                {
+                    return dp.PropertyMetadata.DefaultValue;
+                }
+                if (dp.PropertyType.IsEnum)
+                {
+                    return Enum.Parse(dp.PropertyType, "0");
+                }
+            }
+            return value;
+        }
+
         public virtual void InitDOM()
         {
-            
             _root = DOM.div();
+        }
+
+        public void SetValue(DependencyProperty dp, object value)
+        {
+            this[dp.Name] = value;
         }
         #endregion
 
         #region Methods
+        protected static PropertyMetadata CreateHtmlAttributeUpdater(string htmlAttribute)
+        {
+            return new PropertyMetadata((d, e) =>
+            {
+                var me = (FrameworkElement) d;
+
+                me._root.Attr(htmlAttribute, (string) e.NewValue);
+            });
+        }
+
+        protected static PropertyMetadata CreateJQueryCssUpdater(string jqueryCssAttribute)
+        {
+            return new PropertyMetadata((d, e) =>
+            {
+                var me = (FrameworkElement) d;
+
+                me._root.Css(jqueryCssAttribute, e.NewValue);
+            });
+        }
+
         protected virtual void AddChild(FrameworkElement element)
         {
-
             BeforeAddChild(element);
-           
 
             if (_childeren == null)
             {
@@ -159,8 +125,19 @@ namespace System.Windows
             }
             _childeren.Add(element);
 
-            
             AfterAddChild(element);
+        }
+
+        protected virtual void AfterAddChild(FrameworkElement element)
+        {
+        }
+
+        protected virtual void AfterInitDOM()
+        {
+        }
+
+        protected virtual void BeforeAddChild(FrameworkElement element)
+        {
         }
 
         protected virtual void BindPropertyToInnerHTML(string propertyName, jQuery targetElement)
@@ -181,206 +158,144 @@ namespace System.Windows
         }
         #endregion
 
+        #region BorderProperty
+        public static readonly DependencyProperty BorderProperty = DependencyProperty.Register(nameof(Border), typeof(string), typeof(FrameworkElement), CreateJQueryCssUpdater("border"));
+
+        public string Border
+        {
+            get { return (string) GetValue(BorderProperty); }
+            set { SetValue(BorderProperty, value); }
+        }
+        #endregion
+
+        #region ClassProperty
+        public static readonly DependencyProperty ClassProperty = DependencyProperty.Register(nameof(Class), typeof(string), typeof(FrameworkElement), CreateHtmlAttributeUpdater("class"));
+
+        public string Class
+        {
+            get { return (string) GetValue(ClassProperty); }
+            set { SetValue(ClassProperty, value); }
+        }
+        #endregion
+
+        #region AddClassProperty
+        public static readonly DependencyProperty AddClassProperty = DependencyProperty.Register(nameof(AddClass), typeof(string), typeof(FrameworkElement), new PropertyMetadata(OnAddClassChanged));
+
+        public string AddClass
+        {
+            get { return (string) GetValue(AddClassProperty); }
+            set { SetValue(AddClassProperty, value); }
+        }
+
+        protected static void OnAddClassChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            var me = (FrameworkElement) d;
+
+            me._root?.AddClass((string) e.NewValue);
+        }
+        #endregion
+
         #region Margin
         #region MarginLeftProperty
-        public static readonly DependencyProperty MarginLeftProperty = DependencyProperty.Register(nameof(MarginLeft), typeof(double?), typeof(FrameworkElement), new PropertyMetadata(OnMarginLeftChanged));
+        public static readonly DependencyProperty MarginLeftProperty = DependencyProperty.Register(nameof(MarginLeft),
+                                                                                                   typeof(double?),
+                                                                                                   typeof(FrameworkElement),
+                                                                                                   CreateJQueryCssUpdater("marginLeft"));
 
         public double? MarginLeft
         {
             get { return (double?) this[nameof(MarginLeft)]; }
             set { this[nameof(MarginLeft)] = value; }
         }
-
-        static void OnMarginLeftChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-        {
-            var me = (FrameworkElement) d;
-
-            var value = (double?) e.NewValue;
-
-            if (value == null)
-            {
-                me._root.Css("marginLeft", string.Empty);
-                return;
-            }
-
-            me._root.Css("marginLeft", value + "px");
-        }
         #endregion
 
         #region MarginRightProperty
-        public static readonly DependencyProperty MarginRightProperty = DependencyProperty.Register(nameof(MarginRight), typeof(double?), typeof(FrameworkElement), new PropertyMetadata(OnMarginRightChanged));
+        public static readonly DependencyProperty MarginRightProperty = DependencyProperty.Register(nameof(MarginRight),
+                                                                                                    typeof(double?),
+                                                                                                    typeof(FrameworkElement),
+                                                                                                    CreateJQueryCssUpdater("marginRight"));
 
         public double? MarginRight
         {
             get { return (double?) this[nameof(MarginRight)]; }
             set { this[nameof(MarginRight)] = value; }
         }
-
-        static void OnMarginRightChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-        {
-            var me = (FrameworkElement) d;
-
-            var value = (double?) e.NewValue;
-
-            if (value == null)
-            {
-                me._root.Css("marginRight", string.Empty);
-                return;
-            }
-
-            me._root.Css("marginRight", value + "px");
-        }
         #endregion
 
         #region MarginBottomProperty
-        public static readonly DependencyProperty MarginBottomProperty = DependencyProperty.Register(nameof(MarginBottom), typeof(double?), typeof(FrameworkElement), new PropertyMetadata(OnMarginBottomChanged));
+        public static readonly DependencyProperty MarginBottomProperty = DependencyProperty.Register(nameof(MarginBottom),
+                                                                                                     typeof(double?),
+                                                                                                     typeof(FrameworkElement),
+                                                                                                     CreateJQueryCssUpdater("marginBottom"));
 
         public double? MarginBottom
         {
             get { return (double?) this[nameof(MarginBottom)]; }
             set { this[nameof(MarginBottom)] = value; }
         }
-
-        static void OnMarginBottomChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-        {
-            var me = (FrameworkElement) d;
-
-            var value = (double?) e.NewValue;
-
-            if (value == null)
-            {
-                me._root.Css("marginBottom", string.Empty);
-                return;
-            }
-
-            me._root.Css("marginBottom", value + "px");
-        }
         #endregion
 
         #region MarginTopProperty
-        public static readonly DependencyProperty MarginTopProperty = DependencyProperty.Register(nameof(MarginTop), typeof(double?), typeof(FrameworkElement), new PropertyMetadata(OnMarginTopChanged));
+        public static readonly DependencyProperty MarginTopProperty = DependencyProperty.Register(nameof(MarginTop),
+                                                                                                  typeof(double?),
+                                                                                                  typeof(FrameworkElement),
+                                                                                                  CreateJQueryCssUpdater("marginTop"));
 
         public double? MarginTop
         {
             get { return (double?) this[nameof(MarginTop)]; }
             set { this[nameof(MarginTop)] = value; }
         }
-
-        static void OnMarginTopChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-        {
-            var me = (FrameworkElement) d;
-
-            var value = (double?) e.NewValue;
-
-            if (value == null)
-            {
-                me._root.Css("marginTop", string.Empty);
-                return;
-            }
-
-            me._root.Css("marginTop", value + "px");
-        }
         #endregion
         #endregion
 
         #region Padding
         #region PaddingLeftProperty
-        public static readonly DependencyProperty PaddingLeftProperty = DependencyProperty.Register(nameof(PaddingLeft), typeof(double?), typeof(FrameworkElement), new PropertyMetadata(OnPaddingLeftChanged));
+        public static readonly DependencyProperty PaddingLeftProperty = DependencyProperty.Register(nameof(PaddingLeft), typeof(double?),
+                                                                                                    typeof(FrameworkElement),
+                                                                                                    CreateJQueryCssUpdater("paddingLeft"));
 
         public double? PaddingLeft
         {
             get { return (double?) this[nameof(PaddingLeft)]; }
             set { this[nameof(PaddingLeft)] = value; }
         }
-
-        static void OnPaddingLeftChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-        {
-            var me = (FrameworkElement) d;
-
-            var value = (double?) e.NewValue;
-
-            if (value == null)
-            {
-                me._root.Css("PaddingLeft", string.Empty);
-                return;
-            }
-
-            me._root.Css("paddingLeft", value + "px");
-        }
         #endregion
 
         #region PaddingRightProperty
-        public static readonly DependencyProperty PaddingRightProperty = DependencyProperty.Register(nameof(PaddingRight), typeof(double?), typeof(FrameworkElement), new PropertyMetadata(OnPaddingRightChanged));
+        public static readonly DependencyProperty PaddingRightProperty = DependencyProperty.Register(nameof(PaddingRight),
+                                                                                                     typeof(double?), typeof(FrameworkElement),
+                                                                                                     CreateJQueryCssUpdater("paddingRight"));
 
         public double? PaddingRight
         {
             get { return (double?) this[nameof(PaddingRight)]; }
             set { this[nameof(PaddingRight)] = value; }
         }
-
-        static void OnPaddingRightChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-        {
-            var me = (FrameworkElement) d;
-
-            var value = (double?) e.NewValue;
-
-            if (value == null)
-            {
-                me._root.Css("PaddingRight", string.Empty);
-                return;
-            }
-
-            me._root.Css("paddingRight", value + "px");
-        }
         #endregion
 
         #region PaddingBottomProperty
-        public static readonly DependencyProperty PaddingBottomProperty = DependencyProperty.Register(nameof(PaddingBottom), typeof(double?), typeof(FrameworkElement), new PropertyMetadata(OnPaddingBottomChanged));
+        public static readonly DependencyProperty PaddingBottomProperty = DependencyProperty.Register(nameof(PaddingBottom),
+                                                                                                      typeof(double?),
+                                                                                                      typeof(FrameworkElement),
+                                                                                                      CreateJQueryCssUpdater("paddingBottom"));
 
         public double? PaddingBottom
         {
             get { return (double?) this[nameof(PaddingBottom)]; }
             set { this[nameof(PaddingBottom)] = value; }
         }
-
-        static void OnPaddingBottomChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-        {
-            var me = (FrameworkElement) d;
-
-            var value = (double?) e.NewValue;
-
-            if (value == null)
-            {
-                me._root.Css("PaddingBottom", string.Empty);
-                return;
-            }
-
-            me._root.Css("paddingBottom", value + "px");
-        }
         #endregion
 
         #region PaddingTopProperty
-        public static readonly DependencyProperty PaddingTopProperty = DependencyProperty.Register(nameof(PaddingTop), typeof(double?), typeof(FrameworkElement), new PropertyMetadata(OnPaddingTopChanged));
+        public static readonly DependencyProperty PaddingTopProperty = DependencyProperty.Register(nameof(PaddingTop),
+                                                                                                   typeof(double?), typeof(FrameworkElement),
+                                                                                                   CreateJQueryCssUpdater("paddingTop"));
 
         public double? PaddingTop
         {
             get { return (double?) this[nameof(PaddingTop)]; }
             set { this[nameof(PaddingTop)] = value; }
-        }
-
-        static void OnPaddingTopChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-        {
-            var me = (FrameworkElement) d;
-
-            var value = (double?) e.NewValue;
-
-            if (value == null)
-            {
-                me._root.Css("PaddingTop", string.Empty);
-                return;
-            }
-
-            me._root.Css("paddingTop", value + "px");
         }
         #endregion
         #endregion
@@ -415,70 +330,53 @@ namespace System.Windows
         #endregion
 
         #region FontWeightProperty
-        public static readonly DependencyProperty FontWeightProperty = DependencyProperty.Register(nameof(FontWeight), typeof(double), typeof(FrameworkElement), new PropertyMetadata(OnFontWeightChanged));
+        public static readonly DependencyProperty FontWeightProperty = DependencyProperty.Register(nameof(FontWeight),
+                                                                                                   typeof(double),
+                                                                                                   typeof(FrameworkElement),
+                                                                                                   CreateJQueryCssUpdater("fontWeight"));
 
         public object FontWeight
         {
             get { return this[nameof(FontWeight)]; }
             set { this[nameof(FontWeight)] = value; }
         }
-
-        static void OnFontWeightChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-        {
-            var me = (FrameworkElement) d;
-
-            me._root.Css("fontWeight", e.NewValue);
-        }
         #endregion
 
         #region FontSizeProperty
-        public static readonly DependencyProperty FontSizeProperty = DependencyProperty.Register(nameof(FontSize), typeof(double), typeof(FrameworkElement), new PropertyMetadata(OnFontSizeChanged));
+        public static readonly DependencyProperty FontSizeProperty = DependencyProperty.Register(nameof(FontSize),
+                                                                                                 typeof(double),
+                                                                                                 typeof(FrameworkElement),
+                                                                                                 CreateJQueryCssUpdater("fontSize"));
 
         public double FontSize
         {
             get { return (double) this[nameof(FontSize)]; }
             set { this[nameof(FontSize)] = value; }
         }
-
-        static void OnFontSizeChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-        {
-            var me = (FrameworkElement) d;
-
-            me._root.Css("fontSize", (double) e.NewValue);
-        }
         #endregion
 
         #region WidthProperty
-        public static readonly DependencyProperty WidthProperty = DependencyProperty.Register(nameof(Width), typeof(double), typeof(FrameworkElement), new PropertyMetadata(OnWidthChanged));
+        public static readonly DependencyProperty WidthProperty = DependencyProperty.Register(nameof(Width),
+                                                                                              typeof(double),
+                                                                                              typeof(FrameworkElement),
+                                                                                              CreateJQueryCssUpdater("width"));
 
         public double Width
         {
             get { return (double) this[nameof(Width)]; }
             set { this[nameof(Width)] = value; }
         }
-
-        static void OnWidthChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-        {
-            var me = (FrameworkElement) d;
-
-            me._root.Css("width", e.NewValue);
-        }
         #endregion
 
         #region ColorProperty
-        public static readonly DependencyProperty ColorProperty = DependencyProperty.Register(nameof(Color), typeof(string), typeof(FrameworkElement), new PropertyMetadata(OnColorChanged));
+        public static readonly DependencyProperty ColorProperty = DependencyProperty.Register(nameof(Color),
+                                                                                              typeof(string), typeof(FrameworkElement),
+                                                                                              CreateJQueryCssUpdater("color"));
 
         public string Color
         {
             get { return (string) this[nameof(Color)]; }
             set { this[nameof(Color)] = value; }
-        }
-
-        static void OnColorChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-        {
-            var me = (FrameworkElement) d;
-
-            me._root.Css("color", e.NewValue);
         }
         #endregion
 
@@ -487,8 +385,8 @@ namespace System.Windows
 
         public string InnerHTML
         {
-            get { return (string)GetValue(InnerHTMLProperty); }
-            set { SetValue(InnerHTMLProperty,value); }
+            get { return (string) GetValue(InnerHTMLProperty); }
+            set { SetValue(InnerHTMLProperty, value); }
         }
 
         protected static void OnInnerHTMLChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
@@ -525,19 +423,14 @@ namespace System.Windows
         #endregion
 
         #region HeightProperty
-        public static readonly DependencyProperty HeightProperty = DependencyProperty.Register("Height", typeof(double), typeof(FrameworkElement), new PropertyMetadata(OnHeightChanged));
+        public static readonly DependencyProperty HeightProperty = DependencyProperty.Register(nameof(Height),
+                                                                                               typeof(double), typeof(FrameworkElement),
+                                                                                               CreateJQueryCssUpdater("height"));
 
-        static void OnHeightChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        public double Height
         {
-            var fe = (FrameworkElement) d;
-
-            if (e.NewValue == null)
-            {
-                fe._root.Css("height", "");
-                return;
-            }
-
-            fe._root.Css("height", e.NewValue);
+            get { return (double) GetValue(HeightProperty); }
+            set { SetValue(HeightProperty, value); }
         }
         #endregion
 
@@ -601,34 +494,31 @@ namespace System.Windows
 
     class html_div : FrameworkElement
     {
+        #region Public Methods
         public override void InitDOM()
         {
             _root = new jQuery(Document.CreateElement("div"));
         }
+        #endregion
     }
+
     class html_a : FrameworkElement
     {
+        #region Public Methods
         public override void InitDOM()
         {
             _root = new jQuery(Document.CreateElement("a"));
         }
+        #endregion
 
         #region HrefProperty
-        public static readonly DependencyProperty HrefProperty = DependencyProperty.Register(nameof(Href), typeof(string), typeof(html_a), new PropertyMetadata(OnHrefChanged));
+        public static readonly DependencyProperty HrefProperty = DependencyProperty.Register(nameof(Href), typeof(string), typeof(html_a), CreateHtmlAttributeUpdater("href"));
 
         public string Href
         {
-            get { return (string)GetValue(HrefProperty); }
+            get { return (string) GetValue(HrefProperty); }
             set { SetValue(HrefProperty, value); }
-        }
-
-        static void OnHrefChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-        {
-            var me = (html_a)d;
-
-            me._root.Attr("href", (string)e.NewValue);
         }
         #endregion
     }
-    
 }

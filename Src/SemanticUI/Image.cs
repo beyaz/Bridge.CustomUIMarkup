@@ -10,21 +10,12 @@ namespace Bridge.CustomUIMarkup.SemanticUI
         #endregion
 
         #region SrcProperty
-        public static readonly DependencyProperty SrcProperty = DependencyProperty.Register(nameof(Src), typeof(string), typeof(Image), new PropertyMetadata(OnSrcChanged));
+        public static readonly DependencyProperty SrcProperty = DependencyProperty.Register(nameof(Src), typeof(string), typeof(Image), CreateHtmlAttributeUpdater("src"));
 
         public string Src
         {
             get { return (string) GetValue(SrcProperty); }
             set { SetValue(SrcProperty, value); }
-        }
-
-        static void OnSrcChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-        {
-            var me = (Image) d;
-
-            var newValue = (string) e.NewValue;
-
-            me._root.Attr("Src", newValue);
         }
         #endregion
     }
