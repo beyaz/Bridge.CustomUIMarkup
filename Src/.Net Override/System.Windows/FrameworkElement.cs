@@ -350,8 +350,8 @@ namespace System.Windows
 
         public double FontSize
         {
-            get { return (double) this[nameof(FontSize)]; }
-            set { this[nameof(FontSize)] = value; }
+            get { return (double) GetValue(FontSizeProperty); }
+            set { SetValue(FontSizeProperty, value); }
         }
         #endregion
 

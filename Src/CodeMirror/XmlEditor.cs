@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Windows;
 using Bridge.CustomUIMarkup.Common;
 using Bridge.jQuery2;
@@ -11,21 +12,15 @@ namespace Bridge.CustomUIMarkup.CodeMirror
         public XmlEditor()
         {
             FontSize = 12;
+            this.OnPropertyChanged(nameof(FontSize), FontSizeChanged);
         }
         #region FontSizeProperty
-        public static readonly DependencyProperty FontSizeProperty = DependencyProperty.Register(nameof(FontSize), typeof(int), typeof(XmlEditor), new PropertyMetadata(FontSizeChanged));
-
-        public int FontSize
+       
+        void FontSizeChanged()
         {
-            get { return (int)this[nameof(FontSize)]; }
-            set { this[nameof(FontSize)] = value; }
-        }
+            var fontSize = FontSize;
 
-        static void FontSizeChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-        {
-            var fontSize = (int)e.NewValue;
-
-            var me = (XmlEditor)d;
+            var me = this;
 
             if (me._editor != null)
             {
@@ -41,7 +36,7 @@ namespace Bridge.CustomUIMarkup.CodeMirror
         #endregion
 
         #region Fields
-        object _editor;
+        public object _editor;
 
         bool isFiring_OnTextChanged;
         #endregion
