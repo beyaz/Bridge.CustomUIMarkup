@@ -61,7 +61,7 @@ namespace Bridge.CustomUIMarkup.SemanticUI
                 new XmlIntellisenseInfo("TextArea", typeof(TextArea)),
                 new XmlIntellisenseInfo("ui.container", typeof(ui_container)),
                 new XmlIntellisenseInfo("ui.stacked", typeof(ui_stacked)),
-                new XmlIntellisenseInfo("Grid", typeof(ui_grid)) {ChildrenTags = new[] {"Row"}},
+                new XmlIntellisenseInfo("ui.grid", typeof(ui_grid)) {ChildrenTags = new[] {"Row"}},
                 new XmlIntellisenseInfo("ui page grid", typeof(ui_page_grid)) ,
                 new XmlIntellisenseInfo("Field", typeof(Field)),
                 new XmlIntellisenseInfo("ui.form", typeof(ui_form)),

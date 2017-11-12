@@ -125,7 +125,7 @@ namespace Bridge.CustomUIMarkup.DesignerSamples
 <ui.cards>
 
     <card>
-	    <image Src='http://www.samsunkorkuciftligi.com/upload/20170314__2069208026.jpg'/>
+	    <ui.image Src='http://www.samsunkorkuciftligi.com/upload/20170314__2069208026.jpg'/>
 	    <content Align='Center'>
             <Header Align='Center' >Motor Safari</Header>
             <description> Macera sizi bekliyor...</description>
@@ -165,48 +165,15 @@ namespace Bridge.CustomUIMarkup.DesignerSamples
                     Name = "properties",
                     XmlTemplate =
                     @"
-<Grid>
+<ui.grid>
     <column IsRightAligned ='True' Wide='15'>
-        <Button Text='Aloha'  />    
+        <ui.button Text='Aloha'  />    
     </column>
-</Grid>
+</ui.grid>
 
 "
                 },
-                new ExampleInfo
-                {
-                    Name = "Layout",
-                    XmlTemplate =
-                        @"
-
-<GroupBox Header='Yellow -> GroupBox' Background='Yellow' >
-    <Container Background='Blue' Height='300'>
-        <Grid  Background='Green'>
-            <Row> 
-	            <Container  Background='Yellow' Height='30'/>
-	            <Container  Background='Yellow' Height='30'/>
-            </Row>
-            <Row> 
-	            <Container  Background='Yellow' Height='30'/>
-            </Row>
-            <Row> 
-	            <Container  Background='Yellow' Height='30'/>
-	            <Container  Background='Yellow' Height='30' /> 
-            </Row>
-            <Row> 
-	            <StackPanel  Background='Red' Height='50'>
-	                <Container  Background='Blue' Height='10' />     
-	                <Container  Background='Yellow' Height='10' />     
-	                <StackPanel  Background='Blue' Height='10' />     
-	            </StackPanel>
-            </Row>
-        </Grid>
-    </Container> 
-
-</GroupBox>
-"
-                },
-
+               
                 new ExampleInfo
                 {
                     Name = "Simple",
