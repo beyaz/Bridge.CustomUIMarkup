@@ -59,7 +59,7 @@ namespace System.Windows
         #endregion
 
         #region Public Methods
-        public void Add(FrameworkElement element)
+        public virtual void Add(FrameworkElement element)
         {
             element._root.AppendTo(_root);
 

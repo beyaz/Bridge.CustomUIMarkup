@@ -3,7 +3,7 @@ using System.Windows;
 
 namespace Bridge.CustomUIMarkup.SemanticUI
 {
-    public class Column : ElementBase
+    public class column : ElementBase
     {
         #region Properties
         protected override string HtmlClassName => "column";
@@ -13,7 +13,7 @@ namespace Bridge.CustomUIMarkup.SemanticUI
         public static readonly DependencyProperty WideProperty =
             DependencyProperty.Register(nameof(Wide),
                                         typeof(int),
-                                        typeof(Column),
+                                        typeof(column),
                                         new PropertyMetadata(WideChanged));
 
         public int Wide

@@ -1,20 +1,19 @@
 ﻿using System;
 using System.Linq;
 using System.Windows;
-using System.Windows.Markup;
 using Bridge.CustomUIMarkup.Common;
 using Bridge.jQuery2;
 
 namespace Bridge.CustomUIMarkup.SemanticUI
 {
-    public class Field : FrameworkElement, IAddChild
+    public class Field : ElementBase
     {
         #region Fields
         jQuery _labelElement, _errorElement;
         #endregion
 
         #region Public Methods
-        public void Add(FrameworkElement element)
+        public override void Add(FrameworkElement element)
         {
             AddChild(element);
 
@@ -27,8 +26,6 @@ namespace Bridge.CustomUIMarkup.SemanticUI
         }
         #endregion
 
-       
-
         void ReOrderElements()
         {
             _root.Remove();
@@ -37,7 +34,7 @@ namespace Bridge.CustomUIMarkup.SemanticUI
             {
                 _root.SetFirstChild(_labelElement);
             }
-            if (Childeren.Count == 1 )
+            if (Childeren.Count == 1)
             {
                 _root.SetLastChild(Childeren.First()._root);
             }
@@ -46,24 +43,20 @@ namespace Bridge.CustomUIMarkup.SemanticUI
             {
                 _root.SetLastChild(_errorElement);
             }
-
         }
-       
-    
-       
 
         #region ErrorMessageProperty
         public static readonly DependencyProperty ErrorMessageProperty = DependencyProperty.Register(nameof(ErrorMessage), typeof(string), typeof(Field), new PropertyMetadata(OnErrorMessageChanged));
 
         public string ErrorMessage
         {
-            get { return (string)this[nameof(ErrorMessage)]; }
+            get { return (string) this[nameof(ErrorMessage)]; }
             set { this[nameof(ErrorMessage)] = value; }
         }
 
         static void OnErrorMessageChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            var me = (Field)d;
+            var me = (Field) d;
             var value = (string) e.NewValue;
             if (value.IsNullOrWhiteSpace())
             {
@@ -71,7 +64,7 @@ namespace Bridge.CustomUIMarkup.SemanticUI
             }
             else
             {
-                me.InitError((string)e.NewValue);
+                me.InitError((string) e.NewValue);
             }
         }
 
@@ -81,8 +74,8 @@ namespace Bridge.CustomUIMarkup.SemanticUI
             _root.AddClass("error");
 
             ReOrderElements();
-
         }
+
         void RemoveError()
         {
             _errorElement.RemoveFromParent();
@@ -123,9 +116,8 @@ namespace Bridge.CustomUIMarkup.SemanticUI
             }
 
             _labelElement.Html(label);
-
-            
         }
+
         void RemoveLabel()
         {
             _labelElement?.RemoveFromParent();

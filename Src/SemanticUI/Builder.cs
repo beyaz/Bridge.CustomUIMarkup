@@ -32,7 +32,7 @@ namespace Bridge.CustomUIMarkup.SemanticUI
                 
 
 
-                new XmlIntellisenseInfo("Button", typeof(Button)),
+                new XmlIntellisenseInfo("ui.button", typeof(ui_button)),
                 new XmlIntellisenseInfo("TabPanel", typeof(TabPanel)),
                 new XmlIntellisenseInfo("Tab", typeof(TabItem)),
                 new XmlIntellisenseInfo("card", typeof(card)),
@@ -59,7 +59,7 @@ namespace Bridge.CustomUIMarkup.SemanticUI
                 new XmlIntellisenseInfo("ComboBox", typeof(Combo)),
                 new XmlIntellisenseInfo("ui.equal.width.grid", typeof(ui_equal_width_grid)),
                 new XmlIntellisenseInfo("TextArea", typeof(TextArea)),
-                new XmlIntellisenseInfo("Container", typeof(Container)),
+                new XmlIntellisenseInfo("ui.container", typeof(ui_container)),
                 new XmlIntellisenseInfo("ui.stacked", typeof(ui_stacked)),
                 new XmlIntellisenseInfo("Grid", typeof(ui_grid)) {ChildrenTags = new[] {"Row"}},
                 new XmlIntellisenseInfo("ui page grid", typeof(ui_page_grid)) ,
@@ -67,7 +67,7 @@ namespace Bridge.CustomUIMarkup.SemanticUI
                 new XmlIntellisenseInfo("ui.form", typeof(ui_form)),
 
                 new XmlIntellisenseInfo("Row", typeof(Row)) {ChildrenTags = new[] {"Column"}},
-                new XmlIntellisenseInfo("Column", typeof(Column)),
+                new XmlIntellisenseInfo("column", typeof(column)),
                 new XmlIntellisenseInfo("ui.header.1", typeof(ui_header_1)),
                 new XmlIntellisenseInfo("ui.header.2", typeof(ui_header_2)),
                 new XmlIntellisenseInfo("ui.header.3", typeof(ui_header_3)),

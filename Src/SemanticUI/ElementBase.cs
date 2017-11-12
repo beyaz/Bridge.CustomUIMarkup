@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Markup;
 using Bridge.Html5;
 using Bridge.jQuery2;
 

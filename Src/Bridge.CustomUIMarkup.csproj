@@ -80,7 +80,7 @@
     <Compile Include="SemanticUI\Button.cs" />
     <Compile Include="SemanticUI\column.cs" />
     <Compile Include="SemanticUI\Combo.cs" />
-    <Compile Include="SemanticUI\Container.cs" />
+    <Compile Include="SemanticUI\ui_container.cs" />
     <Compile Include="SemanticUI\ElementBase.cs" />
     <Compile Include="SemanticUI\row.cs" />
     <Compile Include="SemanticUI\VersionInfo.cs" />
