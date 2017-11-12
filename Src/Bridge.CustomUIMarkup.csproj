@@ -85,7 +85,6 @@
     <Compile Include="SemanticUI\row.cs" />
     <Compile Include="SemanticUI\VersionInfo.cs" />
     <Compile Include="SemanticUI\ui_grid.cs" />
-    <Compile Include="SemanticUI\GroupBox.cs" />
     <Compile Include="SemanticUI\InputText.cs" />
     <Compile Include="SemanticUI\Modal.cs" />
     <Compile Include="SemanticUI\NumberToWord.cs" />

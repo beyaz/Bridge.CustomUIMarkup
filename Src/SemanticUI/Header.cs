@@ -2,14 +2,14 @@
 
 namespace Bridge.CustomUIMarkup.SemanticUI
 {
-    public class Header : ElementBase
+    public class header : ElementBase
     {
         #region Properties
         protected override string HtmlClassName => "header";
         #endregion
 
         #region TextProperty
-        public static readonly DependencyProperty TextProperty = DependencyProperty.Register(nameof(Text), typeof(string), typeof(Header), new PropertyMetadata(OnInnerHTMLChanged));
+        public static readonly DependencyProperty TextProperty = DependencyProperty.Register(nameof(Text), typeof(string), typeof(header), new PropertyMetadata(OnInnerHTMLChanged));
 
         public string Text
         {
@@ -19,7 +19,7 @@ namespace Bridge.CustomUIMarkup.SemanticUI
         #endregion
     }
 
-    public class Header1 : Header
+    public class ui_header_1 : header
     {
         #region Properties
         protected override string HtmlClassName => "ui header";
@@ -27,7 +27,7 @@ namespace Bridge.CustomUIMarkup.SemanticUI
         #endregion
     }
 
-    public class Header2 : Header
+    public class ui_header_2 : header
     {
         #region Properties
         protected override string HtmlClassName => "ui header";
@@ -35,7 +35,7 @@ namespace Bridge.CustomUIMarkup.SemanticUI
         #endregion
     }
 
-    public class Header3 : Header
+    public class ui_header_3 : header
     {
         #region Properties
         protected override string HtmlClassName => "ui header";
