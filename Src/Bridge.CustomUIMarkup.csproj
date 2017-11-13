@@ -104,6 +104,15 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="bridge.json" />
+    <Content Include="CodeMirror\5.31.0\addon\hint\xml-hint.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="CodeMirror\5.31.0\addon\hint\show-hint.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="CodeMirror\5.31.0\addon\mode\xml\xml.js.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="CodeMirror\CodeMirror.css">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -160,13 +169,18 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>if not exist $(SolutionDir)\bin           mkdir $(SolutionDir)\bin
-if not exist $(SolutionDir)\bin\js       mkdir $(SolutionDir)\bin\js
-if not exist $(SolutionDir)\bin\css     mkdir $(SolutionDir)\bin\css
+    <PostBuildEvent>if not exist $(SolutionDir)\bin      mkdir $(SolutionDir)\bin
+if not exist $(SolutionDir)\bin\js   mkdir $(SolutionDir)\bin\js
+if not exist $(SolutionDir)\bin\css  mkdir $(SolutionDir)\bin\css
 
-copy /y "$(ProjectDir)jssor\*.js"  	"$(SolutionDir)\bin\js\"
+copy /y "$(ProjectDir)jssor\*.js"  	    "$(SolutionDir)\bin\js\"
 copy /y "$(ProjectDir)jssor\*.css"  	"$(SolutionDir)\bin\css\"
-copy /y "$(ProjectDir)CodeMirror\*.css"    "$(SolutionDir)\bin\css\"
+copy /y "$(ProjectDir)CodeMirror\*.css" "$(SolutionDir)\bin\css\"
+
+:code mirror
+xcopy /s /i /y  copy /y "$(ProjectDir)CodeMirror\*.js" "$(SolutionDir)\bin\js\CodeMirror\"
+
+
 
 copy /y "$(TargetDir)Bridge\*.js"  "$(SolutionDir)\bin\js\"</PostBuildEvent>
   </PropertyGroup>

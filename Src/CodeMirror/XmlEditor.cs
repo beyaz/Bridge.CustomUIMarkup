@@ -7,6 +7,8 @@ using Bridge.jQuery2;
 
 namespace Bridge.CustomUIMarkup.CodeMirror
 {
+    
+
     public class XmlEditor : FrameworkElement
     {
         public XmlEditor()
@@ -54,12 +56,20 @@ namespace Bridge.CustomUIMarkup.CodeMirror
             ScriptLoader.CssDirectory + "CodeMirror.css"
         };
 
+      static  string CodeMirrorDirectoryDefault => "https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.31.0/";
+
+        static string CodeMirrorDirectory => (string)ScriptLoader.Map["CodeMirrorDir"];
+
+        static string JsDir=> CodeMirrorDirectory ?? CodeMirrorDirectoryDefault;
+
         public static IReadOnlyList<string> Scripts => new[]
         {
             "https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.31.0/codemirror.js",
-            "https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.31.0/mode/xml/xml.js",
+            JsDir + "mode/xml/xml.js",
             "https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.31.0/addon/hint/show-hint.js",
-            "https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.31.0/addon/hint/xml-hint.js",
+
+            
+            JsDir + "addon/hint/xml-hint.js",
            
             "https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.31.0/addon/edit/closetag.js",
             "https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.31.0/addon/fold/foldcode.js",

@@ -570,12 +570,14 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
         statics: {
             fields: {
                 JsDirectory: null,
-                CssDirectory: null
+                CssDirectory: null,
+                Map: null
             },
             ctors: {
                 init: function () {
                     this.JsDirectory = "Scripts/";
                     this.CssDirectory = "css/";
+                    this.Map = { };
                 }
             },
             methods: {
@@ -3076,9 +3078,25 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
                         return System.Array.init(["https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.31.0/codemirror.css", "https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.31.0/addon/hint/show-hint.css", "https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.31.0/addon/fold/foldgutter.css", (Bridge.CustomUIMarkup.Common.ScriptLoader.CssDirectory || "") + "CodeMirror.css"], System.String);
                     }
                 },
+                CodeMirrorDirectoryDefault: {
+                    get: function () {
+                        return "https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.31.0/";
+                    }
+                },
+                CodeMirrorDirectory: {
+                    get: function () {
+                        return Bridge.cast(Bridge.CustomUIMarkup.Common.ScriptLoader.Map.CodeMirrorDir, System.String);
+                    }
+                },
+                JsDir: {
+                    get: function () {
+                        var $t;
+                        return ($t = Bridge.CustomUIMarkup.CodeMirror.XmlEditor.CodeMirrorDirectory, $t != null ? $t : Bridge.CustomUIMarkup.CodeMirror.XmlEditor.CodeMirrorDirectoryDefault);
+                    }
+                },
                 Scripts: {
                     get: function () {
-                        return System.Array.init(["https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.31.0/codemirror.js", "https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.31.0/mode/xml/xml.js", "https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.31.0/addon/hint/show-hint.js", "https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.31.0/addon/hint/xml-hint.js", "https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.31.0/addon/edit/closetag.js", "https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.31.0/addon/fold/foldcode.js", "https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.31.0/addon/fold/foldgutter.js", "https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.31.0/addon/fold/xml-fold.js", "https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.31.0/addon/fold/indent-fold.js", "https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.31.0/addon/fold/markdown-fold.js", "https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.31.0/mode/markdown/markdown.js", "https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.31.0/addon/edit/matchtags.js"], System.String);
+                        return System.Array.init(["https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.31.0/codemirror.js", (Bridge.CustomUIMarkup.CodeMirror.XmlEditor.JsDir || "") + "mode/xml/xml.js", "https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.31.0/addon/hint/show-hint.js", (Bridge.CustomUIMarkup.CodeMirror.XmlEditor.JsDir || "") + "addon/hint/xml-hint.js", "https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.31.0/addon/edit/closetag.js", "https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.31.0/addon/fold/foldcode.js", "https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.31.0/addon/fold/foldgutter.js", "https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.31.0/addon/fold/xml-fold.js", "https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.31.0/addon/fold/indent-fold.js", "https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.31.0/addon/fold/markdown-fold.js", "https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.31.0/mode/markdown/markdown.js", "https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.31.0/addon/edit/matchtags.js"], System.String);
                     }
                 }
             },
