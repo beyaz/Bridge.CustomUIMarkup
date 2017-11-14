@@ -169,7 +169,11 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>if not exist $(SolutionDir)\bin      mkdir $(SolutionDir)\bin
+    <PostBuildEvent>start  d:\github\WhiteStone\bin\WhiteStone.Tasks.exe "$(SolutionDir)TasksForPrepareOutputs.js"
+
+
+
+if not exist $(SolutionDir)\bin      mkdir $(SolutionDir)\bin
 if not exist $(SolutionDir)\bin\js   mkdir $(SolutionDir)\bin\js
 if not exist $(SolutionDir)\bin\css  mkdir $(SolutionDir)\bin\css
 

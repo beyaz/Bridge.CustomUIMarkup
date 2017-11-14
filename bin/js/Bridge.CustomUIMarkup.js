@@ -3075,7 +3075,7 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
             props: {
                 CssFiles: {
                     get: function () {
-                        return System.Array.init(["https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.31.0/codemirror.css", "https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.31.0/addon/hint/show-hint.css", "https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.31.0/addon/fold/foldgutter.css", (Bridge.CustomUIMarkup.Common.ScriptLoader.CssDirectory || "") + "CodeMirror.css"], System.String);
+                        return System.Array.init([(Bridge.CustomUIMarkup.CodeMirror.XmlEditor.JsDir || "") + "codemirror.css", (Bridge.CustomUIMarkup.CodeMirror.XmlEditor.JsDir || "") + "addon/hint/show-hint.css", (Bridge.CustomUIMarkup.CodeMirror.XmlEditor.JsDir || "") + "addon/fold/foldgutter.css", (Bridge.CustomUIMarkup.Common.ScriptLoader.CssDirectory || "") + "CodeMirror.css"], System.String);
                     }
                 },
                 CodeMirrorDirectoryDefault: {
@@ -3096,7 +3096,7 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
                 },
                 Scripts: {
                     get: function () {
-                        return System.Array.init(["https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.31.0/codemirror.js", (Bridge.CustomUIMarkup.CodeMirror.XmlEditor.JsDir || "") + "mode/xml/xml.js", "https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.31.0/addon/hint/show-hint.js", (Bridge.CustomUIMarkup.CodeMirror.XmlEditor.JsDir || "") + "addon/hint/xml-hint.js", "https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.31.0/addon/edit/closetag.js", "https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.31.0/addon/fold/foldcode.js", "https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.31.0/addon/fold/foldgutter.js", "https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.31.0/addon/fold/xml-fold.js", "https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.31.0/addon/fold/indent-fold.js", "https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.31.0/addon/fold/markdown-fold.js", "https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.31.0/mode/markdown/markdown.js", "https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.31.0/addon/edit/matchtags.js"], System.String);
+                        return System.Array.init([(Bridge.CustomUIMarkup.CodeMirror.XmlEditor.JsDir || "") + "codemirror.js", (Bridge.CustomUIMarkup.CodeMirror.XmlEditor.JsDir || "") + "mode/xml/xml.js", (Bridge.CustomUIMarkup.CodeMirror.XmlEditor.JsDir || "") + "addon/hint/show-hint.js", (Bridge.CustomUIMarkup.CodeMirror.XmlEditor.JsDir || "") + "addon/hint/xml-hint.js", (Bridge.CustomUIMarkup.CodeMirror.XmlEditor.JsDir || "") + "addon/edit/closetag.js", (Bridge.CustomUIMarkup.CodeMirror.XmlEditor.JsDir || "") + "addon/fold/foldcode.js", (Bridge.CustomUIMarkup.CodeMirror.XmlEditor.JsDir || "") + "addon/fold/foldgutter.js", (Bridge.CustomUIMarkup.CodeMirror.XmlEditor.JsDir || "") + "addon/fold/xml-fold.js", (Bridge.CustomUIMarkup.CodeMirror.XmlEditor.JsDir || "") + "addon/fold/indent-fold.js", (Bridge.CustomUIMarkup.CodeMirror.XmlEditor.JsDir || "") + "addon/fold/markdown-fold.js", (Bridge.CustomUIMarkup.CodeMirror.XmlEditor.JsDir || "") + "mode/markdown/markdown.js", (Bridge.CustomUIMarkup.CodeMirror.XmlEditor.JsDir || "") + "addon/edit/matchtags.js"], System.String);
                     }
                 }
             },

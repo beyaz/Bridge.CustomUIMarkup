@@ -50,9 +50,9 @@ namespace Bridge.CustomUIMarkup.CodeMirror
         #region Public Properties
         public static IReadOnlyList<string> CssFiles => new[]
         {
-            "https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.31.0/codemirror.css",
-            "https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.31.0/addon/hint/show-hint.css",
-            "https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.31.0/addon/fold/foldgutter.css",
+            JsDir + "codemirror.css",
+            JsDir +"addon/hint/show-hint.css",
+            JsDir +"addon/fold/foldgutter.css",
             ScriptLoader.CssDirectory + "CodeMirror.css"
         };
 
@@ -64,21 +64,21 @@ namespace Bridge.CustomUIMarkup.CodeMirror
 
         public static IReadOnlyList<string> Scripts => new[]
         {
-            "https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.31.0/codemirror.js",
+            JsDir +"codemirror.js",
             JsDir + "mode/xml/xml.js",
-            "https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.31.0/addon/hint/show-hint.js",
+            JsDir +"addon/hint/show-hint.js",
 
             
             JsDir + "addon/hint/xml-hint.js",
-           
-            "https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.31.0/addon/edit/closetag.js",
-            "https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.31.0/addon/fold/foldcode.js",
-            "https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.31.0/addon/fold/foldgutter.js",
-            "https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.31.0/addon/fold/xml-fold.js",
-            "https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.31.0/addon/fold/indent-fold.js",
-            "https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.31.0/addon/fold/markdown-fold.js",
-            "https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.31.0/mode/markdown/markdown.js",
-            "https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.31.0/addon/edit/matchtags.js"
+
+            JsDir +"addon/edit/closetag.js",
+            JsDir +"addon/fold/foldcode.js",
+            JsDir +"addon/fold/foldgutter.js",
+            JsDir +"addon/fold/xml-fold.js",
+            JsDir +"addon/fold/indent-fold.js",
+            JsDir +"addon/fold/markdown-fold.js",
+            JsDir +"mode/markdown/markdown.js",
+            JsDir +"addon/edit/matchtags.js"
         };
         #endregion
 
