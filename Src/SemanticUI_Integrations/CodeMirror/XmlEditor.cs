@@ -7,7 +7,7 @@
         {
             get
             {
-                var xmlIntellisenseInfos = new Builder().GetIntellisenseInfos();
+                var xmlIntellisenseInfos =  Builder.Tags;
                 return CodeMirror.SchemaInfo.CreateFrom(xmlIntellisenseInfos).ToJson();
             }
         }

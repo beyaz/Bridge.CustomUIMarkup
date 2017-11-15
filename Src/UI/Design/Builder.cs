@@ -19,8 +19,14 @@ namespace Bridge.CustomUIMarkup.UI.Design
         #region Constructors
         public XmlIntellisenseInfo(string tagName, Type type)
         {
-            if (tagName == null){ throw new ArgumentNullException(nameof(tagName));}
-            if (type == null) {throw new ArgumentNullException(nameof(type));}
+            if (tagName == null)
+            {
+                throw new ArgumentNullException(nameof(tagName));
+            }
+            if (type == null)
+            {
+                throw new ArgumentNullException(nameof(type));
+            }
 
             TagName = tagName;
             Type = type;
@@ -97,11 +103,7 @@ namespace Bridge.CustomUIMarkup.UI.Design
 
             query.highlight();
         }
-
-        public virtual IReadOnlyList<XmlIntellisenseInfo> GetIntellisenseInfos()
-        {
-            return new List<XmlIntellisenseInfo>();
-        }
+       
         #endregion
 
         #region Methods
@@ -119,105 +121,9 @@ namespace Bridge.CustomUIMarkup.UI.Design
             }
         }
 
-        object CreateInstance(XmlNode xmlNode)
-        {
-            var tag = xmlNode.Name.ToUpper();
-
-
-            var controlType = CreateType(tag);
-
-            if (controlType == null)
-            {
-                if (xmlNode.Name.Length <= 3)
-                {
-                    return  new FrameworkElement();
-                }
-                
-                    throw new ArgumentException($"NotRecognizedTag:" + tag);
-                
-
-
-            }
-
-            return  Activator.CreateInstance(controlType);
-        }
-
-        void ProcessAttribute(object instance,string name,string value)
-        {
-            if (name=="class")
-            {
-                name = "Class";
-            }
-
-            var fe = instance as FrameworkElement;
-
-            var bi = BindingInfo.TryParseExpression(value);
-            if (bi != null)
-            {
-                bi.Source = DataContext;
-                bi.Target = instance;
-                bi.TargetPropertyName = name;
-
-                bi.Connect();
-
-                return;
-            }
-
-            var targetProperty = ReflectionHelper.FindProperty(instance, name);
-            if (targetProperty != null)
-            {
-                if (targetProperty.PropertyType.IsEnum)
-                {
-                    ReflectionHelper.SetPropertyValue(instance, name, Enum.Parse(targetProperty.PropertyType, value, true));
-                    return;
-                }
-
-                var converterAttributes = targetProperty.GetCustomAttributes(typeof(TypeConverterAttribute));
-                var firstConverterAtribute = converterAttributes?.FirstOrDefault();
-                if (firstConverterAtribute != null)
-                {
-                    var converter = (TypeConverterAttribute)firstConverterAtribute;
-                    var valueConverter = (IValueConverter)Activator.CreateInstance(converter._type);
-                    var convertedValue = valueConverter.Convert(value, instance.GetType().GetProperty(name).PropertyType, null, CultureInfo.CurrentCulture);
-
-                    ReflectionHelper.SetPropertyValue(instance, name, convertedValue);
-                    return;
-                }
-
-                ReflectionHelper.SetPropertyValue(instance, name, value.ChangeType(targetProperty.PropertyType));
-                return;
-            }
-
-            if (name.StartsWith("on."))
-            {
-                var eventName = name.RemoveFromStart("on.");
-
-                var methodInfo = this.Caller.GetType().GetMethod(value);
-
-                fe?.On(eventName, () => { methodInfo.Invoke(Caller); });
-                return;
-            }
-
-            if (name == "x.Name")
-            {
-                var fi = this.Caller.GetType().GetField(value);
-
-                fi.SetValue(Caller,instance);
-                return;
-            }
-
-            var instanceAsBag = instance as Bag;
-            if (instanceAsBag != null)
-            {
-                instanceAsBag.SetValue(name, value);
-                return;
-            }
-
-            throw new MissingMemberException(name);
-        }
         object BuildNode(XmlNode xmlNode)
         {
-            object instance = CreateInstance(xmlNode);
+            var instance = CreateInstance(xmlNode);
 
             if (IsDesignMode)
             {
@@ -257,8 +163,6 @@ namespace Bridge.CustomUIMarkup.UI.Design
                     ((FrameworkElement) instance).InnerHTML = html;
                     continue;
                 }
-               
-
 
                 var subControl = BuildNode(childNode);
 
@@ -275,10 +179,100 @@ namespace Bridge.CustomUIMarkup.UI.Design
                 throw new ArgumentException(subControl.GetType().FullName);
             }
 
-
-           
-
             return instance;
+        }
+
+        object CreateInstance(XmlNode xmlNode)
+        {
+            var tag = xmlNode.Name.ToUpper();
+
+            var controlType = CreateType(tag);
+
+            if (controlType == null)
+            {
+                if (xmlNode.Name.Length <= 3)
+                {
+                    return new FrameworkElement();
+                }
+
+                throw new ArgumentException($"NotRecognizedTag:" + tag);
+            }
+
+            return Activator.CreateInstance(controlType);
+        }
+
+        void ProcessAttribute(object instance, string name, string value)
+        {
+            if (name == "class")
+            {
+                name = "Class";
+            }
+
+            var fe = instance as FrameworkElement;
+
+            var bi = BindingInfo.TryParseExpression(value);
+            if (bi != null)
+            {
+                bi.Source = DataContext;
+                bi.Target = instance;
+                bi.TargetPropertyName = name;
+
+                bi.Connect();
+
+                return;
+            }
+
+            var targetProperty = ReflectionHelper.FindProperty(instance, name);
+            if (targetProperty != null)
+            {
+                if (targetProperty.PropertyType.IsEnum)
+                {
+                    ReflectionHelper.SetPropertyValue(instance, name, Enum.Parse(targetProperty.PropertyType, value, true));
+                    return;
+                }
+
+                var converterAttributes = targetProperty.GetCustomAttributes(typeof(TypeConverterAttribute));
+                var firstConverterAtribute = converterAttributes?.FirstOrDefault();
+                if (firstConverterAtribute != null)
+                {
+                    var converter = (TypeConverterAttribute) firstConverterAtribute;
+                    var valueConverter = (IValueConverter) Activator.CreateInstance(converter._type);
+                    var convertedValue = valueConverter.Convert(value, instance.GetType().GetProperty(name).PropertyType, null, CultureInfo.CurrentCulture);
+
+                    ReflectionHelper.SetPropertyValue(instance, name, convertedValue);
+                    return;
+                }
+
+                ReflectionHelper.SetPropertyValue(instance, name, value.ChangeType(targetProperty.PropertyType));
+                return;
+            }
+
+            if (name.StartsWith("on."))
+            {
+                var eventName = name.RemoveFromStart("on.");
+
+                var methodInfo = Caller.GetType().GetMethod(value);
+
+                fe?.On(eventName, () => { methodInfo.Invoke(Caller); });
+                return;
+            }
+
+            if (name == "x.Name")
+            {
+                var fi = Caller.GetType().GetField(value);
+
+                fi.SetValue(Caller, instance);
+                return;
+            }
+
+            var instanceAsBag = instance as Bag;
+            if (instanceAsBag != null)
+            {
+                instanceAsBag.SetValue(name, value);
+                return;
+            }
+
+            throw new MissingMemberException(name);
         }
         #endregion
     }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Windows;
 using System.Xml;
+using Bridge.CustomUIMarkup.Common;
 using Bridge.CustomUIMarkup.UI.Design;
 using Bridge.jQuery2;
 
@@ -68,8 +69,9 @@ namespace Bridge.CustomUIMarkup.Design
                 component = _builder.Build();
                 SetOutput(((FrameworkElement) component).Root);
             }
-            catch (XmlException)
+            catch (XmlException e)
             {
+                SetErrorMessage(e.ToString());
             }
             catch (Exception e)
             {
@@ -86,11 +88,12 @@ namespace Bridge.CustomUIMarkup.Design
 
         void SetErrorMessage(string message)
         {
-            Container.Html(message);
+            Container.SetFirstChild(DOM.div().Html(message));
         }
 
         void SetOutput(jQuery element)
         {
+            Container.Empty();
             element.AppendTo(Container);
         }
         #endregion

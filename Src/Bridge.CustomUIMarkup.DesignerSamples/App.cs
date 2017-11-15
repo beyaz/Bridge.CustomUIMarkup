@@ -4,6 +4,7 @@ using Bridge.CustomUIMarkup.Common;
 using Bridge.CustomUIMarkup.SemanticUI;
 using Bridge.Html5;
 using Bridge.jQuery2;
+using Retyped;
 using XmlEditor = Bridge.CustomUIMarkup.CodeMirror.XmlEditor;
 
 namespace Bridge.CustomUIMarkup.DesignerSamples
@@ -302,6 +303,7 @@ namespace Bridge.CustomUIMarkup.DesignerSamples
         #endregion
 
         #region Methods
+        
         static void RenderUIEditor()
         {
             var builder = new Builder

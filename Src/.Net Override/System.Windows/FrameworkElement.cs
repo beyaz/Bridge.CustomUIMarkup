@@ -554,6 +554,24 @@ namespace System.Windows
         }
         #endregion
     }
+    class html_span : FrameworkElement
+    {
+        #region Public Methods
+        public override void InitDOM()
+        {
+            _root = new jQuery(Document.CreateElement("span"));
+        }
+        #endregion
+    }
+    class html_strong : FrameworkElement
+    {
+        #region Public Methods
+        public override void InitDOM()
+        {
+            _root = new jQuery(Document.CreateElement("strong"));
+        }
+        #endregion
+    }
 
     class html_a : FrameworkElement
     {
