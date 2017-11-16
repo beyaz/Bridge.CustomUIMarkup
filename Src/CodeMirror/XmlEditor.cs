@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Windows;
 using Bridge.CustomUIMarkup.Common;
 using Bridge.jQuery2;
+using Retyped;
 
 namespace Bridge.CustomUIMarkup.CodeMirror
 {
@@ -13,6 +14,7 @@ namespace Bridge.CustomUIMarkup.CodeMirror
     {
         public XmlEditor()
         {
+            
             this.OnPropertyChanged(nameof(FontSize), FontSizeChanged);
         }
         #region FontSizeProperty

@@ -136,16 +136,13 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="Retyped.Core, Version=1.2.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Retyped.Core.1.2.6477\lib\net40\Retyped.Core.dll</HintPath>
-      <Private>True</Private>
+      <HintPath>..\packages\Retyped.Core.1.2.6523\lib\net40\Retyped.Core.dll</HintPath>
     </Reference>
     <Reference Include="Retyped.dom, Version=2.3.4.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Retyped.dom.2.3.6477\lib\net40\Retyped.dom.dll</HintPath>
-      <Private>True</Private>
+      <HintPath>..\packages\Retyped.dom.2.3.6523\lib\net40\Retyped.dom.dll</HintPath>
     </Reference>
     <Reference Include="Retyped.es5, Version=2.3.4.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Retyped.es5.2.3.6477\lib\net40\Retyped.es5.dll</HintPath>
-      <Private>True</Private>
+      <HintPath>..\packages\Retyped.es5.2.3.6523\lib\net40\Retyped.es5.dll</HintPath>
     </Reference>
     <Reference Include="Retyped.jquery, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Retyped.jquery.2.0.6477\lib\net40\Retyped.jquery.dll</HintPath>
@@ -154,6 +151,9 @@
     <Reference Include="Retyped.semantic-ui, Version=2.2.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Retyped.semantic-ui.2.2.6477\lib\net40\Retyped.semantic-ui.dll</HintPath>
       <Private>True</Private>
+    </Reference>
+    <Reference Include="Retyped.webix, Version=4.2.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Retyped.webix.4.2.6523\lib\net40\Retyped.webix.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>

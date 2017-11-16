@@ -9,3 +9,5 @@
 *.suo
 *.user
 *.dgml
+/Test/Bridge.CustomUIMarkup.Test/bin/Debug
+/Test/Bridge.CustomUIMarkup.Test/obj

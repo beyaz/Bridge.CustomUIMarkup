@@ -3149,6 +3149,7 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
             ctor: function () {
                 this.$initialize();
                 System.Windows.FrameworkElement.ctor.call(this);
+
                 System.ComponentModel.Extensions.OnPropertyChanged(this, "FontSize", Bridge.fn.cacheBind(this, this.FontSizeChanged));
             }
         },
