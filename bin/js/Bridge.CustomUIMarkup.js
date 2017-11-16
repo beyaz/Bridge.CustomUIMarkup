@@ -2163,15 +2163,16 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
 
                     text = System.Extensions.RemoveFromStart(text, "Binding ");
 
-                    return ($t = new System.Windows.Data.BindingInfo(), $t.SourcePath = text, $t);
+                    return ($t = new System.Windows.Data.BindingInfo(), $t.Path = System.Windows.PropertyPath.op_Implicit(text), $t);
                 }
             }
         },
         fields: {
             BindingMode: 0,
-            Source: null,
             Path: null,
+            Source: null,
             Target: null,
+            TargetPath: null,
             TargetPropertyName: null
         },
         props: {
@@ -2183,72 +2184,31 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
                 set: function (value) {
                     this.Path = new System.Windows.PropertyPath(value);
                 }
-            },
-            TargetValue: {
-                get: function () {
-                    return Bridge.Reflection.midel(Bridge.Reflection.getMembers(Bridge.getType(this.Target), 16, 284, this.TargetPropertyName).g, Bridge.unbox(this.Target))();
-                }
             }
         },
         methods: {
             Connect: function () {
-                if (this.TargetPropertyName != null) {
-                    var eventInfo = System.ComponentModel.ReflectionHelper.FindEvent(this.Target, this.TargetPropertyName);
-                    if (eventInfo != null) {
-                        var methodInfo = Bridge.Reflection.getMembers(Bridge.getType(this.Source), 8, 284, this.SourcePath);
-
-                        var handler = Bridge.Reflection.createDelegate(methodInfo, this.Source);
-                        if (Bridge.staticEquals(handler, null)) {
-                            handler = Bridge.Reflection.createDelegate(methodInfo, this.Source);
-                        }
-                        if (Bridge.staticEquals(handler, null)) {
-                            throw new System.ArgumentException(this.SourcePath);
-                        }
-
-                        Bridge.Reflection.midel(eventInfo.ad, this.Target)(handler);
-
-                        return;
-                    }
-                }
                 this.ConnectSourceToTarget();
-
-                this.UpdateTarget();
 
                 if (this.BindingMode === System.Windows.Data.BindingMode.TwoWay) {
                     this.ConnectTargetToSource();
+                } else {
+                    this.TargetPath.Walk(this.Target);
                 }
+
+                this.UpdateTarget();
             },
-            UpdateSource: function (newValue) {
-                System.ComponentModel.ReflectionHelper.SetPropertyValue(this.Source, this.SourcePath, newValue);
+            UpdateSource: function () {
+                this.Path.SetPropertyValue(this.TargetPath.GetPropertyValue());
             },
             UpdateTarget: function () {
-                var newValue = System.ComponentModel.ReflectionHelper.GetPropertyValue(this.Source, this.SourcePath);
-
-                System.ComponentModel.ReflectionHelper.SetPropertyValue(this.Target, this.TargetPropertyName, newValue);
+                this.TargetPath.SetPropertyValue(this.Path.GetPropertyValue());
             },
             ConnectSourceToTarget: function () {
-                var source = Bridge.as(this.Source, System.ComponentModel.INotifyPropertyChanged);
-                if (source == null) {
-                    return;
-                }
-
-                source.System$ComponentModel$INotifyPropertyChanged$addPropertyChanged(Bridge.fn.bind(this, function (sender, e) {
-                    if (Bridge.referenceEquals(e.propertyName, this.SourcePath)) {
-                        this.UpdateTarget();
-                    }
-                }));
+                this.Path.Listen(this.Source, Bridge.fn.cacheBind(this, this.UpdateTarget));
             },
             ConnectTargetToSource: function () {
-                var target = Bridge.as(this.Target, System.ComponentModel.INotifyPropertyChanged);
-                if (target == null) {
-                    return;
-                }
-
-                target.System$ComponentModel$INotifyPropertyChanged$addPropertyChanged(Bridge.fn.bind(this, function (sender, e) {
-                    if (Bridge.referenceEquals(e.propertyName, this.TargetPropertyName)) {
-                        this.UpdateSource(this.TargetValue);
-                    }
-                }));
+                this.TargetPath.Listen(this.Target, Bridge.fn.cacheBind(this, this.UpdateSource));
             }
         }
     });
@@ -2405,13 +2365,120 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
     });
 
     Bridge.define("System.Windows.PropertyPath", {
+        statics: {
+            methods: {
+                op_Implicit: function (path) {
+                    return new System.Windows.PropertyPath(path);
+                }
+            }
+        },
         fields: {
+            Triggers: null,
             Path: null
         },
         ctors: {
+            init: function () {
+                this.Triggers = new (System.Collections.Generic.List$1(System.Windows.PropertyPath.Trigger)).ctor();
+            },
             ctor: function (path) {
                 this.$initialize();
                 this.Path = path;
+            }
+        },
+        methods: {
+            Clear: function () {
+                this.Triggers.forEach(function (t) {
+                    t.StopListen();
+                });
+                this.Triggers.clear();
+            },
+            Walk: function (instance) {
+                this.Clear();
+
+                this.ParsePath(instance, this.Path);
+            },
+            Listen: function (instance, onPropertyValueChanged) {
+                var $t;
+                this.Walk(instance);
+
+                $t = Bridge.getEnumerator(this.Triggers);
+                try {
+                    while ($t.moveNext()) {
+                        var trigger = $t.Current;
+                        trigger.OnPropertyValueChanged = onPropertyValueChanged;
+                        trigger.Listen();
+                    }
+                } finally {
+                    if (Bridge.is($t, System.IDisposable)) {
+                        $t.System$IDisposable$dispose();
+                    }
+                }},
+            ParsePath: function (instance, path) {
+                var $t;
+                while (true) {
+                    if (instance == null) {
+                        return;
+                    }
+
+                    var firstDat = System.String.indexOf(path, String.fromCharCode(46));
+
+                    if (firstDat < 0) {
+                        this.Triggers.add(($t = new System.Windows.PropertyPath.Trigger(), $t["Instance"] = instance, $t.PropertyName = path, $t));
+                        return;
+                    }
+
+                    var propertyName = path.substr(0, firstDat);
+
+                    this.Triggers.add(($t = new System.Windows.PropertyPath.Trigger(), $t["Instance"] = instance, $t.PropertyName = propertyName, $t));
+
+                    instance = System.ComponentModel.ReflectionHelper.GetPropertyValue(instance, propertyName);
+
+                    path = path.substr(((firstDat + 1) | 0));
+                }
+            },
+            GetPropertyValue: function () {
+                var lastTrigger = System.Linq.Enumerable.from(this.Triggers).last();
+
+                return System.ComponentModel.ReflectionHelper.GetPropertyValue(lastTrigger["Instance"], lastTrigger.PropertyName);
+            },
+            SetPropertyValue: function (value) {
+                var lastTrigger = System.Linq.Enumerable.from(this.Triggers).last();
+
+                System.ComponentModel.ReflectionHelper.SetPropertyValue(lastTrigger["Instance"], lastTrigger.PropertyName, value);
+            }
+        }
+    });
+
+    Bridge.define("System.Windows.PropertyPath.Trigger", {
+        fields: {
+            "Instance": null,
+            OnPropertyValueChanged: null,
+            PropertyName: null
+        },
+        props: {
+            "InstanceAsNotifyPropertyChanged": {
+                get: function () {
+                    return Bridge.as(this["Instance"], System.ComponentModel.INotifyPropertyChanged);
+                }
+            }
+        },
+        methods: {
+            Listen: function () {
+                if (this["InstanceAsNotifyPropertyChanged"] == null) {
+                    return;
+                }
+                this["InstanceAsNotifyPropertyChanged"].System$ComponentModel$INotifyPropertyChanged$addPropertyChanged(Bridge.fn.cacheBind(this, this.OnChange));
+            },
+            StopListen: function () {
+                if (this["InstanceAsNotifyPropertyChanged"] == null) {
+                    return;
+                }
+                this["InstanceAsNotifyPropertyChanged"].System$ComponentModel$INotifyPropertyChanged$removePropertyChanged(Bridge.fn.cacheBind(this, this.OnChange));
+            },
+            OnChange: function (sender, e) {
+                if (Bridge.referenceEquals(e.propertyName, this.PropertyName)) {
+                    this.OnPropertyValueChanged();
+                }
             }
         }
     });
@@ -2627,7 +2694,7 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
             },
             ConnectTargetToSource: function () {
                 this.Target$1.focusout(Bridge.fn.bind(this, function (ev) {
-                        this.UpdateSource(this.Target$1.val());
+                        this.UpdateSource();
                     }));
             }
         }

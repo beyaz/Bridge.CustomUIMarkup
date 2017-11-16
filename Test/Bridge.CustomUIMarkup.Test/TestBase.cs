@@ -12,6 +12,13 @@ namespace Bridge.CustomUIMarkup.Test
                 throw new InvalidCastException("@expected: " + expected + " , @actual: " + actual);
             }
         }
+        protected void MustEqualByReference(object expected, object actual)
+        {
+            if ( !ReferenceEquals(expected , actual))
+            {
+                throw new InvalidCastException("@expected: " + expected + " , @actual: " + actual);
+            }
+        }
         #endregion
     }
 }

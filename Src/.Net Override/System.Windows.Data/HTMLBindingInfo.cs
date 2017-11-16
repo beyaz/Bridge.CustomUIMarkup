@@ -58,7 +58,7 @@ namespace System.Windows.Data
         #region Methods
         protected override void ConnectTargetToSource()
         {
-            Target.FocusOut(ev => { UpdateSource(Target.Val()); });
+            Target.FocusOut(ev => { UpdateSource(); });
         }
         #endregion
     }

@@ -1,6 +1,3 @@
-using System.ComponentModel;
-using System.Linq.Expressions;
-
 namespace System.Windows.Data
 {
     public class BindingInfo
@@ -8,30 +5,21 @@ namespace System.Windows.Data
         #region Public Properties
         public BindingMode BindingMode { get; set; }
 
+        public PropertyPath Path { get; set; }
+
         public object Source { get; set; }
 
         public string SourcePath
         {
             get { return Path?.Path; }
-            set
-            {
-                Path = new PropertyPath(value);
-            }
-        }
-
-        public PropertyPath Path
-        {
-            get;
-            set;
+            set { Path = new PropertyPath(value); }
         }
 
         public object Target { get; set; }
 
-        public string TargetPropertyName { get; set; }
-        #endregion
+        public PropertyPath TargetPath { get; set; }
 
-        #region Properties
-        object TargetValue => Target.GetType().GetProperty(TargetPropertyName).GetValue(Target);
+        public string TargetPropertyName { get; set; }
         #endregion
 
         #region Public Methods
@@ -58,90 +46,45 @@ namespace System.Windows.Data
 
             text = text.RemoveFromStart("Binding ");
 
-            return new BindingInfo { SourcePath = text };
+            return new BindingInfo {Path = text};
         }
 
         public void Connect()
         {
-            if (TargetPropertyName != null)
-            {
-                var eventInfo = ReflectionHelper.FindEvent(Target, TargetPropertyName);
-                if (eventInfo != null)
-                {
-                    var methodInfo = Source.GetType().GetMethod(SourcePath);
-
-                    var handler = Delegate.CreateDelegate(typeof(Action), Source, methodInfo);
-                    if (handler == null)
-                    {
-                        handler = Delegate.CreateDelegate(typeof(Action<int>), Source, methodInfo);
-                    }
-                    if (handler == null)
-                    {
-                        throw new ArgumentException(SourcePath);
-                    }
-
-                    eventInfo.AddEventHandler(Target, handler);
-
-                    return;
-                }
-            }
             ConnectSourceToTarget();
-
-            UpdateTarget();
 
             if (BindingMode == BindingMode.TwoWay)
             {
                 ConnectTargetToSource();
             }
+            else
+            {
+                TargetPath.Walk(Target);
+            }
+
+            UpdateTarget();
         }
 
-        public virtual void UpdateSource(object newValue)
+        public virtual void UpdateSource()
         {
-            ReflectionHelper.SetPropertyValue(Source, SourcePath, newValue);
+            Path.SetPropertyValue(TargetPath.GetPropertyValue());
         }
 
         public virtual void UpdateTarget()
         {
-            var newValue = ReflectionHelper.GetPropertyValue(Source, SourcePath);
-
-            ReflectionHelper.SetPropertyValue(Target, TargetPropertyName, newValue);
+            TargetPath.SetPropertyValue(Path.GetPropertyValue());
         }
         #endregion
 
         #region Methods
         protected virtual void ConnectSourceToTarget()
         {
-            var source = Source as INotifyPropertyChanged;
-            if (source == null)
-            {
-                return;
-            }
-
-            source.PropertyChanged += (sender, e) =>
-            {
-                
-                if (e.PropertyName == SourcePath)
-                {
-                    UpdateTarget();
-                }
-            };
+            Path.Listen(Source, UpdateTarget);
         }
 
         protected virtual void ConnectTargetToSource()
         {
-            var target = Target as INotifyPropertyChanged;
-            if (target == null)
-            {
-                return;
-            }
-
-            target.PropertyChanged += (sender, e) =>
-            {
-                if (e.PropertyName == TargetPropertyName)
-                {
-                    UpdateSource(TargetValue);
-                }
-            };
+            TargetPath.Listen(Target, UpdateSource);
         }
         #endregion
     }
