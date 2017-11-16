@@ -1,4 +1,5 @@
 using System.ComponentModel;
+using System.Linq.Expressions;
 
 namespace System.Windows.Data
 {
@@ -118,6 +119,7 @@ namespace System.Windows.Data
 
             source.PropertyChanged += (sender, e) =>
             {
+                
                 if (e.PropertyName == SourcePath)
                 {
                     UpdateTarget();
