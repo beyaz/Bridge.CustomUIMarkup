@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
 using System.Reflection;
 using System.Windows;
 using System.Windows.Data;
-using System.Windows.Markup;
 using System.Xml;
 using Bridge.CustomUIMarkup.Common;
 using Bridge.Html5;
@@ -19,14 +19,9 @@ namespace Bridge.CustomUIMarkup.UI.Design
         #region Constructors
         public XmlIntellisenseInfo(string tagName, Type type)
         {
-            if (tagName == null)
-            {
-                throw new ArgumentNullException(nameof(tagName));
-            }
-            if (type == null)
-            {
-                throw new ArgumentNullException(nameof(type));
-            }
+            Debug.Assert(tagName != null);
+            Debug.Assert(type != null);
+            
 
             TagName = tagName;
             Type = type;
@@ -124,7 +119,7 @@ namespace Bridge.CustomUIMarkup.UI.Design
             }
         }
 
-        object BuildNode(XmlNode xmlNode)
+        FrameworkElement BuildNode(XmlNode xmlNode)
         {
             var instance = CreateInstance(xmlNode);
 
@@ -135,17 +130,14 @@ namespace Bridge.CustomUIMarkup.UI.Design
                 LineNumberToControlMap[lineNumber] = instance;
             }
 
-            var frameworkElement = instance as FrameworkElement;
-            if (frameworkElement != null)
+            instance.DataContext = DataContext;
+            if (instance._root == null)
             {
-                frameworkElement.DataContext = DataContext;
-                if (frameworkElement._root == null)
-                {
-                    frameworkElement.InitDOM();
-                }
-                
-                frameworkElement.GetType().GetMethod("AfterInitDOM", BindingFlags.NonPublic | BindingFlags.Instance).Invoke(frameworkElement);
+                instance.InitDOM();
             }
+
+            instance.GetType().GetMethod("AfterInitDOM", BindingFlags.NonPublic | BindingFlags.Instance).Invoke(instance);
+
 
             foreach (var nodeAttribute in xmlNode.Attributes)
             {
@@ -167,29 +159,21 @@ namespace Bridge.CustomUIMarkup.UI.Design
                         continue;
                     }
 
-                    ((FrameworkElement) instance).InnerHTML = html;
+                    instance.InnerHTML = html;
                     continue;
                 }
 
                 var subControl = BuildNode(childNode);
 
-                var el = (FrameworkElement) subControl;
-
-                var iaddChild = instance as IAddChild;
-
-                if (iaddChild != null)
-                {
-                    iaddChild.Add(el);
-                    continue;
-                }
-
-                throw new ArgumentException(subControl.GetType().FullName);
+                instance.Add(subControl);
+                
+                
             }
 
             return instance;
         }
 
-        object CreateInstance(XmlNode xmlNode)
+        FrameworkElement CreateInstance(XmlNode xmlNode)
         {
             var tag = xmlNode.Name.ToUpper();
 
@@ -199,23 +183,23 @@ namespace Bridge.CustomUIMarkup.UI.Design
             {
                 if (xmlNode.Name.Length <= 3)
                 {
-                    return new FrameworkElement {_root = DOM.CreateElement(xmlNode.Name)};
+                    return new FrameworkElement { _root = DOM.CreateElement(xmlNode.Name) };
                 }
 
                 throw new ArgumentException($"NotRecognizedTag:" + tag);
             }
 
-            return Activator.CreateInstance(controlType);
+            return (FrameworkElement)Activator.CreateInstance(controlType);
         }
 
-        void ProcessAttribute(object instance, string name, string value)
+        void ProcessAttribute(FrameworkElement instance, string name, string value)
         {
             if (name == "class")
             {
                 name = "Class";
             }
 
-            var fe = instance as FrameworkElement;
+           
 
 
             var targetProperty = ReflectionHelper.FindProperty(instance, name);
@@ -243,7 +227,7 @@ namespace Bridge.CustomUIMarkup.UI.Design
                         {
                             Source = DataContext,
                             SourcePath = bi.SourcePath.Path,
-                            Target = fe._root,
+                            Target = instance._root,
                             TargetPath = name,
                             BindingMode = BindingMode.OneWay
                         }.Connect();
@@ -292,7 +276,7 @@ namespace Bridge.CustomUIMarkup.UI.Design
 
                 var methodInfo = Caller.GetType().GetMethod(value);
 
-                fe?.On(eventName, () => { methodInfo.Invoke(Caller); });
+                instance.On(eventName, () => { methodInfo.Invoke(Caller); });
                 return;
             }
 
@@ -304,16 +288,8 @@ namespace Bridge.CustomUIMarkup.UI.Design
                 return;
             }
 
-            fe._root.Attr(name, value);
 
-            var instanceAsBag = instance as Bag;
-            if (instanceAsBag != null)
-            {
-                instanceAsBag.SetValue(name, value);
-                return;
-            }
-
-            throw new MissingMemberException(name);
+            instance._root.Attr(name, value);
         }
         #endregion
     }

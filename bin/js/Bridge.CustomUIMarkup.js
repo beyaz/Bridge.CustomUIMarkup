@@ -747,15 +747,13 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
                     this.LineNumberToControlMap.set(lineNumber, instance);
                 }
 
-                var frameworkElement = Bridge.as(instance, System.Windows.FrameworkElement);
-                if (frameworkElement != null) {
-                    frameworkElement.DataContext = this.DataContext;
-                    if (frameworkElement._root == null) {
-                        frameworkElement.InitDOM();
-                    }
-
-                    Bridge.Reflection.midel(Bridge.Reflection.getMembers(Bridge.getType(frameworkElement), 8, 36 | 256, "AfterInitDOM"), frameworkElement)(null);
+                instance.DataContext = this.DataContext;
+                if (instance._root == null) {
+                    instance.InitDOM();
                 }
+
+                Bridge.Reflection.midel(Bridge.Reflection.getMembers(Bridge.getType(instance), 8, 36 | 256, "AfterInitDOM"), instance)(null);
+
 
                 $t = Bridge.getEnumerator(xmlNode.attributes);
                 try {
@@ -782,22 +780,15 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
                                 continue;
                             }
 
-                            Bridge.cast(instance, System.Windows.FrameworkElement)["InnerHTML"] = html;
+                            instance["InnerHTML"] = html;
                             continue;
                         }
 
                         var subControl = this.BuildNode(childNode);
 
-                        var el = Bridge.cast(subControl, System.Windows.FrameworkElement);
+                        instance.Add(subControl);
 
-                        var iaddChild = Bridge.as(instance, System.Windows.Markup.IAddChild);
 
-                        if (iaddChild != null) {
-                            iaddChild.System$Windows$Markup$IAddChild$Add(el);
-                            continue;
-                        }
-
-                        throw new System.ArgumentException(Bridge.Reflection.getTypeFullName(Bridge.getType(subControl)));
                     }
                 } finally {
                     if (Bridge.is($t1, System.IDisposable)) {
@@ -820,7 +811,7 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
                     throw new System.ArgumentException((System.String.format("NotRecognizedTag:", null) || "") + (tag || ""));
                 }
 
-                return Bridge.createInstance(controlType);
+                return Bridge.cast(Bridge.createInstance(controlType), System.Windows.FrameworkElement);
             },
             ProcessAttribute: function (instance, name, value) {
                 var $t;
@@ -828,7 +819,7 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
                     name = "Class";
                 }
 
-                var fe = Bridge.as(instance, System.Windows.FrameworkElement);
+
 
 
                 var targetProperty = System.ComponentModel.ReflectionHelper.FindProperty(instance, name);
@@ -848,7 +839,7 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
 
                     if (System.String.contains(name,".") === false) {
                         if (targetProperty == null) {
-                            ($t = new System.Windows.Data.HTMLBindingInfo(), $t.Source = this.DataContext, $t.SourcePath = System.Windows.PropertyPath.op_Implicit(bi.SourcePath.Path), $t.Target$1 = fe._root, $t.TargetPath = System.Windows.PropertyPath.op_Implicit(name), $t.BindingMode = System.Windows.Data.BindingMode.OneWay, $t).Connect();
+                            ($t = new System.Windows.Data.HTMLBindingInfo(), $t.Source = this.DataContext, $t.SourcePath = System.Windows.PropertyPath.op_Implicit(bi.SourcePath.Path), $t.Target$1 = instance._root, $t.TargetPath = System.Windows.PropertyPath.op_Implicit(name), $t.BindingMode = System.Windows.Data.BindingMode.OneWay, $t).Connect();
 
                             return;
                         }
@@ -890,28 +881,21 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
 
                     var methodInfo1 = Bridge.Reflection.getMembers(Bridge.getType(this.Caller), 8, 284, value);
 
-                    fe != null ? fe.On(eventName, Bridge.fn.bind(this, function () {
-                            Bridge.Reflection.midel(methodInfo1, Bridge.unbox(this.Caller))(null);
-                        })) : null;
+                    instance.On(eventName, Bridge.fn.bind(this, function () {
+                        Bridge.Reflection.midel(methodInfo1, Bridge.unbox(this.Caller))(null);
+                    }));
                     return;
                 }
 
                 if (Bridge.referenceEquals(name, "x.Name")) {
                     var fi = Bridge.Reflection.getMembers(Bridge.getType(this.Caller), 4, 284, value);
 
-                    Bridge.Reflection.fieldAccess(fi, Bridge.unbox(this.Caller), Bridge.unbox(instance));
+                    Bridge.Reflection.fieldAccess(fi, Bridge.unbox(this.Caller), instance);
                     return;
                 }
 
-                fe._root.attr(name, value);
 
-                var instanceAsBag = Bridge.as(instance, System.ComponentModel.Bag);
-                if (instanceAsBag != null) {
-                    instanceAsBag.SetValue(name, value);
-                    return;
-                }
-
-                throw new System.MissingMemberException(name);
+                instance._root.attr(name, value);
             }
         }
     });
@@ -1170,12 +1154,9 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
         ctors: {
             ctor: function (tagName, type) {
                 this.$initialize();
-                if (tagName == null) {
-                    throw new System.ArgumentNullException("tagName");
-                }
-                if (type == null) {
-                    throw new System.ArgumentNullException("type");
-                }
+                System.Diagnostics.Debug.assert(tagName != null);
+                System.Diagnostics.Debug.assert(type != null);
+
 
                 this.TagName = tagName;
                 this.Type = type;
