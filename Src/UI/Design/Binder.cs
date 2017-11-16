@@ -83,7 +83,7 @@ namespace Bridge.CustomUIMarkup.UI.Design
 
             info.Source = DataContext;
             info.Target = jQuery.Element(element);
-            info.TargetPropertyName = propertyName;
+            info.TargetPath = propertyName;
 
             info.Connect();
         }

@@ -5,8 +5,6 @@ namespace System.Windows.Data
         #region Public Properties
         public BindingMode BindingMode { get; set; }
 
-        
-
         public object Source { get; set; }
 
         public PropertyPath SourcePath { get; set; }
@@ -14,8 +12,6 @@ namespace System.Windows.Data
         public object Target { get; set; }
 
         public PropertyPath TargetPath { get; set; }
-
-        public string TargetPropertyName { get; set; }
         #endregion
 
         #region Public Methods

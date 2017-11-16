@@ -823,7 +823,7 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
                 if (bi != null) {
                     bi.Source = this.DataContext;
                     bi.Target = instance;
-                    bi.TargetPropertyName = name;
+                    bi.TargetPath = System.Windows.PropertyPath.op_Implicit(name);
 
                     bi.Connect();
 
@@ -1053,7 +1053,7 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
 
                 info.Source = this.DataContext;
                 info.Target$1 = $(element);
-                info.TargetPropertyName = propertyName;
+                info.TargetPath = System.Windows.PropertyPath.op_Implicit(propertyName);
 
                 info.Connect();
             },
@@ -2172,8 +2172,7 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
             Source: null,
             SourcePath: null,
             Target: null,
-            TargetPath: null,
-            TargetPropertyName: null
+            TargetPath: null
         },
         methods: {
             Connect: function () {
@@ -2675,10 +2674,10 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
                     return;
                 }
 
-                if (Bridge.referenceEquals(this.TargetPropertyName, "value")) {
+                if (Bridge.referenceEquals(this.TargetPath.Path, "value")) {
                     this.Target$1.val(System.String.concat(value, ""));
                 } else {
-                    this.Target$1.attr(this.TargetPropertyName, System.String.concat(value, ""));
+                    this.Target$1.attr(this.TargetPath.Path, System.String.concat(value, ""));
                 }
             },
             ConnectTargetToSource: function () {

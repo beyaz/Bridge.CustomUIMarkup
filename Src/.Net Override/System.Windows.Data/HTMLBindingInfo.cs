@@ -44,13 +44,13 @@ namespace System.Windows.Data
                 return;
             }
 
-            if (TargetPropertyName == "value")
+            if (TargetPath.Path == "value")
             {
                 Target.Val(value + "");
             }
             else
             {
-                Target.Attr(TargetPropertyName, value + "");
+                Target.Attr(TargetPath.Path, value + "");
             }
         }
         #endregion

@@ -215,7 +215,7 @@ namespace Bridge.CustomUIMarkup.UI.Design
             {
                 bi.Source = DataContext;
                 bi.Target = instance;
-                bi.TargetPropertyName = name;
+                bi.TargetPath = name;
 
                 bi.Connect();
 
