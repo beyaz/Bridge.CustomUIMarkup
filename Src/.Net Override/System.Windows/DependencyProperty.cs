@@ -46,6 +46,8 @@ namespace System.Windows
         }
         static string CreateKey(Type ownerType, string propertyName)
         {
+            
+
             return CreateKey(ownerType.FullName, propertyName);
         }
         static DependencyProperty TryFind(Type ownerType, string propertyName)

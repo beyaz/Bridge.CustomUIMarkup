@@ -88,6 +88,8 @@ namespace System.Windows
             return value;
         }
 
+        
+
         public virtual void InitDOM()
         {
             _root = new jQuery(Document.CreateElement("div"));
@@ -137,6 +139,9 @@ namespace System.Windows
             {
                 _childeren = new List<FrameworkElement>();
             }
+
+           
+
             _childeren.Add(element);
 
             AfterAddChild(element);
@@ -551,6 +556,26 @@ namespace System.Windows
         public override void InitDOM()
         {
             _root = new jQuery(Document.CreateElement("div"));
+        }
+        #endregion
+    }
+
+    class html_img : FrameworkElement
+    {
+        #region SrcProperty
+        public static readonly DependencyProperty SrcProperty = DependencyProperty.Register(nameof(Src), typeof(string), typeof(html_img), CreateHtmlAttributeUpdater("src"));
+
+        public string Src
+        {
+            get { return (string)GetValue(SrcProperty); }
+            set { SetValue(SrcProperty, value); }
+        }
+        #endregion
+
+        #region Public Methods
+        public override void InitDOM()
+        {
+            _root = new jQuery(Document.CreateElement("img"));
         }
         #endregion
     }

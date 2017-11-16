@@ -210,9 +210,22 @@ namespace Bridge.CustomUIMarkup.UI.Design
 
             var fe = instance as FrameworkElement;
 
+
             var bi = BindingInfo.TryParseExpression(value);
             if (bi != null)
             {
+                var eventInfo = ReflectionHelper.FindEvent(instance,name );
+                if (eventInfo!= null)
+                {
+                    var methodInfo = ReflectionHelper.GetMethodInfo(DataContext, bi.SourcePath.Path);
+
+                    var handler = Delegate.CreateDelegate(eventInfo.AddMethod.ParameterTypes.First(), DataContext, methodInfo);
+
+                    eventInfo.AddEventHandler(instance, handler);
+
+                    return;
+                }
+
                 bi.Source = DataContext;
                 bi.Target = instance;
                 bi.TargetPath = name;

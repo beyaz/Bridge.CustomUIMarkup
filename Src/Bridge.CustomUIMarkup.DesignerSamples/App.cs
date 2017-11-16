@@ -256,6 +256,8 @@ namespace Bridge.CustomUIMarkup.DesignerSamples
             }
         }
         #endregion
+
+
     }
 
     public class App

@@ -819,8 +819,20 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
 
                 var fe = Bridge.as(instance, System.Windows.FrameworkElement);
 
+
                 var bi = System.Windows.Data.BindingInfo.TryParseExpression(value);
                 if (bi != null) {
+                    var eventInfo = System.ComponentModel.ReflectionHelper.FindEvent(instance, name);
+                    if (eventInfo != null) {
+                        var methodInfo = System.ComponentModel.ReflectionHelper.GetMethodInfo(this.DataContext, bi.SourcePath.Path);
+
+                        var handler = Bridge.Reflection.createDelegate(methodInfo, this.DataContext);
+
+                        Bridge.Reflection.midel(eventInfo.ad, instance)(handler);
+
+                        return;
+                    }
+
                     bi.Source = this.DataContext;
                     bi.Target = instance;
                     bi.TargetPath = System.Windows.PropertyPath.op_Implicit(name);
@@ -855,10 +867,10 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
                 if (System.String.startsWith(name, "on.")) {
                     var eventName = System.Extensions.RemoveFromStart(name, "on.");
 
-                    var methodInfo = Bridge.Reflection.getMembers(Bridge.getType(this.Caller), 8, 284, value);
+                    var methodInfo1 = Bridge.Reflection.getMembers(Bridge.getType(this.Caller), 8, 284, value);
 
                     fe != null ? fe.On(eventName, Bridge.fn.bind(this, function () {
-                            Bridge.Reflection.midel(methodInfo, Bridge.unbox(this.Caller))(null);
+                            Bridge.Reflection.midel(methodInfo1, Bridge.unbox(this.Caller))(null);
                         })) : null;
                     return;
                 }
@@ -1438,6 +1450,13 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
                     }
 
                     Bridge.Reflection.midel(propertyInfo.s, Bridge.unbox(instance))(Bridge.unbox(value));
+                },
+                GetMethodInfo: function (instance, methodName) {
+                    var methodInfo = System.ComponentModel.ReflectionHelper.FindMethodInfo(instance, methodName);
+                    if (methodInfo == null) {
+                        throw new System.MissingMemberException("MethodNotFound: " + (Bridge.Reflection.getTypeFullName(Bridge.getType(instance)) || "") + " -> " + (methodName || ""));
+                    }
+                    return methodInfo;
                 }
             }
         }
@@ -2259,6 +2278,8 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
                     return (ownerTypeFullName || "") + "->" + (propertyName || "");
                 },
                 CreateKey$1: function (ownerType, propertyName) {
+
+
                     return System.Windows.DependencyProperty.CreateKey(Bridge.Reflection.getTypeFullName(ownerType), propertyName);
                 },
                 TryFind: function (ownerType, propertyName) {
@@ -2529,6 +2550,7 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
                             _o1.add(new Bridge.CustomUIMarkup.UI.Design.XmlIntellisenseInfo("span", System.Windows.html_span));
                             _o1.add(new Bridge.CustomUIMarkup.UI.Design.XmlIntellisenseInfo("strong", System.Windows.html_strong));
                             _o1.add(new Bridge.CustomUIMarkup.UI.Design.XmlIntellisenseInfo("a", System.Windows.html_a));
+                            _o1.add(new Bridge.CustomUIMarkup.UI.Design.XmlIntellisenseInfo("img", System.Windows.html_img));
                             _o1.add(new Bridge.CustomUIMarkup.UI.Design.XmlIntellisenseInfo("computer.tablet.only.row", Bridge.CustomUIMarkup.SemanticUI.computer_tablet_only_row));
                             _o1.add(new Bridge.CustomUIMarkup.UI.Design.XmlIntellisenseInfo("ui.navbar.menu", Bridge.CustomUIMarkup.SemanticUI.ui_navbar_menu));
                             _o1.add(new Bridge.CustomUIMarkup.UI.Design.XmlIntellisenseInfo("mobile.only.row", Bridge.CustomUIMarkup.SemanticUI.mobile_only_row));
@@ -3103,6 +3125,9 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
                 if (this._childeren == null) {
                     this._childeren = new (System.Collections.Generic.List$1(System.Windows.FrameworkElement)).ctor();
                 }
+
+
+
                 this._childeren.add(element);
 
                 this.AfterAddChild(element);
@@ -3162,17 +3187,9 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
             },
             methods: {
                 TextChanged: function (d, e) {
-                    var newValue = Bridge.cast(e.NewValue, System.String);
+                    return;
 
-                    var me = Bridge.cast(d, Bridge.CustomUIMarkup.CodeMirror.XmlEditor);
 
-                    if (me._editor != null) {
-                        if (me.isFiring_OnTextChanged) {
-                            return;
-                        }
-
-                        me._editor.setValue(newValue);
-                    }
                 }
             }
         },
@@ -4012,6 +4029,35 @@ me._editor.display.wrapper.style.height = '95%';
         methods: {
             InitDOM: function () {
                 this._root = $(document.createElement("div"));
+            }
+        }
+    });
+
+    Bridge.define("System.Windows.html_img", {
+        inherits: [System.Windows.FrameworkElement],
+        statics: {
+            fields: {
+                SrcProperty: null
+            },
+            ctors: {
+                init: function () {
+                    this.SrcProperty = System.Windows.DependencyProperty.Register$1("Src", System.String, System.Windows.html_img, System.Windows.FrameworkElement.CreateHtmlAttributeUpdater("src"));
+                }
+            }
+        },
+        props: {
+            Src: {
+                get: function () {
+                    return Bridge.cast(this.GetValue$1(System.Windows.html_img.SrcProperty), System.String);
+                },
+                set: function (value) {
+                    this.SetValue$1(System.Windows.html_img.SrcProperty, value);
+                }
+            }
+        },
+        methods: {
+            InitDOM: function () {
+                this._root = $(document.createElement("img"));
             }
         }
     });

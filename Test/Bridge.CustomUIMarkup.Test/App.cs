@@ -10,7 +10,11 @@ namespace Bridge.CustomUIMarkup.Test
             new BindingInfoTest().ParsePath(); 
             new BindingInfoTest().SimpleBind();
             new BindingInfoTest().LongPropertyPathForSource();
-            new BindingInfoTest().SimpleTwoWayBind(); 
+            new BindingInfoTest().SimpleTwoWayBind();
+            new BindingInfoTest().BindingInBag();
+            new BindingInfoTest().SimpleBindWithSameValues();
+            new BindingInfoTest().TwoWayCircularBindingMustbeSupport();
+            new BindingInfoTest().TwoWayCircularBindingBetweenThreeItemsMustbeSupport(); 
 
             Console.WriteLine("Success");
         }

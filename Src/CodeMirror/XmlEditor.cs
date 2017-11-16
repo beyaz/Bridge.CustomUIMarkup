@@ -237,6 +237,7 @@ me._editor.display.wrapper.style.height = '95%';
 
         static void TextChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
+            return;
             var newValue = (string) e.NewValue;
 
             var me = (XmlEditor) d;

@@ -169,5 +169,15 @@ namespace System.ComponentModel
             propertyInfo.SetValue(instance, value);
         }
         #endregion
+
+        public static MethodInfo GetMethodInfo(object instance, string methodName)
+        {
+            var methodInfo = FindMethodInfo(instance, methodName);
+            if (methodInfo == null)
+            {
+                throw new MissingMemberException("MethodNotFound: "+ instance.GetType().FullName + " -> "+ methodName);
+            }
+            return methodInfo;
+        }
     }
 }
