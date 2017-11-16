@@ -1,4 +1,3 @@
-using System.ComponentModel;
 using Bridge.jQuery2;
 
 namespace System.Windows.Data
@@ -31,12 +30,7 @@ namespace System.Windows.Data
 
         public override void UpdateTarget()
         {
-            if (ReflectionHelper.FindProperty(Source, SourcePath.Path) == null)
-            {
-                return;
-            }
-
-            var value = ReflectionHelper.GetPropertyValue(Source, SourcePath.Path);
+            var value = SourcePath.GetPropertyValue();
 
             if (UpdateOnlyInnerHTML)
             {

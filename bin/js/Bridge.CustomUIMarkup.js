@@ -2663,11 +2663,7 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
         },
         methods: {
             UpdateTarget: function () {
-                if (System.ComponentModel.ReflectionHelper.FindProperty(this.Source, this.SourcePath.Path) == null) {
-                    return;
-                }
-
-                var value = System.ComponentModel.ReflectionHelper.GetPropertyValue(this.Source, this.SourcePath.Path);
+                var value = this.SourcePath.GetPropertyValue();
 
                 if (this["UpdateOnlyInnerHTML"]) {
                     this.Target$1.html(System.String.concat(value, ""));
