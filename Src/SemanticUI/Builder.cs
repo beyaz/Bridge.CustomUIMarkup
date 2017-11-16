@@ -82,8 +82,6 @@ namespace Bridge.CustomUIMarkup.SemanticUI
             _tags.Add(new XmlIntellisenseInfo(tagName, type));
         }
 
-        // 
-
         protected override Type CreateType(string tag)
         {
             if (TagTypeMap == null)

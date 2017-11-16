@@ -38,6 +38,7 @@
   <ItemGroup>
     <Compile Include="App.cs" />
     <Compile Include="BindingInfoTest.cs" />
+    <Compile Include="BuilderTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TestBase.cs" />
   </ItemGroup>
@@ -52,6 +53,7 @@
     <Reference Include="Bridge.Html5, Version=16.5.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\packages\Bridge.Html5.16.5.0\lib\net40\Bridge.Html5.dll</HintPath>
     </Reference>
+    <Reference Include="Bridge.jQuery2, Version=2.9.0.0, Culture=neutral, PublicKeyToken=null" />
     <Reference Include="Bridge.QUnit, Version=1.9.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\packages\Bridge.QUnit.1.9.0\lib\net40\Bridge.QUnit.dll</HintPath>
     </Reference>

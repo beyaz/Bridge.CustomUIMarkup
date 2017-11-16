@@ -414,6 +414,9 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
     Bridge.define("Bridge.CustomUIMarkup.Common.DOM", {
         statics: {
             methods: {
+                CreateElement: function (tagName) {
+                    return $(document.createElement(tagName));
+                },
                 a: function (className) {
                     return $(document.createElement("a")).addClass(className);
                 },
@@ -731,6 +734,9 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
 
                 Bridge.CustomUIMarkup.Common.Extensions.highlight(query);
             },
+            CreateType: function (tag) {
+                return null;
+            },
             BuildNode: function (xmlNode) {
                 var $t, $t1;
                 var instance = this.CreateInstance(xmlNode);
@@ -744,7 +750,10 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
                 var frameworkElement = Bridge.as(instance, System.Windows.FrameworkElement);
                 if (frameworkElement != null) {
                     frameworkElement.DataContext = this.DataContext;
-                    frameworkElement.InitDOM();
+                    if (frameworkElement._root == null) {
+                        frameworkElement.InitDOM();
+                    }
+
                     Bridge.Reflection.midel(Bridge.Reflection.getMembers(Bridge.getType(frameworkElement), 8, 36 | 256, "AfterInitDOM"), frameworkElement)(null);
                 }
 
@@ -798,13 +807,14 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
                 return instance;
             },
             CreateInstance: function (xmlNode) {
+                var $t;
                 var tag = xmlNode.nodeName.toUpperCase();
 
                 var controlType = this.CreateType(tag);
 
                 if (controlType == null) {
                     if (xmlNode.nodeName.length <= 3) {
-                        return new System.Windows.FrameworkElement();
+                        return ($t = new System.Windows.FrameworkElement(), $t._root = Bridge.CustomUIMarkup.Common.DOM.CreateElement(xmlNode.nodeName), $t);
                     }
 
                     throw new System.ArgumentException((System.String.format("NotRecognizedTag:", null) || "") + (tag || ""));
@@ -813,12 +823,15 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
                 return Bridge.createInstance(controlType);
             },
             ProcessAttribute: function (instance, name, value) {
+                var $t;
                 if (Bridge.referenceEquals(name, "class")) {
                     name = "Class";
                 }
 
                 var fe = Bridge.as(instance, System.Windows.FrameworkElement);
 
+
+                var targetProperty = System.ComponentModel.ReflectionHelper.FindProperty(instance, name);
 
                 var bi = System.Windows.Data.BindingInfo.TryParseExpression(value);
                 if (bi != null) {
@@ -833,6 +846,14 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
                         return;
                     }
 
+                    if (System.String.contains(name,".") === false) {
+                        if (targetProperty == null) {
+                            ($t = new System.Windows.Data.HTMLBindingInfo(), $t.Source = this.DataContext, $t.SourcePath = System.Windows.PropertyPath.op_Implicit(bi.SourcePath.Path), $t.Target$1 = fe._root, $t.TargetPath = System.Windows.PropertyPath.op_Implicit(name), $t.BindingMode = System.Windows.Data.BindingMode.OneWay, $t).Connect();
+
+                            return;
+                        }
+                    }
+
                     bi.Source = this.DataContext;
                     bi.Target = instance;
                     bi.TargetPath = System.Windows.PropertyPath.op_Implicit(name);
@@ -842,7 +863,7 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
                     return;
                 }
 
-                var targetProperty = System.ComponentModel.ReflectionHelper.FindProperty(instance, name);
+
                 if (targetProperty != null) {
                     if (Bridge.Reflection.isEnum(targetProperty.rt)) {
                         System.ComponentModel.ReflectionHelper.SetPropertyValue(instance, name, System.Enum.parse(targetProperty.rt, value, true));
@@ -881,6 +902,8 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
                     Bridge.Reflection.fieldAccess(fi, Bridge.unbox(this.Caller), Bridge.unbox(instance));
                     return;
                 }
+
+                fe._root.attr(name, value);
 
                 var instanceAsBag = Bridge.as(instance, System.ComponentModel.Bag);
                 if (instanceAsBag != null) {

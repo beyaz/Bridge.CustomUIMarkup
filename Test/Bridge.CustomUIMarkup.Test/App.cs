@@ -14,7 +14,9 @@ namespace Bridge.CustomUIMarkup.Test
             new BindingInfoTest().BindingInBag();
             new BindingInfoTest().SimpleBindWithSameValues();
             new BindingInfoTest().TwoWayCircularBindingMustbeSupport();
-            new BindingInfoTest().TwoWayCircularBindingBetweenThreeItemsMustbeSupport(); 
+            new BindingInfoTest().TwoWayCircularBindingBetweenThreeItemsMustbeSupport();
+
+            BuilderTest.RunAll();
 
             Console.WriteLine("Success");
         }

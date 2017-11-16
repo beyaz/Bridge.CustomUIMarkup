@@ -42,7 +42,7 @@ namespace Bridge.CustomUIMarkup.UI.Design
         #endregion
     }
 
-    public abstract class Builder
+    public  class Builder
     {
         #region Fields
         public string XmlString;
@@ -107,7 +107,10 @@ namespace Bridge.CustomUIMarkup.UI.Design
         #endregion
 
         #region Methods
-        protected abstract Type CreateType(string tag);
+        protected virtual Type CreateType(string tag)
+        {
+            return null;
+        }
 
         static XmlNode GetRootNode(string xmlString)
         {
@@ -136,7 +139,11 @@ namespace Bridge.CustomUIMarkup.UI.Design
             if (frameworkElement != null)
             {
                 frameworkElement.DataContext = DataContext;
-                frameworkElement.InitDOM();
+                if (frameworkElement._root == null)
+                {
+                    frameworkElement.InitDOM();
+                }
+                
                 frameworkElement.GetType().GetMethod("AfterInitDOM", BindingFlags.NonPublic | BindingFlags.Instance).Invoke(frameworkElement);
             }
 
@@ -192,7 +199,7 @@ namespace Bridge.CustomUIMarkup.UI.Design
             {
                 if (xmlNode.Name.Length <= 3)
                 {
-                    return new FrameworkElement();
+                    return new FrameworkElement {_root = DOM.CreateElement(xmlNode.Name)};
                 }
 
                 throw new ArgumentException($"NotRecognizedTag:" + tag);
@@ -211,6 +218,8 @@ namespace Bridge.CustomUIMarkup.UI.Design
             var fe = instance as FrameworkElement;
 
 
+            var targetProperty = ReflectionHelper.FindProperty(instance, name);
+
             var bi = BindingInfo.TryParseExpression(value);
             if (bi != null)
             {
@@ -226,6 +235,23 @@ namespace Bridge.CustomUIMarkup.UI.Design
                     return;
                 }
 
+                if (name.Contains(".") == false)
+                {
+                    if (targetProperty == null)
+                    {
+                        new HTMLBindingInfo
+                        {
+                            Source = DataContext,
+                            SourcePath = bi.SourcePath.Path,
+                            Target = fe._root,
+                            TargetPath = name,
+                            BindingMode = BindingMode.OneWay
+                        }.Connect();
+
+                        return;
+                    }
+                }
+
                 bi.Source = DataContext;
                 bi.Target = instance;
                 bi.TargetPath = name;
@@ -235,7 +261,7 @@ namespace Bridge.CustomUIMarkup.UI.Design
                 return;
             }
 
-            var targetProperty = ReflectionHelper.FindProperty(instance, name);
+            
             if (targetProperty != null)
             {
                 if (targetProperty.PropertyType.IsEnum)
@@ -277,6 +303,8 @@ namespace Bridge.CustomUIMarkup.UI.Design
                 fi.SetValue(Caller, instance);
                 return;
             }
+
+            fe._root.Attr(name, value);
 
             var instanceAsBag = instance as Bag;
             if (instanceAsBag != null)

@@ -5,6 +5,11 @@ namespace Bridge.CustomUIMarkup.Common
 {
     public static class DOM
     {
+        public static jQuery CreateElement(string tagName)
+        {
+            return new jQuery(Document.CreateElement(tagName));
+        }
+
         #region Public Methods
         public static jQuery a(string className)
         {
@@ -20,6 +25,7 @@ namespace Bridge.CustomUIMarkup.Common
         {
             return new jQuery(Document.CreateElement("div")).AddClass(className);
         }
+
         public static jQuery h1(string className = null)
         {
             return new jQuery(Document.CreateElement("h1")).AddClass(className);
