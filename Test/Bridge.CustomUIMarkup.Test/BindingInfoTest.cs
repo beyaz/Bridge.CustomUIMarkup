@@ -1,7 +1,8 @@
 ﻿using System.ComponentModel;
-using Bridge.QUnit;
+using System.Windows;
+using System.Windows.Data;
 
-namespace System.Windows.Data
+namespace Bridge.CustomUIMarkup.Test
 {
     public class SimpleClass1 : Bag
     {
@@ -38,12 +39,53 @@ namespace System.Windows.Data
             }
         }
         #endregion
+
+        #region SimpleClass1 Child
+        SimpleClass1 _child;
+
+        public SimpleClass1 Child
+        {
+            get { return _child; }
+            set
+            {
+                if (_child != value)
+                {
+                    _child = value;
+                    OnPropertyChanged("Child");
+                }
+            }
+        }
+        #endregion
     }
 
-    class BindingInfoTest
+    class BindingInfoTest : TestBase
     {
         #region Public Methods
-        public static void SimpleBind(Assert assert)
+        public void LongPropertyPathForSource()
+        {
+            var simpleClass1 = new SimpleClass1
+            {
+                Child = new SimpleClass1()
+            };
+            var simpleClass2 = new SimpleClass1();
+
+            var bindingInfo = new BindingInfo
+            {
+                BindingMode = BindingMode.OneWay,
+                Path = new PropertyPath(nameof(simpleClass1.Child) + "." + nameof(simpleClass1.LastName)),
+                Source = simpleClass1,
+                Target = simpleClass2,
+                TargetPropertyName = nameof(simpleClass1.LastName)
+            };
+
+            bindingInfo.Connect();
+
+            simpleClass1.Child.LastName = "Alex";
+
+            MustEqual(simpleClass2.LastName, simpleClass1.Child.LastName);
+        }
+
+        public void SimpleBind()
         {
             var simpleClass1 = new SimpleClass1();
             var simpleClass2 = new SimpleClass1();
@@ -61,7 +103,7 @@ namespace System.Windows.Data
 
             simpleClass1.LastName = "Alex";
 
-            assert.Equal(simpleClass1.LastName, simpleClass2.LastName);
+            MustEqual(simpleClass1.LastName, simpleClass2.LastName);
         }
         #endregion
     }

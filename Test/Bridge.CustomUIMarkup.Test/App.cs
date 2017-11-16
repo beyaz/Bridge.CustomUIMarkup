@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Windows.Data;
 
 namespace Bridge.CustomUIMarkup.Test
 {
@@ -8,7 +7,8 @@ namespace Bridge.CustomUIMarkup.Test
         #region Public Methods
         public static void Main()
         {
-            QUnit.QUnit.Test(nameof(BindingInfoTest.SimpleBind), BindingInfoTest.SimpleBind);
+            new BindingInfoTest().SimpleBind();
+            new BindingInfoTest().LongPropertyPathForSource();
 
             Console.WriteLine("Success");
         }
