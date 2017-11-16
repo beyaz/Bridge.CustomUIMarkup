@@ -5,15 +5,11 @@ namespace System.Windows.Data
         #region Public Properties
         public BindingMode BindingMode { get; set; }
 
-        public PropertyPath Path { get; set; }
+        
 
         public object Source { get; set; }
 
-        public string SourcePath
-        {
-            get { return Path?.Path; }
-            set { Path = new PropertyPath(value); }
-        }
+        public PropertyPath SourcePath { get; set; }
 
         public object Target { get; set; }
 
@@ -46,7 +42,7 @@ namespace System.Windows.Data
 
             text = text.RemoveFromStart("Binding ");
 
-            return new BindingInfo {Path = text};
+            return new BindingInfo {SourcePath = text};
         }
 
         public void Connect()
@@ -67,19 +63,19 @@ namespace System.Windows.Data
 
         public virtual void UpdateSource()
         {
-            Path.SetPropertyValue(TargetPath.GetPropertyValue());
+            SourcePath.SetPropertyValue(TargetPath.GetPropertyValue());
         }
 
         public virtual void UpdateTarget()
         {
-            TargetPath.SetPropertyValue(Path.GetPropertyValue());
+            TargetPath.SetPropertyValue(SourcePath.GetPropertyValue());
         }
         #endregion
 
         #region Methods
         protected virtual void ConnectSourceToTarget()
         {
-            Path.Listen(Source, UpdateTarget);
+            SourcePath.Listen(Source, UpdateTarget);
         }
 
         protected virtual void ConnectTargetToSource()

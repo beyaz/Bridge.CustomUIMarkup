@@ -95,7 +95,7 @@ namespace Bridge.CustomUIMarkup.Test
             var bindingInfo = new BindingInfo
             {
                 BindingMode = BindingMode.OneWay,
-                Path = new PropertyPath(nameof(simpleClass1.Child) + "." + nameof(simpleClass1.LastName)),
+                SourcePath = nameof(simpleClass1.Child) + "." + nameof(simpleClass1.LastName),
                 Source = simpleClass1,
                 Target = simpleClass2,
                 TargetPath = nameof(simpleClass1.LastName)
@@ -116,7 +116,7 @@ namespace Bridge.CustomUIMarkup.Test
             var bindingInfo = new BindingInfo
             {
                 BindingMode = BindingMode.OneWay,
-                Path = new PropertyPath(nameof(simpleClass1.LastName)),
+                SourcePath = nameof(simpleClass1.LastName),
                 Source = simpleClass1,
                 Target = simpleClass2,
                 TargetPath = nameof(simpleClass1.LastName)
@@ -137,7 +137,7 @@ namespace Bridge.CustomUIMarkup.Test
             var bindingInfo = new BindingInfo
             {
                 BindingMode = BindingMode.TwoWay,
-                Path = new PropertyPath(nameof(simpleClass1.LastName)),
+                SourcePath = nameof(simpleClass1.LastName),
                 Source = simpleClass1,
                 Target = simpleClass2,
                 TargetPath = nameof(simpleClass2.LastName)

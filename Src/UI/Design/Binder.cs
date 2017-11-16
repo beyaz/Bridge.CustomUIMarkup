@@ -99,10 +99,10 @@ namespace Bridge.CustomUIMarkup.UI.Design
                 return;
             }
 
-            var mi = Caller.GetType().GetMethod(info.SourcePath);
+            var mi = Caller.GetType().GetMethod(info.SourcePath.Path);
             if (mi == null)
             {
-                throw new ArgumentException(info.SourcePath);
+                throw new ArgumentException(info.SourcePath.Path);
             }
 
             if (jQueryEventName == "click" && mi.ParameterTypes.FirstOrDefault() == typeof(jQueryMouseEvent))
@@ -113,7 +113,7 @@ namespace Bridge.CustomUIMarkup.UI.Design
             {
                 if (mi.ParameterTypes.Length != 0)
                 {
-                    throw new ArgumentException(info.SourcePath);
+                    throw new ArgumentException(info.SourcePath.Path);
                 }
                 jQuery.Element(element).On(jQueryEventName, () => { mi.Invoke(Caller); });
             }

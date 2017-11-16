@@ -1066,9 +1066,9 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
                     return;
                 }
 
-                var mi = Bridge.Reflection.getMembers(Bridge.getType(this.Caller), 8, 284, info.SourcePath);
+                var mi = Bridge.Reflection.getMembers(Bridge.getType(this.Caller), 8, 284, info.SourcePath.Path);
                 if (mi == null) {
-                    throw new System.ArgumentException(info.SourcePath);
+                    throw new System.ArgumentException(info.SourcePath.Path);
                 }
 
                 if (Bridge.referenceEquals(jQueryEventName, "click") && Bridge.referenceEquals(System.Linq.Enumerable.from((mi.p || [])).firstOrDefault(null, null), jQuery.Event)) {
@@ -1077,7 +1077,7 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
                     }));
                 } else {
                     if ((mi.p || []).length !== 0) {
-                        throw new System.ArgumentException(info.SourcePath);
+                        throw new System.ArgumentException(info.SourcePath.Path);
                     }
                     $(element).on(jQueryEventName, Bridge.fn.bind(this, function () {
                         Bridge.Reflection.midel(mi, Bridge.unbox(this.Caller))(null);
@@ -2163,28 +2163,17 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
 
                     text = System.Extensions.RemoveFromStart(text, "Binding ");
 
-                    return ($t = new System.Windows.Data.BindingInfo(), $t.Path = System.Windows.PropertyPath.op_Implicit(text), $t);
+                    return ($t = new System.Windows.Data.BindingInfo(), $t.SourcePath = System.Windows.PropertyPath.op_Implicit(text), $t);
                 }
             }
         },
         fields: {
             BindingMode: 0,
-            Path: null,
             Source: null,
+            SourcePath: null,
             Target: null,
             TargetPath: null,
             TargetPropertyName: null
-        },
-        props: {
-            SourcePath: {
-                get: function () {
-                    var $t;
-                    return ($t = this.Path) != null ? $t.Path : null;
-                },
-                set: function (value) {
-                    this.Path = new System.Windows.PropertyPath(value);
-                }
-            }
         },
         methods: {
             Connect: function () {
@@ -2199,13 +2188,13 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
                 this.UpdateTarget();
             },
             UpdateSource: function () {
-                this.Path.SetPropertyValue(this.TargetPath.GetPropertyValue());
+                this.SourcePath.SetPropertyValue(this.TargetPath.GetPropertyValue());
             },
             UpdateTarget: function () {
-                this.TargetPath.SetPropertyValue(this.Path.GetPropertyValue());
+                this.TargetPath.SetPropertyValue(this.SourcePath.GetPropertyValue());
             },
             ConnectSourceToTarget: function () {
-                this.Path.Listen(this.Source, Bridge.fn.cacheBind(this, this.UpdateTarget));
+                this.SourcePath.Listen(this.Source, Bridge.fn.cacheBind(this, this.UpdateTarget));
             },
             ConnectTargetToSource: function () {
                 this.TargetPath.Listen(this.Target, Bridge.fn.cacheBind(this, this.UpdateSource));
@@ -2675,11 +2664,11 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
         },
         methods: {
             UpdateTarget: function () {
-                if (System.ComponentModel.ReflectionHelper.FindProperty(this.Source, this.SourcePath) == null) {
+                if (System.ComponentModel.ReflectionHelper.FindProperty(this.Source, this.SourcePath.Path) == null) {
                     return;
                 }
 
-                var value = System.ComponentModel.ReflectionHelper.GetPropertyValue(this.Source, this.SourcePath);
+                var value = System.ComponentModel.ReflectionHelper.GetPropertyValue(this.Source, this.SourcePath.Path);
 
                 if (this["UpdateOnlyInnerHTML"]) {
                     this.Target$1.html(System.String.concat(value, ""));
@@ -3130,7 +3119,7 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
                 // TODO: remove
                 this.addPropertyChanged(Bridge.fn.bind(this, function (s, a) {
                     var $t;
-                    var bi = ($t = new System.Windows.Data.HTMLBindingInfo(), $t.BindingMode = System.Windows.Data.BindingMode.OneWay, $t.Source = this, $t.SourcePath = propertyName, $t.Target$1 = targetElement, $t["UpdateOnlyInnerHTML"] = true, $t);
+                    var bi = ($t = new System.Windows.Data.HTMLBindingInfo(), $t.BindingMode = System.Windows.Data.BindingMode.OneWay, $t.Source = this, $t.SourcePath = System.Windows.PropertyPath.op_Implicit(propertyName), $t.Target$1 = targetElement, $t["UpdateOnlyInnerHTML"] = true, $t);
                     bi.UpdateTarget();
                 }));
             }

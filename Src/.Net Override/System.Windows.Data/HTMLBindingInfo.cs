@@ -31,12 +31,12 @@ namespace System.Windows.Data
 
         public override void UpdateTarget()
         {
-            if (ReflectionHelper.FindProperty(Source, SourcePath) == null)
+            if (ReflectionHelper.FindProperty(Source, SourcePath.Path) == null)
             {
                 return;
             }
 
-            var value = ReflectionHelper.GetPropertyValue(Source, SourcePath);
+            var value = ReflectionHelper.GetPropertyValue(Source, SourcePath.Path);
 
             if (UpdateOnlyInnerHTML)
             {
