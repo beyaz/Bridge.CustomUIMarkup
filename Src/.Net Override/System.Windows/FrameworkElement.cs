@@ -151,7 +151,7 @@ namespace System.Windows
         {
         }
 
-        protected virtual void AfterInitDOM()
+        protected internal virtual void AfterInitDOM()
         {
         }
 

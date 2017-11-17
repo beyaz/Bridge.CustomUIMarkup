@@ -101,6 +101,7 @@
     <Compile Include=".Net Override\System.Xml.cs" />
     <Compile Include="CodeMirror\XmlEditor.cs" />
     <Compile Include=".Net Override\System.Windows.Markup\IAddChild.cs" />
+    <Compile Include="UI\Design\XmlIntellisenseInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="bridge.json" />

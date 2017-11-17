@@ -60,29 +60,48 @@ namespace Bridge.CustomUIMarkup.Test
 
     class BindingInfoTest : TestBase
     {
-        public void ParsePath()
+        #region Constants
+        const string LastName = nameof(LastName);
+        #endregion
+
+        #region Public Methods
+        public static void RunAll()
         {
-            var simpleClass1 = new SimpleClass1
-            {
-                Child = new SimpleClass1()
-            };
-
-            var propertyPath = new PropertyPath("Child.LastName");
-
-            propertyPath.ParsePath(simpleClass1, propertyPath.Path);
-
-            MustEqualByReference(propertyPath.Triggers[0].Instance , simpleClass1);
-
-            MustEqualByReference(propertyPath.Triggers[0].PropertyName, "Child");
-
-            MustEqualByReference(propertyPath.Triggers[1].Instance, simpleClass1.Child);
-
-            MustEqualByReference(propertyPath.Triggers[1].PropertyName, "LastName");
-
+            new BindingInfoTest().ParsePath();
+            new BindingInfoTest().SimpleBind();
+            new BindingInfoTest().LongPropertyPathForSource();
+            new BindingInfoTest().SimpleTwoWayBind();
+            new BindingInfoTest().BindingInBag();
+            new BindingInfoTest().SimpleBindWithSameValues();
+            new BindingInfoTest().TwoWayCircularBindingMustbeSupport();
+            new BindingInfoTest().TwoWayCircularBindingBetweenThreeItemsMustbeSupport();
         }
 
-        
-        #region Public Methods
+        public void BindingInBag()
+        {
+            var simpleClass1 = new SimpleClass1();
+            var bag = new Bag();
+
+            var bindingInfo = new BindingInfo
+            {
+                BindingMode = BindingMode.TwoWay,
+                SourcePath = LastName,
+                Source = simpleClass1,
+                Target = bag,
+                TargetPath = LastName
+            };
+
+            bindingInfo.Connect();
+
+            simpleClass1.LastName = "Alex1";
+
+            MustEqual("Alex1", (string) bag[LastName]);
+
+            bag[LastName] = "Alex3";
+
+            MustEqual("Alex3", simpleClass1.LastName);
+        }
+
         public void LongPropertyPathForSource()
         {
             var simpleClass1 = new SimpleClass1
@@ -104,7 +123,27 @@ namespace Bridge.CustomUIMarkup.Test
 
             simpleClass1.Child.LastName = "Alex0";
 
-            MustEqual("Alex0",simpleClass2.LastName);
+            MustEqual("Alex0", simpleClass2.LastName);
+        }
+
+        public void ParsePath()
+        {
+            var simpleClass1 = new SimpleClass1
+            {
+                Child = new SimpleClass1()
+            };
+
+            var propertyPath = new PropertyPath("Child.LastName");
+
+            propertyPath.ParsePath(simpleClass1, propertyPath.Path);
+
+            MustEqualByReference(propertyPath.Triggers[0].Instance, simpleClass1);
+
+            MustEqualByReference(propertyPath.Triggers[0].PropertyName, "Child");
+
+            MustEqualByReference(propertyPath.Triggers[1].Instance, simpleClass1.Child);
+
+            MustEqualByReference(propertyPath.Triggers[1].PropertyName, "LastName");
         }
 
         public void SimpleBind()
@@ -128,59 +167,6 @@ namespace Bridge.CustomUIMarkup.Test
             MustEqual("Alex1", simpleClass2.LastName);
         }
 
-        public void SimpleTwoWayBind()
-        {
-            var simpleClass1 = new SimpleClass1();
-            var simpleClass2 = new SimpleClass1();
-
-            var bindingInfo = new BindingInfo
-            {
-                BindingMode = BindingMode.TwoWay,
-                SourcePath = LastName,
-                Source = simpleClass1,
-                Target = simpleClass2,
-                TargetPath = LastName
-            };
-
-            bindingInfo.Connect();
-
-            simpleClass1.LastName = "Alex1";
-
-            MustEqual("Alex1", simpleClass2.LastName);
-
-            simpleClass2.LastName = "Alex3";
-
-            MustEqual("Alex3", simpleClass1.LastName);
-        }
-
-        const string LastName = nameof(LastName);
-
-        public void BindingInBag()
-        {
-            var simpleClass1 = new SimpleClass1();
-            var bag = new Bag();
-
-            var bindingInfo = new BindingInfo
-            {
-                BindingMode = BindingMode.TwoWay,
-                SourcePath = LastName,
-                Source = simpleClass1,
-                Target = bag,
-                TargetPath = LastName
-            };
-
-            bindingInfo.Connect();
-
-            simpleClass1.LastName = "Alex1";
-
-            MustEqual("Alex1", (string)bag[LastName]);
-
-            bag[LastName] = "Alex3";
-
-            MustEqual("Alex3", simpleClass1.LastName);
-        }
-
-
         public void SimpleBindWithSameValues()
         {
             var simpleClass1 = new SimpleClass1();
@@ -197,22 +183,23 @@ namespace Bridge.CustomUIMarkup.Test
             bindingInfo.Connect();
 
             simpleClass1.LastName = "Alex1";
-            
         }
 
-        public void TwoWayCircularBindingMustbeSupport()
+        public void SimpleTwoWayBind()
         {
             var simpleClass1 = new SimpleClass1();
             var simpleClass2 = new SimpleClass1();
 
-            new BindingInfo
+            var bindingInfo = new BindingInfo
             {
                 BindingMode = BindingMode.TwoWay,
                 SourcePath = LastName,
                 Source = simpleClass1,
                 Target = simpleClass2,
                 TargetPath = LastName
-            }.Connect();
+            };
+
+            bindingInfo.Connect();
 
             simpleClass1.LastName = "Alex1";
 
@@ -256,7 +243,6 @@ namespace Bridge.CustomUIMarkup.Test
                 TargetPath = LastName
             }.Connect();
 
-
             simpleClass1.LastName = "Alex1";
             MustEqual("Alex1", simpleClass2.LastName);
             MustEqual("Alex1", simpleClass3.LastName);
@@ -267,6 +253,28 @@ namespace Bridge.CustomUIMarkup.Test
             MustEqual("Alex3", simpleClass3.LastName);
         }
 
+        public void TwoWayCircularBindingMustbeSupport()
+        {
+            var simpleClass1 = new SimpleClass1();
+            var simpleClass2 = new SimpleClass1();
+
+            new BindingInfo
+            {
+                BindingMode = BindingMode.TwoWay,
+                SourcePath = LastName,
+                Source = simpleClass1,
+                Target = simpleClass2,
+                TargetPath = LastName
+            }.Connect();
+
+            simpleClass1.LastName = "Alex1";
+
+            MustEqual("Alex1", simpleClass2.LastName);
+
+            simpleClass2.LastName = "Alex3";
+
+            MustEqual("Alex3", simpleClass1.LastName);
+        }
         #endregion
     }
 }

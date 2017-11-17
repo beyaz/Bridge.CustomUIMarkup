@@ -4,6 +4,10 @@ namespace Bridge.CustomUIMarkup.Test
 {
     public class TestBase
     {
+        #region Fields
+        protected string SampleImageUrl_350_150 = "http://via.placeholder.com/350x150";
+        #endregion
+
         #region Methods
         protected void MustEqual(string expected, string actual)
         {
@@ -12,9 +16,10 @@ namespace Bridge.CustomUIMarkup.Test
                 throw new InvalidCastException("@expected: " + expected + " , @actual: " + actual);
             }
         }
+
         protected void MustEqualByReference(object expected, object actual)
         {
-            if ( !ReferenceEquals(expected , actual))
+            if (!ReferenceEquals(expected, actual))
             {
                 throw new InvalidCastException("@expected: " + expected + " , @actual: " + actual);
             }

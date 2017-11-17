@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
-using System.Reflection;
 using System.Windows;
 using System.Windows.Data;
 using System.Xml;
@@ -14,30 +12,7 @@ using Bridge.jQuery2;
 
 namespace Bridge.CustomUIMarkup.UI.Design
 {
-    public class XmlIntellisenseInfo
-    {
-        #region Constructors
-        public XmlIntellisenseInfo(string tagName, Type type)
-        {
-            Debug.Assert(tagName != null);
-            Debug.Assert(type != null);
-            
-
-            TagName = tagName;
-            Type = type;
-        }
-        #endregion
-
-        #region Public Properties
-        public string[] ChildrenTags { get; set; }
-
-        public string TagName { get; }
-
-        public Type Type { get; }
-        #endregion
-    }
-
-    public  class Builder
+    public class Builder
     {
         #region Fields
         public string XmlString;
@@ -73,15 +48,11 @@ namespace Bridge.CustomUIMarkup.UI.Design
         #endregion
 
         #region Public Methods
-        public object Build()
+        public FrameworkElement Build()
         {
-            object instance = null;
-
             var rootNode = _rootNode = GetRootNode(XmlString);
 
-            instance = BuildNode(rootNode);
-
-            return instance;
+            return BuildNode(rootNode);
         }
 
         public virtual void FocusToLine(int lineNumber)
@@ -98,7 +69,6 @@ namespace Bridge.CustomUIMarkup.UI.Design
 
             query.highlight();
         }
-       
         #endregion
 
         #region Methods
@@ -136,8 +106,7 @@ namespace Bridge.CustomUIMarkup.UI.Design
                 instance.InitDOM();
             }
 
-            instance.GetType().GetMethod("AfterInitDOM", BindingFlags.NonPublic | BindingFlags.Instance).Invoke(instance);
-
+            instance.AfterInitDOM();
 
             foreach (var nodeAttribute in xmlNode.Attributes)
             {
@@ -153,9 +122,22 @@ namespace Bridge.CustomUIMarkup.UI.Design
 
                 if (childNode.NodeType == NodeType.Text)
                 {
+                    // skip empty spaces
                     var html = new jQuery(childNode).Text();
                     if (string.IsNullOrWhiteSpace(html))
                     {
+                        continue;
+                    }
+
+                    // maybe <div> {LastName} </div>
+                    var bindingInfo = BindingInfo.TryParseExpression(html);
+                    if (bindingInfo != null)
+                    {
+                        bindingInfo.Source = DataContext;
+                        bindingInfo.Target = instance;
+                        bindingInfo.TargetPath = nameof(instance.InnerHTML);
+
+                        bindingInfo.Connect();
                         continue;
                     }
 
@@ -166,8 +148,6 @@ namespace Bridge.CustomUIMarkup.UI.Design
                 var subControl = BuildNode(childNode);
 
                 instance.Add(subControl);
-                
-                
             }
 
             return instance;
@@ -183,13 +163,13 @@ namespace Bridge.CustomUIMarkup.UI.Design
             {
                 if (xmlNode.Name.Length <= 3)
                 {
-                    return new FrameworkElement { _root = DOM.CreateElement(xmlNode.Name) };
+                    return new FrameworkElement {_root = DOM.CreateElement(xmlNode.Name)};
                 }
 
                 throw new ArgumentException($"NotRecognizedTag:" + tag);
             }
 
-            return (FrameworkElement)Activator.CreateInstance(controlType);
+            return (FrameworkElement) Activator.CreateInstance(controlType);
         }
 
         void ProcessAttribute(FrameworkElement instance, string name, string value)
@@ -199,16 +179,13 @@ namespace Bridge.CustomUIMarkup.UI.Design
                 name = "Class";
             }
 
-           
-
-
             var targetProperty = ReflectionHelper.FindProperty(instance, name);
 
             var bi = BindingInfo.TryParseExpression(value);
             if (bi != null)
             {
-                var eventInfo = ReflectionHelper.FindEvent(instance,name );
-                if (eventInfo!= null)
+                var eventInfo = ReflectionHelper.FindEvent(instance, name);
+                if (eventInfo != null)
                 {
                     var methodInfo = ReflectionHelper.GetMethodInfo(DataContext, bi.SourcePath.Path);
 
@@ -245,7 +222,6 @@ namespace Bridge.CustomUIMarkup.UI.Design
                 return;
             }
 
-            
             if (targetProperty != null)
             {
                 if (targetProperty.PropertyType.IsEnum)
@@ -287,7 +263,6 @@ namespace Bridge.CustomUIMarkup.UI.Design
                 fi.SetValue(Caller, instance);
                 return;
             }
-
 
             instance._root.Attr(name, value);
         }

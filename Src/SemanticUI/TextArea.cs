@@ -6,7 +6,7 @@ namespace Bridge.CustomUIMarkup.SemanticUI
     public class TextArea : InputText
     {
         #region Methods
-        protected override void AfterInitDOM()
+        protected internal override void AfterInitDOM()
         {
             _inputElement = DOM.textarea().AppendTo(_root);
         }

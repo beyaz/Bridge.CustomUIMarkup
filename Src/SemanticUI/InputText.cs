@@ -16,7 +16,7 @@ namespace Bridge.CustomUIMarkup.SemanticUI
         #endregion
 
         #region Methods
-        protected override void AfterInitDOM()
+        protected internal override void AfterInitDOM()
         {
             _inputElement = DOM.input("text").AppendTo(_root);
         }

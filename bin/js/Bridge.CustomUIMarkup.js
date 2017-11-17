@@ -655,7 +655,7 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
                     var $t;
                     var builder = ($t = new Bridge.CustomUIMarkup.SemanticUI.Builder(), $t.DataContext = new Bridge.CustomUIMarkup.DesignerSamples.ExampleDataContext(), $t.XmlString = Bridge.CustomUIMarkup.DesignerSamples.App["TestUI"], $t);
 
-                    var element = Bridge.cast(builder.Build(), System.Windows.FrameworkElement);
+                    var element = builder.Build();
 
                     element.Root.appendTo(document.body);
                 }
@@ -714,13 +714,9 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
         },
         methods: {
             Build: function () {
-                var instance = null;
-
                 var rootNode = (this._rootNode = Bridge.CustomUIMarkup.UI.Design.Builder.GetRootNode(this.XmlString));
 
-                instance = this.BuildNode(rootNode);
-
-                return instance;
+                return this.BuildNode(rootNode);
             },
             FocusToLine: function (lineNumber) {
                 lineNumber = (lineNumber + 1) | 0;
@@ -752,8 +748,7 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
                     instance.InitDOM();
                 }
 
-                Bridge.Reflection.midel(Bridge.Reflection.getMembers(Bridge.getType(instance), 8, 36 | 256, "AfterInitDOM"), instance)(null);
-
+                instance.AfterInitDOM();
 
                 $t = Bridge.getEnumerator(xmlNode.attributes);
                 try {
@@ -775,8 +770,20 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
                         }
 
                         if (childNode.nodeType === 3) {
+                            // skip empty spaces
                             var html = $(childNode).text();
                             if (System.String.isNullOrWhiteSpace(html)) {
+                                continue;
+                            }
+
+                            // maybe <div> {LastName} </div>
+                            var bindingInfo = System.Windows.Data.BindingInfo.TryParseExpression(html);
+                            if (bindingInfo != null) {
+                                bindingInfo.Source = this.DataContext;
+                                bindingInfo.Target = instance;
+                                bindingInfo.TargetPath = System.Windows.PropertyPath.op_Implicit("InnerHTML");
+
+                                bindingInfo.Connect();
                                 continue;
                             }
 
@@ -787,8 +794,6 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
                         var subControl = this.BuildNode(childNode);
 
                         instance.Add(subControl);
-
-
                     }
                 } finally {
                     if (Bridge.is($t1, System.IDisposable)) {
@@ -818,9 +823,6 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
                 if (Bridge.referenceEquals(name, "class")) {
                     name = "Class";
                 }
-
-
-
 
                 var targetProperty = System.ComponentModel.ReflectionHelper.FindProperty(instance, name);
 
@@ -853,7 +855,6 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
 
                     return;
                 }
-
 
                 if (targetProperty != null) {
                     if (Bridge.Reflection.isEnum(targetProperty.rt)) {
@@ -893,7 +894,6 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
                     Bridge.Reflection.fieldAccess(fi, Bridge.unbox(this.Caller), instance);
                     return;
                 }
-
 
                 instance._root.attr(name, value);
             }
@@ -3415,7 +3415,7 @@ me._editor.display.wrapper.style.height = '95%';
                 builder.XmlString = this.Template;
                 builder.DataContext = this;
 
-                this.OutputElement = Bridge.cast(builder.Build(), System.Windows.FrameworkElement);
+                this.OutputElement = builder.Build();
 
                 this._root = this.OutputElement.Root;
             },
