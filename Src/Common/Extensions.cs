@@ -1,3 +1,4 @@
+using System;
 using System.Xml;
 using Bridge.Html5;
 using Bridge.jQuery2;
@@ -111,7 +112,18 @@ namespace Bridge.CustomUIMarkup.Common
             return query;
         }
 
-        
+        public static jQuery Foreach(this jQuery query, Action<jQuery> action)
+        {
+            query?.Children().Each((e,i) => action(new jQuery(e)));
+
+            return query;
+        }
+        public static jQuery SetClass(this jQuery query, string newClassName)
+        {
+            query.Attr("class", newClassName);
+
+            return query;
+        }
         #endregion
     }
 }

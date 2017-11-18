@@ -552,6 +552,18 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
                     childElement.insertAfter(children.last());
 
                     return query;
+                },
+                Foreach: function (query, action) {
+                    query != null ? query.children().each(function (e, i) {
+                        action($(Bridge.box(e, System.Int32)));
+                    }) : null;
+
+                    return query;
+                },
+                SetClass: function (query, newClassName) {
+                    query.attr("class", newClassName);
+
+                    return query;
                 }
             }
         }
@@ -2555,6 +2567,7 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
                             _o1.add(new Bridge.CustomUIMarkup.UI.Design.XmlIntellisenseInfo("strong", System.Windows.html_strong));
                             _o1.add(new Bridge.CustomUIMarkup.UI.Design.XmlIntellisenseInfo("a", System.Windows.html_a));
                             _o1.add(new Bridge.CustomUIMarkup.UI.Design.XmlIntellisenseInfo("img", System.Windows.html_img));
+                            _o1.add(new Bridge.CustomUIMarkup.UI.Design.XmlIntellisenseInfo("SplitPanel", System.Windows.Controls.SplitPanel));
                             _o1.add(new Bridge.CustomUIMarkup.UI.Design.XmlIntellisenseInfo("computer.tablet.only.row", Bridge.CustomUIMarkup.SemanticUI.computer_tablet_only_row));
                             _o1.add(new Bridge.CustomUIMarkup.UI.Design.XmlIntellisenseInfo("ui.navbar.menu", Bridge.CustomUIMarkup.SemanticUI.ui_navbar_menu));
                             _o1.add(new Bridge.CustomUIMarkup.UI.Design.XmlIntellisenseInfo("mobile.only.row", Bridge.CustomUIMarkup.SemanticUI.mobile_only_row));
@@ -3967,6 +3980,96 @@ me._editor.display.wrapper.style.height = '95%';
                         $t.System$IDisposable$dispose();
                     }
                 }}
+        }
+    });
+
+    Bridge.define("System.Windows.Controls.SplitPanel", {
+        inherits: [System.Windows.FrameworkElement],
+        statics: {
+            fields: {
+                horizontal: null,
+                vertical: null,
+                OrientationProperty: null
+            },
+            ctors: {
+                init: function () {
+                    this.horizontal = "horizontal";
+                    this.vertical = "vertical";
+                    this.OrientationProperty = System.Windows.DependencyProperty.Register$1("Orientation", System.Windows.Controls.Orientation, System.Windows.Controls.SplitPanel, new System.Windows.PropertyMetadata.$ctor1(System.Windows.Controls.SplitPanel.OnOrientationChanged));
+                }
+            },
+            methods: {
+                OnOrientationChanged: function (d, e) {
+                    var me = Bridge.cast(d, System.Windows.Controls.SplitPanel);
+                    me.SetOrientation(System.Nullable.getValue(Bridge.cast(Bridge.unbox(e.NewValue), System.Int32)));
+                }
+            }
+        },
+        fields: {
+            _direction: null,
+            _left: null,
+            _right: null,
+            _wrapper: null
+        },
+        props: {
+            ClassName: {
+                get: function () {
+                    return "split split-" + (this._direction || "");
+                }
+            },
+            Orientation: {
+                get: function () {
+                    return System.Nullable.getValue(Bridge.cast(Bridge.unbox(this.GetValue$1(System.Windows.Controls.SplitPanel.OrientationProperty)), System.Int32));
+                },
+                set: function (value) {
+                    this.SetValue$1(System.Windows.Controls.SplitPanel.OrientationProperty, Bridge.box(value, System.Windows.Controls.Orientation, System.Enum.toStringFn(System.Windows.Controls.Orientation)));
+                }
+            }
+        },
+        ctors: {
+            init: function () {
+                this._direction = "horizontal";
+            }
+        },
+        methods: {
+            InitDOM: function () {
+                this._root = Bridge.CustomUIMarkup.Common.DOM.div();
+
+                this._left = Bridge.CustomUIMarkup.Common.DOM.div().appendTo(this._root);
+
+                this._right = Bridge.CustomUIMarkup.Common.DOM.div().appendTo(this._root);
+
+                this.ReInitializeWrapper();
+            },
+            AfterAddChild: function (element) {
+                if (System.Array.getCount(this.Childeren, System.Windows.FrameworkElement) === 1) {
+                    Bridge.CustomUIMarkup.Common.Extensions.SetFirstChild(this._left, Bridge.CustomUIMarkup.Common.Extensions.RemoveFromParent(this._root.children().last()));
+                } else {
+                    Bridge.CustomUIMarkup.Common.Extensions.SetFirstChild(this._right, Bridge.CustomUIMarkup.Common.Extensions.RemoveFromParent(this._root.children().last()));
+                }
+
+                this.ReInitializeWrapper();
+            },
+            ReInitializeWrapper: function () {
+                this._wrapper != null ? this._wrapper.destroy() : null;
+
+                this._wrapper = this.Split();
+            },
+            SetOrientation: function (orientation) {
+                this._direction = orientation === System.Windows.Controls.Orientation.Horizontal ? System.Windows.Controls.SplitPanel.horizontal : System.Windows.Controls.SplitPanel.vertical;
+
+                Bridge.CustomUIMarkup.Common.Extensions.Foreach(Bridge.CustomUIMarkup.Common.Extensions.SetClass(this._root, this.ClassName).children(), Bridge.fn.bind(this, function (c) {
+                    Bridge.CustomUIMarkup.Common.Extensions.SetClass(c, this.ClassName);
+                }));
+                Bridge.CustomUIMarkup.Common.Extensions.SetClass(this._left, this.ClassName);
+                Bridge.CustomUIMarkup.Common.Extensions.SetClass(this._right, this.ClassName);
+
+                this.ReInitializeWrapper();
+            },
+            Split: function () {
+                return Split([this._left[0], this._right[0]], { sizes:[50,50],  direction:this._direction });
+                ;
+            }
         }
     });
 

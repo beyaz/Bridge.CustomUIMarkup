@@ -39,6 +39,7 @@
     <Compile Include=".Net Override\System.ComponentModel\TypeConverterAttribute.cs" />
     <Compile Include=".Net Override\System.Windows.Controls\BooleanToVisibilityConverter.cs" />
     <Compile Include=".Net Override\System.Windows.Controls\Orientation.cs" />
+    <Compile Include=".Net Override\System.Windows.Controls\SplitPanel.cs" />
     <Compile Include=".Net Override\System.Windows.Controls\TextBlock.cs" />
     <Compile Include=".Net Override\System.Windows.Data\BindingInfo.cs" />
     <Compile Include=".Net Override\System.Windows.Data\IValueConverter.cs" />
@@ -105,6 +106,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="bridge.json" />
+    <Content Include=".Net Override\System.Windows.Controls\Split.js" />
     <Content Include="CodeMirror\5.31.0\addon\hint\xml-hint.js">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -153,9 +155,6 @@
       <HintPath>..\packages\Retyped.semantic-ui.2.2.6477\lib\net40\Retyped.semantic-ui.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Retyped.webix, Version=4.2.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Retyped.webix.4.2.6523\lib\net40\Retyped.webix.dll</HintPath>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Content Include="jssor\jssor.Carousel.js">
@@ -185,6 +184,7 @@ copy /y "$(ProjectDir)CodeMirror\*.css" "$(SolutionDir)\bin\css\"
 :code mirror
 xcopy /s /i /y  copy /y "$(ProjectDir)CodeMirror\*.js" "$(SolutionDir)\bin\js\CodeMirror\"
 
+xcopy /s /i /y  copy /y "$(ProjectDir)System.Windows.Controls\*.js" "$(SolutionDir)\bin\js\"
 
 
 copy /y "$(TargetDir)Bridge\*.js"  "$(SolutionDir)\bin\js\"</PostBuildEvent>

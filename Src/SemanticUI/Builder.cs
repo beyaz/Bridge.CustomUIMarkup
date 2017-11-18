@@ -17,6 +17,7 @@ namespace Bridge.CustomUIMarkup.SemanticUI
             new XmlIntellisenseInfo("strong", typeof(html_strong)),
             new XmlIntellisenseInfo("a", typeof(html_a)),
             new XmlIntellisenseInfo("img", typeof(html_img)),
+            new XmlIntellisenseInfo("SplitPanel", typeof(SplitPanel)),
 
             new XmlIntellisenseInfo("computer.tablet.only.row", typeof(computer_tablet_only_row)),
             new XmlIntellisenseInfo("ui.navbar.menu", typeof(ui_navbar_menu)),
