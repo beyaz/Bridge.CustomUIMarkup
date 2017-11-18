@@ -49,40 +49,7 @@ namespace Bridge.CustomUIMarkup.CodeMirror
         public event Action<int> OnCursorLineNumberChanged;
         #endregion
 
-        #region Public Properties
-        public static IReadOnlyList<string> CssFiles => new[]
-        {
-            JsDir + "codemirror.css",
-            JsDir +"addon/hint/show-hint.css",
-            JsDir +"addon/fold/foldgutter.css",
-            ScriptLoader.CssDirectory + "CodeMirror.css"
-        };
-
-      static  string CodeMirrorDirectoryDefault => "https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.31.0/";
-
-        static string CodeMirrorDirectory => (string)ScriptLoader.Map["CodeMirrorDir"];
-
-        static string JsDir=> CodeMirrorDirectory ?? CodeMirrorDirectoryDefault;
-
-        public static IReadOnlyList<string> Scripts => new[]
-        {
-            JsDir +"codemirror.js",
-            JsDir + "mode/xml/xml.js",
-            JsDir +"addon/hint/show-hint.js",
-
-            
-            JsDir + "addon/hint/xml-hint.js",
-
-            JsDir +"addon/edit/closetag.js",
-            JsDir +"addon/fold/foldcode.js",
-            JsDir +"addon/fold/foldgutter.js",
-            JsDir +"addon/fold/xml-fold.js",
-            JsDir +"addon/fold/indent-fold.js",
-            JsDir +"addon/fold/markdown-fold.js",
-            JsDir +"mode/markdown/markdown.js",
-            JsDir +"addon/edit/matchtags.js"
-        };
-        #endregion
+       
 
         #region Public Methods
         public override void InitDOM()

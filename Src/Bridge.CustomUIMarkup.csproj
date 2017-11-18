@@ -87,7 +87,6 @@
     <Compile Include="SemanticUI\ui_container.cs" />
     <Compile Include="SemanticUI\ElementBase.cs" />
     <Compile Include="SemanticUI\row.cs" />
-    <Compile Include="SemanticUI\VersionInfo.cs" />
     <Compile Include="SemanticUI\ui_grid.cs" />
     <Compile Include="SemanticUI\InputText.cs" />
     <Compile Include="SemanticUI\Modal.cs" />
@@ -106,22 +105,28 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="bridge.json" />
+    <Content Include="Lib\codemirror\5.31.0\addon\edit\closetag.js" />
+    <Content Include="Lib\codemirror\5.31.0\addon\edit\matchtags.js" />
+    <Content Include="Lib\codemirror\5.31.0\addon\fold\foldcode.js" />
+    <Content Include="Lib\codemirror\5.31.0\addon\fold\foldgutter.css" />
+    <Content Include="Lib\codemirror\5.31.0\addon\fold\foldgutter.js" />
+    <Content Include="Lib\codemirror\5.31.0\addon\fold\indent-fold.js" />
+    <Content Include="Lib\codemirror\5.31.0\addon\fold\markdown-fold.js" />
+    <Content Include="Lib\codemirror\5.31.0\addon\fold\xml-fold.js" />
+    <Content Include="Lib\codemirror\5.31.0\addon\hint\show-hint.css" />
+    <Content Include="Lib\codemirror\5.31.0\addon\hint\show-hint.js" />
+    <Content Include="Lib\codemirror\5.31.0\addon\hint\xml-hint.js" />
+    <Content Include="Lib\codemirror\5.31.0\codemirror.css" />
+    <Content Include="Lib\codemirror\5.31.0\codemirror.js" />
+    <Content Include="Lib\codemirror\5.31.0\mode\markdown\markdown.js" />
+    <Content Include="Lib\codemirror\5.31.0\mode\xml\xml.js" />
+    <Content Include="Lib\semantic-ui\semantic.css" />
+    <Content Include="Lib\semantic-ui\semantic.js" />
     <Content Include="Lib\Split.js\grips\horizontal.png" />
     <Content Include="Lib\Split.js\grips\vertical.png" />
     <Content Include="Lib\Split.js\SplitPanel.css" />
     <Content Include="Lib\Split.js\Split.js" />
-    <Content Include="CodeMirror\5.31.0\addon\hint\xml-hint.js">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="CodeMirror\5.31.0\addon\hint\show-hint.js">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="CodeMirror\5.31.0\addon\mode\xml\xml.js.js">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="CodeMirror\CodeMirror.css">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
+    <Content Include="Lib\CodeMirror.Override.css" />
     <None Include="packages.config">
       <SubType>Designer</SubType>
     </None>
@@ -160,38 +165,23 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="jssor\jssor.Carousel.js">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="jssor\Carousel.css">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="jssor\jssor.slider-26.5.0.min.js">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
+    <Content Include="Lib\jssor\jssor.Carousel.js" />
+    <Content Include="Lib\jssor\Carousel.css" />
+    <Content Include="Lib\jssor\jssor.slider-26.5.0.min.js" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>start  d:\github\WhiteStone\bin\WhiteStone.Tasks.exe "$(SolutionDir)TasksForPrepareOutputs.js"
-
-
-
-if not exist $(SolutionDir)\bin      mkdir $(SolutionDir)\bin
+    <PostBuildEvent>if not exist $(SolutionDir)\bin      mkdir $(SolutionDir)\bin
 if not exist $(SolutionDir)\bin\js   mkdir $(SolutionDir)\bin\js
-if not exist $(SolutionDir)\bin\css  mkdir $(SolutionDir)\bin\css
 
-copy /y "$(ProjectDir)jssor\*.js"  	    "$(SolutionDir)\bin\js\"
-copy /y "$(ProjectDir)jssor\*.css"  	"$(SolutionDir)\bin\css\"
-copy /y "$(ProjectDir)CodeMirror\*.css" "$(SolutionDir)\bin\css\"
-
-:code mirror
-xcopy /s /i /y  copy /y "$(ProjectDir)CodeMirror\*.js" "$(SolutionDir)\bin\js\CodeMirror\"
+copy /y "$(TargetDir)Bridge\*.js"  "$(SolutionDir)\bin\js\"
 
 
+start  d:\github\WhiteStone\bin\WhiteStone.Tasks.exe "$(SolutionDir)TasksForPrepareOutputs.js"
 
 
-copy /y "$(TargetDir)Bridge\*.js"  "$(SolutionDir)\bin\js\"</PostBuildEvent>
+</PostBuildEvent>
   </PropertyGroup>
   <Import Project="..\packages\Bridge.Min.16.5.0\build\Bridge.Min.targets" Condition="Exists('..\packages\Bridge.Min.16.5.0\build\Bridge.Min.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

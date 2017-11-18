@@ -649,19 +649,7 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
             },
             methods: {
                 Init: function () {
-                    $(function () {
-                            var $t;
-                            Bridge.CustomUIMarkup.Common.ScriptLoader.LoadCssFile(Bridge.CustomUIMarkup.SemanticUI.VersionInfo.CssFile);
-                            Bridge.CustomUIMarkup.Common.ScriptLoader.LoadCssFiles(Bridge.CustomUIMarkup.CodeMirror.XmlEditor.CssFiles);
-                            Bridge.CustomUIMarkup.Common.ScriptLoader.LoadCssFiles(Bridge.CustomUIMarkup.jssor.Carousel.CssFiles);
-
-                            var scripts = new (System.Collections.Generic.List$1(System.String)).ctor();
-                            scripts.addRange(Bridge.CustomUIMarkup.SemanticUI.VersionInfo.Scripts);
-                            scripts.addRange(Bridge.CustomUIMarkup.CodeMirror.XmlEditor.Scripts);
-                            scripts.addRange(Bridge.CustomUIMarkup.jssor.Carousel.JsFiles);
-
-                            ($t = new Bridge.CustomUIMarkup.Common.ScriptLoader(), $t.Scripts = scripts, $t.OnLoacCompleted = Bridge.CustomUIMarkup.DesignerSamples.App.RenderUIEditor, $t).Load();
-                        });
+                    $(Bridge.CustomUIMarkup.DesignerSamples.App.RenderUIEditor);
                 },
                 RenderUIEditor: function () {
                     var $t;
@@ -977,23 +965,6 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
                 Big: 5,
                 Huge: 6,
                 Massive: 7
-            }
-        }
-    });
-
-    Bridge.define("Bridge.CustomUIMarkup.SemanticUI.VersionInfo", {
-        statics: {
-            props: {
-                CssFile: {
-                    get: function () {
-                        return "https://cdn.jsdelivr.net/npm/semantic-ui@2.2.13/dist/semantic.css";
-                    }
-                },
-                Scripts: {
-                    get: function () {
-                        return System.Array.init(["https://cdn.jsdelivr.net/npm/semantic-ui@2.2.13/dist/semantic.js"], System.String);
-                    }
-                }
             }
         }
     });
@@ -3169,34 +3140,6 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
             fields: {
                 TextProperty: null
             },
-            props: {
-                CssFiles: {
-                    get: function () {
-                        return System.Array.init([(Bridge.CustomUIMarkup.CodeMirror.XmlEditor.JsDir || "") + "codemirror.css", (Bridge.CustomUIMarkup.CodeMirror.XmlEditor.JsDir || "") + "addon/hint/show-hint.css", (Bridge.CustomUIMarkup.CodeMirror.XmlEditor.JsDir || "") + "addon/fold/foldgutter.css", (Bridge.CustomUIMarkup.Common.ScriptLoader.CssDirectory || "") + "CodeMirror.css"], System.String);
-                    }
-                },
-                CodeMirrorDirectoryDefault: {
-                    get: function () {
-                        return "https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.31.0/";
-                    }
-                },
-                CodeMirrorDirectory: {
-                    get: function () {
-                        return Bridge.cast(Bridge.CustomUIMarkup.Common.ScriptLoader.Map.CodeMirrorDir, System.String);
-                    }
-                },
-                JsDir: {
-                    get: function () {
-                        var $t;
-                        return ($t = Bridge.CustomUIMarkup.CodeMirror.XmlEditor.CodeMirrorDirectory, $t != null ? $t : Bridge.CustomUIMarkup.CodeMirror.XmlEditor.CodeMirrorDirectoryDefault);
-                    }
-                },
-                Scripts: {
-                    get: function () {
-                        return System.Array.init([(Bridge.CustomUIMarkup.CodeMirror.XmlEditor.JsDir || "") + "codemirror.js", (Bridge.CustomUIMarkup.CodeMirror.XmlEditor.JsDir || "") + "mode/xml/xml.js", (Bridge.CustomUIMarkup.CodeMirror.XmlEditor.JsDir || "") + "addon/hint/show-hint.js", (Bridge.CustomUIMarkup.CodeMirror.XmlEditor.JsDir || "") + "addon/hint/xml-hint.js", (Bridge.CustomUIMarkup.CodeMirror.XmlEditor.JsDir || "") + "addon/edit/closetag.js", (Bridge.CustomUIMarkup.CodeMirror.XmlEditor.JsDir || "") + "addon/fold/foldcode.js", (Bridge.CustomUIMarkup.CodeMirror.XmlEditor.JsDir || "") + "addon/fold/foldgutter.js", (Bridge.CustomUIMarkup.CodeMirror.XmlEditor.JsDir || "") + "addon/fold/xml-fold.js", (Bridge.CustomUIMarkup.CodeMirror.XmlEditor.JsDir || "") + "addon/fold/indent-fold.js", (Bridge.CustomUIMarkup.CodeMirror.XmlEditor.JsDir || "") + "addon/fold/markdown-fold.js", (Bridge.CustomUIMarkup.CodeMirror.XmlEditor.JsDir || "") + "mode/markdown/markdown.js", (Bridge.CustomUIMarkup.CodeMirror.XmlEditor.JsDir || "") + "addon/edit/matchtags.js"], System.String);
-                    }
-                }
-            },
             ctors: {
                 init: function () {
                     this.TextProperty = System.Windows.DependencyProperty.Register$1("Text", System.String, Bridge.CustomUIMarkup.CodeMirror.XmlEditor, new System.Windows.PropertyMetadata.$ctor1(Bridge.CustomUIMarkup.CodeMirror.XmlEditor.TextChanged));
@@ -3564,23 +3507,6 @@ me._editor.display.wrapper.style.height = '95%';
                 DataSourceProperty: null
             },
             props: {
-                CssFiles: {
-                    get: function () {
-                        return function (_o1) {
-                                _o1.add((Bridge.CustomUIMarkup.Common.ScriptLoader.CssDirectory || "") + "Carousel.css");
-                                return _o1;
-                            }(new (System.Collections.Generic.List$1(System.String)).ctor());
-                    }
-                },
-                JsFiles: {
-                    get: function () {
-                        return function (_o2) {
-                                _o2.add((Bridge.CustomUIMarkup.Common.ScriptLoader.JsDirectory || "") + "jssor.slider-26.5.0.min.js");
-                                _o2.add((Bridge.CustomUIMarkup.Common.ScriptLoader.JsDirectory || "") + "jssor.Carousel.js");
-                                return _o2;
-                            }(new (System.Collections.Generic.List$1(System.String)).ctor());
-                    }
-                },
                 Template: {
                     get: function () {
                         return "<div id='jssor_1' style='position:relative;margin:0 auto;top:0px;left:0px;width:980px;height:380px;overflow:hidden;visibility:hidden;'>\r\n    <!-- Loading Screen \r\n    <div data-u='loading' class='jssorl-009-spin' style='position:absolute;top:0px;left:0px;width:100%;height:100%;text-align:center;background-color:rgba(0,0,0,0.7);'>\r\n        <img style='margin-top:-19px;position:relative;top:50%;width:38px;height:38px;' src='img/spin.svg' />\r\n    </div> -->\r\n    <div data-u='slides' id='imagesContainer' style='cursor:default;position:relative;top:0px;left:0px;width:980px;height:380px;overflow:hidden;'>\r\n        <!-- template\r\n        <div>\r\n            <img data-u='image' src='img/001.jpg' />\r\n        </div>\r\n        -->\r\n    </div>\r\n    <!-- Bullet Navigator -->\r\n    <div data-u='navigator' class='jssorb051' style='position:absolute;bottom:12px;right:12px;' data-autocenter='1' data-scale='0.5' data-scale-bottom='0.75'>\r\n        <div data-u='prototype' class='i' style='width:16px;height:16px;'>\r\n            <svg viewbox='0 0 16000 16000' style='position:absolute;top:0;left:0;width:100%;height:100%;'>\r\n                <circle class='b' cx='8000' cy='8000' r='5800'></circle>\r\n            </svg>\r\n        </div>\r\n    </div>\r\n    <!-- Arrow Navigator -->\r\n    <div data-u='arrowleft' class='jssora051' style='width:55px;height:55px;top:0px;left:25px;' data-autocenter='2' data-scale='0.75' data-scale-left='0.75'>\r\n        <svg viewbox='0 0 16000 16000' style='position:absolute;top:0;left:0;width:100%;height:100%;'>\r\n            <polyline class='a' points='11040,1920 4960,8000 11040,14080 '></polyline>\r\n        </svg>\r\n    </div>\r\n    <div data-u='arrowright' class='jssora051' style='width:55px;height:55px;top:0px;right:25px;' data-autocenter='2' data-scale='0.75' data-scale-right='0.75'>\r\n        <svg viewbox='0 0 16000 16000' style='position:absolute;top:0;left:0;width:100%;height:100%;'>\r\n            <polyline class='a' points='4960,1920 11040,8000 4960,14080 '></polyline>\r\n        </svg>\r\n    </div>\r\n</div>";

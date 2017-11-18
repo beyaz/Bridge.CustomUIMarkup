@@ -10,13 +10,7 @@ namespace Bridge.CustomUIMarkup.jssor
     public class Carousel : FrameworkElement
     {
         #region Public Properties
-        public static IReadOnlyCollection<string> CssFiles => new List<string> {ScriptLoader.CssDirectory + "Carousel.css"};
-
-        public static IReadOnlyCollection<string> JsFiles => new List<string>
-        {
-            ScriptLoader.JsDirectory + "jssor.slider-26.5.0.min.js",
-            ScriptLoader.JsDirectory + "jssor.Carousel.js"
-        };
+       
 
         #endregion
 

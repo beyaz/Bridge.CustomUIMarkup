@@ -1,11 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Windows;
-using Bridge.CustomUIMarkup.Common;
 using Bridge.CustomUIMarkup.SemanticUI;
 using Bridge.Html5;
 using Bridge.jQuery2;
-using Retyped;
-using XmlEditor = Bridge.CustomUIMarkup.CodeMirror.XmlEditor;
 
 namespace Bridge.CustomUIMarkup.DesignerSamples
 {
@@ -284,23 +281,7 @@ namespace Bridge.CustomUIMarkup.DesignerSamples
         #region Public Methods
         public static void Init()
         {
-            jQuery.Ready(() =>
-            {
-                ScriptLoader.LoadCssFile(VersionInfo.CssFile);
-                ScriptLoader.LoadCssFiles(XmlEditor.CssFiles);
-                ScriptLoader.LoadCssFiles(jssor.Carousel.CssFiles); 
-
-                var scripts = new List<string>();
-                scripts.AddRange(VersionInfo.Scripts);
-                scripts.AddRange(XmlEditor.Scripts);
-                scripts.AddRange(jssor.Carousel.JsFiles);
-
-                new ScriptLoader
-                {
-                    Scripts = scripts,
-                    OnLoacCompleted = RenderUIEditor
-                }.Load();
-            });
+            jQuery.Ready(RenderUIEditor);
         }
         #endregion
 
@@ -314,7 +295,7 @@ namespace Bridge.CustomUIMarkup.DesignerSamples
                 XmlString = TestUI
             };
 
-            var element = (FrameworkElement) builder.Build();
+            var element =  builder.Build();
 
             element.Root.AppendTo(Document.Body);
         }
