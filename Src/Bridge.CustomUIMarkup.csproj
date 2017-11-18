@@ -179,13 +179,7 @@
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>if not exist $(SolutionDir)\bin      mkdir $(SolutionDir)\bin
-if not exist $(SolutionDir)\bin\js   mkdir $(SolutionDir)\bin\js
-
-copy /y "$(TargetDir)Bridge\*.js"  "$(SolutionDir)\bin\js\"
-
-
-start  d:\github\WhiteStone\bin\WhiteStone.Tasks.exe "$(SolutionDir)TasksForPrepareOutputs.js"
+    <PostBuildEvent>start  d:\github\WhiteStone\bin\WhiteStone.Tasks.exe "$(SolutionDir)TasksForPrepareOutputs.js"
 
 
 </PostBuildEvent>

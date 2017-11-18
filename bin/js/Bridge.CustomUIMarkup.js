@@ -590,18 +590,6 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
 
     Bridge.define("Bridge.CustomUIMarkup.Common.ScriptLoader", {
         statics: {
-            fields: {
-                JsDirectory: null,
-                CssDirectory: null,
-                Map: null
-            },
-            ctors: {
-                init: function () {
-                    this.JsDirectory = "Scripts/";
-                    this.CssDirectory = "css/";
-                    this.Map = { };
-                }
-            },
             methods: {
                 LoadCssFile: function (url) {
                     $("head").append("<link rel='stylesheet' href='" + (url || "") + "' type='text/css' />");
