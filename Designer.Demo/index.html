@@ -15,7 +15,9 @@
         <script src="../bin/js/bridge.console.js"></script>
         <script src="../bin/js/bridge.meta.js"></script>
 		
-		<script src="../bin/js/Split.js"></script>
+		<!-- Split Panel -->
+		<script src="../bin/Lib/Split.js/Split.js"></script>
+		<link rel="stylesheet" href="../bin/Lib/Split.js/SplitPanel.css" type="text/css">
 		
 		
 
@@ -29,101 +31,6 @@
 			Bridge.CustomUIMarkup.Common.ScriptLoader.Map.CodeMirrorDir = '../bin/js/CodeMirror/5.31.0/';
 			Bridge.CustomUIMarkup.DesignerSamples.App.Init();
 		</script>
-        
-
-		
-		<style>
-  td {
-    padding: 8px 10px;
-  }
-
-  td:first-child {
-    font-family: monospace;
-  }
-
-  h3 {
-    margin-top: 100px;
-  }
-
-  h5 {
-    margin-bottom: 0;
-  }
-
-  hr {
-    margin-top: 2px;
-  }
-
-  .example-1 {
-    height: 600px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-  }
-
-  .example-2, .example-3, .example-4, .example-5, .example-6 {
-    height: 250px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-  }
-
-  .example-flex {
-    height: 200px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    display: flex;
-    flex-direction: row;
-  }
-
-  .example-flex-reverse {
-    flex-direction: row-reverse;
-  }
-
-  #one, #two {
-    padding: 20px;
-  }
-
-  #one p {
-    padding: 0;
-  }
-
-  .example-4, .example-5 {
-    height: 400px;
-  }
-
-  .split p, .split-flex p {
-    padding: 20px;
-  }
-
-  .split, .split-flex {
-    -webkit-box-sizing: border-box;
-       -moz-box-sizing: border-box;
-            box-sizing: border-box;
-
-    overflow-y: auto;
-    overflow-x: hidden;
-  }
-
-  .gutter {
-    background-color: #eee;
-
-    background-repeat: no-repeat;
-    background-position: 50%;
-  }
-
-  .gutter.gutter-horizontal {
-    background-image: url('grips/vertical.png');
-    cursor: ew-resize;
-  }
-
-  .gutter.gutter-vertical {
-    background-image: url('grips/horizontal.png');
-    cursor: ns-resize;
-  }
-
-  .split.split-horizontal, .gutter.gutter-horizontal {
-    height: 100%;
-    float: left;
-  }
-  </style>
 
     </head>
     <body>

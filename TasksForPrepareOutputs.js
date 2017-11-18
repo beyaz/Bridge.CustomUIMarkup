@@ -139,7 +139,15 @@
 				"TargetDirectory" :"D:\\github\\Bridge.CustomUIMarkup\\bin\\js\\codemirror\\5.31.0\\addon\\fold\\"
 			}			
 		}
-		
+		,
+		{
+			"FullClassName": "WhiteStone.Tasks.CopyDirectory",
+			"Keys":
+			{
+				"Source" : "D:\\github\\Bridge.CustomUIMarkup\\Src\\Lib\\",
+				"Target" : "D:\\github\\Bridge.CustomUIMarkup\\bin\\Lib\\"
+			}			
+		}
 		
 		
 		

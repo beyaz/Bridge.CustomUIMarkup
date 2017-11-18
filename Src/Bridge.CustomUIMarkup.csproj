@@ -106,7 +106,10 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="bridge.json" />
-    <Content Include=".Net Override\System.Windows.Controls\Split.js" />
+    <Content Include="Lib\Split.js\grips\horizontal.png" />
+    <Content Include="Lib\Split.js\grips\vertical.png" />
+    <Content Include="Lib\Split.js\SplitPanel.css" />
+    <Content Include="Lib\Split.js\Split.js" />
     <Content Include="CodeMirror\5.31.0\addon\hint\xml-hint.js">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -167,6 +170,7 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>start  d:\github\WhiteStone\bin\WhiteStone.Tasks.exe "$(SolutionDir)TasksForPrepareOutputs.js"
@@ -184,7 +188,7 @@ copy /y "$(ProjectDir)CodeMirror\*.css" "$(SolutionDir)\bin\css\"
 :code mirror
 xcopy /s /i /y  copy /y "$(ProjectDir)CodeMirror\*.js" "$(SolutionDir)\bin\js\CodeMirror\"
 
-xcopy /s /i /y  copy /y "$(ProjectDir)System.Windows.Controls\*.js" "$(SolutionDir)\bin\js\"
+
 
 
 copy /y "$(TargetDir)Bridge\*.js"  "$(SolutionDir)\bin\js\"</PostBuildEvent>
