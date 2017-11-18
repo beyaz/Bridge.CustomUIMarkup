@@ -413,6 +413,13 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
 
     Bridge.define("Bridge.CustomUIMarkup.Common.DOM", {
         statics: {
+            props: {
+                head: {
+                    get: function () {
+                        return $("head");
+                    }
+                }
+            },
             methods: {
                 CreateElement: function (tagName) {
                     return $(document.createElement(tagName));
@@ -643,7 +650,7 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
             props: {
                 "TestUI": {
                     get: function () {
-                        return "\r\n\r\n<ui.container>\r\n    \r\n    <ComboBox \r\n            ItemsSource = '{Binding Examples}' \r\n            DisplayMemberPath = 'Name'\r\n            SelectedValuePath = 'XmlTemplate' \r\n\t\t    SelectedValue = '{Binding CurrentTemplate}' />\r\n        \r\n    <UIEditor SourceText = '{CurrentTemplate}'  />\r\n        \r\n</ui.container>\r\n\r\n\r\n";
+                        return "\r\n\r\n<div class='ui two row grid' HeightPercent = '100' WidthPercent = '100' >\r\n    <row>\r\n        <column Align='Center'>\r\n             <ComboBox \r\n                ItemsSource = '{Binding Examples}' \r\n                DisplayMemberPath = 'Name'\r\n                SelectedValuePath = 'XmlTemplate' \r\n\t\t        SelectedValue = '{Binding CurrentTemplate}' />\r\n        </column>\r\n    </row>\r\n    \r\n    <row HeightPercent = '100'>\r\n        <UIEditor SourceText = '{CurrentTemplate}'  />\r\n    </row>\r\n        \r\n</div>\r\n\r\n\r\n";
                     }
                 }
             },
@@ -688,6 +695,9 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
                         e = System.Exception.create(e);
                         throw new System.Xml.XmlException("XmlParseErrorOccured.", e);
                     }
+                },
+                IsUserDefinedTag: function (tag) {
+                    return System.Linq.Enumerable.from(tag).contains(46) || System.Linq.Enumerable.from(tag).contains(45) || System.Linq.Enumerable.from(tag).contains(58);
                 }
             }
         },
@@ -809,7 +819,7 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
                 var controlType = this.CreateType(tag);
 
                 if (controlType == null) {
-                    if (xmlNode.nodeName.length <= 3) {
+                    if (Bridge.CustomUIMarkup.UI.Design.Builder.IsUserDefinedTag(xmlNode.nodeName) === false) {
                         return ($t = new System.Windows.FrameworkElement(), $t._root = Bridge.CustomUIMarkup.Common.DOM.CreateElement(xmlNode.nodeName), $t);
                     }
 
@@ -820,6 +830,8 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
             },
             ProcessAttribute: function (instance, name, value) {
                 var $t;
+                var nameUpperCase = name.toUpperCase();
+
                 if (Bridge.referenceEquals(name, "class")) {
                     name = "Class";
                 }
@@ -887,6 +899,20 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
                     }));
                     return;
                 }
+
+                if (System.String.startsWith(nameUpperCase, "CSS.")) {
+                    var styleAttributeName = name.substr(4);
+                    instance._root.css(styleAttributeName, value);
+                    return;
+                }
+
+                // css.Pseudo.backgroundImage
+                if (System.String.startsWith(nameUpperCase, "CSS.PSEUDO.")) {
+                    var pseudoAttributeName = name.substr(11);
+                    Bridge.CustomUIMarkup.Common.DOM.head.append("<style>#" + (instance["Id"] || "") + "::" + (pseudoAttributeName || "") + "{ content:'bar' }</style>");
+                    return;
+                }
+
 
                 if (Bridge.referenceEquals(name, "x.Name")) {
                     var fi = Bridge.Reflection.getMembers(Bridge.getType(this.Caller), 4, 284, value);
@@ -2738,6 +2764,7 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
                 "InnerHTMLProperty": null,
                 VisibilityProperty: null,
                 HeightProperty: null,
+                HeightPercentProperty: null,
                 BackgroundProperty: null,
                 "ID": 0
             },
@@ -2767,6 +2794,9 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
                     this["InnerHTMLProperty"] = System.Windows.DependencyProperty.Register$1("InnerHTML", System.String, System.Windows.FrameworkElement, new System.Windows.PropertyMetadata.$ctor1(System.Windows.FrameworkElement.OnInnerHTMLChanged));
                     this.VisibilityProperty = System.Windows.DependencyProperty.Register$1("Visibility", System.Windows.Visibility, System.Windows.FrameworkElement, new System.Windows.PropertyMetadata.$ctor1(System.Windows.FrameworkElement.OnVisibilityChanged));
                     this.HeightProperty = System.Windows.DependencyProperty.Register$1("Height", System.Double, System.Windows.FrameworkElement, System.Windows.FrameworkElement.CreateJQueryCssUpdater("height"));
+                    this.HeightPercentProperty = System.Windows.DependencyProperty.Register$1("HeightPercent", System.Double, System.Windows.FrameworkElement, System.Windows.FrameworkElement.CreateJQueryCssUpdater$1("height", function (v) {
+                        return System.String.concat(v, "%");
+                    }));
                     this.BackgroundProperty = System.Windows.DependencyProperty.Register$1("Background", System.String, System.Windows.FrameworkElement, new System.Windows.PropertyMetadata.$ctor1(System.Windows.FrameworkElement.OnBackgroundChanged));
                 }
             },
@@ -3046,6 +3076,14 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
                     this.SetValue$1(System.Windows.FrameworkElement.HeightProperty, Bridge.box(value, System.Double, System.Double.format, System.Double.getHashCode));
                 }
             },
+            HeightPercent: {
+                get: function () {
+                    return System.Nullable.getValue(Bridge.cast(Bridge.unbox(this.GetValue$1(System.Windows.FrameworkElement.HeightPercentProperty)), System.Double));
+                },
+                set: function (value) {
+                    this.SetValue$1(System.Windows.FrameworkElement.HeightPercentProperty, Bridge.box(value, System.Double, System.Double.format, System.Double.getHashCode));
+                }
+            },
             "Id": {
                 get: function () {
                     var $t;
@@ -3147,9 +3185,17 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
             },
             methods: {
                 TextChanged: function (d, e) {
-                    return;
+                    var newValue = Bridge.cast(e.NewValue, System.String);
 
+                    var me = Bridge.cast(d, Bridge.CustomUIMarkup.CodeMirror.XmlEditor);
 
+                    if (me._editor != null) {
+                        if (me.isFiring_OnTextChanged) {
+                            return;
+                        }
+
+                        me._editor.setValue(newValue);
+                    }
                 }
             }
         },
@@ -3212,7 +3258,7 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
                     }));
             },
             Render$1: function (id) {
-                var fontSize = this.getItem("FontSize") == null ? 12 : this.FontSize;
+                var fontSize = this.getItem("FontSize") == null ? 15 : this.FontSize;
 
                 var schemaInfo = this["SchemaInfo"];
 
@@ -3267,7 +3313,7 @@ this._editor = CodeMirror.fromTextArea(document.getElementById(id),
 	},
 	hintOptions: {schemaInfo: schemaInfo},
     autoCloseTags:true,
-    matchTags: {bothTags: true},
+    matchTags: {bothTags: false},
     foldGutter: true,
     gutters: ['CodeMirror-linenumbers', 'CodeMirror-foldgutter']
 });
@@ -3337,9 +3383,14 @@ me._editor.display.wrapper.style.height = '95%';
                     return System.Array.getItem(this.OutputElement.Childeren, 1, System.Windows.FrameworkElement).Root;
                 }
             },
-            Template: {
+            Template_old: {
                 get: function () {
                     return "\r\n<ui.container>\r\n    <XmlEditor Text ='{SourceText}' \r\n        OnTextChanged = '{OnTextChanged}' \r\n        OnCursorLineNumberChanged = '{OnCursorLineNumberChanged}' \r\n        Height='400' />\r\n    <ui.container Border = '1px solid Green' />\r\n</ui.container>";
+                }
+            },
+            Template: {
+                get: function () {
+                    return "\r\n<SplitPanel Orientation='horizontal' HeightPercent = '100' WidthPercent = '100'>\r\n    <XmlEditor Text ='{SourceText}' HeightPercent = '100' WidthPercent = '100' \r\n        OnTextChanged = '{OnTextChanged}' \r\n        OnCursorLineNumberChanged = '{OnCursorLineNumberChanged}' \r\n         />\r\n    <div Border = '1px solid Green' HeightPercent = '100' WidthPercent = '100' />\r\n</SplitPanel>";
                 }
             },
             SourceText: {

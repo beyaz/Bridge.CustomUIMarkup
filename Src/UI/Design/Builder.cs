@@ -153,6 +153,10 @@ namespace Bridge.CustomUIMarkup.UI.Design
             return instance;
         }
 
+        static bool IsUserDefinedTag( string tag)
+        {
+            return tag.Contains('.') || tag.Contains('-') || tag.Contains(':');
+        }
         FrameworkElement CreateInstance(XmlNode xmlNode)
         {
             var tag = xmlNode.Name.ToUpper();
@@ -161,7 +165,7 @@ namespace Bridge.CustomUIMarkup.UI.Design
 
             if (controlType == null)
             {
-                if (xmlNode.Name.Length <= 3)
+                if (IsUserDefinedTag(xmlNode.Name) == false)
                 {
                     return new FrameworkElement {_root = DOM.CreateElement(xmlNode.Name)};
                 }
@@ -174,6 +178,8 @@ namespace Bridge.CustomUIMarkup.UI.Design
 
         void ProcessAttribute(FrameworkElement instance, string name, string value)
         {
+            var nameUpperCase = name.ToUpperCase();
+
             if (name == "class")
             {
                 name = "Class";
@@ -255,6 +261,22 @@ namespace Bridge.CustomUIMarkup.UI.Design
                 instance.On(eventName, () => { methodInfo.Invoke(Caller); });
                 return;
             }
+
+            if (nameUpperCase.StartsWith("CSS."))
+            {
+                var styleAttributeName = name.Substring(4);
+                instance._root.Css(styleAttributeName, value);
+                return;
+            }
+
+            // css.Pseudo.backgroundImage
+            if (nameUpperCase.StartsWith("CSS.PSEUDO."))
+            {
+                var pseudoAttributeName = name.Substring(11);
+                DOM.head.Append("<style>#"+instance.Id+"::"+ pseudoAttributeName + "{ content:'bar' }</style>");
+                return;
+            }
+            
 
             if (name == "x.Name")
             {

@@ -492,6 +492,19 @@ namespace System.Windows
         }
         #endregion
 
+        #region WidthProperty
+        public static readonly DependencyProperty HeightPercentProperty = DependencyProperty.Register(nameof(HeightPercent),
+                                                                                                     typeof(double),
+                                                                                                     typeof(FrameworkElement),
+                                                                                                     CreateJQueryCssUpdater("height", v => v + "%"));
+
+        public double HeightPercent
+        {
+            get { return (double)GetValue(HeightPercentProperty); }
+            set { SetValue(HeightPercentProperty, value); }
+        }
+        #endregion
+
         #region BackgroundProperty
         public static readonly DependencyProperty BackgroundProperty = DependencyProperty.Register("Background", typeof(string), typeof(FrameworkElement), new PropertyMetadata(OnBackgroundChanged));
 

@@ -104,7 +104,7 @@ namespace Bridge.CustomUIMarkup.CodeMirror
 
         void Render(string id)
         {
-            var fontSize = this[nameof(FontSize)] == null ? 12:FontSize;
+            var fontSize = this[nameof(FontSize)] == null ? 15:FontSize;
             
             var schemaInfo = SchemaInfo;
 
@@ -160,7 +160,7 @@ this._editor = CodeMirror.fromTextArea(document.getElementById(id),
 	},
 	hintOptions: {schemaInfo: schemaInfo},
     autoCloseTags:true,
-    matchTags: {bothTags: true},
+    matchTags: {bothTags: false},
     foldGutter: true,
     gutters: ['CodeMirror-linenumbers', 'CodeMirror-foldgutter']
 });
@@ -204,7 +204,6 @@ me._editor.display.wrapper.style.height = '95%';
 
         static void TextChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            return;
             var newValue = (string) e.NewValue;
 
             var me = (XmlEditor) d;

@@ -21,7 +21,7 @@ namespace Bridge.CustomUIMarkup.Design
         #region Properties
         jQuery Container => OutputElement.Childeren[1].Root;
 
-        string Template => @"
+        string Template_old => @"
 <ui.container>
     <XmlEditor Text ='{" + nameof(SourceText) + @"}' 
         OnTextChanged = '{" + nameof(OnTextChanged) + @"}' 
@@ -29,6 +29,15 @@ namespace Bridge.CustomUIMarkup.Design
         Height='400' />
     <ui.container Border = '1px solid Green' />
 </ui.container>";
+
+        string Template => @"
+<SplitPanel Orientation='horizontal' HeightPercent = '100' WidthPercent = '100'>
+    <XmlEditor Text ='{" + nameof(SourceText) + @"}' HeightPercent = '100' WidthPercent = '100' 
+        OnTextChanged = '{" + nameof(OnTextChanged) + @"}' 
+        OnCursorLineNumberChanged = '{" + nameof(OnCursorLineNumberChanged) + @"}' 
+         />
+    <div Border = '1px solid Green' HeightPercent = '100' WidthPercent = '100' />
+</SplitPanel>";
         #endregion
 
         #region Public Methods

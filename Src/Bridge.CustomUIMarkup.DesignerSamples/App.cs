@@ -262,17 +262,22 @@ namespace Bridge.CustomUIMarkup.DesignerSamples
         #region Properties
         static string TestUI => @"
 
-<ui.container>
+<div class='ui two row grid' HeightPercent = '100' WidthPercent = '100' >
+    <row>
+        <column Align='Center'>
+             <ComboBox 
+                ItemsSource = '{Binding Examples}' 
+                DisplayMemberPath = 'Name'
+                SelectedValuePath = 'XmlTemplate' 
+		        SelectedValue = '{Binding CurrentTemplate}' />
+        </column>
+    </row>
     
-    <ComboBox 
-            ItemsSource = '{Binding Examples}' 
-            DisplayMemberPath = 'Name'
-            SelectedValuePath = 'XmlTemplate' 
-		    SelectedValue = '{Binding CurrentTemplate}' />
+    <row HeightPercent = '100'>
+        <UIEditor SourceText = '{CurrentTemplate}'  />
+    </row>
         
-    <UIEditor SourceText = '{CurrentTemplate}'  />
-        
-</ui.container>
+</div>
 
 
 ";

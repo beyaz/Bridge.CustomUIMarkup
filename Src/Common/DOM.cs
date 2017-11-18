@@ -5,6 +5,8 @@ namespace Bridge.CustomUIMarkup.Common
 {
     public static class DOM
     {
+        public static jQuery head => new jQuery("head");
+
         public static jQuery CreateElement(string tagName)
         {
             return new jQuery(Document.CreateElement(tagName));

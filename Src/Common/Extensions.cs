@@ -5,7 +5,7 @@ using Bridge.jQuery2;
 
 namespace Bridge.CustomUIMarkup.Common
 {
-    static class Extensions
+    public static class Extensions
     {
        
 
