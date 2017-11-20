@@ -22,7 +22,7 @@ namespace Bridge.CustomUIMarkup.SemanticUI
         {
             _headerElement = DOM.a("item").Attr("data-tab", Id);
 
-            BindPropertyToInnerHTML(nameof(Header), _headerElement);
+            // BindPropertyToInnerHTML(nameof(Header), _headerElement);
 
             _contentElement = DOM.div("ui bottom attached tab segment").Attr("data-tab", Id);
         }

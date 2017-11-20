@@ -66,8 +66,7 @@ namespace Bridge.CustomUIMarkup.UI.Design
                 }
                 ProcessElementProperty(element, attribute.NodeName);
             }
-
-            ProcessElementPropertyForHtmlContent(element);
+            
         }
 
         void ProcessElementProperty(Element element, string propertyName)
@@ -119,23 +118,7 @@ namespace Bridge.CustomUIMarkup.UI.Design
             }
         }
 
-        void ProcessElementPropertyForHtmlContent(Element element)
-        {
-            var value = jQuery.Element(element).Html();
-
-            var info = TryParseExpression(value);
-
-            if (info == null)
-            {
-                return;
-            }
-
-            info.Source = DataContext;
-            info.Target = jQuery.Element(element);
-            info.UpdateOnlyInnerHTML = true;
-
-            info.Connect();
-        }
+        
 
         static HTMLBindingInfo TryParseExpression(string value)
         {

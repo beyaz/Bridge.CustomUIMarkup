@@ -34,4 +34,11 @@
         protected override string HtmlClassName => "right menu";
         #endregion
     }
+    class ui_hidden_clearing_divider : ElementBase
+    {
+        #region Properties
+        protected override string HtmlClassName => "ui hidden clearing divider";
+        #endregion
+    }
+    
 }

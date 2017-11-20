@@ -1,12 +1,11 @@
+using Bridge.Html5;
 using Bridge.jQuery2;
 
 namespace System.Windows.Data
 {
     public class HTMLBindingInfo : BindingInfo
     {
-        #region Fields
-        internal bool UpdateOnlyInnerHTML;
-        #endregion
+       
 
         #region Public Properties
         public new jQuery Target
@@ -32,20 +31,21 @@ namespace System.Windows.Data
         {
             var value = SourcePath.GetPropertyValue();
 
-            if (UpdateOnlyInnerHTML)
+            var path = TargetPath.Path.ToUpperCase();
+
+            if (path == "INNERHTML")
             {
                 Target.Html(value + "");
                 return;
             }
 
-            if (TargetPath.Path == "value")
+            if (path == "VALUE")
             {
                 Target.Val(value + "");
+                return;
             }
-            else
-            {
-                Target.Attr(TargetPath.Path, value + "");
-            }
+
+            Target.Attr(TargetPath.Path, value + "");
         }
         #endregion
 

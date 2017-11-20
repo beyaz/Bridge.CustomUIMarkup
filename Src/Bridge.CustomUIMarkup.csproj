@@ -45,8 +45,12 @@
     <Compile Include=".Net Override\System.Windows.Data\IValueConverter.cs" />
     <Compile Include=".Net Override\System.Windows\DependencyObject.cs" />
     <Compile Include=".Net Override\System.Windows\DependencyProperty.cs" />
+    <Compile Include=".Net Override\System.Windows\FrameworkElement_a.cs" />
+    <Compile Include=".Net Override\System.Windows\FrameworkElement_div.cs" />
+    <Compile Include=".Net Override\System.Windows\FrameworkElement_img.cs" />
     <Compile Include=".Net Override\System.Windows\PropertyMetadata.cs" />
     <Compile Include=".Net Override\System.Windows\PropertyPath.cs" />
+    <Compile Include=".Net Override\System.Windows\TextWrapping.cs" />
     <Compile Include=".Net Override\System.Windows\Visibility.cs" />
     <Compile Include=".Net Override\System\ComponentModel\Bag.cs" />
     <Compile Include=".Net Override\System\ComponentModel\BagChangedEventArgs.cs" />
@@ -74,7 +78,7 @@
     <Compile Include="UI\Design\Builder.cs" />
     <Compile Include="CodeMirror\SchemaInfo.cs" />
     <Compile Include="Common\ConvertHelper.cs" />
-    <Compile Include="Common\DOM.cs" />
+    <Compile Include=".Net Override\System.Windows\DOM.cs" />
     <Compile Include="Common\Extensions.cs" />
     <Compile Include=".Net Override\System.Windows.Data\HTMLBindingInfo.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

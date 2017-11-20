@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Windows;
+using Bridge.CustomUIMarkup.Common;
 using Bridge.Html5;
 using Bridge.jQuery2;
+using Retyped;
 
 namespace Bridge.CustomUIMarkup.SemanticUI
 {
@@ -83,7 +85,9 @@ namespace Bridge.CustomUIMarkup.SemanticUI
 
         public override void InitDOM()
         {
-            _root =  new jQuery(Document.CreateElement(HtmlTag)).AddClass(HtmlClassName);
+            
+            _root = DOM.CreateElement(HtmlTag, HtmlClassName);
+            
         }
 
 

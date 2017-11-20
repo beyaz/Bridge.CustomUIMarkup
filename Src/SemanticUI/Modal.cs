@@ -32,7 +32,7 @@ namespace Bridge.CustomUIMarkup.SemanticUI
 
             _root.As<semantic_ui.JQuery>().modal(semantic_ui.Literals.show);
 
-            BindPropertyToInnerHTML(nameof(Title), header);
+            // BindPropertyToInnerHTML(nameof(Title), header);
         }
         #endregion
 

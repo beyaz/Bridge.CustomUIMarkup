@@ -12,11 +12,9 @@ namespace Bridge.CustomUIMarkup.SemanticUI
         #region Static Fields
         static readonly List<XmlIntellisenseInfo> _tags = new List<XmlIntellisenseInfo>
         {
-            new XmlIntellisenseInfo("div", typeof(html_div)),
-            new XmlIntellisenseInfo("span", typeof(html_span)),
-            new XmlIntellisenseInfo("strong", typeof(html_strong)),
-            new XmlIntellisenseInfo("a", typeof(html_a)),
-            new XmlIntellisenseInfo("img", typeof(html_img)),
+            new XmlIntellisenseInfo("div", typeof(FrameworkElement_div)),
+            new XmlIntellisenseInfo("a", typeof(FrameworkElement_a)),
+            new XmlIntellisenseInfo("img", typeof(FrameworkElement_img)),
             new XmlIntellisenseInfo("SplitPanel", typeof(SplitPanel)),
 
             new XmlIntellisenseInfo("computer.tablet.only.row", typeof(computer_tablet_only_row)),
@@ -47,10 +45,12 @@ namespace Bridge.CustomUIMarkup.SemanticUI
             new XmlIntellisenseInfo("textBox", typeof(InputText)),
             new XmlIntellisenseInfo("combo", typeof(Combo)),
             new XmlIntellisenseInfo("comboBox", typeof(Combo)),
+            new XmlIntellisenseInfo("ui.selection.dropdown", typeof(Combo)),
             new XmlIntellisenseInfo("ui.equal.width.grid", typeof(ui_equal_width_grid)),
             new XmlIntellisenseInfo("textArea", typeof(TextArea)),
             new XmlIntellisenseInfo("ui.container", typeof(ui_container)),
             new XmlIntellisenseInfo("ui.stacked", typeof(ui_stacked)),
+            new XmlIntellisenseInfo("ui.hidden.clearing.divider", typeof(ui_hidden_clearing_divider)),
             new XmlIntellisenseInfo("ui.grid", typeof(ui_grid)),
             new XmlIntellisenseInfo("ui page grid", typeof(ui_page_grid)),
             new XmlIntellisenseInfo("field", typeof(Field)),

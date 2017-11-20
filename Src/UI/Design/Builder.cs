@@ -100,7 +100,11 @@ namespace Bridge.CustomUIMarkup.UI.Design
                 LineNumberToControlMap[lineNumber] = instance;
             }
 
-            instance.DataContext = DataContext;
+            if (instance.DataContext == null)
+            {
+                instance.DataContext = DataContext;
+            }
+            
             if (instance._root == null)
             {
                 instance.InitDOM();

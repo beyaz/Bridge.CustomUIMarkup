@@ -7,21 +7,8 @@ using Bridge.jQuery2;
 
 namespace System.Windows
 {
-    public enum TextWrapping
-    {
-        WrapWithOverflow,
-        NoWrap,
-        Wrap
-    }
-
     public class FrameworkElement : DependencyObject, IAddChild
     {
-        public void On(string eventName,Action handler)
-        {
-            _root.On(eventName, handler);
-        }
-
-
         #region Fields
         protected internal jQuery _root;
 
@@ -29,8 +16,13 @@ namespace System.Windows
         #endregion
 
         #region Constructors
-        public FrameworkElement()
+        public FrameworkElement(string tag = null, string className = null)
         {
+            if (tag != null)
+            {
+                _root = DOM.CreateElement(tag, className);
+            }
+
             PropertyChanged += (s, e) =>
             {
                 var propertyChangeEventArgs = e as BagChangedEventArgs;
@@ -88,11 +80,17 @@ namespace System.Windows
             return value;
         }
 
-        
-
         public virtual void InitDOM()
         {
-            _root = new jQuery(Document.CreateElement("div"));
+            if (_root == null) // TODO: remove next version
+            {
+                _root = new jQuery(Document.CreateElement("div"));
+            }
+        }
+
+        public void On(string eventName, Action handler)
+        {
+            _root.On(eventName, handler);
         }
 
         public void SetValue(DependencyProperty dp, object value)
@@ -102,6 +100,10 @@ namespace System.Windows
         #endregion
 
         #region Methods
+        protected internal virtual void AfterInitDOM()
+        {
+        }
+
         protected static PropertyMetadata CreateHtmlAttributeUpdater(string htmlAttribute)
         {
             return new PropertyMetadata((d, e) =>
@@ -121,13 +123,14 @@ namespace System.Windows
                 me._root.Css(jqueryCssAttribute, e.NewValue);
             });
         }
-        protected static PropertyMetadata CreateJQueryCssUpdater(string jqueryCssAttribute,Func<object,object> valueConverter)
+
+        protected static PropertyMetadata CreateJQueryCssUpdater(string jqueryCssAttribute, Func<object, object> valueConverter)
         {
             return new PropertyMetadata((d, e) =>
             {
-                var me = (FrameworkElement)d;
+                var me = (FrameworkElement) d;
 
-                me._root.Css(jqueryCssAttribute,  valueConverter(e.NewValue));
+                me._root.Css(jqueryCssAttribute, valueConverter(e.NewValue));
             });
         }
 
@@ -140,8 +143,6 @@ namespace System.Windows
                 _childeren = new List<FrameworkElement>();
             }
 
-           
-
             _childeren.Add(element);
 
             AfterAddChild(element);
@@ -151,30 +152,11 @@ namespace System.Windows
         {
         }
 
-        protected internal virtual void AfterInitDOM()
-        {
-        }
-
         protected virtual void BeforeAddChild(FrameworkElement element)
         {
         }
 
-        protected virtual void BindPropertyToInnerHTML(string propertyName, jQuery targetElement)
-        {
-            // TODO: remove
-            PropertyChanged += (s, a) =>
-            {
-                var bi = new HTMLBindingInfo
-                {
-                    BindingMode = BindingMode.OneWay,
-                    Source = this,
-                    SourcePath = propertyName,
-                    Target = targetElement,
-                    UpdateOnlyInnerHTML = true
-                };
-                bi.UpdateTarget();
-            };
-        }
+        
         #endregion
 
         #region BorderProperty
@@ -417,7 +399,7 @@ namespace System.Windows
         public static readonly DependencyProperty WidthPercentProperty = DependencyProperty.Register(nameof(WidthPercent),
                                                                                                      typeof(double),
                                                                                                      typeof(FrameworkElement),
-                                                                                                     CreateJQueryCssUpdater("width",v=>v+"%"));
+                                                                                                     CreateJQueryCssUpdater("width", v => v + "%"));
 
         public double WidthPercent
         {
@@ -494,13 +476,13 @@ namespace System.Windows
 
         #region WidthProperty
         public static readonly DependencyProperty HeightPercentProperty = DependencyProperty.Register(nameof(HeightPercent),
-                                                                                                     typeof(double),
-                                                                                                     typeof(FrameworkElement),
-                                                                                                     CreateJQueryCssUpdater("height", v => v + "%"));
+                                                                                                      typeof(double),
+                                                                                                      typeof(FrameworkElement),
+                                                                                                      CreateJQueryCssUpdater("height", v => v + "%"));
 
         public double HeightPercent
         {
-            get { return (double)GetValue(HeightPercentProperty); }
+            get { return (double) GetValue(HeightPercentProperty); }
             set { SetValue(HeightPercentProperty, value); }
         }
         #endregion
@@ -559,74 +541,6 @@ namespace System.Windows
                     OnPropertyChanged("DataContext");
                 }
             }
-        }
-        #endregion
-    }
-
-    class html_div : FrameworkElement
-    {
-        #region Public Methods
-        public override void InitDOM()
-        {
-            _root = new jQuery(Document.CreateElement("div"));
-        }
-        #endregion
-    }
-
-    class html_img : FrameworkElement
-    {
-        #region SrcProperty
-        public static readonly DependencyProperty SrcProperty = DependencyProperty.Register(nameof(Src), typeof(string), typeof(html_img), CreateHtmlAttributeUpdater("src"));
-
-        public string Src
-        {
-            get { return (string)GetValue(SrcProperty); }
-            set { SetValue(SrcProperty, value); }
-        }
-        #endregion
-
-        #region Public Methods
-        public override void InitDOM()
-        {
-            _root = new jQuery(Document.CreateElement("img"));
-        }
-        #endregion
-    }
-    class html_span : FrameworkElement
-    {
-        #region Public Methods
-        public override void InitDOM()
-        {
-            _root = new jQuery(Document.CreateElement("span"));
-        }
-        #endregion
-    }
-    class html_strong : FrameworkElement
-    {
-        #region Public Methods
-        public override void InitDOM()
-        {
-            _root = new jQuery(Document.CreateElement("strong"));
-        }
-        #endregion
-    }
-
-    class html_a : FrameworkElement
-    {
-        #region Public Methods
-        public override void InitDOM()
-        {
-            _root = new jQuery(Document.CreateElement("a"));
-        }
-        #endregion
-
-        #region HrefProperty
-        public static readonly DependencyProperty HrefProperty = DependencyProperty.Register(nameof(Href), typeof(string), typeof(html_a), CreateHtmlAttributeUpdater("href"));
-
-        public string Href
-        {
-            get { return (string) GetValue(HrefProperty); }
-            set { SetValue(HrefProperty, value); }
         }
         #endregion
     }
