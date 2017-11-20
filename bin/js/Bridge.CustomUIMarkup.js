@@ -820,6 +820,23 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
                 if (System.String.startsWith(name, "on.")) {
                     var eventName = System.Extensions.RemoveFromStart(name, "on.");
 
+                    // support this format: this.Notify(OnContactClicked)
+                    if (System.String.startsWith(value, "this.")) {
+                        var invocationInfo = Bridge.CustomUIMarkup.UI.Design.Builder.InvocationInfo.ParseFromString(value);
+
+                        if (System.Nullable.gt((invocationInfo.Parameters != null ? invocationInfo.Parameters.Count : null), 1)) {
+                            throw new System.ArgumentException(value);
+                        }
+
+                        var mi = Bridge.Reflection.getMembers(Bridge.getType(this.Caller), 8, 284, invocationInfo.MethodName);
+
+                        instance.On(eventName, Bridge.fn.bind(this, function () {
+                            Bridge.Reflection.midel(mi, Bridge.unbox(this.Caller))(System.Linq.Enumerable.from(invocationInfo.Parameters).first());
+                        }));
+                        return;
+
+                    }
+
                     var methodInfo1 = Bridge.Reflection.getMembers(Bridge.getType(this.Caller), 8, 284, value);
 
                     instance.On(eventName, Bridge.fn.bind(this, function () {
@@ -1063,6 +1080,75 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
             IsEventAttribute: function (attributeName) {
                 return Bridge.CustomUIMarkup.UI.Design.BinderEventAttributeResolver.EventMap.containsKey(attributeName.toUpperCase());
             }
+        }
+    });
+
+    Bridge.define("Bridge.CustomUIMarkup.UI.Design.Builder.InvocationInfo", {
+        statics: {
+            methods: {
+                /**
+                 * Parses from string.
+                 <p>Example: this.Notify(OnContactClicked)</p>
+                 *
+                 * @static
+                 * @public
+                 * @this Bridge.CustomUIMarkup.UI.Design.Builder.InvocationInfo
+                 * @memberof Bridge.CustomUIMarkup.UI.Design.Builder.InvocationInfo
+                 * @param   {string}                                                    value
+                 * @return  {Bridge.CustomUIMarkup.UI.Design.Builder.InvocationInfo}
+                 */
+                ParseFromString: function (value) {
+                    var $t;
+
+                    var invocationInfo = new Bridge.CustomUIMarkup.UI.Design.Builder.InvocationInfo();
+
+                    var arr = System.String.split(value, System.Array.init([46, 40, 41], System.Char).map(function(i) {{ return String.fromCharCode(i); }}));
+
+                    $t = Bridge.getEnumerator(arr);
+                    try {
+                        while ($t.moveNext()) {
+                            var token = $t.Current;
+                            if (System.String.isNullOrWhiteSpace(token)) {
+                                continue;
+
+                            }
+                            if (Bridge.referenceEquals(token.trim(), "this")) {
+                                invocationInfo.HasThis = true;
+                                continue;
+                            }
+
+                            if (invocationInfo.MethodName == null) {
+                                invocationInfo.MethodName = token.trim();
+                                continue;
+                            }
+
+                            if (invocationInfo.Parameters == null) {
+                                invocationInfo.Parameters = new (System.Collections.Generic.List$1(System.String)).ctor();
+
+                            }
+
+                            invocationInfo.Parameters.add(token);
+
+
+                        }
+                    } finally {
+                        if (Bridge.is($t, System.IDisposable)) {
+                            $t.System$IDisposable$dispose();
+                        }
+                    }
+
+
+
+
+
+                    return invocationInfo;
+                }
+            }
+        },
+        fields: {
+            HasThis: false,
+            MethodName: null,
+            Parameters: null
         }
     });
 

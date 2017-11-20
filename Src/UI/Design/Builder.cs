@@ -260,6 +260,23 @@ namespace Bridge.CustomUIMarkup.UI.Design
             {
                 var eventName = name.RemoveFromStart("on.");
 
+                // support this format: this.Notify(OnContactClicked)
+                if (value.StartsWith("this."))
+                {
+                    var invocationInfo = InvocationInfo.ParseFromString(value);
+
+                    if (invocationInfo.Parameters?.Count>1)
+                    {
+                        throw new ArgumentException( value);
+                    }
+
+                    var mi = Caller.GetType().GetMethod(invocationInfo.MethodName);
+
+                    instance.On(eventName, () => { mi.Invoke(Caller,invocationInfo.Parameters.First()); });
+                    return;
+
+                }
+
                 var methodInfo = Caller.GetType().GetMethod(value);
 
                 instance.On(eventName, () => { methodInfo.Invoke(Caller); });
@@ -293,5 +310,67 @@ namespace Bridge.CustomUIMarkup.UI.Design
             instance._root.Attr(name, value);
         }
         #endregion
+
+        class InvocationInfo
+        {
+            public bool HasThis;
+            public string MethodName;
+            public List<string> Parameters;
+
+            /// <summary>
+            /// Parses from string.
+            /// <para>Example: this.Notify(OnContactClicked)</para>
+            /// </summary>
+            public static InvocationInfo ParseFromString(string value)
+            {
+
+                var invocationInfo = new InvocationInfo();
+
+                var arr = value.Split(new char[] { '.', '(', ')' });
+
+                foreach (var token in arr)
+                {
+                    if (string.IsNullOrWhiteSpace(token))
+                    {
+                        continue;
+                        
+                    }
+                    if (token.Trim() == "this")
+                    {
+                        invocationInfo.HasThis = true;
+                        continue;
+                    }
+
+                    if (invocationInfo.MethodName == null)
+                    {
+                        invocationInfo.MethodName = token.Trim();
+                        continue;
+                    }
+
+                    if (invocationInfo.Parameters == null)
+                    {
+                        invocationInfo.Parameters = new List<string>();
+                        
+                    }
+
+                    invocationInfo.Parameters.Add(token);
+
+
+                }
+
+
+
+
+
+
+                return invocationInfo;
+            }
+        }
+
     }
+
+   
+    
+
 }
+
