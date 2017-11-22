@@ -151,13 +151,11 @@
     <Reference Include="Bridge.Html5, Version=16.5.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Bridge.Html5.16.5.0\lib\net40\Bridge.Html5.dll</HintPath>
     </Reference>
-    <Reference Include="Bridge.jQuery2, Version=2.9.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Bridge.jQuery.2.9.4\lib\net40\Bridge.jQuery2.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="Bridge.jQuery2, Version=2.10.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Bridge.jQuery.2.10.0\lib\net40\Bridge.jQuery2.dll</HintPath>
     </Reference>
-    <Reference Include="Newtonsoft.Json, Version=1.2.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Bridge.Newtonsoft.Json.1.2.1\lib\net40\Newtonsoft.Json.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="Newtonsoft.Json, Version=1.3.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Bridge.Newtonsoft.Json.1.3.0\lib\net40\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="Retyped.Core, Version=1.3.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Retyped.Core.1.3.6532\lib\net40\Retyped.Core.dll</HintPath>
@@ -169,12 +167,10 @@
       <HintPath>..\packages\Retyped.es5.2.3.6532\lib\net40\Retyped.es5.dll</HintPath>
     </Reference>
     <Reference Include="Retyped.jquery, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Retyped.jquery.2.0.6477\lib\net40\Retyped.jquery.dll</HintPath>
-      <Private>True</Private>
+      <HintPath>..\packages\Retyped.jquery.2.0.6532\lib\net40\Retyped.jquery.dll</HintPath>
     </Reference>
     <Reference Include="Retyped.semantic-ui, Version=2.2.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Retyped.semantic-ui.2.2.6477\lib\net40\Retyped.semantic-ui.dll</HintPath>
-      <Private>True</Private>
+      <HintPath>..\packages\Retyped.semantic-ui.2.2.6532\lib\net40\Retyped.semantic-ui.dll</HintPath>
     </Reference>
     <Reference Include="Retyped.swiper, Version=3.4.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Retyped.swiper.3.4.6532\lib\net40\Retyped.swiper.dll</HintPath>
