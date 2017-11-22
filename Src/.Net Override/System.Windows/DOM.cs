@@ -10,6 +10,7 @@ namespace System.Windows
             return new jQuery(Document.GetElementById(id));
         }
 
+        
 
         #region Public Properties
         public static jQuery head => new jQuery("head");
