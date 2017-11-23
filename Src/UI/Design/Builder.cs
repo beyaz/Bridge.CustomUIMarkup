@@ -110,7 +110,7 @@ namespace Bridge.CustomUIMarkup.UI.Design
                 instance.InitDOM();
             }
 
-            instance.AfterInitDOM();
+            instance.InvokeAfterInitDOM();
 
             foreach (var nodeAttribute in xmlNode.Attributes)
             {

@@ -6,6 +6,10 @@ namespace System.Windows.Controls
 {
     class SplitPanel : FrameworkElement
     {
+        public SplitPanel()
+        {
+            AfterAddChild += AfterAddChildElement;
+        }
         #region Constants
         const string horizontal = nameof(horizontal);
         const string vertical = nameof(vertical);
@@ -37,7 +41,7 @@ namespace System.Windows.Controls
         #endregion
 
         #region Methods
-        protected override void AfterAddChild(FrameworkElement element)
+        void AfterAddChildElement(FrameworkElement element)
         {
             if (Childeren.Count == 1)
             {

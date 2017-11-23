@@ -1,12 +1,11 @@
 ﻿using System.Windows;
-using Bridge.CustomUIMarkup.Common;
 
 namespace Bridge.CustomUIMarkup.SemanticUI
 {
     public class TextArea : InputText
     {
         #region Methods
-        protected internal override void AfterInitDOM()
+        protected internal override void CreateInputElement()
         {
             _inputElement = DOM.textarea().AppendTo(_root);
         }

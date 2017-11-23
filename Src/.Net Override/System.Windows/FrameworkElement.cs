@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel;
-using System.Windows.Data;
 using System.Windows.Markup;
 using Bridge.Html5;
 using Bridge.jQuery2;
@@ -56,11 +55,28 @@ namespace System.Windows
         #endregion
 
         #region Public Methods
+
+        protected event Action BeforeConnectToParent;
+
+        protected event Action<FrameworkElement> AfterAddChild;
+        protected event Action<FrameworkElement> BeforeAddChild;
+
         public virtual void Add(FrameworkElement element)
         {
+            element.BeforeConnectToParent?.Invoke();
+
             element._root.AppendTo(_root);
 
-            AddChild(element);
+            BeforeAddChild?.Invoke(element);
+
+            if (_childeren == null)
+            {
+                _childeren = new List<FrameworkElement>();
+            }
+
+            _childeren.Add(element);
+
+            AfterAddChild?.Invoke(element);
         }
 
         public object GetValue(DependencyProperty dp)
@@ -80,12 +96,16 @@ namespace System.Windows
             return value;
         }
 
+
+        public event Action AfterInitDOM;
+
         public virtual void InitDOM()
         {
             if (_root == null) // TODO: remove next version
             {
                 _root = new jQuery(Document.CreateElement("div"));
             }
+
         }
 
         public void On(string eventName, Action handler)
@@ -100,10 +120,6 @@ namespace System.Windows
         #endregion
 
         #region Methods
-        protected internal virtual void AfterInitDOM()
-        {
-        }
-
         protected static PropertyMetadata CreateHtmlAttributeUpdater(string htmlAttribute)
         {
             return new PropertyMetadata((d, e) =>
@@ -134,27 +150,10 @@ namespace System.Windows
             });
         }
 
-        protected virtual void AddChild(FrameworkElement element)
-        {
-            BeforeAddChild(element);
+        
+       
 
-            if (_childeren == null)
-            {
-                _childeren = new List<FrameworkElement>();
-            }
-
-            _childeren.Add(element);
-
-            AfterAddChild(element);
-        }
-
-        protected virtual void AfterAddChild(FrameworkElement element)
-        {
-        }
-
-        protected virtual void BeforeAddChild(FrameworkElement element)
-        {
-        }
+        
 
         
         #endregion
@@ -543,5 +542,10 @@ namespace System.Windows
             }
         }
         #endregion
+
+         internal void InvokeAfterInitDOM()
+        {
+            AfterInitDOM?.Invoke();
+        }
     }
 }

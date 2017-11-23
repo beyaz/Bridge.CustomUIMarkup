@@ -686,7 +686,7 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
                     instance.InitDOM();
                 }
 
-                instance.AfterInitDOM();
+                instance.InvokeAfterInitDOM();
 
                 $t = Bridge.getEnumerator(xmlNode.attributes);
                 try {
@@ -2447,14 +2447,18 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
             PropertyChangedCallback: null
         },
         ctors: {
-            $ctor1: function (propertyChangedCallback) {
+            $ctor2: function (propertyChangedCallback) {
                 this.$initialize();
                 this.PropertyChangedCallback = propertyChangedCallback;
             },
-            ctor: function (defaultValue, propertyChangedCallback) {
+            $ctor1: function (defaultValue, propertyChangedCallback) {
                 this.$initialize();
                 this.DefaultValue = defaultValue;
                 this.PropertyChangedCallback = propertyChangedCallback;
+            },
+            ctor: function (defaultValue) {
+                this.$initialize();
+                this.DefaultValue = defaultValue;
             }
         }
     });
@@ -2632,6 +2636,7 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
             ctors: {
                 init: function () {
                     this._tags = function (_o1) {
+                            _o1.add(new Bridge.CustomUIMarkup.UI.Design.XmlIntellisenseInfo("swiper.slider", Bridge.CustomUIMarkup.Swiper.Slider));
                             _o1.add(new Bridge.CustomUIMarkup.UI.Design.XmlIntellisenseInfo("div", System.Windows.FrameworkElement_div));
                             _o1.add(new Bridge.CustomUIMarkup.UI.Design.XmlIntellisenseInfo("a", System.Windows.FrameworkElement_a));
                             _o1.add(new Bridge.CustomUIMarkup.UI.Design.XmlIntellisenseInfo("img", System.Windows.FrameworkElement_img));
@@ -2845,7 +2850,7 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
                 init: function () {
                     this.BorderProperty = System.Windows.DependencyProperty.Register$1("Border", System.String, System.Windows.FrameworkElement, System.Windows.FrameworkElement.CreateJQueryCssUpdater("border"));
                     this.ClassProperty = System.Windows.DependencyProperty.Register$1("Class", System.String, System.Windows.FrameworkElement, System.Windows.FrameworkElement.CreateHtmlAttributeUpdater("class"));
-                    this.AddClassProperty = System.Windows.DependencyProperty.Register$1("AddClass", System.String, System.Windows.FrameworkElement, new System.Windows.PropertyMetadata.$ctor1(System.Windows.FrameworkElement.OnAddClassChanged));
+                    this.AddClassProperty = System.Windows.DependencyProperty.Register$1("AddClass", System.String, System.Windows.FrameworkElement, new System.Windows.PropertyMetadata.$ctor2(System.Windows.FrameworkElement.OnAddClassChanged));
                     this.MarginProperty = System.Windows.DependencyProperty.Register$1("Margin", System.Nullable$1(System.Double), System.Windows.FrameworkElement, System.Windows.FrameworkElement.CreateJQueryCssUpdater("margin"));
                     this.MarginLeftProperty = System.Windows.DependencyProperty.Register$1("MarginLeft", System.Nullable$1(System.Double), System.Windows.FrameworkElement, System.Windows.FrameworkElement.CreateJQueryCssUpdater("marginLeft"));
                     this.MarginRightProperty = System.Windows.DependencyProperty.Register$1("MarginRight", System.Nullable$1(System.Double), System.Windows.FrameworkElement, System.Windows.FrameworkElement.CreateJQueryCssUpdater("marginRight"));
@@ -2856,7 +2861,7 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
                     this.PaddingBottomProperty = System.Windows.DependencyProperty.Register$1("PaddingBottom", System.Nullable$1(System.Double), System.Windows.FrameworkElement, System.Windows.FrameworkElement.CreateJQueryCssUpdater("paddingBottom"));
                     this.PaddingTopProperty = System.Windows.DependencyProperty.Register$1("PaddingTop", System.Nullable$1(System.Double), System.Windows.FrameworkElement, System.Windows.FrameworkElement.CreateJQueryCssUpdater("paddingTop"));
                     this.PaddingProperty = System.Windows.DependencyProperty.Register$1("Padding", System.Nullable$1(System.Double), System.Windows.FrameworkElement, System.Windows.FrameworkElement.CreateJQueryCssUpdater("padding"));
-                    this.TextWrappingProperty = System.Windows.DependencyProperty.Register$1("TextWrapping", System.Windows.TextWrapping, System.Windows.FrameworkElement, new System.Windows.PropertyMetadata.$ctor1(System.Windows.FrameworkElement.OnTextWrappingChanged));
+                    this.TextWrappingProperty = System.Windows.DependencyProperty.Register$1("TextWrapping", System.Windows.TextWrapping, System.Windows.FrameworkElement, new System.Windows.PropertyMetadata.$ctor2(System.Windows.FrameworkElement.OnTextWrappingChanged));
                     this.FontWeightProperty = System.Windows.DependencyProperty.Register$1("FontWeight", System.Double, System.Windows.FrameworkElement, System.Windows.FrameworkElement.CreateJQueryCssUpdater("fontWeight"));
                     this.FontSizeProperty = System.Windows.DependencyProperty.Register$1("FontSize", System.Double, System.Windows.FrameworkElement, System.Windows.FrameworkElement.CreateJQueryCssUpdater("fontSize"));
                     this.WidthProperty = System.Windows.DependencyProperty.Register$1("Width", System.Double, System.Windows.FrameworkElement, System.Windows.FrameworkElement.CreateJQueryCssUpdater("width"));
@@ -2864,32 +2869,32 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
                         return System.String.concat(v, "%");
                     }));
                     this.ColorProperty = System.Windows.DependencyProperty.Register$1("Color", System.String, System.Windows.FrameworkElement, System.Windows.FrameworkElement.CreateJQueryCssUpdater("color"));
-                    this["InnerHTMLProperty"] = System.Windows.DependencyProperty.Register$1("InnerHTML", System.String, System.Windows.FrameworkElement, new System.Windows.PropertyMetadata.$ctor1(System.Windows.FrameworkElement.OnInnerHTMLChanged));
-                    this.VisibilityProperty = System.Windows.DependencyProperty.Register$1("Visibility", System.Windows.Visibility, System.Windows.FrameworkElement, new System.Windows.PropertyMetadata.$ctor1(System.Windows.FrameworkElement.OnVisibilityChanged));
+                    this["InnerHTMLProperty"] = System.Windows.DependencyProperty.Register$1("InnerHTML", System.String, System.Windows.FrameworkElement, new System.Windows.PropertyMetadata.$ctor2(System.Windows.FrameworkElement.OnInnerHTMLChanged));
+                    this.VisibilityProperty = System.Windows.DependencyProperty.Register$1("Visibility", System.Windows.Visibility, System.Windows.FrameworkElement, new System.Windows.PropertyMetadata.$ctor2(System.Windows.FrameworkElement.OnVisibilityChanged));
                     this.HeightProperty = System.Windows.DependencyProperty.Register$1("Height", System.Double, System.Windows.FrameworkElement, System.Windows.FrameworkElement.CreateJQueryCssUpdater("height"));
                     this.HeightPercentProperty = System.Windows.DependencyProperty.Register$1("HeightPercent", System.Double, System.Windows.FrameworkElement, System.Windows.FrameworkElement.CreateJQueryCssUpdater$1("height", function (v) {
                         return System.String.concat(v, "%");
                     }));
-                    this.BackgroundProperty = System.Windows.DependencyProperty.Register$1("Background", System.String, System.Windows.FrameworkElement, new System.Windows.PropertyMetadata.$ctor1(System.Windows.FrameworkElement.OnBackgroundChanged));
+                    this.BackgroundProperty = System.Windows.DependencyProperty.Register$1("Background", System.String, System.Windows.FrameworkElement, new System.Windows.PropertyMetadata.$ctor2(System.Windows.FrameworkElement.OnBackgroundChanged));
                 }
             },
             methods: {
                 CreateHtmlAttributeUpdater: function (htmlAttribute) {
-                    return new System.Windows.PropertyMetadata.$ctor1(function (d, e) {
+                    return new System.Windows.PropertyMetadata.$ctor2(function (d, e) {
                         var me = Bridge.cast(d, System.Windows.FrameworkElement);
 
                         me._root.attr(htmlAttribute, Bridge.cast(e.NewValue, System.String));
                     });
                 },
                 CreateJQueryCssUpdater: function (jqueryCssAttribute) {
-                    return new System.Windows.PropertyMetadata.$ctor1(function (d, e) {
+                    return new System.Windows.PropertyMetadata.$ctor2(function (d, e) {
                         var me = Bridge.cast(d, System.Windows.FrameworkElement);
 
                         me._root.css(jqueryCssAttribute, Bridge.unbox(e.NewValue));
                     });
                 },
                 CreateJQueryCssUpdater$1: function (jqueryCssAttribute, valueConverter) {
-                    return new System.Windows.PropertyMetadata.$ctor1(function (d, e) {
+                    return new System.Windows.PropertyMetadata.$ctor2(function (d, e) {
                         var me = Bridge.cast(d, System.Windows.FrameworkElement);
 
                         me._root.css(jqueryCssAttribute, Bridge.unbox(valueConverter(e.NewValue)));
@@ -2952,6 +2957,12 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
             _childeren: null,
             _id: null,
             _dataContext: null
+        },
+        events: {
+            BeforeConnectToParent: null,
+            AfterAddChild: null,
+            BeforeAddChild: null,
+            "AfterInitDOM": null
         },
         props: {
             Childeren: {
@@ -3200,9 +3211,19 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
         },
         methods: {
             Add: function (element) {
+                !Bridge.staticEquals(element.BeforeConnectToParent, null) ? element.BeforeConnectToParent() : null;
+
                 element._root.appendTo(this._root);
 
-                this.AddChild(element);
+                !Bridge.staticEquals(this.BeforeAddChild, null) ? this.BeforeAddChild(element) : null;
+
+                if (this._childeren == null) {
+                    this._childeren = new (System.Collections.Generic.List$1(System.Windows.FrameworkElement)).ctor();
+                }
+
+                this._childeren.add(element);
+
+                !Bridge.staticEquals(this.AfterAddChild, null) ? this.AfterAddChild(element) : null;
             },
             GetValue$1: function (dp) {
                 var value = this.getItem(dp.Name);
@@ -3220,6 +3241,7 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
                 if (this._root == null) {
                     this._root = $(document.createElement("div"));
                 }
+
             },
             On: function (eventName, handler) {
                 this._root.on(eventName, handler);
@@ -3227,20 +3249,9 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
             SetValue$1: function (dp, value) {
                 this.setItem(dp.Name, value);
             },
-            AfterInitDOM: function () { },
-            AddChild: function (element) {
-                this.BeforeAddChild(element);
-
-                if (this._childeren == null) {
-                    this._childeren = new (System.Collections.Generic.List$1(System.Windows.FrameworkElement)).ctor();
-                }
-
-                this._childeren.add(element);
-
-                this.AfterAddChild(element);
-            },
-            AfterAddChild: function (element) { },
-            BeforeAddChild: function (element) { }
+            InvokeAfterInitDOM: function () {
+                !Bridge.staticEquals(this.AfterInitDOM, null) ? this.AfterInitDOM() : null;
+            }
         }
     });
 
@@ -3252,7 +3263,7 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
             },
             ctors: {
                 init: function () {
-                    this.TextProperty = System.Windows.DependencyProperty.Register$1("Text", System.String, Bridge.CustomUIMarkup.CodeMirror.XmlEditor, new System.Windows.PropertyMetadata.$ctor1(Bridge.CustomUIMarkup.CodeMirror.XmlEditor.TextChanged));
+                    this.TextProperty = System.Windows.DependencyProperty.Register$1("Text", System.String, Bridge.CustomUIMarkup.CodeMirror.XmlEditor, new System.Windows.PropertyMetadata.$ctor2(Bridge.CustomUIMarkup.CodeMirror.XmlEditor.TextChanged));
                 }
             },
             methods: {
@@ -3638,7 +3649,7 @@ me._editor.display.wrapper.style.height = '95%';
             },
             ctors: {
                 init: function () {
-                    this.DataSourceProperty = System.Windows.DependencyProperty.Register$1("DataSource", System.String, Bridge.CustomUIMarkup.jssor.Carousel, new System.Windows.PropertyMetadata.$ctor1(Bridge.CustomUIMarkup.jssor.Carousel.OnDataSourceChanged));
+                    this.DataSourceProperty = System.Windows.DependencyProperty.Register$1("DataSource", System.String, Bridge.CustomUIMarkup.jssor.Carousel, new System.Windows.PropertyMetadata.$ctor2(Bridge.CustomUIMarkup.jssor.Carousel.OnDataSourceChanged));
                 }
             },
             methods: {
@@ -3703,10 +3714,10 @@ me._editor.display.wrapper.style.height = '95%';
             },
             ctors: {
                 init: function () {
-                    this.SizeProperty = System.Windows.DependencyProperty.Register$1("Size", Bridge.CustomUIMarkup.SemanticUI.Size, Bridge.CustomUIMarkup.SemanticUI.ElementBase, new System.Windows.PropertyMetadata.$ctor1(Bridge.CustomUIMarkup.SemanticUI.ElementBase.OnSizeChanged));
-                    this["IsCenterAlignedProperty"] = System.Windows.DependencyProperty.Register$1("IsCenterAligned", System.Boolean, Bridge.CustomUIMarkup.SemanticUI.ElementBase, new System.Windows.PropertyMetadata.$ctor1(Bridge.CustomUIMarkup.SemanticUI.ElementBase.IsCenterAlignedChanged));
-                    this["IsRightAlignedProperty"] = System.Windows.DependencyProperty.Register$1("IsRightAligned", System.Boolean, Bridge.CustomUIMarkup.SemanticUI.ElementBase, new System.Windows.PropertyMetadata.$ctor1(Bridge.CustomUIMarkup.SemanticUI.ElementBase.IsRightAlignedChanged));
-                    this.AlignProperty = System.Windows.DependencyProperty.Register$1("Align", Bridge.CustomUIMarkup.SemanticUI.Align, Bridge.CustomUIMarkup.SemanticUI.ElementBase, new System.Windows.PropertyMetadata.$ctor1(Bridge.CustomUIMarkup.SemanticUI.ElementBase.OnAlignChanged));
+                    this.SizeProperty = System.Windows.DependencyProperty.Register$1("Size", Bridge.CustomUIMarkup.SemanticUI.Size, Bridge.CustomUIMarkup.SemanticUI.ElementBase, new System.Windows.PropertyMetadata.$ctor2(Bridge.CustomUIMarkup.SemanticUI.ElementBase.OnSizeChanged));
+                    this["IsCenterAlignedProperty"] = System.Windows.DependencyProperty.Register$1("IsCenterAligned", System.Boolean, Bridge.CustomUIMarkup.SemanticUI.ElementBase, new System.Windows.PropertyMetadata.$ctor2(Bridge.CustomUIMarkup.SemanticUI.ElementBase.IsCenterAlignedChanged));
+                    this["IsRightAlignedProperty"] = System.Windows.DependencyProperty.Register$1("IsRightAligned", System.Boolean, Bridge.CustomUIMarkup.SemanticUI.ElementBase, new System.Windows.PropertyMetadata.$ctor2(Bridge.CustomUIMarkup.SemanticUI.ElementBase.IsRightAlignedChanged));
+                    this.AlignProperty = System.Windows.DependencyProperty.Register$1("Align", Bridge.CustomUIMarkup.SemanticUI.Align, Bridge.CustomUIMarkup.SemanticUI.ElementBase, new System.Windows.PropertyMetadata.$ctor2(Bridge.CustomUIMarkup.SemanticUI.ElementBase.OnAlignChanged));
                 }
             },
             methods: {
@@ -4034,6 +4045,83 @@ me._editor.display.wrapper.style.height = '95%';
         }
     });
 
+    Bridge.define("Bridge.CustomUIMarkup.Swiper.Slider", {
+        inherits: [System.Windows.FrameworkElement],
+        statics: {
+            fields: {
+                DelayProperty: null
+            },
+            ctors: {
+                init: function () {
+                    this.DelayProperty = System.Windows.DependencyProperty.Register$1("Delay", System.String, Bridge.CustomUIMarkup.Swiper.Slider, new System.Windows.PropertyMetadata.ctor(Bridge.box(2000, System.Int32)));
+                }
+            }
+        },
+        fields: {
+            _wrapper: null,
+            swiper_wrapper: null
+        },
+        props: {
+            Delay: {
+                get: function () {
+                    return System.Nullable.getValue(Bridge.cast(Bridge.unbox(this.GetValue$1(Bridge.CustomUIMarkup.Swiper.Slider.DelayProperty)), System.Int32));
+                },
+                set: function (value) {
+                    this.SetValue$1(Bridge.CustomUIMarkup.Swiper.Slider.DelayProperty, Bridge.box(value, System.Int32));
+                }
+            }
+        },
+        ctors: {
+            ctor: function () {
+                this.$initialize();
+                System.Windows.FrameworkElement.ctor.call(this);
+                this.addBeforeConnectToParent(Bridge.fn.cacheBind(this, this.InitWrapper));
+                this.addAfterAddChild(Bridge.fn.cacheBind(this, this.CreateSlide));
+            }
+        },
+        methods: {
+            InitDOM: function () {
+                this._root = System.Windows.DOM.div("swiper-container");
+                this["Id"].toString();
+
+                this.swiper_wrapper = System.Windows.DOM.div("swiper-wrapper").appendTo(this._root);
+
+                //DOM.div("swiper-pagination").AppendTo(_root);
+
+                //DOM.div("swiper-button-next").AppendTo(_root);
+                //DOM.div("swiper-button-prev").AppendTo(_root);
+            },
+            CreateSlide: function (element) {
+                System.Windows.DOM.div("swiper-slide").appendTo(this.swiper_wrapper).append(element._root);
+            },
+            InitWrapper: function () {
+                // ReSharper disable once UnusedVariable
+                var delay = this.Delay;
+                // ReSharper disable once UnusedVariable
+                var me = this;
+
+                
+
+setTimeout(function(){
+
+    me._wrapper = new Swiper(me._root, {
+      spaceBetween: 30,
+      centeredSlides: true,
+      autoplay: {
+        delay: delay,
+        disableOnInteraction: false,
+      }
+    });
+
+
+},0);
+
+
+
+            }
+        }
+    });
+
     Bridge.define("System.Windows.Controls.SplitPanel", {
         inherits: [System.Windows.FrameworkElement],
         statics: {
@@ -4046,7 +4134,7 @@ me._editor.display.wrapper.style.height = '95%';
                 init: function () {
                     this.horizontal = "horizontal";
                     this.vertical = "vertical";
-                    this.OrientationProperty = System.Windows.DependencyProperty.Register$1("Orientation", System.Windows.Controls.Orientation, System.Windows.Controls.SplitPanel, new System.Windows.PropertyMetadata.$ctor1(System.Windows.Controls.SplitPanel.OnOrientationChanged));
+                    this.OrientationProperty = System.Windows.DependencyProperty.Register$1("Orientation", System.Windows.Controls.Orientation, System.Windows.Controls.SplitPanel, new System.Windows.PropertyMetadata.$ctor2(System.Windows.Controls.SplitPanel.OnOrientationChanged));
                 }
             },
             methods: {
@@ -4080,6 +4168,11 @@ me._editor.display.wrapper.style.height = '95%';
         ctors: {
             init: function () {
                 this._direction = "horizontal";
+            },
+            ctor: function () {
+                this.$initialize();
+                System.Windows.FrameworkElement.ctor.call(this);
+                this.addAfterAddChild(Bridge.fn.cacheBind(this, this.AfterAddChildElement));
             }
         },
         methods: {
@@ -4092,7 +4185,7 @@ me._editor.display.wrapper.style.height = '95%';
 
                 this.ReInitializeWrapper();
             },
-            AfterAddChild: function (element) {
+            AfterAddChildElement: function (element) {
                 if (System.Array.getCount(this.Childeren, System.Windows.FrameworkElement) === 1) {
                     Bridge.CustomUIMarkup.Common.Extensions.SetFirstChild(this._left, Bridge.CustomUIMarkup.Common.Extensions.RemoveFromParent(this._root.children().last()));
                 } else {
@@ -4132,7 +4225,7 @@ me._editor.display.wrapper.style.height = '95%';
             },
             ctors: {
                 init: function () {
-                    this.TextProperty = System.Windows.DependencyProperty.Register$1("Text", System.String, System.Windows.Controls.TextBlock, new System.Windows.PropertyMetadata.$ctor1(System.Windows.FrameworkElement.OnInnerHTMLChanged));
+                    this.TextProperty = System.Windows.DependencyProperty.Register$1("Text", System.String, System.Windows.Controls.TextBlock, new System.Windows.PropertyMetadata.$ctor2(System.Windows.FrameworkElement.OnInnerHTMLChanged));
                 }
             }
         },
@@ -4242,7 +4335,7 @@ me._editor.display.wrapper.style.height = '95%';
             },
             ctors: {
                 init: function () {
-                    this.WideProperty = System.Windows.DependencyProperty.Register$1("Wide", System.Int32, Bridge.CustomUIMarkup.SemanticUI.column, new System.Windows.PropertyMetadata.$ctor1(Bridge.CustomUIMarkup.SemanticUI.column.WideChanged));
+                    this.WideProperty = System.Windows.DependencyProperty.Register$1("Wide", System.Int32, Bridge.CustomUIMarkup.SemanticUI.column, new System.Windows.PropertyMetadata.$ctor2(Bridge.CustomUIMarkup.SemanticUI.column.WideChanged));
                 }
             },
             methods: {
@@ -4322,8 +4415,8 @@ me._editor.display.wrapper.style.height = '95%';
             },
             ctors: {
                 init: function () {
-                    this.ErrorMessageProperty = System.Windows.DependencyProperty.Register$1("ErrorMessage", System.String, Bridge.CustomUIMarkup.SemanticUI.Field, new System.Windows.PropertyMetadata.$ctor1(Bridge.CustomUIMarkup.SemanticUI.Field.OnErrorMessageChanged));
-                    this.LabelProperty = System.Windows.DependencyProperty.Register$1("Label", System.String, Bridge.CustomUIMarkup.SemanticUI.Field, new System.Windows.PropertyMetadata.$ctor1(Bridge.CustomUIMarkup.SemanticUI.Field.OnLabelChanged));
+                    this.ErrorMessageProperty = System.Windows.DependencyProperty.Register$1("ErrorMessage", System.String, Bridge.CustomUIMarkup.SemanticUI.Field, new System.Windows.PropertyMetadata.$ctor2(Bridge.CustomUIMarkup.SemanticUI.Field.OnErrorMessageChanged));
+                    this.LabelProperty = System.Windows.DependencyProperty.Register$1("Label", System.String, Bridge.CustomUIMarkup.SemanticUI.Field, new System.Windows.PropertyMetadata.$ctor2(Bridge.CustomUIMarkup.SemanticUI.Field.OnLabelChanged));
                 }
             },
             methods: {
@@ -4369,13 +4462,16 @@ me._editor.display.wrapper.style.height = '95%';
                 }
             }
         },
-        alias: ["Add", "System$Windows$Markup$IAddChild$Add"],
+        ctors: {
+            ctor: function () {
+                this.$initialize();
+                Bridge.CustomUIMarkup.SemanticUI.ElementBase.ctor.call(this);
+                this.addAfterAddChild(Bridge.fn.bind(this, function (el) {
+                    this.ReOrderElements();
+                }));
+            }
+        },
         methods: {
-            Add: function (element) {
-                this.AddChild(element);
-
-                this.ReOrderElements();
-            },
             InitDOM: function () {
                 this._root = System.Windows.DOM.div("field");
             },
@@ -4427,7 +4523,7 @@ me._editor.display.wrapper.style.height = '95%';
             },
             ctors: {
                 init: function () {
-                    this.TextProperty = System.Windows.DependencyProperty.Register$1("Text", System.String, Bridge.CustomUIMarkup.SemanticUI.header, new System.Windows.PropertyMetadata.$ctor1(System.Windows.FrameworkElement.OnInnerHTMLChanged));
+                    this.TextProperty = System.Windows.DependencyProperty.Register$1("Text", System.String, Bridge.CustomUIMarkup.SemanticUI.header, new System.Windows.PropertyMetadata.$ctor2(System.Windows.FrameworkElement.OnInnerHTMLChanged));
                 }
             }
         },
@@ -4456,7 +4552,7 @@ me._editor.display.wrapper.style.height = '95%';
             },
             ctors: {
                 init: function () {
-                    this.TypeProperty = System.Windows.DependencyProperty.Register$1("Type", Bridge.CustomUIMarkup.SemanticUI.IconType, Bridge.CustomUIMarkup.SemanticUI.Icon, new System.Windows.PropertyMetadata.$ctor1(Bridge.CustomUIMarkup.SemanticUI.Icon.OnTypeChanged));
+                    this.TypeProperty = System.Windows.DependencyProperty.Register$1("Type", Bridge.CustomUIMarkup.SemanticUI.IconType, Bridge.CustomUIMarkup.SemanticUI.Icon, new System.Windows.PropertyMetadata.$ctor2(Bridge.CustomUIMarkup.SemanticUI.Icon.OnTypeChanged));
                 }
             },
             methods: {
@@ -4497,9 +4593,9 @@ me._editor.display.wrapper.style.height = '95%';
             },
             ctors: {
                 init: function () {
-                    this.TextProperty = System.Windows.DependencyProperty.Register$1("Text", System.String, Bridge.CustomUIMarkup.SemanticUI.InputText, new System.Windows.PropertyMetadata.$ctor1(Bridge.CustomUIMarkup.SemanticUI.InputText.OnTextChanged));
-                    this.PlaceHolderProperty = System.Windows.DependencyProperty.Register$1("PlaceHolder", System.String, Bridge.CustomUIMarkup.SemanticUI.InputText, new System.Windows.PropertyMetadata.$ctor1(Bridge.CustomUIMarkup.SemanticUI.InputText.OnPlaceHolderChanged));
-                    this["IsMandatoryProperty"] = System.Windows.DependencyProperty.Register$1("IsMandatory", System.Boolean, Bridge.CustomUIMarkup.SemanticUI.InputText, new System.Windows.PropertyMetadata.$ctor1(Bridge.CustomUIMarkup.SemanticUI.InputText.OnIsMandatoryChanged));
+                    this.TextProperty = System.Windows.DependencyProperty.Register$1("Text", System.String, Bridge.CustomUIMarkup.SemanticUI.InputText, new System.Windows.PropertyMetadata.$ctor2(Bridge.CustomUIMarkup.SemanticUI.InputText.OnTextChanged));
+                    this.PlaceHolderProperty = System.Windows.DependencyProperty.Register$1("PlaceHolder", System.String, Bridge.CustomUIMarkup.SemanticUI.InputText, new System.Windows.PropertyMetadata.$ctor2(Bridge.CustomUIMarkup.SemanticUI.InputText.OnPlaceHolderChanged));
+                    this["IsMandatoryProperty"] = System.Windows.DependencyProperty.Register$1("IsMandatory", System.Boolean, Bridge.CustomUIMarkup.SemanticUI.InputText, new System.Windows.PropertyMetadata.$ctor2(Bridge.CustomUIMarkup.SemanticUI.InputText.OnIsMandatoryChanged));
                 }
             },
             methods: {
@@ -4559,8 +4655,15 @@ me._editor.display.wrapper.style.height = '95%';
                 }
             }
         },
+        ctors: {
+            ctor: function () {
+                this.$initialize();
+                Bridge.CustomUIMarkup.SemanticUI.ElementBase.ctor.call(this);
+                this.addAfterInitDOM(Bridge.fn.cacheBind(this, this.CreateInputElement));
+            }
+        },
         methods: {
-            AfterInitDOM: function () {
+            CreateInputElement: function () {
                 this._inputElement = System.Windows.DOM.input("text").appendTo(this._root);
             },
             InitializeCornerLabelDiv: function () {
@@ -4679,8 +4782,17 @@ me._editor.display.wrapper.style.height = '95%';
                 }
             }
         },
+        ctors: {
+            ctor: function () {
+                this.$initialize();
+                Bridge.CustomUIMarkup.SemanticUI.ElementBase.ctor.call(this);
+                this.addAfterAddChild(Bridge.fn.bind(this, function (el) {
+                    this.UpdateClass();
+                }));
+            }
+        },
         methods: {
-            AfterAddChild: function (element) {
+            UpdateClass: function () {
                 this._root.attr("class", this.rowClass);
             }
         }
@@ -4708,8 +4820,8 @@ me._editor.display.wrapper.style.height = '95%';
             },
             ctors: {
                 init: function () {
-                    this.TextProperty = System.Windows.DependencyProperty.Register$1("Text", System.String, Bridge.CustomUIMarkup.SemanticUI.ui_button, new System.Windows.PropertyMetadata.$ctor1(System.Windows.FrameworkElement.OnInnerHTMLChanged));
-                    this["IsActiveProperty"] = System.Windows.DependencyProperty.Register$1("IsActive", System.Boolean, Bridge.CustomUIMarkup.SemanticUI.ui_button, new System.Windows.PropertyMetadata.$ctor1(Bridge.CustomUIMarkup.SemanticUI.ui_button.IsActiveChanged));
+                    this.TextProperty = System.Windows.DependencyProperty.Register$1("Text", System.String, Bridge.CustomUIMarkup.SemanticUI.ui_button, new System.Windows.PropertyMetadata.$ctor2(System.Windows.FrameworkElement.OnInnerHTMLChanged));
+                    this["IsActiveProperty"] = System.Windows.DependencyProperty.Register$1("IsActive", System.Boolean, Bridge.CustomUIMarkup.SemanticUI.ui_button, new System.Windows.PropertyMetadata.$ctor2(Bridge.CustomUIMarkup.SemanticUI.ui_button.IsActiveChanged));
                 }
             },
             methods: {
@@ -4959,7 +5071,7 @@ me._editor.display.wrapper.style.height = '95%';
             },
             ctors: {
                 init: function () {
-                    this.RowsProperty = System.Windows.DependencyProperty.Register$1("Rows", System.Nullable$1(System.Int32), Bridge.CustomUIMarkup.SemanticUI.TextArea, new System.Windows.PropertyMetadata.$ctor1(Bridge.CustomUIMarkup.SemanticUI.TextArea.OnRowsChanged));
+                    this.RowsProperty = System.Windows.DependencyProperty.Register$1("Rows", System.Nullable$1(System.Int32), Bridge.CustomUIMarkup.SemanticUI.TextArea, new System.Windows.PropertyMetadata.$ctor2(Bridge.CustomUIMarkup.SemanticUI.TextArea.OnRowsChanged));
                 }
             },
             methods: {
@@ -4983,7 +5095,7 @@ me._editor.display.wrapper.style.height = '95%';
             }
         },
         methods: {
-            AfterInitDOM: function () {
+            CreateInputElement: function () {
                 this._inputElement = System.Windows.DOM.textarea().appendTo(this._root);
             }
         }

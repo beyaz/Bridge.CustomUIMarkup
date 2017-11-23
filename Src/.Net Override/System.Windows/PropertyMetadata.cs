@@ -15,6 +15,10 @@ namespace System.Windows
             DefaultValue = defaultValue;
             PropertyChangedCallback = propertyChangedCallback;
         }
+        public PropertyMetadata(object defaultValue)
+        {
+            DefaultValue = defaultValue;
+        }
     }
 
     public delegate bool ValidateValueCallback(object value);

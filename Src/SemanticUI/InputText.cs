@@ -7,6 +7,10 @@ namespace Bridge.CustomUIMarkup.SemanticUI
 {
     public class InputText : ElementBase
     {
+        public InputText()
+        {
+            AfterInitDOM += CreateInputElement;
+        }
         #region Fields
         protected jQuery _inputElement;
         #endregion
@@ -16,7 +20,7 @@ namespace Bridge.CustomUIMarkup.SemanticUI
         #endregion
 
         #region Methods
-        protected internal override void AfterInitDOM()
+        protected internal virtual void CreateInputElement()
         {
             _inputElement = DOM.input("text").AppendTo(_root);
         }

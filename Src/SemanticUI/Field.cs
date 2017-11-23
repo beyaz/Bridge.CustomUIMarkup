@@ -8,17 +8,16 @@ namespace Bridge.CustomUIMarkup.SemanticUI
 {
     public class Field : ElementBase
     {
+        public Field()
+        {
+            AfterAddChild += (el) => { ReOrderElements(); };
+        }
         #region Fields
         jQuery _labelElement, _errorElement;
         #endregion
 
         #region Public Methods
-        public override void Add(FrameworkElement element)
-        {
-            AddChild(element);
-
-            ReOrderElements();
-        }
+        
 
         public override void InitDOM()
         {

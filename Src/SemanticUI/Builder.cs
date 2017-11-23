@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
 using Bridge.CustomUIMarkup.jssor;
+using Bridge.CustomUIMarkup.Swiper;
 using Bridge.CustomUIMarkup.UI.Design;
 
 namespace Bridge.CustomUIMarkup.SemanticUI
@@ -12,6 +13,7 @@ namespace Bridge.CustomUIMarkup.SemanticUI
         #region Static Fields
         static readonly List<XmlIntellisenseInfo> _tags = new List<XmlIntellisenseInfo>
         {
+            new XmlIntellisenseInfo("swiper.slider", typeof(Slider)),
             new XmlIntellisenseInfo("div", typeof(FrameworkElement_div)),
             new XmlIntellisenseInfo("a", typeof(FrameworkElement_a)),
             new XmlIntellisenseInfo("img", typeof(FrameworkElement_img)),
