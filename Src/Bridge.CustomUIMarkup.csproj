@@ -70,11 +70,11 @@
     <Compile Include="SemanticUI\ui_image.cs" />
     <Compile Include="SemanticUI\ui_segment.cs" />
     <Compile Include="SemanticUI\Size.cs" />
-    <Compile Include="SemanticUI\UIEditor.cs" />
-    <Compile Include="SemanticUI_Integrations\CodeMirror\XmlEditor.cs" />
+    <Compile Include="SemanticUIIntegrations\UIEditor.cs" />
+    <Compile Include="SemanticUIIntegrations\XmlEditor.cs" />
     <Compile Include="Swiper\Slider.cs" />
     <Compile Include=".Net Override\System.Windows.Data\BindingMode.cs" />
-    <Compile Include="UI\Design\Builder.cs" />
+    <Compile Include="Common\Builder.cs" />
     <Compile Include="CodeMirror\SchemaInfo.cs" />
     <Compile Include="Common\ConvertHelper.cs" />
     <Compile Include=".Net Override\System.Windows\DOM.cs" />
@@ -104,7 +104,7 @@
     <Compile Include=".Net Override\System.Xml.cs" />
     <Compile Include="CodeMirror\XmlEditor.cs" />
     <Compile Include=".Net Override\System.Windows.Markup\IAddChild.cs" />
-    <Compile Include="UI\Design\XmlIntellisenseInfo.cs" />
+    <Compile Include="Common\XmlIntellisenseInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Lib\Swiper\swiper.js" />
@@ -180,7 +180,9 @@
     <Content Include="Lib\jssor\Carousel.css" />
     <Content Include="Lib\jssor\jssor.slider-26.5.0.min.js" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="UI\Design\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>start  d:\github\WhiteStone\bin\WhiteStone.Tasks.exe "$(SolutionDir)TasksForPrepareOutputs.js"

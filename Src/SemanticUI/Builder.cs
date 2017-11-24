@@ -2,13 +2,14 @@
 using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
+using Bridge.CustomUIMarkup.Common;
 using Bridge.CustomUIMarkup.jssor;
+using Bridge.CustomUIMarkup.SemanticUIIntegrations;
 using Bridge.CustomUIMarkup.Swiper;
-using Bridge.CustomUIMarkup.UI.Design;
 
 namespace Bridge.CustomUIMarkup.SemanticUI
 {
-    public class Builder : UI.Design.Builder
+    public class Builder : Common.Builder
     {
         #region Static Fields
         static readonly List<XmlIntellisenseInfo> _tags = new List<XmlIntellisenseInfo>

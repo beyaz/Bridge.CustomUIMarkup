@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Windows;
-using Bridge.CustomUIMarkup.UI.Design;
+using Bridge.CustomUIMarkup.Common;
 
 namespace Bridge.CustomUIMarkup.CodeMirror
 {

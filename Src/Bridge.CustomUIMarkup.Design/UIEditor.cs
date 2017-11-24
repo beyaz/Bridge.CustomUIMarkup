@@ -2,7 +2,6 @@
 using System.Windows;
 using System.Xml;
 using Bridge.CustomUIMarkup.Common;
-using Bridge.CustomUIMarkup.UI.Design;
 using Bridge.jQuery2;
 
 namespace Bridge.CustomUIMarkup.Design

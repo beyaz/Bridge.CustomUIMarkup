@@ -2,7 +2,6 @@
 using System.Windows;
 using System.Windows.Data;
 using Bridge.CustomUIMarkup.Common;
-using Bridge.CustomUIMarkup.UI.Design;
 
 namespace Bridge.CustomUIMarkup.Test
 {

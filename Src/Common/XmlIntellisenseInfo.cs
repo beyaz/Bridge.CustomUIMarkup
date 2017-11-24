@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 
-namespace Bridge.CustomUIMarkup.UI.Design
+namespace Bridge.CustomUIMarkup.Common
 {
     public class XmlIntellisenseInfo
     {

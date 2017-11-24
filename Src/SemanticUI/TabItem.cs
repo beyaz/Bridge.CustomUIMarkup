@@ -1,7 +1,6 @@
 ﻿using System.Windows;
 using System.Windows.Markup;
 using Bridge.CustomUIMarkup.Common;
-using Bridge.CustomUIMarkup.UI.Design;
 using Bridge.jQuery2;
 
 namespace Bridge.CustomUIMarkup.SemanticUI

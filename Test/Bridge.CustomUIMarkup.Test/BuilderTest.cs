@@ -1,4 +1,4 @@
-﻿using Bridge.CustomUIMarkup.UI.Design;
+﻿using Bridge.CustomUIMarkup.Common;
 
 namespace Bridge.CustomUIMarkup.Test
 {

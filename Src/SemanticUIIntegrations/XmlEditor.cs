@@ -1,4 +1,6 @@
-﻿namespace Bridge.CustomUIMarkup.SemanticUI
+﻿using Bridge.CustomUIMarkup.SemanticUI;
+
+namespace Bridge.CustomUIMarkup.SemanticUIIntegrations
 {
     class XmlEditor : CodeMirror.XmlEditor
     {

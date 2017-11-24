@@ -6,11 +6,10 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Data;
 using System.Xml;
-using Bridge.CustomUIMarkup.Common;
 using Bridge.Html5;
 using Bridge.jQuery2;
 
-namespace Bridge.CustomUIMarkup.UI.Design
+namespace Bridge.CustomUIMarkup.Common
 {
     public class Builder
     {
