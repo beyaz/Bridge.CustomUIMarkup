@@ -2,11 +2,10 @@
 using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Markup;
-using Bridge.CustomUIMarkup.Common;
 using Bridge.jQuery2;
 using Retyped;
 
-namespace Bridge.CustomUIMarkup.SemanticUI
+namespace Bridge.CustomUIMarkup.Libraries.SemanticUI
 {
     public class TabPanel : FrameworkElement, IAddChild
     {

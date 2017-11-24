@@ -1,49 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Windows;
-using Bridge.CustomUIMarkup.SemanticUI;
-using Bridge.CustomUIMarkup.UI;
-using Bridge.Html5;
-using Bridge.jQuery2;
 
-namespace Bridge.CustomUIMarkup.DesignerSamples
+namespace Bridge.CustomUIMarkup_DesignerSamples
 {
-    public class ExampleInfo : FrameworkElement
-    {
-        #region string Name
-        string _name;
-
-        public string Name
-        {
-            get { return _name; }
-            set
-            {
-                if (_name != value)
-                {
-                    _name = value;
-                    OnPropertyChanged("Name");
-                }
-            }
-        }
-        #endregion
-
-        #region string XmlTemplate
-        string _xmlTemplate;
-
-        public string XmlTemplate
-        {
-            get { return _xmlTemplate; }
-            set
-            {
-                if (_xmlTemplate != value)
-                {
-                    _xmlTemplate = value;
-                    OnPropertyChanged("XmlTemplate");
-                }
-            }
-        }
-        #endregion
-    }
-
     public class ExampleDataContext : FrameworkElement
     {
         #region Constructors
@@ -171,7 +130,7 @@ namespace Bridge.CustomUIMarkup.DesignerSamples
                 {
                     Name = "Form",
                     XmlTemplate =
-@"
+                        @"
 
 
 <ui.segment>
@@ -256,55 +215,5 @@ namespace Bridge.CustomUIMarkup.DesignerSamples
         #endregion
 
 
-    }
-
-    public class App
-    {
-        #region Properties
-        static string TestUI => @"
-
-<div class='ui two row grid' HeightPercent = '100' WidthPercent = '100' >
-    <row>
-        <column Align='Center'>
-             <ComboBox 
-                ItemsSource = '{Binding Examples}' 
-                DisplayMemberPath = 'Name'
-                SelectedValuePath = 'XmlTemplate' 
-		        SelectedValue = '{Binding CurrentTemplate}' />
-        </column>
-    </row>
-    
-    <row HeightPercent = '100'>
-        <UIEditor SourceText = '{CurrentTemplate}'  />
-    </row>
-        
-</div>
-
-
-";
-        #endregion
-
-        #region Public Methods
-        public static void Init()
-        {
-            jQuery.Ready(RenderUIEditor);
-        }
-        #endregion
-
-        #region Methods
-        
-        static void RenderUIEditor()
-        {
-            var builder = new Builder
-            {
-                DataContext = new ExampleDataContext(),
-                XmlString = TestUI
-            };
-
-            var element =  builder.Build();
-
-            element.Root.AppendTo(Document.Body);
-        }
-        #endregion
     }
 }

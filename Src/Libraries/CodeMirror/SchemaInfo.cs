@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Windows;
 using Bridge.CustomUIMarkup.Common;
 
-namespace Bridge.CustomUIMarkup.CodeMirror
+namespace Bridge.CustomUIMarkup.Libraries.CodeMirror
 {
     class TagInfo
     {

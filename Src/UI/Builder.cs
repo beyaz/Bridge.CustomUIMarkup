@@ -3,10 +3,9 @@ using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
 using Bridge.CustomUIMarkup.Common;
-using Bridge.CustomUIMarkup.jssor;
-using Bridge.CustomUIMarkup.SemanticUI;
-using Bridge.CustomUIMarkup.SemanticUIIntegrations;
-using Bridge.CustomUIMarkup.Swiper;
+using Bridge.CustomUIMarkup.Libraries.jssor;
+using Bridge.CustomUIMarkup.Libraries.SemanticUI;
+using Bridge.CustomUIMarkup.Libraries.Swiper;
 
 namespace Bridge.CustomUIMarkup.UI
 {

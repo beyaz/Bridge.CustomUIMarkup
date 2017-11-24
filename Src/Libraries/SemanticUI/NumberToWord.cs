@@ -1,4 +1,4 @@
-﻿namespace Bridge.CustomUIMarkup.SemanticUI
+﻿namespace Bridge.CustomUIMarkup.Libraries.SemanticUI
 {
     static class NumberToWord
     {

@@ -3,11 +3,10 @@ using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Windows;
-using Bridge.CustomUIMarkup.Common;
 using Bridge.jQuery2;
 using Retyped;
 
-namespace Bridge.CustomUIMarkup.SemanticUI
+namespace Bridge.CustomUIMarkup.Libraries.SemanticUI
 {
     public class Combo : FrameworkElement
     {

@@ -1,4 +1,4 @@
-﻿namespace Bridge.CustomUIMarkup.SemanticUI
+﻿namespace Bridge.CustomUIMarkup.Libraries.SemanticUI
 {
     public class ui_grid : ElementBase
     {

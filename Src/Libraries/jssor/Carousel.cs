@@ -1,11 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
-using Bridge.CustomUIMarkup.Common;
 using Bridge.jQuery2;
 
-namespace Bridge.CustomUIMarkup.jssor
+namespace Bridge.CustomUIMarkup.Libraries.jssor
 {
     public class Carousel : FrameworkElement
     {

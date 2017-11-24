@@ -1,13 +1,20 @@
-﻿using System;
+
+
+
+using System;
 using System.Windows;
 using System.Xml;
 using Bridge.CustomUIMarkup.Common;
 using Bridge.jQuery2;
 
-namespace Bridge.CustomUIMarkup.Design
+namespace Bridge.CustomUIMarkup.UI
 {
     class UIEditor : FrameworkElement
     {
+        public UIEditor()
+        {
+            CreateBuilder = () => new Builder();
+        }
         #region Fields
         Builder _builder;
         #endregion
@@ -20,14 +27,7 @@ namespace Bridge.CustomUIMarkup.Design
         #region Properties
         jQuery Container => OutputElement.Childeren[1].Root;
 
-        string Template_old => @"
-<ui.container>
-    <XmlEditor Text ='{" + nameof(SourceText) + @"}' 
-        OnTextChanged = '{" + nameof(OnTextChanged) + @"}' 
-        OnCursorLineNumberChanged = '{" + nameof(OnCursorLineNumberChanged) + @"}' 
-        Height='400' />
-    <ui.container Border = '1px solid Green' />
-</ui.container>";
+
 
         string Template => @"
 <SplitPanel Orientation='horizontal' HeightPercent = '100' WidthPercent = '100'>
@@ -46,7 +46,7 @@ namespace Bridge.CustomUIMarkup.Design
             builder.XmlString = Template;
             builder.DataContext = this;
 
-            OutputElement = (FrameworkElement) builder.Build();
+            OutputElement = builder.Build();
 
             _root = OutputElement.Root;
         }
@@ -75,7 +75,7 @@ namespace Bridge.CustomUIMarkup.Design
             try
             {
                 component = _builder.Build();
-                SetOutput(((FrameworkElement) component).Root);
+                SetOutput(((FrameworkElement)component).Root);
             }
             catch (XmlException e)
             {

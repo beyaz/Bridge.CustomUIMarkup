@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Windows;
 
-namespace Bridge.CustomUIMarkup.SemanticUI
+namespace Bridge.CustomUIMarkup.Libraries.SemanticUI
 {
     public class column : ElementBase
     {

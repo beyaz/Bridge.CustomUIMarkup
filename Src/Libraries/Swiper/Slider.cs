@@ -1,7 +1,7 @@
 ﻿using System.Windows;
 using Bridge.jQuery2;
 
-namespace Bridge.CustomUIMarkup.Swiper
+namespace Bridge.CustomUIMarkup.Libraries.Swiper
 {
     public class Slider : FrameworkElement
     {

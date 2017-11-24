@@ -3,7 +3,7 @@ using System.Windows;
 using Bridge.CustomUIMarkup.Common;
 using Bridge.jQuery2;
 
-namespace Bridge.CustomUIMarkup.SemanticUI
+namespace Bridge.CustomUIMarkup.Libraries.SemanticUI
 {
     public class InputText : ElementBase
     {
