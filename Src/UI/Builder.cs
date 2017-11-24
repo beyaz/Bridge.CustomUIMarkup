@@ -29,6 +29,8 @@ namespace Bridge.CustomUIMarkup.UI
         public bool IsDesignMode { get; set; }
 
         public jQuery Result { get; private set; }
+
+        public TypeFinder TypeFinder { get; set; } = new TypeFinder();
         public XmlDocument XmlDocument { get; set; }
         #endregion
 
@@ -65,16 +67,13 @@ namespace Bridge.CustomUIMarkup.UI
                 return;
             }
 
-            var query = ((FrameworkElement)component)._root;
+            var query = ((FrameworkElement) component)._root;
 
             query.highlight();
         }
         #endregion
 
         #region Methods
-        
-        public TypeFinder TypeFinder { get; set; } = new TypeFinder();
-
         static XmlNode GetRootNode(string xmlString)
         {
             try
@@ -85,6 +84,11 @@ namespace Bridge.CustomUIMarkup.UI
             {
                 throw new XmlException("XmlParseErrorOccured.", e);
             }
+        }
+
+        static bool IsUserDefinedTag(string tag)
+        {
+            return tag.Contains('.') || tag.Contains('-') || tag.Contains(':');
         }
 
         FrameworkElement BuildNode(XmlNode xmlNode)
@@ -155,13 +159,6 @@ namespace Bridge.CustomUIMarkup.UI
             return instance;
         }
 
-        static bool IsUserDefinedTag(string tag)
-        {
-            return tag.Contains('.') || tag.Contains('-') || tag.Contains(':');
-        }
-
-
-
         FrameworkElement CreateInstance(XmlNode xmlNode)
         {
             var tag = xmlNode.Name.ToUpper();
@@ -172,13 +169,16 @@ namespace Bridge.CustomUIMarkup.UI
             {
                 if (IsUserDefinedTag(xmlNode.Name) == false)
                 {
-                    return new FrameworkElement { _root = DOM.CreateElement(xmlNode.Name) };
+                    return new FrameworkElement
+                    {
+                        _root = DOM.CreateElement(xmlNode.Name)
+                    };
                 }
 
                 throw new ArgumentException("NotRecognizedTag:" + tag);
             }
 
-            return (FrameworkElement)Activator.CreateInstance(controlType);
+            return (FrameworkElement) Activator.CreateInstance(controlType);
         }
 
         void ProcessAttribute(FrameworkElement instance, string name, string value)
@@ -245,8 +245,8 @@ namespace Bridge.CustomUIMarkup.UI
                 var firstConverterAtribute = converterAttributes?.FirstOrDefault();
                 if (firstConverterAtribute != null)
                 {
-                    var converter = (TypeConverterAttribute)firstConverterAtribute;
-                    var valueConverter = (IValueConverter)Activator.CreateInstance(converter._type);
+                    var converter = (TypeConverterAttribute) firstConverterAtribute;
+                    var valueConverter = (IValueConverter) Activator.CreateInstance(converter._type);
                     var convertedValue = valueConverter.Convert(value, instance.GetType().GetProperty(name).PropertyType, null, CultureInfo.CurrentCulture);
 
                     ReflectionHelper.SetPropertyValue(instance, name, convertedValue);
@@ -275,7 +275,6 @@ namespace Bridge.CustomUIMarkup.UI
 
                     instance.On(eventName, () => { mi.Invoke(Caller, invocationInfo.Parameters.First()); });
                     return;
-
                 }
 
                 var methodInfo = Caller.GetType().GetMethod(value);
@@ -299,7 +298,6 @@ namespace Bridge.CustomUIMarkup.UI
                 return;
             }
 
-
             if (name == "x.Name")
             {
                 var fi = Caller.GetType().GetField(value);
@@ -314,17 +312,19 @@ namespace Bridge.CustomUIMarkup.UI
 
         class InvocationInfo
         {
+            #region Fields
             public bool HasThis;
             public string MethodName;
             public List<string> Parameters;
+            #endregion
 
+            #region Public Methods
             /// <summary>
-            /// Parses from string.
-            /// <para>Example: this.Notify(OnContactClicked)</para>
+            ///     Parses from string.
+            ///     <para>Example: this.Notify(OnContactClicked)</para>
             /// </summary>
             public static InvocationInfo ParseFromString(string value)
             {
-
                 var invocationInfo = new InvocationInfo();
 
                 var arr = value.Split('.', '(', ')');
@@ -334,7 +334,6 @@ namespace Bridge.CustomUIMarkup.UI
                     if (string.IsNullOrWhiteSpace(token))
                     {
                         continue;
-
                     }
                     if (token.Trim() == "this")
                     {
@@ -351,27 +350,14 @@ namespace Bridge.CustomUIMarkup.UI
                     if (invocationInfo.Parameters == null)
                     {
                         invocationInfo.Parameters = new List<string>();
-
                     }
 
                     invocationInfo.Parameters.Add(token);
-
-
                 }
-
-
-
-
-
 
                 return invocationInfo;
             }
+            #endregion
         }
-
     }
-
-
-
-
 }
-

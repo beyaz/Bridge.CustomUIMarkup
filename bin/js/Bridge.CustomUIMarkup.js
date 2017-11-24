@@ -697,8 +697,8 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
             DataContext: null,
             "IsDesignMode": false,
             Result: null,
-            XmlDocument: null,
-            TypeFinder: null
+            TypeFinder: null,
+            XmlDocument: null
         },
         props: {
             LineNumberToControlMap: {
@@ -900,7 +900,6 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
                             Bridge.Reflection.midel(mi, Bridge.unbox(this.Caller))(System.Linq.Enumerable.from(invocationInfo.Parameters).first());
                         }));
                         return;
-
                     }
 
                     var methodInfo1 = Bridge.Reflection.getMembers(Bridge.getType(this.Caller), 8, 284, value);
@@ -924,7 +923,6 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
                     return;
                 }
 
-
                 if (Bridge.referenceEquals(name, "x.Name")) {
                     var fi = Bridge.Reflection.getMembers(Bridge.getType(this.Caller), 4, 284, value);
 
@@ -942,7 +940,7 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
             methods: {
                 /**
                  * Parses from string.
-                 <p>Example: this.Notify(OnContactClicked)</p>
+                     <p>Example: this.Notify(OnContactClicked)</p>
                  *
                  * @static
                  * @public
@@ -953,7 +951,6 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
                  */
                 ParseFromString: function (value) {
                     var $t;
-
                     var invocationInfo = new Bridge.CustomUIMarkup.UI.Builder.InvocationInfo();
 
                     var arr = System.String.split(value, [46, 40, 41].map(function(i) {{ return String.fromCharCode(i); }}));
@@ -964,7 +961,6 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
                             var token = $t.Current;
                             if (System.String.isNullOrWhiteSpace(token)) {
                                 continue;
-
                             }
                             if (Bridge.referenceEquals(token.trim(), "this")) {
                                 invocationInfo.HasThis = true;
@@ -978,23 +974,15 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
 
                             if (invocationInfo.Parameters == null) {
                                 invocationInfo.Parameters = new (System.Collections.Generic.List$1(System.String)).ctor();
-
                             }
 
                             invocationInfo.Parameters.add(token);
-
-
                         }
                     } finally {
                         if (Bridge.is($t, System.IDisposable)) {
                             $t.System$IDisposable$dispose();
                         }
                     }
-
-
-
-
-
                     return invocationInfo;
                 }
             }

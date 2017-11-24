@@ -1,4 +1,5 @@
 ﻿using System;
+using Bridge.CustomUIMarkup.Libraries.SemanticUI;
 
 namespace Bridge.CustomUIMarkup.Test
 {
@@ -10,6 +11,7 @@ namespace Bridge.CustomUIMarkup.Test
             BindingInfoTest.RunAll();
             BuilderTest.RunAll();
             HTMLBindingInfoTest.RunAll();
+            InputTextTest.RunAll();
 
             Console.WriteLine("Success");
         }
