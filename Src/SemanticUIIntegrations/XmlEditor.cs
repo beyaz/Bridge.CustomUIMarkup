@@ -1,4 +1,5 @@
 ﻿using Bridge.CustomUIMarkup.SemanticUI;
+using Bridge.CustomUIMarkup.UI;
 
 namespace Bridge.CustomUIMarkup.SemanticUIIntegrations
 {

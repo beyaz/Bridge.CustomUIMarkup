@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Windows;
 using Bridge.CustomUIMarkup.SemanticUI;
+using Bridge.CustomUIMarkup.UI;
 using Bridge.Html5;
 using Bridge.jQuery2;
 

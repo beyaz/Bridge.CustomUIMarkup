@@ -4,10 +4,11 @@ using System.Windows;
 using System.Windows.Controls;
 using Bridge.CustomUIMarkup.Common;
 using Bridge.CustomUIMarkup.jssor;
+using Bridge.CustomUIMarkup.SemanticUI;
 using Bridge.CustomUIMarkup.SemanticUIIntegrations;
 using Bridge.CustomUIMarkup.Swiper;
 
-namespace Bridge.CustomUIMarkup.SemanticUI
+namespace Bridge.CustomUIMarkup.UI
 {
     public class Builder : Common.Builder
     {

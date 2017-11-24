@@ -936,7 +936,7 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
                 },
                 RenderUIEditor: function () {
                     var $t;
-                    var builder = ($t = new Bridge.CustomUIMarkup.SemanticUI.Builder(), $t.DataContext = new Bridge.CustomUIMarkup.DesignerSamples.ExampleDataContext(), $t.XmlString = Bridge.CustomUIMarkup.DesignerSamples.App["TestUI"], $t);
+                    var builder = ($t = new Bridge.CustomUIMarkup.UI.Builder(), $t.DataContext = new Bridge.CustomUIMarkup.DesignerSamples.ExampleDataContext(), $t.XmlString = Bridge.CustomUIMarkup.DesignerSamples.App["TestUI"], $t);
 
                     var element = builder.Build();
 
@@ -2476,7 +2476,7 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
         inherits: [System.ComponentModel.Bag]
     });
 
-    Bridge.define("Bridge.CustomUIMarkup.SemanticUI.Builder", {
+    Bridge.define("Bridge.CustomUIMarkup.UI.Builder", {
         inherits: [Bridge.CustomUIMarkup.Common.Builder],
         statics: {
             fields: {
@@ -2486,7 +2486,7 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
             props: {
                 Tags: {
                     get: function () {
-                        return Bridge.CustomUIMarkup.SemanticUI.Builder._tags;
+                        return Bridge.CustomUIMarkup.UI.Builder._tags;
                     }
                 }
             },
@@ -2552,28 +2552,28 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
             },
             methods: {
                 RegisterTag: function (tagName, type) {
-                    Bridge.CustomUIMarkup.SemanticUI.Builder._tags.add(new Bridge.CustomUIMarkup.Common.XmlIntellisenseInfo(tagName, type));
+                    Bridge.CustomUIMarkup.UI.Builder._tags.add(new Bridge.CustomUIMarkup.Common.XmlIntellisenseInfo(tagName, type));
                 }
             }
         },
         methods: {
             CreateType: function (tag) {
                 var $t;
-                if (Bridge.CustomUIMarkup.SemanticUI.Builder.TagTypeMap == null) {
-                    Bridge.CustomUIMarkup.SemanticUI.Builder.TagTypeMap = new (System.Collections.Generic.Dictionary$2(System.String,Function))();
-                    $t = Bridge.getEnumerator(Bridge.CustomUIMarkup.SemanticUI.Builder._tags);
+                if (Bridge.CustomUIMarkup.UI.Builder.TagTypeMap == null) {
+                    Bridge.CustomUIMarkup.UI.Builder.TagTypeMap = new (System.Collections.Generic.Dictionary$2(System.String,Function))();
+                    $t = Bridge.getEnumerator(Bridge.CustomUIMarkup.UI.Builder._tags);
                     try {
                         while ($t.moveNext()) {
                             var intellisenseInfo = $t.Current;
-                            Bridge.CustomUIMarkup.SemanticUI.Builder.TagTypeMap.set(intellisenseInfo.TagName.toUpperCase(), intellisenseInfo.Type);
+                            Bridge.CustomUIMarkup.UI.Builder.TagTypeMap.set(intellisenseInfo.TagName.toUpperCase(), intellisenseInfo.Type);
                         }
                     } finally {
                         if (Bridge.is($t, System.IDisposable)) {
                             $t.System$IDisposable$dispose();
                         }
                     }}
-                if (Bridge.CustomUIMarkup.SemanticUI.Builder.TagTypeMap.containsKey(tag)) {
-                    return Bridge.CustomUIMarkup.SemanticUI.Builder.TagTypeMap.get(tag);
+                if (Bridge.CustomUIMarkup.UI.Builder.TagTypeMap.containsKey(tag)) {
+                    return Bridge.CustomUIMarkup.UI.Builder.TagTypeMap.get(tag);
                 }
 
                 return null;
@@ -4902,7 +4902,7 @@ setTimeout(function(){
                 this.$initialize();
                 Bridge.CustomUIMarkup.Design.UIEditor.ctor.call(this);
                 this.CreateBuilder = function () {
-                    return new Bridge.CustomUIMarkup.SemanticUI.Builder();
+                    return new Bridge.CustomUIMarkup.UI.Builder();
                 };
             }
         }
@@ -4913,7 +4913,7 @@ setTimeout(function(){
         props: {
             "SchemaInfo": {
                 get: function () {
-                    var xmlIntellisenseInfos = Bridge.CustomUIMarkup.SemanticUI.Builder.Tags;
+                    var xmlIntellisenseInfos = Bridge.CustomUIMarkup.UI.Builder.Tags;
                     return Bridge.CustomUIMarkup.CodeMirror.SchemaInfo.CreateFrom(xmlIntellisenseInfos).ToJson();
                 }
             }
