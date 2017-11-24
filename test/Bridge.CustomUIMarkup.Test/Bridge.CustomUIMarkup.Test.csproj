@@ -38,6 +38,7 @@
   <ItemGroup>
     <Compile Include="App.cs" />
     <Compile Include="BindingInfoTest.cs" />
+    <Compile Include="Libraries.SemanticUI\InputTextTest.cs" />
     <Compile Include="BuilderTest.cs" />
     <Compile Include="HTMLBindingInfoTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
