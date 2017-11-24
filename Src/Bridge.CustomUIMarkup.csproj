@@ -71,11 +71,11 @@
     <Compile Include="Libraries\SemanticUI\ui_image.cs" />
     <Compile Include="Libraries\SemanticUI\ui_segment.cs" />
     <Compile Include="Libraries\SemanticUI\Size.cs" />
+    <Compile Include="UI\TypeFinder.cs" />
     <Compile Include="UI\UIEditor.cs" />
     <Compile Include="UI\XmlEditor.cs" />
     <Compile Include="Libraries\Swiper\Slider.cs" />
     <Compile Include=".Net Override\System.Windows.Data\BindingMode.cs" />
-    <Compile Include="Common\Builder.cs" />
     <Compile Include="Libraries\CodeMirror\SchemaInfo.cs" />
     <Compile Include="Common\ConvertHelper.cs" />
     <Compile Include=".Net Override\System.Windows\DOM.cs" />

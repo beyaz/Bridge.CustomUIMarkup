@@ -1,108 +1,377 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Globalization;
+using System.Linq;
 using System.Windows;
-using System.Windows.Controls;
+using System.Windows.Data;
+using System.Xml;
 using Bridge.CustomUIMarkup.Common;
-using Bridge.CustomUIMarkup.Libraries.jssor;
-using Bridge.CustomUIMarkup.Libraries.SemanticUI;
-using Bridge.CustomUIMarkup.Libraries.Swiper;
+using Bridge.Html5;
+using Bridge.jQuery2;
 
 namespace Bridge.CustomUIMarkup.UI
 {
-    public class Builder : Common.Builder
+    public class Builder
     {
-        #region Static Fields
-        static readonly List<XmlIntellisenseInfo> _tags = new List<XmlIntellisenseInfo>
-        {
-            new XmlIntellisenseInfo("swiper.slider", typeof(Slider)),
-            new XmlIntellisenseInfo("div", typeof(FrameworkElement_div)),
-            new XmlIntellisenseInfo("a", typeof(FrameworkElement_a)),
-            new XmlIntellisenseInfo("img", typeof(FrameworkElement_img)),
-            new XmlIntellisenseInfo("SplitPanel", typeof(SplitPanel)),
+        #region Fields
+        public string XmlString;
 
-            new XmlIntellisenseInfo("computer.tablet.only.row", typeof(computer_tablet_only_row)),
-            new XmlIntellisenseInfo("ui.navbar.menu", typeof(ui_navbar_menu)),
-            new XmlIntellisenseInfo("mobile.only.row", typeof(mobile_only_row)),
-            new XmlIntellisenseInfo("right.menu", typeof(right_menu)),
-            new XmlIntellisenseInfo("ui.page.grid", typeof(ui_page_grid)),
-            new XmlIntellisenseInfo("left.menu", typeof(left_menu)),
-            new XmlIntellisenseInfo("ui.text.menu.navbar", typeof(ui_text_menu_navbar)),
+        Dictionary<int, object> _lineNumberToControlMap;
 
-            new XmlIntellisenseInfo("ui.button", typeof(ui_button)),
-            new XmlIntellisenseInfo("TabPanel", typeof(TabPanel)),
-            new XmlIntellisenseInfo("Tab", typeof(TabItem)),
-            new XmlIntellisenseInfo("card", typeof(card)),
-            new XmlIntellisenseInfo("ui.card", typeof(ui_card)),
-            new XmlIntellisenseInfo("ui.cards", typeof(ui_cards)),
-            new XmlIntellisenseInfo("description", typeof(description)),
-            new XmlIntellisenseInfo("content", typeof(content)),
-            new XmlIntellisenseInfo("extra-content", typeof(ExtraContent)),
-            new XmlIntellisenseInfo("ui.basic.button", typeof(ui_basic_button)),
-            new XmlIntellisenseInfo("carousel", typeof(Carousel)),
-            new XmlIntellisenseInfo("ui.divider", typeof(ui_divider)),
-            new XmlIntellisenseInfo("ui.menu", typeof(ui_menu)),
-            new XmlIntellisenseInfo("item", typeof(item)),
-            new XmlIntellisenseInfo("ui.vertical.menu", typeof(ui_vertical_menu)),
-
-            new XmlIntellisenseInfo("textInput", typeof(InputText)),
-            new XmlIntellisenseInfo("textBox", typeof(InputText)),
-            new XmlIntellisenseInfo("combo", typeof(Combo)),
-            new XmlIntellisenseInfo("comboBox", typeof(Combo)),
-            new XmlIntellisenseInfo("ui.selection.dropdown", typeof(Combo)),
-            new XmlIntellisenseInfo("ui.equal.width.grid", typeof(ui_equal_width_grid)),
-            new XmlIntellisenseInfo("textArea", typeof(TextArea)),
-            new XmlIntellisenseInfo("ui.container", typeof(ui_container)),
-            new XmlIntellisenseInfo("ui.stacked", typeof(ui_stacked)),
-            new XmlIntellisenseInfo("ui.hidden.clearing.divider", typeof(ui_hidden_clearing_divider)),
-            new XmlIntellisenseInfo("ui.grid", typeof(ui_grid)),
-            new XmlIntellisenseInfo("ui page grid", typeof(ui_page_grid)),
-            new XmlIntellisenseInfo("field", typeof(Field)),
-            new XmlIntellisenseInfo("ui.form", typeof(ui_form)),
-
-            new XmlIntellisenseInfo("row", typeof(Row)),
-            new XmlIntellisenseInfo("column", typeof(column)),
-            new XmlIntellisenseInfo("ui.header.1", typeof(ui_header_1)),
-            new XmlIntellisenseInfo("ui.header.2", typeof(ui_header_2)),
-            new XmlIntellisenseInfo("ui.header.3", typeof(ui_header_3)),
-            new XmlIntellisenseInfo("header", typeof(header)),
-            new XmlIntellisenseInfo("ui.image", typeof(ui_image)),
-            new XmlIntellisenseInfo("icon", typeof(Icon)),
-            new XmlIntellisenseInfo("ui.segment", typeof(ui_segment)),
-            new XmlIntellisenseInfo("textBlock", typeof(TextBlock)),
-            new XmlIntellisenseInfo("xmlEditor", typeof(XmlEditor)),
-            new XmlIntellisenseInfo("uiEditor", typeof(UIEditor))
-        };
-
-        static Dictionary<string, Type> TagTypeMap;
+        XmlNode _rootNode;
         #endregion
 
         #region Public Properties
-        public static IReadOnlyCollection<XmlIntellisenseInfo> Tags => _tags;
+        public object Caller { get; set; }
+        public object DataContext { get; set; }
+
+        public bool IsDesignMode { get; set; }
+
+        public jQuery Result { get; private set; }
+        public XmlDocument XmlDocument { get; set; }
+        #endregion
+
+        #region Properties
+        Dictionary<int, object> LineNumberToControlMap
+        {
+            get
+            {
+                if (_lineNumberToControlMap == null)
+                {
+                    _lineNumberToControlMap = new Dictionary<int, object>();
+                }
+
+                return _lineNumberToControlMap;
+            }
+        }
+        #endregion
+
+        #region Public Methods
+        public FrameworkElement Build()
+        {
+            var rootNode = _rootNode = GetRootNode(XmlString);
+
+            return BuildNode(rootNode);
+        }
+
+        public virtual void FocusToLine(int lineNumber)
+        {
+            lineNumber = lineNumber + 1;
+            object component = null;
+            _lineNumberToControlMap?.TryGetValue(lineNumber, out component);
+            if (component == null)
+            {
+                return;
+            }
+
+            var query = ((FrameworkElement)component)._root;
+
+            query.highlight();
+        }
         #endregion
 
         #region Methods
-        protected static void RegisterTag(string tagName, Type type)
+        
+        public TypeFinder TypeFinder { get; set; } = new TypeFinder();
+
+        static XmlNode GetRootNode(string xmlString)
         {
-            _tags.Add(new XmlIntellisenseInfo(tagName, type));
+            try
+            {
+                return jQuery.ParseXML(xmlString).As<XmlDocument>()?.FirstChild;
+            }
+            catch (Exception e)
+            {
+                throw new XmlException("XmlParseErrorOccured.", e);
+            }
         }
 
-        protected override Type CreateType(string tag)
+        FrameworkElement BuildNode(XmlNode xmlNode)
         {
-            if (TagTypeMap == null)
+            var instance = CreateInstance(xmlNode);
+
+            if (IsDesignMode)
             {
-                TagTypeMap = new Dictionary<string, Type>();
-                foreach (var intellisenseInfo in _tags)
-                {
-                    TagTypeMap[intellisenseInfo.TagName.ToUpper()] = intellisenseInfo.Type;
-                }
-            }
-            if (TagTypeMap.ContainsKey(tag))
-            {
-                return TagTypeMap[tag];
+                var lineNumber = xmlNode.GetOriginalLineNumber(_rootNode, XmlString);
+
+                LineNumberToControlMap[lineNumber] = instance;
             }
 
-            return null;
+            if (instance.DataContext == null)
+            {
+                instance.DataContext = DataContext;
+            }
+
+            if (instance._root == null)
+            {
+                instance.InitDOM();
+            }
+
+            instance.InvokeAfterInitDOM();
+
+            foreach (var nodeAttribute in xmlNode.Attributes)
+            {
+                ProcessAttribute(instance, nodeAttribute.Name, nodeAttribute.Value);
+            }
+
+            foreach (var childNode in xmlNode.ChildNodes)
+            {
+                if (childNode.NodeType == NodeType.Comment)
+                {
+                    continue;
+                }
+
+                if (childNode.NodeType == NodeType.Text)
+                {
+                    // skip empty spaces
+                    var html = new jQuery(childNode).Text();
+                    if (string.IsNullOrWhiteSpace(html))
+                    {
+                        continue;
+                    }
+
+                    // maybe <div> {LastName} </div>
+                    var bindingInfo = BindingInfo.TryParseExpression(html);
+                    if (bindingInfo != null)
+                    {
+                        bindingInfo.Source = DataContext;
+                        bindingInfo.Target = instance;
+                        bindingInfo.TargetPath = nameof(instance.InnerHTML);
+
+                        bindingInfo.Connect();
+                        continue;
+                    }
+
+                    instance.InnerHTML = html;
+                    continue;
+                }
+
+                var subControl = BuildNode(childNode);
+
+                instance.Add(subControl);
+            }
+
+            return instance;
+        }
+
+        static bool IsUserDefinedTag(string tag)
+        {
+            return tag.Contains('.') || tag.Contains('-') || tag.Contains(':');
+        }
+
+
+
+        FrameworkElement CreateInstance(XmlNode xmlNode)
+        {
+            var tag = xmlNode.Name.ToUpper();
+
+            var controlType = TypeFinder?.FindType(tag);
+
+            if (controlType == null)
+            {
+                if (IsUserDefinedTag(xmlNode.Name) == false)
+                {
+                    return new FrameworkElement { _root = DOM.CreateElement(xmlNode.Name) };
+                }
+
+                throw new ArgumentException("NotRecognizedTag:" + tag);
+            }
+
+            return (FrameworkElement)Activator.CreateInstance(controlType);
+        }
+
+        void ProcessAttribute(FrameworkElement instance, string name, string value)
+        {
+            var nameUpperCase = name.ToUpperCase();
+
+            if (name == "class")
+            {
+                name = "Class";
+            }
+
+            var targetProperty = ReflectionHelper.FindProperty(instance, name);
+
+            var bi = BindingInfo.TryParseExpression(value);
+            if (bi != null)
+            {
+                var eventInfo = ReflectionHelper.FindEvent(instance, name);
+                if (eventInfo != null)
+                {
+                    var methodInfo = ReflectionHelper.GetMethodInfo(DataContext, bi.SourcePath.Path);
+
+                    var handler = Delegate.CreateDelegate(eventInfo.AddMethod.ParameterTypes.First(), DataContext, methodInfo);
+
+                    eventInfo.AddEventHandler(instance, handler);
+
+                    return;
+                }
+
+                if (name.Contains(".") == false)
+                {
+                    if (targetProperty == null)
+                    {
+                        new HTMLBindingInfo
+                        {
+                            Source = DataContext,
+                            SourcePath = bi.SourcePath.Path,
+                            Target = instance._root,
+                            TargetPath = name,
+                            BindingMode = BindingMode.OneWay
+                        }.Connect();
+
+                        return;
+                    }
+                }
+
+                bi.Source = DataContext;
+                bi.Target = instance;
+                bi.TargetPath = name;
+
+                bi.Connect();
+
+                return;
+            }
+
+            if (targetProperty != null)
+            {
+                if (targetProperty.PropertyType.IsEnum)
+                {
+                    ReflectionHelper.SetPropertyValue(instance, name, Enum.Parse(targetProperty.PropertyType, value, true));
+                    return;
+                }
+
+                var converterAttributes = targetProperty.GetCustomAttributes(typeof(TypeConverterAttribute));
+                var firstConverterAtribute = converterAttributes?.FirstOrDefault();
+                if (firstConverterAtribute != null)
+                {
+                    var converter = (TypeConverterAttribute)firstConverterAtribute;
+                    var valueConverter = (IValueConverter)Activator.CreateInstance(converter._type);
+                    var convertedValue = valueConverter.Convert(value, instance.GetType().GetProperty(name).PropertyType, null, CultureInfo.CurrentCulture);
+
+                    ReflectionHelper.SetPropertyValue(instance, name, convertedValue);
+                    return;
+                }
+
+                ReflectionHelper.SetPropertyValue(instance, name, value.ChangeType(targetProperty.PropertyType));
+                return;
+            }
+
+            if (name.StartsWith("on."))
+            {
+                var eventName = name.RemoveFromStart("on.");
+
+                // support this format: this.Notify(OnContactClicked)
+                if (value.StartsWith("this."))
+                {
+                    var invocationInfo = InvocationInfo.ParseFromString(value);
+
+                    if (invocationInfo.Parameters?.Count > 1)
+                    {
+                        throw new ArgumentException(value);
+                    }
+
+                    var mi = Caller.GetType().GetMethod(invocationInfo.MethodName);
+
+                    instance.On(eventName, () => { mi.Invoke(Caller, invocationInfo.Parameters.First()); });
+                    return;
+
+                }
+
+                var methodInfo = Caller.GetType().GetMethod(value);
+
+                instance.On(eventName, () => { methodInfo.Invoke(Caller); });
+                return;
+            }
+
+            if (nameUpperCase.StartsWith("CSS."))
+            {
+                var styleAttributeName = name.Substring(4);
+                instance._root.Css(styleAttributeName, value);
+                return;
+            }
+
+            // css.Pseudo.backgroundImage
+            if (nameUpperCase.StartsWith("CSS.PSEUDO."))
+            {
+                var pseudoAttributeName = name.Substring(11);
+                DOM.head.Append("<style>#" + instance.Id + "::" + pseudoAttributeName + "{ content:'bar' }</style>");
+                return;
+            }
+
+
+            if (name == "x.Name")
+            {
+                var fi = Caller.GetType().GetField(value);
+
+                fi.SetValue(Caller, instance);
+                return;
+            }
+
+            instance._root.Attr(name, value);
         }
         #endregion
+
+        class InvocationInfo
+        {
+            public bool HasThis;
+            public string MethodName;
+            public List<string> Parameters;
+
+            /// <summary>
+            /// Parses from string.
+            /// <para>Example: this.Notify(OnContactClicked)</para>
+            /// </summary>
+            public static InvocationInfo ParseFromString(string value)
+            {
+
+                var invocationInfo = new InvocationInfo();
+
+                var arr = value.Split('.', '(', ')');
+
+                foreach (var token in arr)
+                {
+                    if (string.IsNullOrWhiteSpace(token))
+                    {
+                        continue;
+
+                    }
+                    if (token.Trim() == "this")
+                    {
+                        invocationInfo.HasThis = true;
+                        continue;
+                    }
+
+                    if (invocationInfo.MethodName == null)
+                    {
+                        invocationInfo.MethodName = token.Trim();
+                        continue;
+                    }
+
+                    if (invocationInfo.Parameters == null)
+                    {
+                        invocationInfo.Parameters = new List<string>();
+
+                    }
+
+                    invocationInfo.Parameters.Add(token);
+
+
+                }
+
+
+
+
+
+
+                return invocationInfo;
+            }
+        }
+
     }
+
+
+
+
 }
+

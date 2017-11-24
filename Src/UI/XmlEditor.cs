@@ -7,7 +7,7 @@ namespace Bridge.CustomUIMarkup.UI
         {
             get
             {
-                var xmlIntellisenseInfos =  Builder.Tags;
+                var xmlIntellisenseInfos =  TypeFinder.Tags;
                 return Libraries.CodeMirror.SchemaInfo.CreateFrom(xmlIntellisenseInfos).ToJson();
             }
         }
