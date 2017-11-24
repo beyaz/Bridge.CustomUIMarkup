@@ -149,7 +149,7 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
                         return ($t = new System.Windows.FrameworkElement(), $t._root = System.Windows.DOM.CreateElement(xmlNode.nodeName), $t);
                     }
 
-                    throw new System.ArgumentException((System.String.format("NotRecognizedTag:", null) || "") + (tag || ""));
+                    throw new System.ArgumentException("NotRecognizedTag:" + (tag || ""));
                 }
 
                 return Bridge.cast(Bridge.createInstance(controlType), System.Windows.FrameworkElement);
@@ -288,7 +288,7 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
 
                     var invocationInfo = new Bridge.CustomUIMarkup.Common.Builder.InvocationInfo();
 
-                    var arr = System.String.split(value, System.Array.init([46, 40, 41], System.Char).map(function(i) {{ return String.fromCharCode(i); }}));
+                    var arr = System.String.split(value, [46, 40, 41].map(function(i) {{ return String.fromCharCode(i); }}));
 
                     $t = Bridge.getEnumerator(arr);
                     try {

@@ -173,7 +173,7 @@ namespace Bridge.CustomUIMarkup.Common
                     return new FrameworkElement {_root = DOM.CreateElement(xmlNode.Name)};
                 }
 
-                throw new ArgumentException($"NotRecognizedTag:" + tag);
+                throw new ArgumentException("NotRecognizedTag:" + tag);
             }
 
             return (FrameworkElement) Activator.CreateInstance(controlType);
@@ -325,7 +325,7 @@ namespace Bridge.CustomUIMarkup.Common
 
                 var invocationInfo = new InvocationInfo();
 
-                var arr = value.Split(new char[] { '.', '(', ')' });
+                var arr = value.Split('.', '(', ')');
 
                 foreach (var token in arr)
                 {
