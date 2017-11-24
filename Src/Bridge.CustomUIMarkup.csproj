@@ -73,8 +73,6 @@
     <Compile Include="SemanticUI\UIEditor.cs" />
     <Compile Include="SemanticUI_Integrations\CodeMirror\XmlEditor.cs" />
     <Compile Include="Swiper\Slider.cs" />
-    <Compile Include="UI\Design\Binder.cs" />
-    <Compile Include="UI\Design\BinderEventAttributeResolver.cs" />
     <Compile Include=".Net Override\System.Windows.Data\BindingMode.cs" />
     <Compile Include="UI\Design\Builder.cs" />
     <Compile Include="CodeMirror\SchemaInfo.cs" />
