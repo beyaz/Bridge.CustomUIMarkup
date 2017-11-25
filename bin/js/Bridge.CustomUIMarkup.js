@@ -3235,6 +3235,10 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
                 }
             },
             GetPropertyValue: function () {
+                if (this.Triggers.Count === 0) {
+                    throw new System.InvalidOperationException("PropertyPathProblem:" + (this.Path || ""));
+                }
+
                 var lastTrigger = System.Linq.Enumerable.from(this.Triggers).last();
 
                 return System.ComponentModel.ReflectionHelper.GetPropertyValue(lastTrigger["Instance"], lastTrigger.PropertyName);

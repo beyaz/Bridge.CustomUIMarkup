@@ -30,6 +30,16 @@ namespace Bridge.CustomUIMarkup.Libraries.SemanticUI
             el.Text = "qwe";
 
             MustEqual("qwe", simpleClass1.LastName);
+
+
+
+            el.DataContext = new SimpleClass1
+            {
+                LastName = "yyy"
+            };
+
+            MustEqual("yyy", simpleClass1.LastName);
+
         }
         #endregion
     }

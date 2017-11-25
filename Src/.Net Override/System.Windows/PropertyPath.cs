@@ -84,6 +84,11 @@ namespace System.Windows
 
         public object GetPropertyValue()
         {
+            if (Triggers.Count ==0)
+            {
+                throw new InvalidOperationException("PropertyPathProblem:"+Path);
+            }
+
             var lastTrigger = Triggers.Last();
 
             return ReflectionHelper.GetPropertyValue(lastTrigger.Instance, lastTrigger.PropertyName);
