@@ -149,7 +149,11 @@ namespace Bridge.CustomUIMarkup.UI
                     var bindingInfo = BindingInfo.TryParseExpression(html);
                     if (bindingInfo != null)
                     {
-                        bindingInfo.Source = DataContext;
+                        bindingInfo.BindingMode = BindingMode.OneWay;
+
+                        bindingInfo.Source = instance;
+                        bindingInfo.SourcePath = "DataContext." + bindingInfo.SourcePath.Path;
+
                         bindingInfo.Target = instance;
                         bindingInfo.TargetPath = nameof(instance.InnerHTML);
 

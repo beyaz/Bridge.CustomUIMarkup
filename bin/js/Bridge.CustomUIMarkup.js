@@ -1752,7 +1752,11 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
                             // maybe <div> {LastName} </div>
                             var bindingInfo = System.Windows.Data.BindingInfo.TryParseExpression(html);
                             if (bindingInfo != null) {
-                                bindingInfo.Source = this.DataContext;
+                                bindingInfo.BindingMode = System.Windows.Data.BindingMode.OneWay;
+
+                                bindingInfo.Source = instance;
+                                bindingInfo.SourcePath = System.Windows.PropertyPath.op_Implicit("DataContext." + (bindingInfo.SourcePath.Path || ""));
+
                                 bindingInfo.Target = instance;
                                 bindingInfo.TargetPath = System.Windows.PropertyPath.op_Implicit("InnerHTML");
 
@@ -5588,9 +5592,6 @@ setTimeout(function(){
             }
         },
         ctors: {
-            init: function () {
-                this["AllowOnlyNumericInputs"] = true;
-            },
             ctor: function () {
                 this.$initialize();
                 Bridge.CustomUIMarkup.Libraries.SemanticUI.ElementBase.ctor.call(this);
@@ -5606,23 +5607,20 @@ setTimeout(function(){
                 this._inputElement.focusout(Bridge.fn.cacheBind(this, this.OnFocusOut));
                 this._inputElement.keypress(Bridge.fn.cacheBind(this, this.OnKeyPress));
             },
+            DisableNonNumericValues: function (e) {
+                if (e.which !== 8 && e.which !== 0 && (e.which < 48 || e.which > 57)) {
+                    e.preventDefault();
+                }
+            },
+            OnFocusOut: function (e) {
+                this.Text = this._inputElement.val();
+            },
             OnKeyPress: function (e) {
                 if (this["AllowOnlyNumericInputs"]) {
                     this.DisableNonNumericValues(e);
                     if (e.isDefaultPrevented()) {
-                        return;
                     }
                 }
-            },
-            DisableNonNumericValues: function (e) {
-
-                if (e.which !== 8 && e.which !== 0 && (e.which < 48 || e.which > 57)) {
-                    e.preventDefault();
-                }
-
-            },
-            OnFocusOut: function (e) {
-                this.Text = this._inputElement.val();
             },
             InitializeCornerLabelDiv: function () {
                 if (this._cornerLabelDiv == null) {

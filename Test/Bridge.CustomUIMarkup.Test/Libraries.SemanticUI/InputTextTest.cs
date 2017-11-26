@@ -11,37 +11,77 @@ namespace Bridge.CustomUIMarkup.Libraries.SemanticUI
             new InputTextTest().OnDataContext_Changed();
             new InputTextTest().SimpleBind_OnDataContext_Changed();
             new InputTextTest().On_Parent_DataContext_Changed();
-            new InputTextTest().On_Parent_DataContext_Changed_with_DataContext_Binded(); 
+            new InputTextTest().On_Parent_DataContext_Changed_with_DataContext_Binded();
+            new InputTextTest().OnDataContext_Changed_InnerHTML();
+            
         }
         #endregion
 
         #region Methods
-        void SimpleBind_OnDataContext_Changed()
+        void On_Parent_DataContext_Changed()
         {
-            var simpleClass1 = new SimpleClass1();
+            var model = new SimpleClass1();
 
-            var el = (InputText) new Builder
+            var div = new Builder
             {
-                XmlString = "<textBox Text='{LastName}' />",
-                DataContext = simpleClass1
+                XmlString = "<div><textBox Text='{LastName}' /></div>",
+                DataContext = model
             }.Build();
 
-            simpleClass1.LastName = "abc";
+            var el = (InputText) div.Childeren[0];
+
+            model.LastName = "abc";
 
             MustEqual("abc", el.Text);
 
             el.Text = "qwe";
 
-            MustEqual("qwe", simpleClass1.LastName);
+            MustEqual("qwe", model.LastName);
 
-
-
-            el.DataContext = new SimpleClass1
+            div.DataContext = new SimpleClass1
             {
                 LastName = "yyy"
             };
 
             MustEqual("yyy", el.Text);
+        }
+
+        void On_Parent_DataContext_Changed_with_DataContext_Binded()
+        {
+            var model = new SimpleClass1
+            {
+                Child = new SimpleClass1
+                {
+                    LastName = "a"
+                }
+            };
+
+            var div = new Builder
+            {
+                XmlString = "<div><textBox DataContext = '{Binding Child}'  Text='{LastName}' /></div>",
+                DataContext = model
+            }.Build();
+
+            var el = (InputText) div.Childeren[0];
+
+            MustEqual("a", el.Text);
+
+            model.Child = new SimpleClass1
+            {
+                LastName = "b"
+            };
+
+            MustEqualByReference(model.Child, el.DataContext);
+
+            MustEqual("b", el.Text);
+
+            model.Child.LastName = "c";
+
+            MustEqual("c", el.Text);
+
+            el.Text = "d";
+
+            MustEqual("d", model.Child.LastName);
         }
 
         void OnDataContext_Changed()
@@ -60,7 +100,7 @@ namespace Bridge.CustomUIMarkup.Libraries.SemanticUI
                 }
             };
 
-            var el = (InputText)new Builder
+            var el = (InputText) new Builder
             {
                 XmlString = "<textBox Text='{Child.Child.Child.LastName}' />",
                 DataContext = model
@@ -68,10 +108,9 @@ namespace Bridge.CustomUIMarkup.Libraries.SemanticUI
 
             MustEqual("a", el.Text);
 
-            model.Child.Child.Child.LastName= "b";
+            model.Child.Child.Child.LastName = "b";
 
             MustEqual("b", el.Text);
-
 
             model = new SimpleClass1
             {
@@ -93,72 +132,77 @@ namespace Bridge.CustomUIMarkup.Libraries.SemanticUI
         }
 
 
-        void On_Parent_DataContext_Changed()
-        {
-            var model = new SimpleClass1();
-
-            var div = new Builder
-            {
-                XmlString = "<div><textBox Text='{LastName}' /></div>",
-                DataContext = model
-            }.Build();
-
-            var el = (InputText)div.Childeren[0];
-            
-            model.LastName = "abc";
-
-            MustEqual("abc", el.Text);
-
-            el.Text = "qwe";
-
-            MustEqual("qwe", model.LastName);
-
-            div.DataContext = new SimpleClass1
-            {
-                LastName = "yyy"
-            };
-
-            MustEqual("yyy", el.Text);
-
-        }
-        void On_Parent_DataContext_Changed_with_DataContext_Binded()
+        void OnDataContext_Changed_InnerHTML()
         {
             var model = new SimpleClass1
             {
                 Child = new SimpleClass1
                 {
-                    LastName = "a"
+                    Child = new SimpleClass1
+                    {
+                        Child = new SimpleClass1
+                        {
+                            LastName = "a"
+                        }
+                    }
                 }
             };
 
-            var div = new Builder
+            var el = new Builder
             {
-                XmlString = "<div><textBox DataContext = '{Binding Child}'  Text='{LastName}' /></div>",
+                XmlString = "<div>{Child.Child.Child.LastName}</div>",
                 DataContext = model
             }.Build();
 
-            var el = (InputText)div.Childeren[0];
+            MustEqual("a", el.InnerHTML);
 
-            MustEqual("a", el.Text);
+            model.Child.Child.Child.LastName = "b";
 
-            model.Child = new SimpleClass1
+            MustEqual("b", el.InnerHTML);
+
+            model = new SimpleClass1
             {
-                LastName = "b"
+                Child = new SimpleClass1
+                {
+                    Child = new SimpleClass1
+                    {
+                        Child = new SimpleClass1
+                        {
+                            LastName = "x"
+                        }
+                    }
+                }
             };
 
-            MustEqualByReference(model.Child,el.DataContext);
+            el.DataContext = model;
 
-            MustEqual("b", el.Text);
+            MustEqual("x", el.InnerHTML);
+        }
 
-            model.Child.LastName = "c";
+        void SimpleBind_OnDataContext_Changed()
+        {
+            var simpleClass1 = new SimpleClass1();
 
-            MustEqual("c", el.Text);
+            var el = (InputText) new Builder
+            {
+                XmlString = "<textBox Text='{LastName}' />",
+                DataContext = simpleClass1
+            }.Build();
 
+            simpleClass1.LastName = "abc";
 
-            el.Text = "d";
+            MustEqual("abc", el.Text);
 
-            MustEqual("d", model.Child.LastName);
+            el.Text = "qwe";
 
+            MustEqual("qwe", simpleClass1.LastName);
+
+            el.DataContext = new SimpleClass1
+            {
+                LastName = "yyy"
+            };
+
+            MustEqual("yyy", el.Text);
         }
         #endregion
     }
