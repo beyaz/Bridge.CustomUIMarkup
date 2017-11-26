@@ -7,6 +7,7 @@ using System.Windows;
 using System.Windows.Data;
 using System.Xml;
 using Bridge.CustomUIMarkup.Common;
+using Bridge.CustomUIMarkup.Tokenizers;
 using Bridge.Html5;
 using Bridge.jQuery2;
 
@@ -223,6 +224,11 @@ namespace Bridge.CustomUIMarkup.UI
             return (FrameworkElement) Activator.CreateInstance(controlType);
         }
 
+        static readonly Tokenizer InvocationExpressionTokenizer = new Tokenizer
+        {
+            TokenDefinitions = InvocationExpressionTokenDefinitions.Value
+        };
+
         void ProcessAttribute(FrameworkElement instance, string name, string value)
         {
             var nameUpperCase = name.ToUpperCase();
@@ -310,16 +316,20 @@ namespace Bridge.CustomUIMarkup.UI
                 // support this format: this.Notify(OnContactClicked)
                 if (value.StartsWith("this."))
                 {
-                    var invocationInfo = InvocationInfo.ParseFromString(value);
+                    var tokens = InvocationExpressionTokenizer.Tokenize(value);
+                    
+                    var i = 0;
+                    i++;// skip this
+                    i++;// skip .
+                    var methodName = tokens[i].Value;
+                    i++;// skip methodName
+                    i++;// skip (
+                    var firstParameter = tokens[i].Value;
+                    
 
-                    if (invocationInfo.Parameters?.Count > 1)
-                    {
-                        throw new ArgumentException(value);
-                    }
+                    var mi = Caller.GetType().GetMethod(methodName);
 
-                    var mi = Caller.GetType().GetMethod(invocationInfo.MethodName);
-
-                    instance.On(eventName, () => { mi.Invoke(Caller, invocationInfo.Parameters.First()); });
+                    instance.On(eventName, () => { mi.Invoke(Caller, firstParameter); });
                     return;
                 }
 
@@ -357,54 +367,6 @@ namespace Bridge.CustomUIMarkup.UI
         }
         #endregion
 
-        class InvocationInfo
-        {
-            #region Fields
-            public bool HasThis;
-            public string MethodName;
-            public List<string> Parameters;
-            #endregion
-
-            #region Public Methods
-            /// <summary>
-            ///     Parses from string.
-            ///     <para>Example: this.Notify(OnContactClicked)</para>
-            /// </summary>
-            public static InvocationInfo ParseFromString(string value)
-            {
-                var invocationInfo = new InvocationInfo();
-
-                var arr = value.Split('.', '(', ')');
-
-                foreach (var token in arr)
-                {
-                    if (string.IsNullOrWhiteSpace(token))
-                    {
-                        continue;
-                    }
-                    if (token.Trim() == "this")
-                    {
-                        invocationInfo.HasThis = true;
-                        continue;
-                    }
-
-                    if (invocationInfo.MethodName == null)
-                    {
-                        invocationInfo.MethodName = token.Trim();
-                        continue;
-                    }
-
-                    if (invocationInfo.Parameters == null)
-                    {
-                        invocationInfo.Parameters = new List<string>();
-                    }
-
-                    invocationInfo.Parameters.Add(token);
-                }
-
-                return invocationInfo;
-            }
-            #endregion
-        }
+       
     }
 }

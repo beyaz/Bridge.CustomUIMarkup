@@ -142,6 +142,29 @@ namespace Bridge.CustomUIMarkup.Tokenizers
         #endregion
     }
 
+    class InvocationExpressionTokenDefinitions
+    {
+        #region Public Properties
+        public static IReadOnlyList<TokenDefinition> Value
+        {
+            get
+            {
+                return new List<TokenDefinition>
+                {
+                    new TokenDefinition(TokenType.Binding, "this", 1),
+                    new TokenDefinition(TokenType.OpenParenthesis, "\\(", 1),
+                    new TokenDefinition(TokenType.CloseParenthesis, "\\)", 1),
+
+                    new TokenDefinition(TokenType.Identifier, "[a-zA-Z_$][a-zA-Z0-9_$]*", 1),
+
+                    new TokenDefinition(TokenType.Comma, ",", 1),
+                    new TokenDefinition(TokenType.Dot, ".", 1)
+                };
+            }
+        }
+        #endregion
+    }
+
     class Tokenizer
     {
         #region Public Properties

@@ -1441,6 +1441,26 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
         }
     });
 
+    Bridge.define("Bridge.CustomUIMarkup.Tokenizers.InvocationExpressionTokenDefinitions", {
+        statics: {
+            props: {
+                Value: {
+                    get: function () {
+                        return function (_o1) {
+                                _o1.add(new Bridge.CustomUIMarkup.Tokenizers.TokenDefinition(Bridge.CustomUIMarkup.Tokenizers.TokenType.Binding, "this", 1));
+                                _o1.add(new Bridge.CustomUIMarkup.Tokenizers.TokenDefinition(Bridge.CustomUIMarkup.Tokenizers.TokenType.OpenParenthesis, "\\(", 1));
+                                _o1.add(new Bridge.CustomUIMarkup.Tokenizers.TokenDefinition(Bridge.CustomUIMarkup.Tokenizers.TokenType.CloseParenthesis, "\\)", 1));
+                                _o1.add(new Bridge.CustomUIMarkup.Tokenizers.TokenDefinition(Bridge.CustomUIMarkup.Tokenizers.TokenType["Identifier"], "[a-zA-Z_$][a-zA-Z0-9_$]*", 1));
+                                _o1.add(new Bridge.CustomUIMarkup.Tokenizers.TokenDefinition(Bridge.CustomUIMarkup.Tokenizers.TokenType.Comma, ",", 1));
+                                _o1.add(new Bridge.CustomUIMarkup.Tokenizers.TokenDefinition(Bridge.CustomUIMarkup.Tokenizers.TokenType.Dot, ".", 1));
+                                return _o1;
+                            }(new (System.Collections.Generic.List$1(Bridge.CustomUIMarkup.Tokenizers.TokenDefinition)).ctor());
+                    }
+                }
+            }
+        }
+    });
+
     Bridge.define("Bridge.CustomUIMarkup.Tokenizers.Token", {
         fields: {
             TokenType: 0,
@@ -1640,6 +1660,15 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
 
     Bridge.define("Bridge.CustomUIMarkup.UI.Builder", {
         statics: {
+            fields: {
+                "InvocationExpressionTokenizer": null
+            },
+            ctors: {
+                init: function () {
+                    var $t;
+                    this["InvocationExpressionTokenizer"] = ($t = new Bridge.CustomUIMarkup.Tokenizers.Tokenizer(), $t.TokenDefinitions = Bridge.CustomUIMarkup.Tokenizers.InvocationExpressionTokenDefinitions.Value, $t);
+                }
+            },
             methods: {
                 GetRootNode: function (xmlString) {
                     var $t;
@@ -1882,16 +1911,22 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
 
                     // support this format: this.Notify(OnContactClicked)
                     if (System.String.startsWith(value, "this.")) {
-                        var invocationInfo = Bridge.CustomUIMarkup.UI.Builder.InvocationInfo.ParseFromString(value);
+                        var tokens = Bridge.CustomUIMarkup.UI.Builder["InvocationExpressionTokenizer"].Tokenize(value);
 
-                        if (System.Nullable.gt((invocationInfo.Parameters != null ? invocationInfo.Parameters.Count : null), 1)) {
-                            throw new System.ArgumentException(value);
-                        }
 
-                        var mi = Bridge.Reflection.getMembers(Bridge.getType(this.Caller), 8, 284, invocationInfo.MethodName);
+                        var i = 0;
+                        i = (i + 1) | 0; // skip this
+                        i = (i + 1) | 0; // skip .
+                        var methodName = System.Array.getItem(tokens, i, Bridge.CustomUIMarkup.Tokenizers.Token).Value;
+                        i = (i + 1) | 0; // skip methodName
+                        i = (i + 1) | 0; // skip (
+                        var firstParameter = System.Array.getItem(tokens, i, Bridge.CustomUIMarkup.Tokenizers.Token).Value;
+
+
+                        var mi = Bridge.Reflection.getMembers(Bridge.getType(this.Caller), 8, 284, methodName);
 
                         instance.On(eventName, Bridge.fn.bind(this, function () {
-                            Bridge.Reflection.midel(mi, Bridge.unbox(this.Caller))(System.Linq.Enumerable.from(invocationInfo.Parameters).first());
+                            Bridge.Reflection.midel(mi, Bridge.unbox(this.Caller))(firstParameter);
                         }));
                         return;
                     }
@@ -1927,65 +1962,6 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
 
                 instance._root.attr(name, value);
             }
-        }
-    });
-
-    Bridge.define("Bridge.CustomUIMarkup.UI.Builder.InvocationInfo", {
-        statics: {
-            methods: {
-                /**
-                 * Parses from string.
-                     <p>Example: this.Notify(OnContactClicked)</p>
-                 *
-                 * @static
-                 * @public
-                 * @this Bridge.CustomUIMarkup.UI.Builder.InvocationInfo
-                 * @memberof Bridge.CustomUIMarkup.UI.Builder.InvocationInfo
-                 * @param   {string}                                             value
-                 * @return  {Bridge.CustomUIMarkup.UI.Builder.InvocationInfo}
-                 */
-                ParseFromString: function (value) {
-                    var $t;
-                    var invocationInfo = new Bridge.CustomUIMarkup.UI.Builder.InvocationInfo();
-
-                    var arr = System.String.split(value, [46, 40, 41].map(function(i) {{ return String.fromCharCode(i); }}));
-
-                    $t = Bridge.getEnumerator(arr);
-                    try {
-                        while ($t.moveNext()) {
-                            var token = $t.Current;
-                            if (System.String.isNullOrWhiteSpace(token)) {
-                                continue;
-                            }
-                            if (Bridge.referenceEquals(token.trim(), "this")) {
-                                invocationInfo.HasThis = true;
-                                continue;
-                            }
-
-                            if (invocationInfo.MethodName == null) {
-                                invocationInfo.MethodName = token.trim();
-                                continue;
-                            }
-
-                            if (invocationInfo.Parameters == null) {
-                                invocationInfo.Parameters = new (System.Collections.Generic.List$1(System.String)).ctor();
-                            }
-
-                            invocationInfo.Parameters.add(token);
-                        }
-                    } finally {
-                        if (Bridge.is($t, System.IDisposable)) {
-                            $t.System$IDisposable$dispose();
-                        }
-                    }
-                    return invocationInfo;
-                }
-            }
-        },
-        fields: {
-            HasThis: false,
-            MethodName: null,
-            Parameters: null
         }
     });
 
