@@ -1,16 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
 
 namespace System.Windows
 {
     public class PropertyPath
     {
-        public static implicit operator PropertyPath(string path)
-        {
-            return new PropertyPath(path);
-        }
-
         #region Fields
         internal readonly List<Trigger> Triggers = new List<Trigger>();
         #endregion
@@ -26,11 +20,71 @@ namespace System.Windows
         public string Path { get; }
         #endregion
 
+        #region Properties
+        Trigger LastTrigger => Triggers[Triggers.Count - 1];
+        #endregion
+
         #region Public Methods
+        public static implicit operator PropertyPath(string path)
+        {
+            return new PropertyPath(path);
+        }
+
         public void Clear()
         {
             Triggers.ForEach(t => t.StopListen());
             Triggers.Clear();
+        }
+
+        public object GetPropertyValue()
+        {
+            if (Triggers.Count == 0)
+            {
+                throw new InvalidOperationException("PropertyPathProblem:" + Path);
+            }
+
+            var lastTrigger = LastTrigger;
+            var instance = lastTrigger.Instance;
+            var propertyName = lastTrigger.PropertyName;
+
+            var value = ReflectionHelper.GetPropertyValue(instance, propertyName);
+
+            return value;
+        }
+
+        public void Listen(object instance, Action onPropertyValueChanged)
+        {
+            Walk(instance);
+
+            var len = Triggers.Count;
+            var last = len - 1;
+
+            for (var i = 0; i < len; i++)
+            {
+                var trigger = Triggers[i];
+                if (i == last)
+                {
+                    trigger.OnPropertyValueChanged = onPropertyValueChanged;
+                    trigger.Listen();
+                    continue;
+                }
+
+                trigger.OnPropertyValueChanged = () =>
+                {
+                    Listen(instance, onPropertyValueChanged);
+                    onPropertyValueChanged();
+                };
+                trigger.Listen();
+            }
+        }
+
+        public void SetPropertyValue(object value)
+        {
+            var lastTrigger = LastTrigger;
+            var instance = lastTrigger.Instance;
+            var propertyName = lastTrigger.PropertyName;
+
+            ReflectionHelper.SetPropertyValue(instance, propertyName, value);
         }
 
         public void Walk(object instance)
@@ -38,33 +92,6 @@ namespace System.Windows
             Clear();
 
             ParsePath(instance, Path);
-        }
-
-        public void Listen(object instance, Action onPropertyValueChanged)
-        {
-           Walk(instance);
-
-            var len = Triggers.Count;
-            var last = len - 1;
-
-            for (int i = 0; i < len; i++)
-            {
-                var trigger = Triggers[i];
-                if (i==last)
-                {
-                    trigger.OnPropertyValueChanged = onPropertyValueChanged;
-                    trigger.Listen();
-                    continue;
-                }
-
-                trigger.OnPropertyValueChanged = () => 
-                {
-                    Walk(instance);
-                    onPropertyValueChanged();
-                };
-                trigger.Listen();
-
-            }
         }
         #endregion
 
@@ -82,13 +109,21 @@ namespace System.Windows
 
                 if (firstDat < 0)
                 {
-                    Triggers.Add(new Trigger {Instance = instance, PropertyName = path});
+                    Triggers.Add(new Trigger
+                    {
+                        Instance = instance,
+                        PropertyName = path
+                    });
                     return;
                 }
 
                 var propertyName = path.Substring(0, firstDat);
 
-                Triggers.Add(new Trigger {Instance = instance, PropertyName = propertyName});
+                Triggers.Add(new Trigger
+                {
+                    Instance = instance,
+                    PropertyName = propertyName
+                });
 
                 instance = ReflectionHelper.GetPropertyValue(instance, propertyName);
 
@@ -96,25 +131,6 @@ namespace System.Windows
             }
         }
         #endregion
-
-
-        public object GetPropertyValue()
-        {
-            if (Triggers.Count ==0)
-            {
-                throw new InvalidOperationException("PropertyPathProblem:"+Path);
-            }
-
-            var lastTrigger = Triggers.Last();
-
-            return ReflectionHelper.GetPropertyValue(lastTrigger.Instance, lastTrigger.PropertyName);
-        }
-        public void SetPropertyValue(object value)
-        {
-            var lastTrigger = Triggers.Last();
-
-            ReflectionHelper.SetPropertyValue(lastTrigger.Instance, lastTrigger.PropertyName,value);
-        }
 
         internal class Trigger
         {
@@ -146,6 +162,11 @@ namespace System.Windows
                     return;
                 }
                 InstanceAsNotifyPropertyChanged.PropertyChanged -= OnChange;
+            }
+
+            public override string ToString()
+            {
+                return Instance + "->" + PropertyName;
             }
             #endregion
 

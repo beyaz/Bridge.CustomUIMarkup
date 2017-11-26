@@ -1,3 +1,5 @@
+using Bridge.CustomUIMarkup.Tokenizers;
+
 namespace System.Windows.Data
 {
     public class BindingInfo
@@ -34,12 +36,58 @@ namespace System.Windows.Data
                 return null;
             }
 
-            var text = value.Substring(1, value.Length - 2);
 
-            text = text.RemoveFromStart("Binding ");
+            string sourcePath = null;
+            var bindingMode = Data.BindingMode.TwoWay;
 
-            return new BindingInfo {SourcePath = text};
+            var tokens = BindingExpressionTokenizer.Tokenize(value);
+            var len = tokens.Count;
+            for (int i = 0; i < len; i++)
+            {
+                var token = tokens[i];
+
+                if (token.TokenType == TokenType.Binding || token.Value == " ")
+                {
+                    continue;
+                }
+
+                if (sourcePath == null && token.TokenType == TokenType.Identifier)
+                {
+                    sourcePath = "";
+                    while (i<len)
+                    {
+                        token = tokens[i];
+
+                        if (token.TokenType == TokenType.Identifier ||
+                            token.TokenType == TokenType.Dot )
+                        {
+                            sourcePath += token.Value;
+                            i++;
+                        }
+                        else
+                        {
+                            i--;
+                            break;
+                        }
+                    }
+                    
+                    continue;
+                }
+                
+
+                if (token.TokenType == TokenType.Mode)
+                {
+                    Enum.TryParse( tokens[i + 2].Value, out bindingMode);
+                }
+            }
+
+            return new BindingInfo {SourcePath = sourcePath,BindingMode = bindingMode};
         }
+
+        static readonly Tokenizer BindingExpressionTokenizer = new Tokenizer
+        {
+            TokenDefinitions = BindingExpressionTokenDefinitions.Value
+        };
 
         public void Connect()
         {

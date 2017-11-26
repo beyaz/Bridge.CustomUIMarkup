@@ -149,7 +149,7 @@ namespace Bridge.CustomUIMarkup.Tokenizers
         #endregion
 
         #region Public Methods
-        public IEnumerable<Token> Tokenize(string data)
+        public IReadOnlyList<Token> Tokenize(string data)
         {
             var tokenDefinitions = TokenDefinitions;
 

@@ -1702,7 +1702,7 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
                 Bridge.CustomUIMarkup.Common.Extensions.highlight(query);
             },
             BuildNode: function (xmlNode) {
-                var $t, $t1, $t2;
+                var $t, $t1;
                 var instance = this.CreateInstance(xmlNode);
 
                 if (this["IsDesignMode"]) {
@@ -1721,21 +1721,23 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
 
                 instance.InvokeAfterInitDOM();
 
-                $t = Bridge.getEnumerator(xmlNode.attributes);
+                var attributes = xmlNode.attributes;
+
+                var len = attributes.length;
+                for (var i = 0; i < len; i = (i + 1) | 0) {
+                    var nodeAttribute = attributes[i];
+
+                    if (Bridge.referenceEquals(nodeAttribute.nodeName, "DataContext")) {
+                        continue;
+                    }
+
+                    this.ProcessAttribute(instance, nodeAttribute.nodeName, nodeAttribute.nodeValue);
+                }
+
+                $t = Bridge.getEnumerator(xmlNode.childNodes);
                 try {
                     while ($t.moveNext()) {
-                        var nodeAttribute = $t.Current;
-                        this.ProcessAttribute(instance, nodeAttribute.nodeName, nodeAttribute.nodeValue);
-                    }
-                } finally {
-                    if (Bridge.is($t, System.IDisposable)) {
-                        $t.System$IDisposable$dispose();
-                    }
-                }
-                $t1 = Bridge.getEnumerator(xmlNode.childNodes);
-                try {
-                    while ($t1.moveNext()) {
-                        var childNode = $t1.Current;
+                        var childNode = $t.Current;
                         if (childNode.nodeType === 8) {
                             continue;
                         }
@@ -1764,16 +1766,28 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
 
                         var subControl = this.BuildNode(childNode);
 
-                        if (childNode.attributes.DataContext == null) {
-                            ($t2 = new System.Windows.Data.BindingInfo(), $t2.BindingMode = System.Windows.Data.BindingMode.OneWay, $t2.Source = instance, $t2.SourcePath = System.Windows.PropertyPath.op_Implicit("DataContext"), $t2.Target = subControl, $t2.TargetPath = System.Windows.PropertyPath.op_Implicit("DataContext"), $t2).Connect();
+                        var subControlDataContextAttribute = childNode.attributes.DataContext;
+                        if (subControlDataContextAttribute == null) {
+                            ($t1 = new System.Windows.Data.BindingInfo(), $t1.BindingMode = System.Windows.Data.BindingMode.OneWay, $t1.Source = instance, $t1.SourcePath = System.Windows.PropertyPath.op_Implicit("DataContext"), $t1.Target = subControl, $t1.TargetPath = System.Windows.PropertyPath.op_Implicit("DataContext"), $t1).Connect();
+                        } else {
+                            var bi = System.Windows.Data.BindingInfo.TryParseExpression(subControlDataContextAttribute.nodeValue);
+                            if (bi == null) {
+                                throw new System.InvalidOperationException("InvalidBindingExpression:" + (subControlDataContextAttribute.nodeValue || ""));
+                            }
+                            bi.BindingMode = System.Windows.Data.BindingMode.OneWay;
+                            bi.Source = instance;
+                            bi.SourcePath = System.Windows.PropertyPath.op_Implicit("DataContext." + (bi.SourcePath.Path || ""));
+                            bi.Target = subControl;
+                            bi.TargetPath = System.Windows.PropertyPath.op_Implicit("DataContext");
+                            bi.Connect();
                         }
 
 
                         instance.Add(subControl);
                     }
                 } finally {
-                    if (Bridge.is($t1, System.IDisposable)) {
-                        $t1.System$IDisposable$dispose();
+                    if (Bridge.is($t, System.IDisposable)) {
+                        $t.System$IDisposable$dispose();
                     }
                 }
                 return instance;
@@ -3112,6 +3126,15 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
 
     Bridge.define("System.Windows.Data.BindingInfo", {
         statics: {
+            fields: {
+                BindingExpressionTokenizer: null
+            },
+            ctors: {
+                init: function () {
+                    var $t;
+                    this.BindingExpressionTokenizer = ($t = new Bridge.CustomUIMarkup.Tokenizers.Tokenizer(), $t.TokenDefinitions = Bridge.CustomUIMarkup.Tokenizers.BindingExpressionTokenDefinitions.Value, $t);
+                }
+            },
             methods: {
                 TryParseExpression: function (value) {
                     var $t;
@@ -3129,11 +3152,43 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
                         return null;
                     }
 
-                    var text = value.substr(1, ((value.length - 2) | 0));
 
-                    text = System.Extensions.RemoveFromStart(text, "Binding ");
+                    var sourcePath = null;
+                    var bindingMode = { v : System.Windows.Data.BindingMode.TwoWay };
 
-                    return ($t = new System.Windows.Data.BindingInfo(), $t.SourcePath = System.Windows.PropertyPath.op_Implicit(text), $t);
+                    var tokens = System.Windows.Data.BindingInfo.BindingExpressionTokenizer.Tokenize(value);
+                    var len = System.Array.getCount(tokens, Bridge.CustomUIMarkup.Tokenizers.Token);
+                    for (var i = 0; i < len; i = (i + 1) | 0) {
+                        var token = System.Array.getItem(tokens, i, Bridge.CustomUIMarkup.Tokenizers.Token);
+
+                        if (token.TokenType === Bridge.CustomUIMarkup.Tokenizers.TokenType.Binding || Bridge.referenceEquals(token.Value, " ")) {
+                            continue;
+                        }
+
+                        if (sourcePath == null && token.TokenType === Bridge.CustomUIMarkup.Tokenizers.TokenType["Identifier"]) {
+                            sourcePath = "";
+                            while (i < len) {
+                                token = System.Array.getItem(tokens, i, Bridge.CustomUIMarkup.Tokenizers.Token);
+
+                                if (token.TokenType === Bridge.CustomUIMarkup.Tokenizers.TokenType["Identifier"] || token.TokenType === Bridge.CustomUIMarkup.Tokenizers.TokenType.Dot) {
+                                    sourcePath = (sourcePath || "") + (token.Value || "");
+                                    i = (i + 1) | 0;
+                                } else {
+                                    i = (i - 1) | 0;
+                                    break;
+                                }
+                            }
+
+                            continue;
+                        }
+
+
+                        if (token.TokenType === Bridge.CustomUIMarkup.Tokenizers.TokenType.Mode) {
+                            System.Enum.tryParse(Bridge.global.System.Windows.Data.BindingMode, System.Array.getItem(tokens, ((i + 2) | 0), Bridge.CustomUIMarkup.Tokenizers.Token).Value, bindingMode);
+                        }
+                    }
+
+                    return ($t = new System.Windows.Data.BindingInfo(), $t.SourcePath = System.Windows.PropertyPath.op_Implicit(sourcePath), $t.BindingMode = bindingMode.v, $t);
                 }
             }
         },
@@ -3410,6 +3465,13 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
             Triggers: null,
             Path: null
         },
+        props: {
+            LastTrigger: {
+                get: function () {
+                    return this.Triggers.getItem(((this.Triggers.Count - 1) | 0));
+                }
+            }
+        },
         ctors: {
             init: function () {
                 this.Triggers = new (System.Collections.Generic.List$1(System.Windows.PropertyPath.Trigger)).ctor();
@@ -3426,10 +3488,18 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
                 });
                 this.Triggers.clear();
             },
-            Walk: function (instance) {
-                this.Clear();
+            GetPropertyValue: function () {
+                if (this.Triggers.Count === 0) {
+                    throw new System.InvalidOperationException("PropertyPathProblem:" + (this.Path || ""));
+                }
 
-                this.ParsePath(instance, this.Path);
+                var lastTrigger = this.LastTrigger;
+                var instance = lastTrigger["Instance"];
+                var propertyName = lastTrigger.PropertyName;
+
+                var value = System.ComponentModel.ReflectionHelper.GetPropertyValue(instance, propertyName);
+
+                return value;
             },
             Listen: function (instance, onPropertyValueChanged) {
                 this.Walk(instance);
@@ -3446,12 +3516,23 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
                     }
 
                     trigger.OnPropertyValueChanged = Bridge.fn.bind(this, function () {
-                        this.Walk(instance);
+                        this.Listen(instance, onPropertyValueChanged);
                         onPropertyValueChanged();
                     });
                     trigger.Listen();
-
                 }
+            },
+            SetPropertyValue: function (value) {
+                var lastTrigger = this.LastTrigger;
+                var instance = lastTrigger["Instance"];
+                var propertyName = lastTrigger.PropertyName;
+
+                System.ComponentModel.ReflectionHelper.SetPropertyValue(instance, propertyName, value);
+            },
+            Walk: function (instance) {
+                this.Clear();
+
+                this.ParsePath(instance, this.Path);
             },
             ParsePath: function (instance, path) {
                 var $t;
@@ -3475,20 +3556,6 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
 
                     path = path.substr(((firstDat + 1) | 0));
                 }
-            },
-            GetPropertyValue: function () {
-                if (this.Triggers.Count === 0) {
-                    throw new System.InvalidOperationException("PropertyPathProblem:" + (this.Path || ""));
-                }
-
-                var lastTrigger = System.Linq.Enumerable.from(this.Triggers).last();
-
-                return System.ComponentModel.ReflectionHelper.GetPropertyValue(lastTrigger["Instance"], lastTrigger.PropertyName);
-            },
-            SetPropertyValue: function (value) {
-                var lastTrigger = System.Linq.Enumerable.from(this.Triggers).last();
-
-                System.ComponentModel.ReflectionHelper.SetPropertyValue(lastTrigger["Instance"], lastTrigger.PropertyName, value);
             }
         }
     });
@@ -3518,6 +3585,9 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
                     return;
                 }
                 this["InstanceAsNotifyPropertyChanged"].System$ComponentModel$INotifyPropertyChanged$removePropertyChanged(Bridge.fn.cacheBind(this, this.OnChange));
+            },
+            toString: function () {
+                return System.String.concat(this["Instance"], "->") + (this.PropertyName || "");
             },
             OnChange: function (sender, e) {
                 if (Bridge.referenceEquals(e.propertyName, this.PropertyName)) {

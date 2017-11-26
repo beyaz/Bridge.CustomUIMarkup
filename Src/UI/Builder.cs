@@ -114,8 +114,18 @@ namespace Bridge.CustomUIMarkup.UI
 
             instance.InvokeAfterInitDOM();
 
-            foreach (var nodeAttribute in xmlNode.Attributes)
+            var attributes = xmlNode.Attributes;
+
+            var len = attributes.Count;
+            for (var i = 0; i < len; i++)
             {
+                var nodeAttribute = attributes[i];
+
+                if (nodeAttribute.Name == "DataContext")
+                {
+                    continue;
+                }
+
                 ProcessAttribute(instance, nodeAttribute.Name, nodeAttribute.Value);
             }
 
@@ -153,7 +163,8 @@ namespace Bridge.CustomUIMarkup.UI
 
                 var subControl = BuildNode(childNode);
 
-                if (childNode.Attributes["DataContext"] == null)
+                var subControlDataContextAttribute = childNode.Attributes["DataContext"];
+                if (subControlDataContextAttribute == null)
                 {
                     new BindingInfo
                     {
@@ -163,6 +174,20 @@ namespace Bridge.CustomUIMarkup.UI
                         Target = subControl,
                         TargetPath = "DataContext"
                     }.Connect();
+                }
+                else
+                {
+                    var bi = BindingInfo.TryParseExpression(subControlDataContextAttribute.Value);
+                    if (bi == null)
+                    {
+                        throw new InvalidOperationException("InvalidBindingExpression:"+ subControlDataContextAttribute.Value);
+                    }
+                    bi.BindingMode = BindingMode.OneWay;
+                    bi.Source = instance;
+                    bi.SourcePath = "DataContext."+ bi.SourcePath.Path;
+                    bi.Target = subControl;
+                    bi.TargetPath = "DataContext";
+                    bi.Connect();
                 }
                
 

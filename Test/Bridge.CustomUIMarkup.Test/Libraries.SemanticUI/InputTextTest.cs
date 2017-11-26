@@ -1,5 +1,4 @@
-﻿using System.Windows;
-using Bridge.CustomUIMarkup.Test;
+﻿using Bridge.CustomUIMarkup.Test;
 using Bridge.CustomUIMarkup.UI;
 
 namespace Bridge.CustomUIMarkup.Libraries.SemanticUI
@@ -9,6 +8,7 @@ namespace Bridge.CustomUIMarkup.Libraries.SemanticUI
         #region Public Methods
         public static void RunAll()
         {
+            new InputTextTest().OnDataContext_Changed();
             new InputTextTest().SimpleBind_OnDataContext_Changed();
             new InputTextTest().On_Parent_DataContext_Changed();
             new InputTextTest().On_Parent_DataContext_Changed_with_DataContext_Binded(); 
@@ -44,6 +44,54 @@ namespace Bridge.CustomUIMarkup.Libraries.SemanticUI
             MustEqual("yyy", el.Text);
         }
 
+        void OnDataContext_Changed()
+        {
+            var model = new SimpleClass1
+            {
+                Child = new SimpleClass1
+                {
+                    Child = new SimpleClass1
+                    {
+                        Child = new SimpleClass1
+                        {
+                            LastName = "a"
+                        }
+                    }
+                }
+            };
+
+            var el = (InputText)new Builder
+            {
+                XmlString = "<textBox Text='{Child.Child.Child.LastName}' />",
+                DataContext = model
+            }.Build();
+
+            MustEqual("a", el.Text);
+
+            model.Child.Child.Child.LastName= "b";
+
+            MustEqual("b", el.Text);
+
+
+            model = new SimpleClass1
+            {
+                Child = new SimpleClass1
+                {
+                    Child = new SimpleClass1
+                    {
+                        Child = new SimpleClass1
+                        {
+                            LastName = "x"
+                        }
+                    }
+                }
+            };
+
+            el.DataContext = model;
+
+            MustEqual("x", el.Text);
+        }
+
 
         void On_Parent_DataContext_Changed()
         {
@@ -75,36 +123,42 @@ namespace Bridge.CustomUIMarkup.Libraries.SemanticUI
         }
         void On_Parent_DataContext_Changed_with_DataContext_Binded()
         {
-            var model = new SimpleClass1();
+            var model = new SimpleClass1
+            {
+                Child = new SimpleClass1
+                {
+                    LastName = "a"
+                }
+            };
 
             var div = new Builder
             {
-                XmlString = "<div><textBox DataContext = '{Binding Child, Mode=OneWay}'  Text='{LastName}' /></div>",
+                XmlString = "<div><textBox DataContext = '{Binding Child}'  Text='{LastName}' /></div>",
                 DataContext = model
             }.Build();
 
             var el = (InputText)div.Childeren[0];
 
-            model.LastName = "1";
-
-            MustEqual(null, el.Text);
+            MustEqual("a", el.Text);
 
             model.Child = new SimpleClass1
             {
-                LastName = "a"
+                LastName = "b"
             };
-            MustEqual("a", el.Text);
 
-            model.Child.LastName = "b";
+            MustEqualByReference(model.Child,el.DataContext);
 
             MustEqual("b", el.Text);
 
+            model.Child.LastName = "c";
 
-            el.Text = "c";
+            MustEqual("c", el.Text);
 
-            MustEqual("c", model.Child.LastName);
 
-            MustEqual("1", model.LastName);
+            el.Text = "d";
+
+            MustEqual("d", model.Child.LastName);
+
         }
         #endregion
     }
