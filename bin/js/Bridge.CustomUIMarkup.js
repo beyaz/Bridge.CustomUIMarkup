@@ -1476,7 +1476,7 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
                 Bridge.CustomUIMarkup.Common.Extensions.highlight(query);
             },
             BuildNode: function (xmlNode) {
-                var $t, $t1;
+                var $t, $t1, $t2;
                 var instance = this.CreateInstance(xmlNode);
 
                 if (this["IsDesignMode"]) {
@@ -1538,6 +1538,11 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
 
                         var subControl = this.BuildNode(childNode);
 
+                        if (childNode.attributes.DataContext == null) {
+                            ($t2 = new System.Windows.Data.BindingInfo(), $t2.BindingMode = System.Windows.Data.BindingMode.OneWay, $t2.Source = instance, $t2.SourcePath = System.Windows.PropertyPath.op_Implicit("DataContext"), $t2.Target = subControl, $t2.TargetPath = System.Windows.PropertyPath.op_Implicit("DataContext"), $t2).Connect();
+                        }
+
+
                         instance.Add(subControl);
                     }
                 } finally {
@@ -1594,7 +1599,11 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
                         }
                     }
 
-                    bi.Source = this.DataContext;
+
+                    bi.SourcePath = new System.Windows.PropertyPath("DataContext." + (bi.SourcePath.Path || ""));
+                    bi.Source = instance;
+
+                    // bi.Source = DataContext;
                     bi.Target = instance;
                     bi.TargetPath = System.Windows.PropertyPath.op_Implicit(name);
 
@@ -1659,9 +1668,10 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
 
                 // css.Pseudo.backgroundImage
                 if (System.String.startsWith(nameUpperCase, "CSS.PSEUDO.")) {
-                    var pseudoAttributeName = name.substr(11);
-                    System.Windows.DOM.head.append("<style>#" + (instance["Id"] || "") + "::" + (pseudoAttributeName || "") + "{ content:'bar' }</style>");
-                    return;
+                    throw new System.ArgumentException();
+                    // var pseudoAttributeName = name.Substring(11);
+                    // DOM.head.Append("<style>#" + instance.Id + "::" + pseudoAttributeName + "{ content:'bar' }</style>");
+                    // return;
                 }
 
                 if (Bridge.referenceEquals(name, "x.Name")) {
@@ -3196,21 +3206,27 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
                 this.ParsePath(instance, this.Path);
             },
             Listen: function (instance, onPropertyValueChanged) {
-                var $t;
                 this.Walk(instance);
 
-                $t = Bridge.getEnumerator(this.Triggers);
-                try {
-                    while ($t.moveNext()) {
-                        var trigger = $t.Current;
+                var len = this.Triggers.Count;
+                var last = (len - 1) | 0;
+
+                for (var i = 0; i < len; i = (i + 1) | 0) {
+                    var trigger = this.Triggers.getItem(i);
+                    if (i === last) {
                         trigger.OnPropertyValueChanged = onPropertyValueChanged;
                         trigger.Listen();
+                        continue;
                     }
-                } finally {
-                    if (Bridge.is($t, System.IDisposable)) {
-                        $t.System$IDisposable$dispose();
-                    }
-                }},
+
+                    trigger.OnPropertyValueChanged = Bridge.fn.bind(this, function () {
+                        this.Walk(instance);
+                        onPropertyValueChanged();
+                    });
+                    trigger.Listen();
+
+                }
+            },
             ParsePath: function (instance, path) {
                 var $t;
                 while (true) {
@@ -3809,6 +3825,9 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
         },
         methods: {
             Add: function (element) {
+
+
+
                 !Bridge.staticEquals(element.BeforeConnectToParent, null) ? element.BeforeConnectToParent() : null;
 
                 element._root.appendTo(this._root);
@@ -4688,6 +4707,8 @@ setTimeout(function(){
                         _o1.add(($t = new Bridge.CustomUIMarkup_DesignerSamples.ExampleInfo(), $t.Name = "Form", $t.XmlTemplate = "\r\n\r\n\r\n<ui.segment>\r\n  <ui.page.grid Align='Center' MarginTop='5'>\r\n      <ui.form  Padding='55' Border='1px solid #ddd'>\r\n        <ui.header.3>Input form</ui.header.3>\r\n     <Field Value='A' Label='yy'>\r\n        <TextBox PlaceHolder='Write 1' />\r\n     </Field>\r\n     <ui.stacked>\r\n        <Field Value='A' Label='yy' >\r\n           <TextBox PlaceHolder='Write 1' IsMandatory='True' />\r\n        </Field>\r\n     </ui.stacked>\r\n     <ui.equal.width.grid>\r\n        <column>\r\n           <Field Value='A' Label='yy'>\r\n              <TextBox PlaceHolder='Write 1' />\r\n           </Field>\r\n        </column>\r\n        <column>\r\n           <Field Value='A' Label='yy'>\r\n              <TextBox PlaceHolder='Write 1' />\r\n           </Field>\r\n        </column>\r\n     </ui.equal.width.grid>\r\n        \r\n        <ui.grid>\r\n          <column Align='Right'>\r\n        \t\t<ui.button Text='No'   />\r\n            \t<ui.button Text='Yes'  AddClass='positive'  />\r\n            </column>\r\n        </ui.grid>\r\n  </ui.form>\r\n  </ui.page.grid>\r\n</ui.segment>\r\n\r\n\r\n\r\n\r\n", $t));
                         return _o1;
                     }(new (System.Collections.Generic.List$1(Bridge.CustomUIMarkup_DesignerSamples.ExampleInfo)).ctor());
+
+
             }
         }
     });

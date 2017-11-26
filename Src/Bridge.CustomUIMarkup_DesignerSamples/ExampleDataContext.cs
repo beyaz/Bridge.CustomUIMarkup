@@ -177,6 +177,8 @@ namespace Bridge.CustomUIMarkup_DesignerSamples
                
                
             };
+
+            
         }
         #endregion
 

@@ -153,6 +153,19 @@ namespace Bridge.CustomUIMarkup.UI
 
                 var subControl = BuildNode(childNode);
 
+                if (childNode.Attributes["DataContext"] == null)
+                {
+                    new BindingInfo
+                    {
+                        BindingMode = BindingMode.OneWay,
+                        Source = instance,
+                        SourcePath = "DataContext",
+                        Target = subControl,
+                        TargetPath = "DataContext"
+                    }.Connect();
+                }
+               
+
                 instance.Add(subControl);
             }
 
@@ -224,7 +237,11 @@ namespace Bridge.CustomUIMarkup.UI
                     }
                 }
 
-                bi.Source = DataContext;
+
+                bi.SourcePath = new PropertyPath("DataContext."+bi.SourcePath.Path);
+                bi.Source = instance;
+
+                // bi.Source = DataContext;
                 bi.Target = instance;
                 bi.TargetPath = name;
 
@@ -293,9 +310,10 @@ namespace Bridge.CustomUIMarkup.UI
             // css.Pseudo.backgroundImage
             if (nameUpperCase.StartsWith("CSS.PSEUDO."))
             {
-                var pseudoAttributeName = name.Substring(11);
-                DOM.head.Append("<style>#" + instance.Id + "::" + pseudoAttributeName + "{ content:'bar' }</style>");
-                return;
+                throw new ArgumentException();
+                // var pseudoAttributeName = name.Substring(11);
+                // DOM.head.Append("<style>#" + instance.Id + "::" + pseudoAttributeName + "{ content:'bar' }</style>");
+                // return;
             }
 
             if (name == "x.Name")

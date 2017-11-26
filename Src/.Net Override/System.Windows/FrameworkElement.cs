@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel;
+using System.Windows.Data;
 using System.Windows.Markup;
 using Bridge.Html5;
 using Bridge.jQuery2;
@@ -63,6 +64,9 @@ namespace System.Windows
 
         public virtual void Add(FrameworkElement element)
         {
+
+           
+
             element.BeforeConnectToParent?.Invoke();
 
             element._root.AppendTo(_root);

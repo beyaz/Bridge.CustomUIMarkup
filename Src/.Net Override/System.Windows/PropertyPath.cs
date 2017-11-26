@@ -44,10 +44,26 @@ namespace System.Windows
         {
            Walk(instance);
 
-            foreach (var trigger in Triggers)
+            var len = Triggers.Count;
+            var last = len - 1;
+
+            for (int i = 0; i < len; i++)
             {
-                trigger.OnPropertyValueChanged = onPropertyValueChanged;
+                var trigger = Triggers[i];
+                if (i==last)
+                {
+                    trigger.OnPropertyValueChanged = onPropertyValueChanged;
+                    trigger.Listen();
+                    continue;
+                }
+
+                trigger.OnPropertyValueChanged = () => 
+                {
+                    Walk(instance);
+                    onPropertyValueChanged();
+                };
                 trigger.Listen();
+
             }
         }
         #endregion
