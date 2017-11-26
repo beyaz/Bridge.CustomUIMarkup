@@ -5,8 +5,6 @@ namespace System.Windows.Data
 {
     public class HTMLBindingInfo : BindingInfo
     {
-       
-
         #region Public Properties
         public new jQuery Target
         {

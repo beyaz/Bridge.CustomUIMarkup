@@ -5533,7 +5533,7 @@ setTimeout(function(){
                 OnTextChanged: function (d, e) {
                     var me = Bridge.cast(d, Bridge.CustomUIMarkup.Libraries.SemanticUI.InputText);
 
-                    me._inputElement.attr("value", Bridge.cast(e.NewValue, System.String));
+                    me._inputElement.val(Bridge.cast(e.NewValue, System.String));
                 },
                 OnPlaceHolderChanged: function (d, e) {
                     var me = Bridge.cast(d, Bridge.CustomUIMarkup.Libraries.SemanticUI.InputText);
@@ -5553,6 +5553,7 @@ setTimeout(function(){
         },
         fields: {
             _inputElement: null,
+            "AllowOnlyNumericInputs": false,
             _cornerLabelDiv: null
         },
         props: {
@@ -5587,15 +5588,41 @@ setTimeout(function(){
             }
         },
         ctors: {
+            init: function () {
+                this["AllowOnlyNumericInputs"] = true;
+            },
             ctor: function () {
                 this.$initialize();
                 Bridge.CustomUIMarkup.Libraries.SemanticUI.ElementBase.ctor.call(this);
                 this.addAfterInitDOM(Bridge.fn.cacheBind(this, this.CreateInputElement));
+                this.addAfterInitDOM(Bridge.fn.cacheBind(this, this.AttachEvents));
             }
         },
         methods: {
             CreateInputElement: function () {
                 this._inputElement = System.Windows.DOM.input("text").appendTo(this._root);
+            },
+            AttachEvents: function () {
+                this._inputElement.focusout(Bridge.fn.cacheBind(this, this.OnFocusOut));
+                this._inputElement.keypress(Bridge.fn.cacheBind(this, this.OnKeyPress));
+            },
+            OnKeyPress: function (e) {
+                if (this["AllowOnlyNumericInputs"]) {
+                    this.DisableNonNumericValues(e);
+                    if (e.isDefaultPrevented()) {
+                        return;
+                    }
+                }
+            },
+            DisableNonNumericValues: function (e) {
+
+                if (e.which !== 8 && e.which !== 0 && (e.which < 48 || e.which > 57)) {
+                    e.preventDefault();
+                }
+
+            },
+            OnFocusOut: function (e) {
+                this.Text = this._inputElement.val();
             },
             InitializeCornerLabelDiv: function () {
                 if (this._cornerLabelDiv == null) {

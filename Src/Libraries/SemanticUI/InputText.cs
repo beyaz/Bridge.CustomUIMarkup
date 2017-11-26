@@ -7,12 +7,20 @@ namespace Bridge.CustomUIMarkup.Libraries.SemanticUI
 {
     public class InputText : ElementBase
     {
+        #region Fields
+        protected jQuery _inputElement;
+        #endregion
+
+        #region Constructors
         public InputText()
         {
             AfterInitDOM += CreateInputElement;
+            AfterInitDOM += AttachEvents;
         }
-        #region Fields
-        protected jQuery _inputElement;
+        #endregion
+
+        #region Public Properties
+        public bool AllowOnlyNumericInputs { get; set; }
         #endregion
 
         #region Properties
@@ -23,6 +31,36 @@ namespace Bridge.CustomUIMarkup.Libraries.SemanticUI
         protected internal virtual void CreateInputElement()
         {
             _inputElement = DOM.input("text").AppendTo(_root);
+        }
+
+        void AttachEvents()
+        {
+            _inputElement.FocusOut(OnFocusOut);
+            _inputElement.KeyPress(OnKeyPress);
+        }
+
+        void DisableNonNumericValues(jQueryKeyboardEvent e)
+        {
+            if (e.Which != 8 && e.Which != 0 && (e.Which < 48 || e.Which >  57))
+            {
+                e.PreventDefault();
+            }
+        }
+
+        void OnFocusOut(jQueryFocusEvent e)
+        {
+            Text = _inputElement.Val();
+        }
+
+        void OnKeyPress(jQueryKeyboardEvent e)
+        {
+            if (AllowOnlyNumericInputs)
+            {
+                DisableNonNumericValues(e);
+                if (e.IsDefaultPrevented())
+                {
+                }
+            }
         }
         #endregion
 
@@ -39,7 +77,7 @@ namespace Bridge.CustomUIMarkup.Libraries.SemanticUI
         {
             var me = (InputText) d;
 
-            me._inputElement.Attr("value", (string) e.NewValue);
+            me._inputElement.Val((string) e.NewValue);
         }
         #endregion
 
