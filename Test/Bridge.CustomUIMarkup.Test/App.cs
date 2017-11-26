@@ -8,6 +8,7 @@ namespace Bridge.CustomUIMarkup.Test
         #region Public Methods
         public static void Main()
         {
+            TokenizerTest.Run();
             BindingInfoTest.RunAll();
             BuilderTest.RunAll();
             HTMLBindingInfoTest.RunAll();
