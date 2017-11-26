@@ -1,10 +1,30 @@
 ﻿using System.Collections.Generic;
+using System.ComponentModel;
 using System.Windows;
 
 namespace Bridge.CustomUIMarkup_DesignerSamples
 {
-    public class ExampleDataContext : FrameworkElement
+    public class ExampleDataContext : Bag
     {
+        #region ExampleDataContext Inner
+        ExampleDataContext _inner;
+        public ExampleDataContext Inner
+        {
+            get { return _inner; }
+            set
+            {
+                if (_inner != value)
+                {
+                    _inner = value;
+                    OnPropertyChanged("Inner");
+                }
+            }
+        }
+        #endregion
+
+
+
+
         #region Constructors
         public ExampleDataContext()
         {

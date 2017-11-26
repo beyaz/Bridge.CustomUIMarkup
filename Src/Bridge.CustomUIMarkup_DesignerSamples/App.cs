@@ -21,7 +21,7 @@ namespace Bridge.CustomUIMarkup_DesignerSamples
     </row>
     
     <row HeightPercent = '100'>
-        <UIEditor SourceText = '{CurrentTemplate}'  />
+        <UIEditor SourceDataContext='{Inner}'   SourceText = '{CurrentTemplate}'/>
     </row>
         
 </div>
@@ -43,7 +43,7 @@ namespace Bridge.CustomUIMarkup_DesignerSamples
         {
             var builder = new Builder
             {
-                DataContext = new ExampleDataContext(),
+                DataContext = new ExampleDataContext { Inner = new ExampleDataContext{CurrentTemplate = "Write xml code here"}},
                 XmlString = TestUI
             };
 
