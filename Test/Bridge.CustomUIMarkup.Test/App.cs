@@ -1,5 +1,6 @@
 ﻿using System;
 using Bridge.CustomUIMarkup.Libraries.SemanticUI;
+using Bridge.CustomUIMarkup.Tokenizers;
 
 namespace Bridge.CustomUIMarkup.Test
 {

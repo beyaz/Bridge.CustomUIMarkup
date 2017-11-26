@@ -1412,6 +1412,232 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
         }
     });
 
+    Bridge.define("Bridge.CustomUIMarkup.Tokenizers.BindingExpressionTokenDefinitions", {
+        statics: {
+            props: {
+                Value: {
+                    get: function () {
+                        return function (_o1) {
+                                _o1.add(new Bridge.CustomUIMarkup.Tokenizers.TokenDefinition(Bridge.CustomUIMarkup.Tokenizers.TokenType.Binding, "binding", 1));
+                                _o1.add(new Bridge.CustomUIMarkup.Tokenizers.TokenDefinition(Bridge.CustomUIMarkup.Tokenizers.TokenType.Mode, "mode", 1));
+                                _o1.add(new Bridge.CustomUIMarkup.Tokenizers.TokenDefinition(Bridge.CustomUIMarkup.Tokenizers.TokenType.TwoWay, "twoway", 1));
+                                _o1.add(new Bridge.CustomUIMarkup.Tokenizers.TokenDefinition(Bridge.CustomUIMarkup.Tokenizers.TokenType.LeftBracket, "\\{", 1));
+                                _o1.add(new Bridge.CustomUIMarkup.Tokenizers.TokenDefinition(Bridge.CustomUIMarkup.Tokenizers.TokenType.RightBracket, "\\}", 1));
+                                _o1.add(new Bridge.CustomUIMarkup.Tokenizers.TokenDefinition(Bridge.CustomUIMarkup.Tokenizers.TokenType.OpenParenthesis, "\\(", 1));
+                                _o1.add(new Bridge.CustomUIMarkup.Tokenizers.TokenDefinition(Bridge.CustomUIMarkup.Tokenizers.TokenType.CloseParenthesis, "\\)", 1));
+                                _o1.add(new Bridge.CustomUIMarkup.Tokenizers.TokenDefinition(Bridge.CustomUIMarkup.Tokenizers.TokenType.Equals, "=", 1));
+                                _o1.add(new Bridge.CustomUIMarkup.Tokenizers.TokenDefinition(Bridge.CustomUIMarkup.Tokenizers.TokenType.This, "this", 1));
+                                _o1.add(new Bridge.CustomUIMarkup.Tokenizers.TokenDefinition(Bridge.CustomUIMarkup.Tokenizers.TokenType.NotEquals, "!=", 1));
+                                _o1.add(new Bridge.CustomUIMarkup.Tokenizers.TokenDefinition(Bridge.CustomUIMarkup.Tokenizers.TokenType["Identifier"], "[a-zA-Z_$][a-zA-Z0-9_$]*", 1));
+                                _o1.add(new Bridge.CustomUIMarkup.Tokenizers.TokenDefinition(Bridge.CustomUIMarkup.Tokenizers.TokenType.StringValue, "'([^']*)'", 1));
+                                _o1.add(new Bridge.CustomUIMarkup.Tokenizers.TokenDefinition(Bridge.CustomUIMarkup.Tokenizers.TokenType.NumberValue, "\\d+", 1));
+                                _o1.add(new Bridge.CustomUIMarkup.Tokenizers.TokenDefinition(Bridge.CustomUIMarkup.Tokenizers.TokenType.Comma, ",", 1));
+                                _o1.add(new Bridge.CustomUIMarkup.Tokenizers.TokenDefinition(Bridge.CustomUIMarkup.Tokenizers.TokenType.Dot, ".", 1));
+                                return _o1;
+                            }(new (System.Collections.Generic.List$1(Bridge.CustomUIMarkup.Tokenizers.TokenDefinition)).ctor());
+                    }
+                }
+            }
+        }
+    });
+
+    Bridge.define("Bridge.CustomUIMarkup.Tokenizers.Token", {
+        fields: {
+            TokenType: 0,
+            Value: null
+        },
+        ctors: {
+            ctor: function (tokenType) {
+                this.$initialize();
+                this.TokenType = tokenType;
+                this.Value = "";
+            },
+            $ctor1: function (tokenType, value) {
+                this.$initialize();
+                this.TokenType = tokenType;
+                this.Value = value;
+            }
+        },
+        methods: {
+            Clone: function () {
+                return new Bridge.CustomUIMarkup.Tokenizers.Token.$ctor1(this.TokenType, this.Value);
+            },
+            toString: function () {
+                return "{" + System.Enum.toString(Bridge.CustomUIMarkup.Tokenizers.TokenType, this.TokenType) + ":" + (this.Value || "") + "}";
+            }
+        }
+    });
+
+    Bridge.define("Bridge.CustomUIMarkup.Tokenizers.TokenDefinition", {
+        fields: {
+            _precedence: 0,
+            _regex: null,
+            _tokenType: 0
+        },
+        ctors: {
+            ctor: function (tokenType, regexPattern, precedence) {
+                this.$initialize();
+                this._regex = new System.Text.RegularExpressions.Regex.ctor(regexPattern, 1);
+                this._tokenType = tokenType;
+                this._precedence = precedence;
+            }
+        },
+        methods: {
+            FindMatches: function (inputString) {
+                return new (Bridge.GeneratorEnumerable$1(Bridge.CustomUIMarkup.Tokenizers.TokenMatch))(Bridge.fn.bind(this, function (inputString) {
+                    var $step = 0,
+                        $jumpFromFinally,
+                        $returnValue,
+                        matches,
+                        len,
+                        i,
+                        match,
+                        $t,
+                        $async_e;
+
+                    var $enumerator = new (Bridge.GeneratorEnumerator$1(Bridge.CustomUIMarkup.Tokenizers.TokenMatch))(Bridge.fn.bind(this, function () {
+                        try {
+                            for (;;) {
+                                switch ($step) {
+                                    case 0: {
+                                        matches = this._regex.matches(inputString);
+                                            len = matches.getCount();
+                                            i = 0;
+                                            $step = 1;
+                                            continue;
+                                    }
+                                    case 1: {
+                                        if ( i < len ) {
+                                                $step = 2;
+                                                continue;
+                                            }
+                                        $step = 5;
+                                        continue;
+                                    }
+                                    case 2: {
+                                        match = matches.get(i);
+
+                                            $enumerator.current = ($t = new Bridge.CustomUIMarkup.Tokenizers.TokenMatch(), $t["StartIndex"] = match.getIndex(), $t["EndIndex"] = ((match.getIndex() + match.getLength()) | 0), $t.TokenType = this._tokenType, $t.Value = match.getValue(), $t.Precedence = this._precedence, $t);
+                                            $step = 3;
+                                            return true;
+                                    }
+                                    case 3: {
+                                        $step = 4;
+                                        continue;
+                                    }
+                                    case 4: {
+                                        i = (i + 1) | 0;
+                                        $step = 1;
+                                        continue;
+                                    }
+                                    case 5: {
+
+                                    }
+                                    default: {
+                                        return false;
+                                    }
+                                }
+                            }
+                        } catch($async_e1) {
+                            $async_e = System.Exception.create($async_e1);
+                            throw $async_e;
+                        }
+                    }));
+                    return $enumerator;
+                }, arguments));
+            }
+        }
+    });
+
+    Bridge.define("Bridge.CustomUIMarkup.Tokenizers.Tokenizer", {
+        fields: {
+            TokenDefinitions: null
+        },
+        methods: {
+            Tokenize: function (data) {
+                var $t;
+                var tokenDefinitions = this.TokenDefinitions;
+
+                if (tokenDefinitions == null) {
+                    throw new System.ArgumentException("TokenDefinitions");
+                }
+
+                var tokenMatches = new (System.Collections.Generic.List$1(Bridge.CustomUIMarkup.Tokenizers.TokenMatch)).ctor();
+
+                $t = Bridge.getEnumerator(tokenDefinitions, Bridge.CustomUIMarkup.Tokenizers.TokenDefinition);
+                try {
+                    while ($t.moveNext()) {
+                        var tokenDefinition = $t.Current;
+                        tokenMatches.addRange(System.Linq.Enumerable.from(tokenDefinition.FindMatches(data)).toList(Bridge.CustomUIMarkup.Tokenizers.TokenMatch));
+                    }
+                } finally {
+                    if (Bridge.is($t, System.IDisposable)) {
+                        $t.System$IDisposable$dispose();
+                    }
+                }
+                var items = new (System.Collections.Generic.List$1(Bridge.CustomUIMarkup.Tokenizers.Token)).ctor();
+
+                var groupedByIndex = System.Linq.Enumerable.from(tokenMatches).groupBy(function (x) {
+                        return x["StartIndex"];
+                    }).orderBy(function (x) {
+                    return x.key();
+                }).toList(System.Linq.Grouping$2);
+
+                var lastMatch = null;
+
+                var len = groupedByIndex.Count;
+                for (var i = 0; i < len; i = (i + 1) | 0) {
+                    var bestMatch = groupedByIndex.getItem(i).orderBy(function (x) {
+                        return x.Precedence;
+                    }).first();
+                    if (lastMatch != null && bestMatch["StartIndex"] < lastMatch["EndIndex"]) {
+                        continue;
+                    }
+
+                    items.add(new Bridge.CustomUIMarkup.Tokenizers.Token.$ctor1(bestMatch.TokenType, bestMatch.Value));
+
+                    lastMatch = bestMatch;
+                }
+
+                return items;
+            }
+        }
+    });
+
+    Bridge.define("Bridge.CustomUIMarkup.Tokenizers.TokenMatch", {
+        fields: {
+            "EndIndex": 0,
+            Precedence: 0,
+            "StartIndex": 0,
+            TokenType: 0,
+            Value: null
+        }
+    });
+
+    Bridge.define("Bridge.CustomUIMarkup.Tokenizers.TokenType", {
+        $kind: "enum",
+        statics: {
+            fields: {
+                Binding: 0,
+                Mode: 1,
+                TwoWay: 2,
+                LeftBracket: 3,
+                RightBracket: 4,
+                OpenParenthesis: 5,
+                CloseParenthesis: 6,
+                "Identifier": 7,
+                Comma: 8,
+                Dot: 9,
+                Equals: 10,
+                This: 11,
+                NotEquals: 12,
+                StringValue: 13,
+                SequenceTerminator: 14,
+                NumberValue: 15
+            }
+        }
+    });
+
     Bridge.define("Bridge.CustomUIMarkup.UI.Builder", {
         statics: {
             methods: {
