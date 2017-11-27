@@ -13,11 +13,38 @@ namespace Bridge.CustomUIMarkup.Libraries.SemanticUI
             new InputTextTest().On_Parent_DataContext_Changed();
             new InputTextTest().On_Parent_DataContext_Changed_with_DataContext_Binded();
             new InputTextTest().OnDataContext_Changed_InnerHTML();
-            
+            new InputTextTest().Binding_Custom_Attribute();
+            new InputTextTest().Binding_Custom_Attribute_Parend_DataContext_Changed(); 
+
         }
         #endregion
 
         #region Methods
+
+        void Binding_Custom_Attribute()
+        {
+            var model = new SimpleClass1();
+
+            var div = new Builder
+            {
+                XmlString = "<div><div yx = '{LastName}' /></div>",
+                DataContext = model
+            }.Build();
+
+            var el = div.Childeren[0];
+
+            model.LastName = "abc";
+
+            MustEqual("abc", el._root.Attr("yx"));
+
+            div.DataContext = new SimpleClass1
+            {
+                LastName = "yyy"
+            };
+
+            MustEqual("yyy", el._root.Attr("yx"));
+        }
+
         void On_Parent_DataContext_Changed()
         {
             var model = new SimpleClass1();
@@ -131,6 +158,56 @@ namespace Bridge.CustomUIMarkup.Libraries.SemanticUI
             MustEqual("x", el.Text);
         }
 
+
+
+        void Binding_Custom_Attribute_Parend_DataContext_Changed()
+        {
+            var model = new SimpleClass1
+            {
+                Child = new SimpleClass1
+                {
+                    Child = new SimpleClass1
+                    {
+                        Child = new SimpleClass1
+                        {
+                            LastName = "a"
+                        }
+                    }
+                }
+            };
+
+            var el = new Builder
+            {
+                XmlString = "<div> <div DataContext = '{Child}' yx='{Child.Child.LastName}' /> </div>",
+                DataContext = model
+            }.Build();
+
+            var childElement = el.Childeren[0];
+
+            MustEqual("a", childElement._root.Attr("yx"));
+
+            model.Child.Child.Child.LastName = "b";
+
+            MustEqual("b", childElement._root.Attr("yx"));
+
+            model = new SimpleClass1
+            {
+                Child = new SimpleClass1
+                {
+                    Child = new SimpleClass1
+                    {
+                        Child = new SimpleClass1
+                        {
+                            LastName = "x"
+                        }
+                    }
+                }
+            };
+
+            el.DataContext = model;
+
+            MustEqual("x", childElement._root.Attr("yx"));
+        }
 
         void OnDataContext_Changed_InnerHTML()
         {

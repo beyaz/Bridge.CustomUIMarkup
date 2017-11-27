@@ -130,8 +130,14 @@ namespace Bridge.CustomUIMarkup.UI
                 ProcessAttribute(instance, nodeAttribute.Name, nodeAttribute.Value);
             }
 
-            foreach (var childNode in xmlNode.ChildNodes)
+
+            var childNodes = xmlNode.ChildNodes;
+
+            len = childNodes.Count;
+            for (var i = 0; i < len; i++)
             {
+                var childNode = childNodes[i];
+
                 if (childNode.NodeType == NodeType.Comment)
                 {
                     continue;
@@ -194,7 +200,6 @@ namespace Bridge.CustomUIMarkup.UI
                     bi.TargetPath = "DataContext";
                     bi.Connect();
                 }
-               
 
                 instance.Add(subControl);
             }
@@ -261,8 +266,8 @@ namespace Bridge.CustomUIMarkup.UI
                     {
                         new HTMLBindingInfo
                         {
-                            Source = DataContext,
-                            SourcePath = bi.SourcePath.Path,
+                            Source = instance,
+                            SourcePath = new PropertyPath("DataContext." + bi.SourcePath.Path),
                             Target = instance._root,
                             TargetPath = name,
                             BindingMode = BindingMode.OneWay
