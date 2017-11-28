@@ -61,6 +61,7 @@
     <Compile Include="Bridge.CustomUIMarkup_DesignerSamples\ExampleInfo.cs" />
     <Compile Include="Bridge.jQuery2\Extensions.cs" />
     <Compile Include="Common\FileUtil.cs" />
+    <Compile Include="Libraries\viewerjs\Viewer.cs" />
     <Compile Include="Tokenizers\Tokenizer.cs" />
     <Compile Include="Libraries\jssor\Carousel.cs" />
     <Compile Include="Libraries\SemanticUI\Align.cs" />

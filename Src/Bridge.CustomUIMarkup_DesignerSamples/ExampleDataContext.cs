@@ -30,7 +30,23 @@ namespace Bridge.CustomUIMarkup_DesignerSamples
         {
             Examples = new List<ExampleInfo>
             {
+                new ExampleInfo
+                {
+                    Name = "Viewverjs",
+                    XmlTemplate =
+                        @"
 
+<div>
+<ImageGalery>
+	<img src='img/carousel_1.jpg' Height='30' Width='30' />
+  <img src='img/carousel_1.jpg' Height='30' Width='30' />
+  <img src='img/carousel_1.jpg' Height='30' Width='30' />
+</ImageGalery>
+</div>
+
+
+"
+                },
                 new ExampleInfo
                 {
                     Name = "All",

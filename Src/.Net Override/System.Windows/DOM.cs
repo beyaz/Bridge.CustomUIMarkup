@@ -5,16 +5,9 @@ namespace System.Windows
 {
     public static class DOM
     {
-        public static jQuery ById(string id)
-        {
-            return new jQuery(Document.GetElementById(id));
-        }
-
-        
-
         #region Public Properties
-        public static jQuery head => new jQuery("head");
         public static jQuery body => new jQuery("body");
+        public static jQuery head => new jQuery("head");
         #endregion
 
         #region Public Methods
@@ -26,6 +19,11 @@ namespace System.Windows
         public static jQuery button(string className)
         {
             return CreateElement("button", className);
+        }
+
+        public static jQuery ById(string id)
+        {
+            return new jQuery(Document.GetElementById(id));
         }
 
         public static jQuery CreateElement(string tagName)
@@ -78,9 +76,19 @@ namespace System.Windows
             return CreateElement("label", className);
         }
 
+        public static jQuery li(string className = null)
+        {
+            return CreateElement("li", className);
+        }
+
         public static jQuery textarea(string className = null)
         {
             return CreateElement("textarea", className);
+        }
+
+        public static jQuery ul(string className = null)
+        {
+            return CreateElement("ul", className);
         }
         #endregion
     }

@@ -6,6 +6,7 @@ using Bridge.CustomUIMarkup.Common;
 using Bridge.CustomUIMarkup.Libraries.jssor;
 using Bridge.CustomUIMarkup.Libraries.SemanticUI;
 using Bridge.CustomUIMarkup.Libraries.Swiper;
+using Bridge.CustomUIMarkup.Libraries.viewerjs;
 
 namespace Bridge.CustomUIMarkup.UI
 {
@@ -14,6 +15,7 @@ namespace Bridge.CustomUIMarkup.UI
         #region Static Fields
         static readonly List<XmlIntellisenseInfo> _tags = new List<XmlIntellisenseInfo>
         {
+            new XmlIntellisenseInfo("ImageGalery", typeof(Viewer)),
             new XmlIntellisenseInfo("swiper.slider", typeof(Slider)),
             new XmlIntellisenseInfo("div", typeof(FrameworkElement_div)),
             new XmlIntellisenseInfo("a", typeof(FrameworkElement_a)),

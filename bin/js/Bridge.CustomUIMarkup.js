@@ -1998,6 +1998,7 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
             ctors: {
                 init: function () {
                     this._tags = function (_o1) {
+                            _o1.add(new Bridge.CustomUIMarkup.Common.XmlIntellisenseInfo("ImageGalery", Bridge.CustomUIMarkup.Libraries.viewerjs.Viewer));
                             _o1.add(new Bridge.CustomUIMarkup.Common.XmlIntellisenseInfo("swiper.slider", Bridge.CustomUIMarkup.Libraries.Swiper.Slider));
                             _o1.add(new Bridge.CustomUIMarkup.Common.XmlIntellisenseInfo("div", System.Windows.FrameworkElement_div));
                             _o1.add(new Bridge.CustomUIMarkup.Common.XmlIntellisenseInfo("a", System.Windows.FrameworkElement_a));
@@ -3341,26 +3342,26 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
     Bridge.define("System.Windows.DOM", {
         statics: {
             props: {
-                head: {
-                    get: function () {
-                        return $("head");
-                    }
-                },
                 body: {
                     get: function () {
                         return $("body");
                     }
+                },
+                head: {
+                    get: function () {
+                        return $("head");
+                    }
                 }
             },
             methods: {
-                ById: function (id) {
-                    return $(document.getElementById(id));
-                },
                 a: function (className) {
                     return System.Windows.DOM.CreateElement$1("a", className);
                 },
                 button: function (className) {
                     return System.Windows.DOM.CreateElement$1("button", className);
+                },
+                ById: function (id) {
+                    return $(document.getElementById(id));
                 },
                 CreateElement: function (tagName) {
                     return $(document.createElement(tagName));
@@ -3400,9 +3401,17 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
                     if (className === void 0) { className = null; }
                     return System.Windows.DOM.CreateElement$1("label", className);
                 },
+                li: function (className) {
+                    if (className === void 0) { className = null; }
+                    return System.Windows.DOM.CreateElement$1("li", className);
+                },
                 textarea: function (className) {
                     if (className === void 0) { className = null; }
                     return System.Windows.DOM.CreateElement$1("textarea", className);
+                },
+                ul: function (className) {
+                    if (className === void 0) { className = null; }
+                    return System.Windows.DOM.CreateElement$1("ul", className);
                 }
             }
         }
@@ -4884,6 +4893,46 @@ setTimeout(function(){
 
 },0);
 
+
+
+            }
+        }
+    });
+
+    Bridge.define("Bridge.CustomUIMarkup.Libraries.viewerjs.Viewer", {
+        inherits: [System.Windows.FrameworkElement],
+        fields: {
+            _wrapper: null
+        },
+        ctors: {
+            ctor: function () {
+                this.$initialize();
+                System.Windows.FrameworkElement.ctor.call(this);
+                this.addBeforeConnectToParent(Bridge.fn.cacheBind(this, this.InitWrapper));
+                this.addAfterAddChild(Bridge.fn.cacheBind(this, this.CreateImage));
+            }
+        },
+        methods: {
+            InitDOM: function () {
+                this._root = System.Windows.DOM.ul();
+            },
+            CreateImage: function (element) {
+                System.Windows.DOM.li().appendTo(this._root).append(element._root);
+            },
+            InitWrapper: function () {
+                // ReSharper disable once UnusedVariable
+                var root = this._root.get(0);
+                // ReSharper disable once UnusedVariable
+                var me = this;
+
+                
+
+setTimeout(function(){
+
+    var options = {};
+    me._wrapper = new Viewer(root, options);
+
+},0);
 
 
             }
