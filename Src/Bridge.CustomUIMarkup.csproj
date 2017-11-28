@@ -109,6 +109,12 @@
     <Compile Include="Common\XmlIntellisenseInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Lib\viewerjs\viewer.common.js" />
+    <Content Include="Lib\viewerjs\viewer.css" />
+    <Content Include="Lib\viewerjs\viewer.esm.js" />
+    <Content Include="Lib\viewerjs\viewer.js" />
+    <Content Include="Lib\viewerjs\viewer.min.css" />
+    <Content Include="Lib\viewerjs\viewer.min.js" />
     <Content Include="Lib\Swiper\swiper.js" />
     <Content Include="Lib\Swiper\swiper.css" />
     <None Include="bridge.json" />
