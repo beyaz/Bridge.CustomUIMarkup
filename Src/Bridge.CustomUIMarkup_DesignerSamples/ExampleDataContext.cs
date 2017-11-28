@@ -36,13 +36,32 @@ namespace Bridge.CustomUIMarkup_DesignerSamples
                     XmlTemplate =
                         @"
 
+
+
 <div>
-<ImageGalery>
-	<img src='img/carousel_1.jpg' Height='30' Width='30' />
-  <img src='img/carousel_1.jpg' Height='30' Width='30' />
-  <img src='img/carousel_1.jpg' Height='30' Width='30' />
-</ImageGalery>
+  <ImageGalery>
+      <img src='img/carousel_1.jpg'  />
+      <img src='img/carousel_1.jpg'  />
+      <img src='img/carousel_1.jpg'  />
+      <img src='img/carousel_1.jpg'  />
+      <img src='img/carousel_1.jpg'  />
+      <img src='img/carousel_1.jpg'  />
+      <img src='img/carousel_1.jpg'  />
+      <img src='img/carousel_1.jpg'  />
+      <img src='img/carousel_1.jpg'  />
+      <img src='img/carousel_1.jpg'  />
+      <img src='img/carousel_1.jpg'  />
+      <img src='img/carousel_1.jpg'  />
+      <img src='img/carousel_1.jpg'  />
+      <img src='img/carousel_1.jpg'  />
+      <img src='img/carousel_1.jpg'  />
+      <img src='img/carousel_1.jpg'  />
+      <img src='img/carousel_1.jpg'  />
+  </ImageGalery>
 </div>
+
+
+
 
 
 "

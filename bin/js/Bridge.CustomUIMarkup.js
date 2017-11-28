@@ -3668,7 +3668,7 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
                 System.ComponentModel.Bag.ctor.call(this);
                 this.Examples = function (_o1) {
                         var $t;
-                        _o1.add(($t = new Bridge.CustomUIMarkup_DesignerSamples.ExampleInfo(), $t.Name = "Viewverjs", $t.XmlTemplate = "\r\n\r\n<div>\r\n<ImageGalery>\r\n\t<img src='img/carousel_1.jpg' Height='30' Width='30' />\r\n  <img src='img/carousel_1.jpg' Height='30' Width='30' />\r\n  <img src='img/carousel_1.jpg' Height='30' Width='30' />\r\n</ImageGalery>\r\n</div>\r\n\r\n\r\n", $t));
+                        _o1.add(($t = new Bridge.CustomUIMarkup_DesignerSamples.ExampleInfo(), $t.Name = "Viewverjs", $t.XmlTemplate = "\r\n\r\n\r\n\r\n<div>\r\n  <ImageGalery>\r\n      <img src='img/carousel_1.jpg'  />\r\n      <img src='img/carousel_1.jpg'  />\r\n      <img src='img/carousel_1.jpg'  />\r\n      <img src='img/carousel_1.jpg'  />\r\n      <img src='img/carousel_1.jpg'  />\r\n      <img src='img/carousel_1.jpg'  />\r\n      <img src='img/carousel_1.jpg'  />\r\n      <img src='img/carousel_1.jpg'  />\r\n      <img src='img/carousel_1.jpg'  />\r\n      <img src='img/carousel_1.jpg'  />\r\n      <img src='img/carousel_1.jpg'  />\r\n      <img src='img/carousel_1.jpg'  />\r\n      <img src='img/carousel_1.jpg'  />\r\n      <img src='img/carousel_1.jpg'  />\r\n      <img src='img/carousel_1.jpg'  />\r\n      <img src='img/carousel_1.jpg'  />\r\n      <img src='img/carousel_1.jpg'  />\r\n  </ImageGalery>\r\n</div>\r\n\r\n\r\n\r\n\r\n\r\n", $t));
                         _o1.add(($t = new Bridge.CustomUIMarkup_DesignerSamples.ExampleInfo(), $t.Name = "All", $t.XmlTemplate = "\r\n\r\n\r\n\r\n\r\n\r\n<ui.page.grid>\r\n   <ui.container>\r\n      <ui.text.menu.navbar FontSize='18'>\r\n         <left.menu>\r\n            <item>Project Name</item>\r\n         </left.menu>\r\n         <right.menu>\r\n            <item>Home</item>\r\n            <item>About</item>\r\n            <item>Contact</item>\r\n         </right.menu>\r\n      </ui.text.menu.navbar>\r\n      <ui.divider MarginBottom='10' />\r\n      <Carousel DataSource='img/carousel_1.jpg,img/carousel_2.jpg,img/carousel_3.jpg' />\r\n      <ui.divider MarginBottom='10' />\r\n\t  <ui.cards>\r\n\t  \r\n\t\t  <card>\r\n\t\t\t <ui.image Src='http://www.samsunkorkuciftligi.com/upload/20170314__2069208026.jpg' />\r\n\t\t\t <content Align='Center'>\r\n\t\t\t\t<Header Align='Center'>Motor Safari</Header>\r\n\t\t\t\t<description>Macera sizi bekliyor...</description>\r\n\t\t\t\t<ui.basic.button Text='İncele' MarginTop='11' AddClass='yellow' />\r\n\t\t\t </content>\r\n\t\t  </card>\r\n\t\t  \r\n\t\t  <card>\r\n\t\t\t <ui.image Src='http://www.samsunkorkuciftligi.com/upload/20170314__2069208026.jpg' />\r\n\t\t\t <content Align='Center'>\r\n\t\t\t\t<Header Align='Center'>Motor Safari</Header>\r\n\t\t\t\t<description>Macera sizi bekliyor...</description>\r\n\t\t\t\t<ui.basic.button Text='İncele' MarginTop='11' AddClass='yellow' />\r\n\t\t\t </content>\r\n\t\t  </card>\r\n\t\t  \r\n\t  </ui.cards>\r\n   </ui.container>\r\n</ui.page.grid>\r\n\r\n\r\n\r\n", $t));
                         _o1.add(($t = new Bridge.CustomUIMarkup_DesignerSamples.ExampleInfo(), $t.Name = "Carousel", $t.XmlTemplate = "\r\n\r\n\r\n<ui.container>\r\n    <Carousel DataSource='img/carousel_1.jpg,img/carousel_2.jpg,img/carousel_3.jpg' />\r\n</ui.container>\r\n\r\n", $t));
                         _o1.add(($t = new Bridge.CustomUIMarkup_DesignerSamples.ExampleInfo(), $t.Name = "Card", $t.XmlTemplate = "\r\n\r\n<ui.cards>\r\n\r\n    <card>\r\n\t    <ui.image Src='http://www.samsunkorkuciftligi.com/upload/20170314__2069208026.jpg'/>\r\n\t    <content Align='Center'>\r\n            <Header Align='Center' >Motor Safari</Header>\r\n            <description> Macera sizi bekliyor...</description>\r\n            <ui.basic.button Text='İncele' MarginTop='11' AddClass='yellow' />\r\n        </content>\t\r\n    </card>\r\n\r\n</ui.cards>\r\n", $t));
@@ -4915,7 +4915,7 @@ setTimeout(function(){
         },
         methods: {
             InitDOM: function () {
-                this._root = System.Windows.DOM.ul();
+                this._root = System.Windows.DOM.ul("pictures");
             },
             CreateImage: function (element) {
                 System.Windows.DOM.li().appendTo(this._root).append(element._root);
@@ -4925,6 +4925,10 @@ setTimeout(function(){
                 var root = this._root.get(0);
                 // ReSharper disable once UnusedVariable
                 var me = this;
+                var id = this["Id"];
+
+
+                var css = "\r\n.pictures {\r\n      margin: 0;\r\n      padding: 0;\r\n      list-style: none;\r\n      max-width: 30rem;\r\n    }\r\n\r\n    .pictures > li {\r\n      float: left;\r\n      width: 33.3%;\r\n      height: 33.3%;\r\n      margin: 0 -1px -1px 0;\r\n      border: 1px solid transparent;\r\n      overflow: hidden;\r\n    }\r\n\r\n    .pictures > li > img {\r\n      width: 100%;\r\n      cursor: -webkit-zoom-in;\r\n      cursor: zoom-in;\r\n    }\r\n";
 
                 
 
@@ -4933,7 +4937,19 @@ setTimeout(function(){
     var options = {};
     me._wrapper = new Viewer(root, options);
 
+
+
+
+
+$( '<style> '+css+'</style>' ).appendTo( 'head' );
+
 },0);
+
+
+
+
+
+
 
 
             }
