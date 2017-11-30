@@ -268,6 +268,26 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
         }
     });
 
+    Bridge.define("Bridge.CustomUIMarkup.Common.XmlHelper", {
+        statics: {
+            methods: {
+                GetRootNode: function (xmlString) {
+                    var $t;
+                    return ($t = Bridge.CustomUIMarkup.Common.XmlHelper.Parse(xmlString)) != null ? $t.firstChild : null;
+                },
+                Parse: function (xmlString) {
+                    try {
+                        return $.parseXML(xmlString);
+                    }
+                    catch (e) {
+                        e = System.Exception.create(e);
+                        throw new System.Xml.XmlException("XmlParseErrorOccured.", e);
+                    }
+                }
+            }
+        }
+    });
+
     Bridge.define("Bridge.CustomUIMarkup.Common.XmlIntellisenseInfo", {
         fields: {
             ChildrenTags: null,
@@ -1670,15 +1690,16 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
                 }
             },
             methods: {
-                GetRootNode: function (xmlString) {
+                Build$1: function (xmlTemplate, dataContext, caller) {
                     var $t;
-                    try {
-                        return ($t = $.parseXML(xmlString)) != null ? $t.firstChild : null;
-                    }
-                    catch (e) {
-                        e = System.Exception.create(e);
-                        throw new System.Xml.XmlException("XmlParseErrorOccured.", e);
-                    }
+                    var builder = ($t = new Bridge.CustomUIMarkup.UI.Builder(), $t.XmlString = xmlTemplate, $t.DataContext = dataContext, $t.Caller = caller, $t);
+                    return builder.Build();
+                },
+                Build: function (xmlTemplate, dataContext, caller) {
+                    var $t;
+                    var builder = ($t = new Bridge.CustomUIMarkup.UI.Builder(), $t._rootNode = xmlTemplate.Root, $t.DataContext = dataContext, $t.Caller = caller, $t);
+
+                    return builder.BuildNode(builder._rootNode);
                 },
                 IsUserDefinedTag: function (tag) {
                     return System.Linq.Enumerable.from(tag).contains(46) || System.Linq.Enumerable.from(tag).contains(45) || System.Linq.Enumerable.from(tag).contains(58);
@@ -1714,7 +1735,7 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
         },
         methods: {
             Build: function () {
-                var rootNode = (this._rootNode = Bridge.CustomUIMarkup.UI.Builder.GetRootNode(this.XmlString));
+                var rootNode = (this._rootNode = Bridge.CustomUIMarkup.Common.XmlHelper.GetRootNode(this.XmlString));
 
                 return this.BuildNode(rootNode);
             },
@@ -1958,6 +1979,72 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
                 }
 
                 instance._root.attr(name, value);
+            }
+        }
+    });
+
+    Bridge.define("Bridge.CustomUIMarkup.UI.Template", {
+        statics: {
+            fields: {
+                Cache: null
+            },
+            ctors: {
+                init: function () {
+                    this.Cache = new (System.Collections.Generic.Dictionary$2(System.String,Bridge.CustomUIMarkup.UI.Template))();
+                }
+            },
+            methods: {
+                RegisterAsXml: function (key, xmlTemplate) {
+                    var $t;
+                    var rootNode = Bridge.CustomUIMarkup.Common.XmlHelper.GetRootNode(xmlTemplate);
+
+                    var template = ($t = new Bridge.CustomUIMarkup.UI.Template(), $t._key = key, $t._xmlTemplate = xmlTemplate, $t._rootNode = rootNode, $t);
+
+                    Bridge.CustomUIMarkup.UI.Template.Cache.set(key, template);
+                },
+                RegisterAsXml$1: function (key, xmlTemplate) {
+                    Bridge.CustomUIMarkup.UI.Template.RegisterAsXml(Bridge.Reflection.getTypeFullName(key), xmlTemplate);
+                },
+                Register: function (type) {
+                    if (type == null) {
+                        throw new System.ArgumentNullException("type");
+                    }
+
+                    var resourceKey = (Bridge.Reflection.getTypeFullName(type) || "") + ".Template.xml";
+
+                    var templateXml = System.Reflection.Extensions.GetResource(Bridge.Reflection.getTypeAssembly(type), resourceKey, true);
+
+                    Bridge.CustomUIMarkup.UI.Template.RegisterAsXml(Bridge.Reflection.getTypeFullName(type), templateXml);
+                },
+                Get$1: function (key) {
+                    return Bridge.CustomUIMarkup.UI.Template.Get(Bridge.Reflection.getTypeFullName(key));
+                },
+                Get: function (key) {
+                    var template = { v : null };
+                    Bridge.CustomUIMarkup.UI.Template.Cache.tryGetValue(key, template);
+                    if (template.v == null) {
+                        throw new System.InvalidOperationException("TemplateNotFound. Key: " + (key || ""));
+                    }
+                    return template.v;
+                }
+            }
+        },
+        fields: {
+            _key: null,
+            _xmlTemplate: null,
+            _rootNode: null
+        },
+        props: {
+            Root: {
+                get: function () {
+                    return this._rootNode;
+                }
+            }
+        },
+        ctors: {
+            ctor: function () {
+                this.$initialize();
+
             }
         }
     });
@@ -3088,6 +3175,37 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
 
                 this.$initialize();
                 System.Exception.ctor.call(this, message, innerException);
+            }
+        }
+    });
+
+    Bridge.define("System.Reflection.Extensions", {
+        statics: {
+            methods: {
+                GetResource: function (assembly, name, throwOnError) {
+                    var resource = assembly.getManifestResourceDataAsBase64(name);
+
+                    if (resource == null) {
+                        if (throwOnError) {
+                            throw new System.InvalidOperationException("ResourceNotFound:" + (name || ""));
+                        }
+
+                        return null;
+                    }
+
+                    return System.Text.EncodingHelper.Base64Decode(resource);
+                }
+            }
+        }
+    });
+
+    Bridge.define("System.Text.EncodingHelper", {
+        statics: {
+            methods: {
+                Base64Decode: function (base64EncodedData) {
+                    var base64EncodedBytes = System.Convert.fromBase64String(base64EncodedData);
+                    return System.Text.Encoding.UTF8.GetString(base64EncodedBytes);
+                }
             }
         }
     });
@@ -5282,19 +5400,15 @@ $( '<style> '+css+'</style>' ).appendTo( 'head' );
                 "MetadataTimeInfoProperty": null,
                 TextProperty: null
             },
-            props: {
-                Template: {
-                    get: function () {
-                        return "\r\n<div class='comment'>\r\n\t<a class='avatar'>\r\n\t\t<img src='{AvatarImageUrl}' />\r\n\t\t</a>\r\n\t\t<div class='content'>\r\n\t\t\t<a class='author'>{Author}</a>\t\r\n\r\n            <div class='metadata'>\r\n\t\t\t\t<span>{MetadataTimeInfo}</span>\r\n\t\t\t</div>\r\n\t\t\t<div class='text' >{Text}</div>\r\n\t\t</div>\r\n\t</div>\r\n";
-                    }
-                }
-            },
             ctors: {
                 init: function () {
                     this["AvatarImageUrlProperty"] = System.Windows.DependencyProperty.Register("AvatarImageUrl", System.String, Bridge.CustomUIMarkup.Libraries.SemanticUI.comment);
                     this.AuthorProperty = System.Windows.DependencyProperty.Register("Author", System.String, Bridge.CustomUIMarkup.Libraries.SemanticUI.comment);
                     this["MetadataTimeInfoProperty"] = System.Windows.DependencyProperty.Register("MetadataTimeInfo", System.String, Bridge.CustomUIMarkup.Libraries.SemanticUI.comment);
                     this.TextProperty = System.Windows.DependencyProperty.Register("Text", System.String, Bridge.CustomUIMarkup.Libraries.SemanticUI.comment);
+                },
+                ctor: function () {
+                    Bridge.CustomUIMarkup.UI.Template.Register(Bridge.CustomUIMarkup.Libraries.SemanticUI.comment);
                 }
             }
         },
@@ -5339,11 +5453,9 @@ $( '<style> '+css+'</style>' ).appendTo( 'head' );
         },
         ctors: {
             ctor: function () {
-                var $t;
                 this.$initialize();
                 Bridge.CustomUIMarkup.Libraries.SemanticUI.ElementBase.ctor.call(this);
-                var builder = ($t = new Bridge.CustomUIMarkup.UI.Builder(), $t.XmlString = Bridge.CustomUIMarkup.Libraries.SemanticUI.comment.Template, $t.DataContext = this, $t.Caller = this, $t);
-                this._root = builder.Build()._root;
+                this._root = Bridge.CustomUIMarkup.UI.Builder.Build(Bridge.CustomUIMarkup.UI.Template.Get$1(Bridge.CustomUIMarkup.Libraries.SemanticUI.comment), this, this)._root;
             }
         }
     });

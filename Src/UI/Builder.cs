@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
+using System.Reflection;
 using System.Windows;
 using System.Windows.Data;
 using System.Xml;
@@ -13,8 +14,96 @@ using Bridge.jQuery2;
 
 namespace Bridge.CustomUIMarkup.UI
 {
+    public class Template
+    {
+        string _key;
+        string _xmlTemplate;
+        XmlNode _rootNode;
+
+        public XmlNode Root => _rootNode;
+
+        private Template()
+        {
+            
+        }
+
+        static readonly Dictionary<string, Template> Cache = new Dictionary<string, Template>();
+
+        public static void RegisterAsXml(string key, string xmlTemplate)
+        {
+            var rootNode = XmlHelper.GetRootNode(xmlTemplate);
+
+            var template = new Template
+            {
+                _key = key,
+                _xmlTemplate = xmlTemplate,
+                _rootNode = rootNode
+            };
+
+            Cache[key] = template;
+        }
+
+
+        public static void Register(Type type)
+        {
+            if (type == null)
+            {
+                throw new ArgumentNullException(nameof(type));
+            }
+
+            var resourceKey = type.FullName + ".Template.xml";
+
+            var templateXml =  type.Assembly.GetResource(resourceKey, true);
+
+            RegisterAsXml(type.FullName, templateXml);
+        }
+
+        public static void RegisterAsXml(Type key, string xmlTemplate)
+        {
+             RegisterAsXml(key.FullName,xmlTemplate);
+        }
+        public static Template Get(Type key)
+        {
+            return Get(key.FullName);
+        }
+        public static Template Get(string key)
+        {
+            Template template = null;
+            Cache.TryGetValue(key, out template);
+            if (template == null)
+            {
+                throw new InvalidOperationException("TemplateNotFound. Key: "+key);
+            }
+            return template;
+        }
+    }
+
+   
     public class Builder
     {
+        public static FrameworkElement Build(string xmlTemplate,object dataContext,object caller)
+        {
+            var builder = new Builder
+            {
+                XmlString = xmlTemplate,
+                DataContext = dataContext,
+                Caller = caller
+            };
+            return builder.Build();
+        }
+
+        public static FrameworkElement Build(Template xmlTemplate, object dataContext, object caller)
+        {
+            var builder = new Builder
+            {
+                _rootNode= xmlTemplate.Root,
+                DataContext = dataContext,
+                Caller = caller
+            };
+
+            return builder.BuildNode(builder._rootNode);
+        }
+
         #region Fields
         public string XmlString;
 
@@ -53,7 +142,7 @@ namespace Bridge.CustomUIMarkup.UI
         #region Public Methods
         public FrameworkElement Build()
         {
-            var rootNode = _rootNode = GetRootNode(XmlString);
+            var rootNode = _rootNode = XmlHelper.GetRootNode(XmlString);
 
             return BuildNode(rootNode);
         }
@@ -75,17 +164,7 @@ namespace Bridge.CustomUIMarkup.UI
         #endregion
 
         #region Methods
-        static XmlNode GetRootNode(string xmlString)
-        {
-            try
-            {
-                return jQuery.ParseXML(xmlString).As<XmlDocument>()?.FirstChild;
-            }
-            catch (Exception e)
-            {
-                throw new XmlException("XmlParseErrorOccured.", e);
-            }
-        }
+        
 
         static bool IsUserDefinedTag(string tag)
         {

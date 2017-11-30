@@ -1,0 +1,13 @@
+﻿<div class='comment'>
+  <a class='avatar'>
+    <img src='{AvatarImageUrl}' />
+  </a>
+  <div class='content'>
+    <a class='author'>{Author}</a>
+
+    <div class='metadata'>
+      <span>{MetadataTimeInfo}</span>
+    </div>
+    <div class='text'>{Text}</div>
+  </div>
+</div>

@@ -37,6 +37,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include=".Net Override\System.ComponentModel\TypeConverterAttribute.cs" />
+    <Compile Include=".Net Override\System.Reflection\Extensions.cs" />
     <Compile Include=".Net Override\System.Windows.Controls\BooleanToVisibilityConverter.cs" />
     <Compile Include=".Net Override\System.Windows.Controls\Orientation.cs" />
     <Compile Include=".Net Override\System.Windows.Controls\SplitPanel.cs" />
@@ -60,7 +61,10 @@
     <Compile Include="Bridge.CustomUIMarkup_DesignerSamples\ExampleDataContext.cs" />
     <Compile Include="Bridge.CustomUIMarkup_DesignerSamples\ExampleInfo.cs" />
     <Compile Include="Bridge.jQuery2\Extensions.cs" />
+    <Compile Include=".Net Override\System.Text\EncodingHelper.cs" />
     <Compile Include="Common\FileUtil.cs" />
+    <Compile Include="Common\XmlHelper.cs" />
+    <Compile Include="Libraries\SemanticUI\comment.cs" />
     <Compile Include="Libraries\SemanticUI\ui_rating.cs" />
     <Compile Include="Libraries\viewerjs\Viewer.cs" />
     <Compile Include="Tokenizers\Tokenizer.cs" />
@@ -111,6 +115,7 @@
     <Compile Include="Common\XmlIntellisenseInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Libraries\SemanticUI\comment.Template.xml" />
     <Content Include="Lib\viewerjs\viewer.common.js" />
     <Content Include="Lib\viewerjs\viewer.css" />
     <Content Include="Lib\viewerjs\viewer.esm.js" />
