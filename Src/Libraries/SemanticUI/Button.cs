@@ -6,7 +6,7 @@ namespace Bridge.CustomUIMarkup.Libraries.SemanticUI
     {
         #region Static Fields
         public static readonly DependencyProperty TextProperty = DependencyProperty.Register("Text", typeof(string), typeof(ui_button), new PropertyMetadata(OnInnerHTMLChanged));
-        public static readonly DependencyProperty IsActiveProperty = DependencyProperty.Register("IsActive", typeof(bool), typeof(ui_button), new PropertyMetadata(IsActiveChanged));
+        public static readonly DependencyProperty IsActiveProperty = DependencyProperty.Register(nameof(IsActive), typeof(bool), typeof(ui_button), new PropertyMetadata(IsActiveChanged));
         #endregion
 
         #region Public Properties

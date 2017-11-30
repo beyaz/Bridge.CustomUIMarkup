@@ -30,6 +30,105 @@ namespace Bridge.CustomUIMarkup_DesignerSamples
         {
             Examples = new List<ExampleInfo>
             {
+
+                new ExampleInfo
+                {
+                    Name = "Add review",
+                    XmlTemplate =
+                        @"
+
+
+<ui.segment Margin='11'>
+	<ui.form >
+		<ui.header.2>Add a review</ui.header.2>
+
+		<field Label='your Rating'>
+			<ui_rating  MaxRate='5'  />
+		</field>
+
+		<field Label='Name' >
+			<textBox  IsMandatory='true' />
+		</field>
+
+		<field Label='Your review'>
+			<textArea  IsMandatory='true' />
+		</field>
+
+		<ui.basic.button> Gönder
+		</ui.basic.button>
+
+	</ui.form>
+
+</ui.segment>
+
+"
+                },
+
+
+
+                new ExampleInfo
+                {
+                    Name = "comments",
+                    XmlTemplate =
+                        @"
+
+<ui_comments>
+	<comment AvatarImageUrl='img/AvatarImageSample.jpg'  
+             Author='adana'
+             MetadataTimeInfo='11 agustos Pazar 5:44 AM'
+             Text='uzuncana bir comment br  sdfsdfsdfsgggguzuncana bir comment br  sdfsdfsdfsgggguzuncana bir comment br  sdfsdfsdfsgggguzuncana bir comment br  sdfsdfsdfsgggguzuncana bir comment br  sdfsdfsdfsgggguzuncana bir comment br  sdfsdfsdfsgggguzuncana bir comment br  sdfsdfsdfsgggg'
+             />
+  
+  <comment AvatarImageUrl='img/AvatarImageSample.jpg'  
+             Author='ahmet'
+             MetadataTimeInfo='11 agustos Pazar 5:44 AM'
+             Text='uzuncana bir comment br  sdfsdfsdfsgggguzuncana bir comment br  sdfsdfsdfsgggguzuncana bir comment br  sdfsdfsdfsgggguzuncana bir comment br  sdfsdfsdfsgggguzuncana bir comment br  sdfsdfsdfsgggguzuncana bir comment br  sdfsdfsdfsgggguzuncana bir comment br  sdfsdfsdfsgggg'
+             />
+    
+   <comment AvatarImageUrl='img/AvatarImageSample.jpg'  
+             Author='xyz'
+             MetadataTimeInfo='11 agustos Pazar 5:44 AM'
+             Text='uzuncana bir comment br  sdfsdfsdfsgggguzuncana bir comment br  sdfsdfsdfsgggguzuncana bir comment br  sdfsdfsdfsgggguzuncana bir comment br  sdfsdfsdfsgggguzuncana bir comment br  sdfsdfsdfsgggguzuncana bir comment br  sdfsdfsdfsgggguzuncana bir comment br  sdfsdfsdfsgggg'
+             />
+  
+</ui_comments>
+
+"
+                },
+
+                new ExampleInfo
+                {
+                    Name = "Tabs",
+                    XmlTemplate =
+                        @"
+
+
+
+
+
+
+
+<div Padding='11'>
+	<ui_top_attached_tabular_menu>
+		<Tab Header ='Header1' AddClass='active'>
+  			<ui.header.3> Product description</ui.header.3>
+          	<p>Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Vestibulum tortor quam, feugiat vitae, ultricies eget, tempor sit amet, ante. Donec eu libero sit amet quam egestas semper. Aenean ultricies mi vitae est. Mauris placerat eleifend leo.</p>
+  		</Tab>  
+  
+  		<Tab Header ='Header2'> 
+  			Write Content here 2
+  		</Tab> 
+	</ui_top_attached_tabular_menu> 
+</div>
+
+
+
+
+
+
+
+"
+                },
                 new ExampleInfo
                 {
                     Name = "Viewverjs",

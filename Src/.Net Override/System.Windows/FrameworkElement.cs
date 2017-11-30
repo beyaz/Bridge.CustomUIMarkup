@@ -88,10 +88,11 @@ namespace System.Windows
             var value = this[dp.Name];
             if (value == null)
             {
-                if (dp.PropertyMetadata.DefaultValue != null)
+                if (dp.PropertyMetadata?.DefaultValue != null)
                 {
                     return dp.PropertyMetadata.DefaultValue;
                 }
+
                 if (dp.PropertyType.IsEnum)
                 {
                     return Enum.Parse(dp.PropertyType, "0");
@@ -130,7 +131,7 @@ namespace System.Windows
             {
                 var me = (FrameworkElement) d;
 
-                me._root.Attr(htmlAttribute, (string) e.NewValue);
+                me._root.Attr(htmlAttribute,  e.NewValue?.ToString());
             });
         }
 
@@ -154,12 +155,28 @@ namespace System.Windows
             });
         }
 
-        
-       
+        protected static PropertyMetadata AddCssClassOnTrueElseRemove(string cssClass)
+        {
+            return new PropertyMetadata((d, e) =>
+            {
+                var me = (FrameworkElement)d;
+
+                if (e.NewValue.ToBooleanNullable() == true)
+                {
+                    me._root.AddClass(cssClass);
+                    return;
+                }
+
+                me._root.RemoveClass(cssClass);
+            });
+        }
 
         
 
-        
+
+
+
+
         #endregion
 
         #region BorderProperty

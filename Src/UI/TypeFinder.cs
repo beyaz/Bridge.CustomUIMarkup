@@ -15,6 +15,14 @@ namespace Bridge.CustomUIMarkup.UI
         #region Static Fields
         static readonly List<XmlIntellisenseInfo> _tags = new List<XmlIntellisenseInfo>
         {
+            new XmlIntellisenseInfo("ui_rating", typeof(ui_rating)),
+            new XmlIntellisenseInfo("Rating", typeof(ui_rating)),
+            new XmlIntellisenseInfo("comment", typeof(comment)),
+            new XmlIntellisenseInfo("ui_comments", typeof(ui_comments)),
+
+
+
+
             new XmlIntellisenseInfo("ImageGalery", typeof(Viewer)),
             new XmlIntellisenseInfo("swiper.slider", typeof(Slider)),
             new XmlIntellisenseInfo("div", typeof(FrameworkElement_div)),
@@ -31,7 +39,7 @@ namespace Bridge.CustomUIMarkup.UI
             new XmlIntellisenseInfo("ui.text.menu.navbar", typeof(ui_text_menu_navbar)),
 
             new XmlIntellisenseInfo("ui.button", typeof(ui_button)),
-            new XmlIntellisenseInfo("TabPanel", typeof(TabPanel)),
+            new XmlIntellisenseInfo("ui_top_attached_tabular_menu", typeof(ui_top_attached_tabular_menu)),
             new XmlIntellisenseInfo("Tab", typeof(TabItem)),
             new XmlIntellisenseInfo("card", typeof(card)),
             new XmlIntellisenseInfo("ui.card", typeof(ui_card)),

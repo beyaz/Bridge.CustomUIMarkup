@@ -1,45 +1,37 @@
 ﻿using System.Windows;
-using System.Windows.Markup;
 using Bridge.jQuery2;
 
 namespace Bridge.CustomUIMarkup.Libraries.SemanticUI
 {
-    public class TabItem : FrameworkElement, IAddChild
+    public class TabItem : ElementBase
     {
         #region Fields
         internal jQuery _headerElement, _contentElement;
         #endregion
 
         #region Public Methods
-        public new void Add(FrameworkElement element)
-        {
-            element.Root.AppendTo(_contentElement);
-        }
-
         public override void InitDOM()
         {
             _headerElement = DOM.a("item").Attr("data-tab", Id);
 
-            // BindPropertyToInnerHTML(nameof(Header), _headerElement);
-
-            _contentElement = DOM.div("ui bottom attached tab segment").Attr("data-tab", Id);
+            _root = _contentElement = DOM.div("ui bottom attached tab segment").Attr("data-tab", Id);
         }
         #endregion
 
-        #region string Header
-        string _header;
+        #region HeaderProperty
+        public static readonly DependencyProperty HeaderProperty = DependencyProperty.Register(nameof(Header), typeof(string), typeof(TabItem), new PropertyMetadata(OnHeaderChanged));
 
         public string Header
         {
-            get { return _header; }
-            set
-            {
-                if (_header != value)
-                {
-                    _header = value;
-                    OnPropertyChanged("Header");
-                }
-            }
+            get { return (string) GetValue(HeaderProperty); }
+            set { SetValue(HeaderProperty, value); }
+        }
+
+        static void OnHeaderChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            var me = (TabItem) d;
+
+            me._headerElement.Html((string) e.NewValue);
         }
         #endregion
     }
