@@ -1,37 +1,67 @@
-﻿using System.Windows;
-using Bridge.jQuery2;
+﻿using System;
+using System.Windows;
 
 namespace Bridge.CustomUIMarkup.Libraries.SemanticUI
 {
-    public class TabItem : ElementBase
+    public class TabItem : ContentControl
     {
-        #region Fields
-        internal jQuery _headerElement, _contentElement;
+        #region Constructors
+        public TabItem()
+        {
+            AfterTemplateApplied += OnAfterTemplateApplied;
+        }
         #endregion
 
-        #region Public Methods
-        public override void InitDOM()
-        {
-            _headerElement = DOM.a("item").Attr("data-tab", Id);
+        #region Public Properties
+        public override string DefaultTemplateAsXml => "<div>" +
+                                                       "    <a class = 'item' data-tab='{Id}' >{Header}</a>" +
+                                                       "    <div class = 'ui bottom attached tab segment' data-tab = '{Id}' >" +
+                                                       "        <ContentPresenter />" +
+                                                       "    </div>" +
+                                                       "</div>";
+        #endregion
 
-            _root = _contentElement = DOM.div("ui bottom attached tab segment").Attr("data-tab", Id);
+        #region Methods
+        void OnAfterTemplateApplied()
+        {
+            _contentPresenter = (ContentPresenter) GetVisualChildAt(1).GetVisualChildAt(0);
         }
         #endregion
 
         #region HeaderProperty
-        public static readonly DependencyProperty HeaderProperty = DependencyProperty.Register(nameof(Header), typeof(string), typeof(TabItem), new PropertyMetadata(OnHeaderChanged));
+        public static readonly DependencyProperty HeaderProperty = DependencyProperty.Register(nameof(Header), typeof(string), typeof(TabItem));
 
         public string Header
         {
             get { return (string) GetValue(HeaderProperty); }
             set { SetValue(HeaderProperty, value); }
         }
+        #endregion
 
-        static void OnHeaderChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        #region bool IsActive
+        public static readonly DependencyProperty IsActiveProperty = DependencyProperty.Register(
+            "IsActive", typeof(bool), typeof(TabItem), new PropertyMetadata(default(bool), OnIsActiveChanged));
+
+        static void OnIsActiveChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            var me = (TabItem) d;
+            var tabItem = (TabItem) d;
 
-            me._headerElement.Html((string) e.NewValue);
+            if (e.NewValue.ToBoolean())
+            {
+                tabItem.GetVisualChildAt(0).Class = "item active";
+                tabItem.GetVisualChildAt(1).Class = "ui bottom attached tab segment active";
+            }
+            else
+            {
+                tabItem.GetVisualChildAt(0).Class = "item";
+                tabItem.GetVisualChildAt(1).Class = "ui bottom attached tab segment";
+            }
+        }
+
+        public bool IsActive
+        {
+            get { return (bool) GetValue(IsActiveProperty); }
+            set { SetValue(IsActiveProperty, value); }
         }
         #endregion
     }

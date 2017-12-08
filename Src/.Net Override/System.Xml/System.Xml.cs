@@ -69,6 +69,9 @@ namespace System.Xml
         [Name("nodeName")]
         public string Name { get; set; }
 
+        [Name("parentNode")]
+        public XmlNode ParentNode { get; set; }
+
         [Name("nodeType")]
         public NodeType NodeType { get; }
         #endregion

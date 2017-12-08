@@ -3,7 +3,7 @@ using System.Windows;
 
 namespace Bridge.CustomUIMarkup.Libraries.SemanticUI
 {
-    public class ElementBase : FrameworkElement
+    public class ElementBase : HtmlElement
     {
         #region SizeProperty
         public static readonly DependencyProperty SizeProperty = DependencyProperty.Register(nameof(Size), typeof(Size), typeof(ElementBase), new PropertyMetadata(OnSizeChanged));
@@ -91,32 +91,7 @@ namespace Bridge.CustomUIMarkup.Libraries.SemanticUI
        
     }
 
-     class card: ElementBase
-    {
-        protected override string HtmlClassName => "card";
-    }
-     class ui_card : ElementBase
-    {
-        protected override string HtmlClassName => "ui card";
-    }
-    class ui_cards : ElementBase
-    {
-        protected override string HtmlClassName => "ui cards";
-    }
-    public class content : ElementBase
-    {
-
-    }
-    public class ExtraContent : ElementBase
-    {
-        protected override string HtmlClassName => "extra content";
-    }
-    
-
-    public class description : ElementBase
-    {
-        
-    }
+     
 
 
 

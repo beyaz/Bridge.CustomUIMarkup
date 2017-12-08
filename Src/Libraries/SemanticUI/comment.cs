@@ -1,29 +1,32 @@
 ﻿using System.Windows;
-using Bridge.CustomUIMarkup.UI;
+using System.Windows.Controls;
 
 namespace Bridge.CustomUIMarkup.Libraries.SemanticUI
 {
-    class comment : ElementBase
+    class comment : Control
     {
-        static comment()
-        {
-            Template.Register(typeof(comment));
-        }
-
-        protected override string HtmlClassName => "comment";
-
-        public comment()
-        {
-            _root = Builder.Build(Template.Get(typeof(comment)), this, this)._root;
-        }
-
+        #region Public Properties
+        public override string DefaultTemplateAsXml =>
+            "<div class='comment'>" +
+            "  <a class='avatar'>" +
+            "    <img src='{" + nameof(AvatarImageUrl) + "}' />" +
+            "  </a>" +
+            "  <div class='content'>" +
+            "    <a class='author'>{" + nameof(Author) + "}</a>" +
+            "    <div class='metadata'>" +
+            "      <span>{" + nameof(MetadataTimeInfo) + "}</span>" +
+            "    </div>" +
+            "    <div class='text'>{" + nameof(Text) + "}</div>" +
+            "  </div>" +
+            "</div>";
+        #endregion
 
         #region AvatarImageUrlProperty
         public static readonly DependencyProperty AvatarImageUrlProperty = DependencyProperty.Register(nameof(AvatarImageUrl), typeof(string), typeof(comment));
 
         public string AvatarImageUrl
         {
-            get { return (string)GetValue(AvatarImageUrlProperty); }
+            get { return (string) GetValue(AvatarImageUrlProperty); }
             set { SetValue(AvatarImageUrlProperty, value); }
         }
         #endregion
@@ -33,7 +36,7 @@ namespace Bridge.CustomUIMarkup.Libraries.SemanticUI
 
         public string Author
         {
-            get { return (string)GetValue(AuthorProperty); }
+            get { return (string) GetValue(AuthorProperty); }
             set { SetValue(AuthorProperty, value); }
         }
         #endregion
@@ -43,7 +46,7 @@ namespace Bridge.CustomUIMarkup.Libraries.SemanticUI
 
         public string MetadataTimeInfo
         {
-            get { return (string)GetValue(MetadataTimeInfoProperty); }
+            get { return (string) GetValue(MetadataTimeInfoProperty); }
             set { SetValue(MetadataTimeInfoProperty, value); }
         }
         #endregion
@@ -53,7 +56,7 @@ namespace Bridge.CustomUIMarkup.Libraries.SemanticUI
 
         public string Text
         {
-            get { return (string)GetValue(TextProperty); }
+            get { return (string) GetValue(TextProperty); }
             set { SetValue(TextProperty, value); }
         }
         #endregion

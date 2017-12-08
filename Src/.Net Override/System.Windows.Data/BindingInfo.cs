@@ -4,6 +4,9 @@ namespace System.Windows.Data
 {
     public class BindingInfo
     {
+        public IValueConverter Converter { get; set; }
+
+
         #region Public Properties
         public BindingMode BindingMode { get; set; }
 
@@ -112,7 +115,15 @@ namespace System.Windows.Data
 
         public virtual void UpdateTarget()
         {
-            TargetPath.SetPropertyValue(SourcePath.GetPropertyValue());
+            var value = SourcePath.GetPropertyValue();
+
+            if (Converter != null)
+            {
+                value = Converter.Convert(value, null, null, null);
+            }
+
+
+            TargetPath.SetPropertyValue(value);
         }
         #endregion
 

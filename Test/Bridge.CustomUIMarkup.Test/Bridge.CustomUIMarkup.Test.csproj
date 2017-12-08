@@ -38,6 +38,9 @@
   <ItemGroup>
     <Compile Include="App.cs" />
     <Compile Include="BindingInfoTest.cs" />
+    <Compile Include="Libraries.SemanticUI\ItemsControlTests.cs" />
+    <Compile Include="System.Windows\ContentControlTest.cs" />
+    <Compile Include="Libraries.SemanticUI\TabItemTest.cs" />
     <Compile Include="Tokenizers\TokenizerTest.cs" />
     <Compile Include="Libraries.SemanticUI\InputTextTest.cs" />
     <Compile Include="BuilderTest.cs" />

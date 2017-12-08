@@ -1,30 +1,26 @@
 ﻿using System;
-using System.Text;
 using System.Windows;
-using Bridge.Html5;
-using Bridge.jQuery2;
+using System.Windows.Controls;
 using Retyped;
 
 namespace Bridge.CustomUIMarkup.Libraries.SemanticUI
 {
-    class ui_rating : ElementBase
+    class ui_rating : Control
     {
-        protected override string HtmlClassName => "ui rating";
+        #region Static Fields
+        public static readonly DependencyProperty IconIsStarProperty =
+            DependencyProperty.Register(nameof(IconIsStar), typeof(bool), typeof(ui_rating), new PropertyMetadata(true));
+        #endregion
 
-
+        #region Constructors
         public ui_rating()
         {
-            BeforeConnectToParent += OnBeforeConnectToParent;
+            BeforeConnectToLogicalParent += parent => { _root.As<semantic_ui.JQuery>().rating(); };
         }
-
-        void OnBeforeConnectToParent()
-        {
-            _root.As<semantic_ui.JQuery>().rating();
-        }
-
+        #endregion
 
         #region Public Properties
-        public static readonly DependencyProperty IconIsStarProperty = DependencyProperty.Register(nameof(IconIsStar), typeof(bool), typeof(ui_rating), AddCssClassOnTrueElseRemove("star"));
+        public override string DefaultTemplateAsXml => "<div class='ui star rating'  data-max-rating = '{MaxRate}' data-rating ='{Rate}'  />";
 
         public bool? IconIsStar
         {
@@ -34,7 +30,8 @@ namespace Bridge.CustomUIMarkup.Libraries.SemanticUI
         #endregion
 
         #region MaxRate
-        public static readonly DependencyProperty MaxRateProperty = DependencyProperty.Register(nameof(MaxRate), typeof(int?), typeof(ui_rating), CreateHtmlAttributeUpdater("data-max-rating"));
+        public static readonly DependencyProperty MaxRateProperty =
+            DependencyProperty.Register(nameof(MaxRate), typeof(int?), typeof(ui_rating), CreateHtmlAttributeUpdater("data-max-rating"));
 
         public int? MaxRate
         {
@@ -44,7 +41,8 @@ namespace Bridge.CustomUIMarkup.Libraries.SemanticUI
         #endregion
 
         #region Rate
-        public static readonly DependencyProperty RateProperty = DependencyProperty.Register(nameof(Rate), typeof(int?), typeof(ui_rating), CreateHtmlAttributeUpdater("data-rating"));
+        public static readonly DependencyProperty RateProperty =
+            DependencyProperty.Register(nameof(Rate), typeof(int?), typeof(ui_rating), CreateHtmlAttributeUpdater("data-rating"));
 
         public int? Rate
         {
@@ -52,12 +50,5 @@ namespace Bridge.CustomUIMarkup.Libraries.SemanticUI
             set { SetValue(RateProperty, value); }
         }
         #endregion
-    }
-
-
-
-    class ui_comments : ElementBase
-    {
-        protected override string HtmlClassName => "ui comments";
     }
 }

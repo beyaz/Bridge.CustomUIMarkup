@@ -1,38 +1,40 @@
 ﻿using System;
 using System.Windows;
+using System.Windows.Controls;
 using Bridge.CustomUIMarkup.Common;
 using Bridge.jQuery2;
 
 namespace Bridge.CustomUIMarkup.Libraries.SemanticUI
 {
-    public class InputText : ElementBase
+    public class InputText : Control
     {
-        #region Fields
-        protected jQuery _inputElement;
-        #endregion
-
         #region Constructors
         public InputText()
         {
-            AfterInitDOM += CreateInputElement;
-            AfterInitDOM += AttachEvents;
+            BeforeConnectToLogicalParent += parent => { AttachEvents(); };
         }
         #endregion
 
         #region Public Properties
         public bool AllowOnlyNumericInputs { get; set; }
+
+        public override string DefaultTemplateAsXml
+        {
+            get
+            {
+                return
+                    "<div class='ui input'>" +
+                    "   <input type='text' />" +
+                    "</div>";
+            }
+        }
         #endregion
 
         #region Properties
-        protected override string HtmlClassName => "ui input";
+        protected jQuery _inputElement => GetVisualChildAt(0).Root;
         #endregion
 
         #region Methods
-        protected internal virtual void CreateInputElement()
-        {
-            _inputElement = DOM.input("text").AppendTo(_root);
-        }
-
         void AttachEvents()
         {
             _inputElement.FocusOut(OnFocusOut);
@@ -41,7 +43,7 @@ namespace Bridge.CustomUIMarkup.Libraries.SemanticUI
 
         void DisableNonNumericValues(jQueryKeyboardEvent e)
         {
-            if (e.Which != 8 && e.Which != 0 && (e.Which < 48 || e.Which >  57))
+            if (e.Which != 8 && e.Which != 0 && (e.Which < 48 || e.Which > 57))
             {
                 e.PreventDefault();
             }
@@ -57,9 +59,6 @@ namespace Bridge.CustomUIMarkup.Libraries.SemanticUI
             if (AllowOnlyNumericInputs)
             {
                 DisableNonNumericValues(e);
-                if (e.IsDefaultPrevented())
-                {
-                }
             }
         }
         #endregion

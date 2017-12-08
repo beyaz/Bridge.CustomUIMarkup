@@ -4,25 +4,31 @@ namespace Bridge.CustomUIMarkup.Libraries.SemanticUI
 {
     public class TextArea : InputText
     {
-        #region Methods
-        protected internal override void CreateInputElement()
+        #region Public Properties
+        public override string DefaultTemplateAsXml
         {
-            _inputElement = DOM.textarea().AppendTo(_root);
+            get
+            {
+                return
+                    "<div class='ui input'>" +
+                    "   <textarea />" +
+                    "</div>";
+            }
         }
         #endregion
 
         #region RowsProperty
-        public static readonly DependencyProperty RowsProperty =DependencyProperty.Register(nameof(Rows), typeof(int?),typeof(TextArea), new PropertyMetadata(OnRowsChanged));
+        public static readonly DependencyProperty RowsProperty = DependencyProperty.Register(nameof(Rows), typeof(int?), typeof(TextArea), new PropertyMetadata(OnRowsChanged));
 
         public int? Rows
         {
-            get { return (int?)GetValue(RowsProperty); }
-            set { SetValue(RowsProperty,value); }
+            get { return (int?) GetValue(RowsProperty); }
+            set { SetValue(RowsProperty, value); }
         }
 
         static void OnRowsChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            var me = (TextArea)d;
+            var me = (TextArea) d;
             var value = e.NewValue as int?;
             if (value.HasValue)
             {

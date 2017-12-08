@@ -1,9 +1,10 @@
 ﻿using System.Windows;
+using System.Windows.Controls;
 using Bridge.CustomUIMarkup.Common;
 
 namespace Bridge.CustomUIMarkup.Libraries.viewerjs
 {
-    public class Viewer : FrameworkElement
+    public class Viewer : Control
     {
         #region Fields
         // ReSharper disable once UnassignedField.Global
@@ -13,8 +14,8 @@ namespace Bridge.CustomUIMarkup.Libraries.viewerjs
         #region Constructors
         public Viewer()
         {
-            BeforeConnectToParent += InitWrapper;
-            AfterAddChild += CreateImage;
+            BeforeConnectToLogicalParent += InitWrapper;
+            AfterLogicalChildAdd += CreateImage;
         }
         #endregion
 
@@ -28,10 +29,14 @@ namespace Bridge.CustomUIMarkup.Libraries.viewerjs
         #region Methods
         void CreateImage(FrameworkElement element)
         {
-            DOM.li().AppendTo(_root).Append(element._root);
+            var li = new HtmlElement("li");
+            li.AddVisualChild(element);
+            AddVisualChild(li);
+
+            // DOM.li().AppendTo(_root).Append(element._root);
         }
 
-        void InitWrapper()
+        void InitWrapper(FrameworkElement parent)
         {
             // ReSharper disable once UnusedVariable
             var root = _root.Get(0);
@@ -46,6 +51,7 @@ namespace Bridge.CustomUIMarkup.Libraries.viewerjs
       padding: 0;
       list-style: none;
       max-width: 30rem;
+      display:table-cell;
     }
 
     .pictures > li {

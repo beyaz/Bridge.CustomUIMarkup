@@ -1,20 +1,27 @@
-﻿using System.Collections.Generic;
-using System.ComponentModel;
-using System.Windows.Data;
+﻿using System.ComponentModel;
+using System.Diagnostics.Contracts;
+using System.Windows.Controls;
 using System.Windows.Markup;
+using Bridge.CustomUIMarkup.Common;
+using Bridge.CustomUIMarkup.Libraries.SemanticUI;
+using Bridge.CustomUIMarkup.UI;
 using Bridge.Html5;
 using Bridge.jQuery2;
 
 namespace System.Windows
 {
-    public class FrameworkElement : DependencyObject, IAddChild
+    public class HtmlElement : FrameworkElement
     {
-        #region Fields
-        protected internal jQuery _root;
-
-        protected List<FrameworkElement> _childeren;
+        #region Constructors
+        public HtmlElement(string tag = null, string className = null) : base(tag, className)
+        {
+            AfterLogicalChildAdd += AddVisualChild;
+        }
         #endregion
+    }
 
+    public partial class FrameworkElement : DependencyObject, IAddChild
+    {
         #region Constructors
         public FrameworkElement(string tag = null, string className = null)
         {
@@ -34,51 +41,29 @@ namespace System.Windows
         }
         #endregion
 
-        #region Public Properties
-        public IReadOnlyList<FrameworkElement> Childeren
-        {
-            get
-            {
-                if (_childeren == null)
-                {
-                    _childeren = new List<FrameworkElement>();
-                }
-
-                return _childeren;
-            }
-        }
-
-        public jQuery Root => _root;
+        #region Public Events
+        public event Action AfterInitDOM;
         #endregion
 
-        #region Properties
-        protected int ChildrenCount => (_childeren?.Count).GetValueOrDefault();
-        #endregion
-
-        #region Public Methods
-
-        protected event Action BeforeConnectToParent;
-
+        #region Events
         protected event Action<FrameworkElement> AfterAddChild;
         protected event Action<FrameworkElement> BeforeAddChild;
 
+        protected event Action BeforeConnectToParent;
+        #endregion
+
+        #region Public Properties
+        public jQuery Root => _root;
+        #endregion
+
+        #region Public Methods
         public virtual void Add(FrameworkElement element)
         {
-
-           
-
             element.BeforeConnectToParent?.Invoke();
 
-            element._root.AppendTo(_root);
+            AddChild(element);
 
             BeforeAddChild?.Invoke(element);
-
-            if (_childeren == null)
-            {
-                _childeren = new List<FrameworkElement>();
-            }
-
-            _childeren.Add(element);
 
             AfterAddChild?.Invoke(element);
         }
@@ -101,16 +86,12 @@ namespace System.Windows
             return value;
         }
 
-
-        public event Action AfterInitDOM;
-
         public virtual void InitDOM()
         {
             if (_root == null) // TODO: remove next version
             {
                 _root = new jQuery(Document.CreateElement("div"));
             }
-
         }
 
         public void On(string eventName, Action handler)
@@ -125,13 +106,34 @@ namespace System.Windows
         #endregion
 
         #region Methods
+        internal void InvokeAfterInitDOM()
+        {
+            AfterInitDOM?.Invoke();
+        }
+
+        protected static PropertyMetadata AddCssClassOnTrueElseRemove(string cssClass)
+        {
+            return new PropertyMetadata((d, e) =>
+            {
+                var me = (FrameworkElement) d;
+
+                if (e.NewValue.ToBooleanNullable() == true)
+                {
+                    me._root.AddClass(cssClass);
+                    return;
+                }
+
+                me._root.RemoveClass(cssClass);
+            });
+        }
+
         protected static PropertyMetadata CreateHtmlAttributeUpdater(string htmlAttribute)
         {
             return new PropertyMetadata((d, e) =>
             {
                 var me = (FrameworkElement) d;
 
-                me._root.Attr(htmlAttribute,  e.NewValue?.ToString());
+                me._root.Attr(htmlAttribute, e.NewValue?.ToString());
             });
         }
 
@@ -155,28 +157,15 @@ namespace System.Windows
             });
         }
 
-        protected static PropertyMetadata AddCssClassOnTrueElseRemove(string cssClass)
+        protected static DependencyProperty RegisterDependencyProperty(string name, Type propertyType, Type ownerType, PropertyChangedCallback propertyChangedCallback)
         {
-            return new PropertyMetadata((d, e) =>
-            {
-                var me = (FrameworkElement)d;
-
-                if (e.NewValue.ToBooleanNullable() == true)
-                {
-                    me._root.AddClass(cssClass);
-                    return;
-                }
-
-                me._root.RemoveClass(cssClass);
-            });
+            return DependencyProperty.Register(name, propertyType, ownerType, new PropertyMetadata(propertyChangedCallback));
         }
 
-        
-
-
-
-
-
+        protected virtual void AddChild(FrameworkElement element)
+        {
+            element._root.AppendTo(_root);
+        }
         #endregion
 
         #region BorderProperty
@@ -462,14 +451,17 @@ namespace System.Windows
 
         public Visibility Visibility
         {
-            get { return (Visibility) this[nameof(Visibility)]; }
-            set { this[nameof(Visibility)] = value; }
+            get { return (Visibility) GetValue(VisibilityProperty); }
+            set { SetValue(VisibilityProperty, value); }
         }
 
         static void OnVisibilityChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             var me = (FrameworkElement) d;
-            var value = (Visibility) e.NewValue;
+
+            var newValue = e.NewValue;
+
+            var value = (Visibility) newValue;
 
             if (value == Visibility.Visible)
             {
@@ -563,10 +555,135 @@ namespace System.Windows
             }
         }
         #endregion
+    }
 
-         internal void InvokeAfterInitDOM()
+    public class ContentPresenter : HtmlElement
+    {
+    }
+
+    public class ContentControl : Control
+    {
+        #region Fields
+        internal ContentPresenter _contentPresenter;
+        #endregion
+
+        #region Constructors
+        public ContentControl()
         {
-            AfterInitDOM?.Invoke();
+           
+            AfterLogicalChildAdd += CanOnlyBeOneChild;
+            AfterVisualChildAdd += OnAfterVisualChildAdd;
+            AfterLogicalChildAdd += AssignFirstLogicalChildToContent;
         }
+        #endregion
+
+        #region Methods
+        static void OnContentChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            ((ContentControl) d).OnContentChanged();
+        }
+
+        void AssignFirstLogicalChildToContent(FrameworkElement element)
+        {
+            if (_isContentChanging)
+            {
+                return;
+            }
+
+            Content = element;
+        }
+
+        void CanOnlyBeOneChild(FrameworkElement child)
+        {
+            if (LogicalChilderenCount == 2)
+            {
+                throw new InvalidOperationException("Content cannot be set more than once.");
+            }
+        }
+
+        void OnAfterVisualChildAdd(FrameworkElement child)
+        {
+            var contentPresenter = child as ContentPresenter;
+            if (contentPresenter != null)
+            {
+                Contract.Assert(_contentPresenter == null, "ContentPresenter cannot be set more than once.");
+
+                _contentPresenter = contentPresenter;
+            }
+        }
+
+        bool _isContentChanging;
+        void OnContentChanged()
+        {
+
+            if (_contentPresenter == null)
+            {
+                throw new InvalidOperationException("'ContentPresenter' element not found.");
+            }
+
+            _isContentChanging = true;
+
+            var content = Content;
+
+            if (content == null)
+            {
+                _isContentChanging = false;
+                _contentPresenter.InnerHTML = null;
+                return;
+            }
+           
+
+            var frameworkElement = content as FrameworkElement;
+            if (frameworkElement != null)
+            {
+                if (_contentPresenter.LogicalChilderenCount == 1)
+                {
+                    _contentPresenter.RemoveLogicalChild(_contentPresenter.GetLogicalChildAt(0));
+                }
+
+                if (_contentPresenter.VisualChilderenCount == 1)
+                {
+                    _contentPresenter.RemoveVisualChild(_contentPresenter.GetVisualChildAt(0));
+                }
+
+                _contentPresenter.AddLogicalChild(frameworkElement);
+                
+                if (LogicalChilderenCount == 1)
+                {
+                    RemoveLogicalChild(GetLogicalChildAt(0));
+                }
+                
+                AddLogicalChild(frameworkElement);
+
+                _isContentChanging = false;
+                return;
+            }
+
+            var contentAsString = content.ToString();
+
+            var textBlock = Builder.Create<TextBlock>();
+            textBlock.Text = contentAsString;
+            _contentPresenter.AddLogicalChild(textBlock);
+
+            if (LogicalChilderenCount == 1)
+            {
+                RemoveLogicalChild(GetLogicalChildAt(0));
+            }
+
+            AddLogicalChild(textBlock);
+
+            _isContentChanging = false;
+        }
+        #endregion
+
+        #region ContentProperty
+        public static readonly DependencyProperty ContentProperty = RegisterDependencyProperty(nameof(Content), typeof(object), typeof(ContentControl), OnContentChanged);
+
+        public object Content
+        {
+            get { return GetValue(ContentProperty); }
+            set { SetValue(ContentProperty, value); }
+        }
+        #endregion
     }
 }

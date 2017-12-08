@@ -6,6 +6,10 @@ namespace Bridge.CustomUIMarkup_DesignerSamples
 {
     public class ExampleDataContext : Bag
     {
+
+     
+
+
         #region ExampleDataContext Inner
         ExampleDataContext _inner;
         public ExampleDataContext Inner
@@ -111,8 +115,10 @@ namespace Bridge.CustomUIMarkup_DesignerSamples
 <div Padding='11'>
 	<ui_top_attached_tabular_menu>
 		<Tab Header ='Header1' AddClass='active'>
-  			<ui.header.3> Product description</ui.header.3>
-          	<p>Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Vestibulum tortor quam, feugiat vitae, ultricies eget, tempor sit amet, ante. Donec eu libero sit amet quam egestas semper. Aenean ultricies mi vitae est. Mauris placerat eleifend leo.</p>
+  			<div class='ui segment'>
+                <ui.header.3> Product description</ui.header.3>
+          	    <p>Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Vestibulum tortor quam, feugiat vitae, ultricies eget, tempor sit amet, ante. Donec eu libero sit amet quam egestas semper. Aenean ultricies mi vitae est. Mauris placerat eleifend leo.</p>
+            </div>
   		</Tab>  
   
   		<Tab Header ='Header2'> 
@@ -331,8 +337,6 @@ namespace Bridge.CustomUIMarkup_DesignerSamples
                
                
             };
-
-            
         }
         #endregion
 

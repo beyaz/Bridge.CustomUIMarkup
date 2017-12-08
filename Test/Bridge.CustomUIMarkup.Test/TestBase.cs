@@ -8,6 +8,20 @@ namespace Bridge.CustomUIMarkup.Test
         protected string SampleImageUrl_350_150 = "http://via.placeholder.com/350x150";
         #endregion
 
+       
+
+        protected void MustTrue(bool condition)
+        {
+            if (condition)
+            {
+                return;
+            }
+            
+            
+                throw new InvalidCastException("Test Failed.Expects True");
+            
+        }
+
         #region Methods
         protected void MustEqual(string expected, string actual)
         {

@@ -34,6 +34,8 @@
     "enabled": true
   },
 
+  
+
   // Rules to manage generated JavaScript syntax.
   // Default is "Managed"
   "rules": {

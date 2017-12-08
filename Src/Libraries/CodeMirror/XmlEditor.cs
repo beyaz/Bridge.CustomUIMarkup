@@ -1,18 +1,21 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Windows;
+using System.Windows.Controls;
+using Bridge.CustomUIMarkup.Common;
+using Bridge.Html5;
 using Bridge.jQuery2;
 
 namespace Bridge.CustomUIMarkup.Libraries.CodeMirror
 {
-    
-
-    public class XmlEditor : FrameworkElement
+    public class XmlEditor : Control
     {
         public XmlEditor()
         {
-            
             this.OnPropertyChanged(nameof(FontSize), FontSizeChanged);
+
+
+            Window.SetTimeout(() => { Trace.Log(this, DataContext); }, 1003);
         }
         #region FontSizeProperty
        
@@ -56,6 +59,7 @@ namespace Bridge.CustomUIMarkup.Libraries.CodeMirror
         }
         #endregion
 
+        jQuery _textArea;
         #region Methods
         protected virtual void Render()
         {
@@ -63,9 +67,9 @@ namespace Bridge.CustomUIMarkup.Libraries.CodeMirror
 
             _root.Css("height", "100%");
 
-            DOM.textarea().Prop("id", Id).AppendTo(_root).Css("height", "100%");
+            (_textArea=DOM.textarea()).AppendTo(_root).Css("height", "100%");
 
-            jQuery.Ready(() => { Render(Id); });
+            Window.SetTimeout(() => { Render(_textArea.Get(0)); },0);
         }
 
         void Fire_OnTextChanged(object editor, object changeObj)
@@ -99,7 +103,7 @@ namespace Bridge.CustomUIMarkup.Libraries.CodeMirror
 
         public virtual object SchemaInfo { get; set; }
 
-        void Render(string id)
+        void Render(Element textAreaElement)
         {
             var fontSize = this[nameof(FontSize)] == null ? 15:FontSize;
             
@@ -144,7 +148,7 @@ function completeIfInTag(cm)
 	});
 }
 
-this._editor = CodeMirror.fromTextArea(document.getElementById(id), 
+this._editor = CodeMirror.fromTextArea(textAreaElement, 
 {
 	mode: 'xml',
 	lineNumbers: true,
@@ -195,8 +199,11 @@ me._editor.display.wrapper.style.height = '95%';
 
         public string Text
         {
-            get { return (string)this[nameof(Text)]; }
-            set { this[nameof(Text)] = value; }
+            get { return (string)GetValue(TextProperty); }
+            set
+            {
+                SetValue(TextProperty, value);
+            }
         }
 
         static void TextChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)

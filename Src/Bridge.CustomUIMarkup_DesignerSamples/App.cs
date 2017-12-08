@@ -1,5 +1,4 @@
 ﻿using Bridge.CustomUIMarkup.UI;
-using Bridge.Html5;
 using Bridge.jQuery2;
 
 namespace Bridge.CustomUIMarkup_DesignerSamples
@@ -33,6 +32,12 @@ namespace Bridge.CustomUIMarkup_DesignerSamples
         #region Public Methods
         public static void Init()
         {
+            Bridge.CustomUIMarkup.Libraries.SemanticUI.Elements.RegisterToBuilder();
+            Bridge.CustomUIMarkup.Libraries.split_js.Elements.RegisterToBuilder();
+            Bridge.CustomUIMarkup.Libraries.CodeMirror.Elements.RegisterToBuilder();
+            Bridge.CustomUIMarkup.Libraries.viewerjs.Elements.RegisterToBuilder();
+            Bridge.CustomUIMarkup.Libraries.Swiper.Elements.RegisterToBuilder();
+
             jQuery.Ready(RenderUIEditor);
         }
         #endregion
@@ -41,15 +46,13 @@ namespace Bridge.CustomUIMarkup_DesignerSamples
         
         static void RenderUIEditor()
         {
-            var builder = new Builder
+            var model = new ExampleDataContext
             {
-                DataContext = new ExampleDataContext { Inner = new ExampleDataContext{CurrentTemplate = "Write xml code here"}},
-                XmlString = TestUI
+                CurrentTemplate = "Write xml code here.",
+                Inner = new ExampleDataContext { CurrentTemplate = "Write xml code here" }
             };
 
-            var element =  builder.Build();
-
-            element.Root.AppendTo(Document.Body);
+            Builder.Build(TestUI, model).RenderInBody();
         }
         #endregion
     }

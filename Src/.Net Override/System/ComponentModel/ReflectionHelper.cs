@@ -1,4 +1,5 @@
 using System.Reflection;
+using System.Windows;
 
 namespace System.ComponentModel
 {
@@ -132,19 +133,22 @@ namespace System.ComponentModel
             return methodInfo.Invoke(instance, parameters);
         }
 
-        public static void SetPropertyValue(object instance, string propertyName, object value)
+        static void AssertParameters(object instance, string memberName)
         {
             if (instance == null)
             {
                 throw new ArgumentNullException(nameof(instance));
             }
 
-            if (propertyName == null)
+            if (memberName == null)
             {
-                throw new ArgumentNullException(nameof(propertyName));
+                throw new ArgumentNullException(nameof(memberName));
             }
-
-           
+        }
+        public static void SetPropertyValue(object instance, string propertyName, object value)
+        {
+            AssertParameters(instance,propertyName);
+            
 
             var type = instance.GetType();
             if (type == null)
@@ -178,6 +182,26 @@ namespace System.ComponentModel
                 throw new MissingMemberException("MethodNotFound: "+ instance.GetType().FullName + " -> "+ methodName);
             }
             return methodInfo;
+        }
+
+        public static void SetNonStaticField(object instance, string fieldName, object value)
+        {
+            AssertParameters(instance, fieldName);
+
+            var type = instance.GetType();
+            if (type == null)
+            {
+                throw new ArgumentNullException(nameof(type));
+            }
+
+            var fieldInfo = type.GetField(fieldName, AllBindings);
+            if (fieldInfo == null)
+            {
+                throw new MissingMemberException("FieldNotFound: " + instance.GetType().FullName + " -> " + fieldName);
+            }
+
+            fieldInfo.SetValue(instance,value);
+
         }
     }
 }

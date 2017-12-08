@@ -1,17 +1,18 @@
 {
 	"GlobalKeys":
 	{
-		
+		"$(SolutionDir)":"D:\\github\\Bridge.CustomUIMarkup\\"
 	},
 	"Tasks":
-	[	
-		
+	[			
 		{
-			"FullClassName": "WhiteStone.Tasks.CopyFile",
+			"FullClassName": "WhiteStone.Tasks.CombineFilesIntoJsFile",
 			"Keys":
 			{	
-				"Source" : "D:\\github\\Bridge.CustomUIMarkup\\Src\\bin\\Debug\\bridge\\jquery-2.2.4.js",
-				"Target" : "D:\\github\\Bridge.CustomUIMarkup\\bin\\js\\jquery-2.2.4.js"
+				"ClearXml" : true,
+				"Source" : "$(SolutionDir)Src\\Libraries\\*.xml",
+				"Target" : "$(SolutionDir)\\bin\\js\\Bridge.CustomUIMarkup.Resources.XmlFileContents.js",
+				"JsObjectPath" : "Bridge.CustomUIMarkup.Resources.$XmlFileContents"
 			}
 		}
 		,
@@ -19,8 +20,8 @@
 			"FullClassName": "WhiteStone.Tasks.CopyFile",
 			"Keys":
 			{	
-				"Source" : "D:\\github\\Bridge.CustomUIMarkup\\Src\\bin\\Debug\\bridge\\bridge.js",
-				"Target" : "D:\\github\\Bridge.CustomUIMarkup\\bin\\js\\bridge.js"
+				"Source" : "$(SolutionDir)Src\\bin\\Debug\\bridge\\jquery-2.2.4.js",
+				"Target" : "$(SolutionDir)bin\\js\\jquery-2.2.4.js"
 			}
 		}
 		,
@@ -28,8 +29,8 @@
 			"FullClassName": "WhiteStone.Tasks.CopyFile",
 			"Keys":
 			{	
-				"Source" : "D:\\github\\Bridge.CustomUIMarkup\\Src\\bin\\Debug\\bridge\\bridge.console.js",
-				"Target" : "D:\\github\\Bridge.CustomUIMarkup\\bin\\js\\bridge.console.js"
+				"Source" : "$(SolutionDir)Src\\bin\\Debug\\bridge\\bridge.js",
+				"Target" : "$(SolutionDir)bin\\js\\bridge.js"
 			}
 		}
 		,
@@ -37,8 +38,8 @@
 			"FullClassName": "WhiteStone.Tasks.CopyFile",
 			"Keys":
 			{	
-				"Source" : "D:\\github\\Bridge.CustomUIMarkup\\Src\\bin\\Debug\\bridge\\Bridge.CustomUIMarkup.js",
-				"Target" : "D:\\github\\Bridge.CustomUIMarkup\\bin\\js\\Bridge.CustomUIMarkup.js"
+				"Source" : "$(SolutionDir)Src\\bin\\Debug\\bridge\\bridge.console.js",
+				"Target" : "$(SolutionDir)bin\\js\\bridge.console.js"
 			}
 		}
 		,
@@ -46,8 +47,8 @@
 			"FullClassName": "WhiteStone.Tasks.CopyFile",
 			"Keys":
 			{	
-				"Source" : "D:\\github\\Bridge.CustomUIMarkup\\Src\\bin\\Debug\\bridge\\Bridge.CustomUIMarkup.meta.js",
-				"Target" : "D:\\github\\Bridge.CustomUIMarkup\\bin\\js\\Bridge.CustomUIMarkup.meta.js"
+				"Source" : "$(SolutionDir)Src\\bin\\Debug\\bridge\\Bridge.CustomUIMarkup.js",
+				"Target" : "$(SolutionDir)bin\\js\\Bridge.CustomUIMarkup.js"
 			}
 		}
 		,
@@ -55,8 +56,17 @@
 			"FullClassName": "WhiteStone.Tasks.CopyFile",
 			"Keys":
 			{	
-				"Source" : "D:\\github\\Bridge.CustomUIMarkup\\Src\\bin\\Debug\\bridge\\bridge.meta.js",
-				"Target" : "D:\\github\\Bridge.CustomUIMarkup\\bin\\js\\bridge.meta.js"
+				"Source" : "$(SolutionDir)Src\\bin\\Debug\\bridge\\Bridge.CustomUIMarkup.meta.js",
+				"Target" : "$(SolutionDir)bin\\js\\Bridge.CustomUIMarkup.meta.js"
+			}
+		}
+		,
+		{
+			"FullClassName": "WhiteStone.Tasks.CopyFile",
+			"Keys":
+			{	
+				"Source" : "$(SolutionDir)Src\\bin\\Debug\\bridge\\bridge.meta.js",
+				"Target" : "$(SolutionDir)bin\\js\\bridge.meta.js"
 			}
 		}
 		,
@@ -64,8 +74,8 @@
 			"FullClassName": "WhiteStone.Tasks.CopyDirectory",
 			"Keys":
 			{
-				"Source" : "D:\\github\\Bridge.CustomUIMarkup\\Src\\Lib\\",
-				"Target" : "D:\\github\\Bridge.CustomUIMarkup\\bin\\Lib\\"
+				"Source" : "$(SolutionDir)Src\\Lib\\",
+				"Target" : "$(SolutionDir)bin\\Lib\\"
 			}			
 		}
 		,
@@ -73,8 +83,8 @@
 			"FullClassName": "WhiteStone.Tasks.CopyFile",
 			"Keys":
 			{	
-				"Source" : "D:\\github\\Bridge.CustomUIMarkup\\Src\\bin\\Debug\\Bridge.CustomUIMarkup.dll",
-				"Target" : "D:\\github\\Bridge.CustomUIMarkup\\bin\\Bridge.CustomUIMarkup.dll"
+				"Source" : "$(SolutionDir)Src\\bin\\Debug\\Bridge.CustomUIMarkup.dll",
+				"Target" : "$(SolutionDir)bin\\Bridge.CustomUIMarkup.dll"
 			}
 		}
 		

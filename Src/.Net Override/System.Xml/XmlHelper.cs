@@ -1,8 +1,6 @@
-﻿using System;
-using System.Xml;
-using Bridge.jQuery2;
+﻿using Bridge.jQuery2;
 
-namespace Bridge.CustomUIMarkup.Common
+namespace System.Xml
 {
     static class XmlHelper
     {

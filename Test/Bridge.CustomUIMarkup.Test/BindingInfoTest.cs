@@ -1,4 +1,6 @@
-﻿using System.ComponentModel;
+﻿using System;
+using System.ComponentModel;
+using System.Globalization;
 using System.Windows;
 using System.Windows.Data;
 
@@ -6,6 +8,24 @@ namespace Bridge.CustomUIMarkup.Test
 {
     public class SimpleClass1 : Bag
     {
+        #region bool BoolenProperty0
+        bool _boolenProperty0;
+        public bool BoolenProperty0
+        {
+            get { return _boolenProperty0; }
+            set
+            {
+                if (_boolenProperty0 != value)
+                {
+                    _boolenProperty0 = value;
+                    OnPropertyChanged("BoolenProperty0");
+                }
+            }
+        }
+        #endregion
+
+
+
         #region string LastName
         string _lastName;
 
@@ -62,13 +82,16 @@ namespace Bridge.CustomUIMarkup.Test
     {
         #region Constants
         const string LastName = nameof(LastName);
+        const string Year = nameof(Year);
         #endregion
 
         #region Public Methods
         public static void RunAll()
         {
+            new BindingInfoTest().SimpleBind_with_Different_primitive_types();
             new BindingInfoTest().ParsePath();
             new BindingInfoTest().SimpleBind();
+            new BindingInfoTest().SimpleBind_with_Converter();
             new BindingInfoTest().LongPropertyPathForSource();
             new BindingInfoTest().SimpleTwoWayBind();
             new BindingInfoTest().BindingInBag();
@@ -76,6 +99,90 @@ namespace Bridge.CustomUIMarkup.Test
             new BindingInfoTest().TwoWayCircularBindingMustbeSupport();
             new BindingInfoTest().TwoWayCircularBindingBetweenThreeItemsMustbeSupport();
         }
+
+
+        class ATo56Converter:IValueConverter
+        {
+            public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+            {
+                var valueAsString = value as string;
+                if (valueAsString == null)
+                {
+                    return -1;
+                }
+
+                if (valueAsString =="A")
+                {
+                    return 56;
+                }
+
+                return 78;
+            }
+
+            public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+            {
+                var valueAsInt32 = (int) value;
+                if (valueAsInt32 == 78)
+                {
+                    return "None";
+                }
+
+                if (valueAsInt32 == 56)
+                {
+                    return "A";
+                }
+                if (valueAsInt32 == -1)
+                {
+                    return null;
+                }
+                throw new InvalidOperationException();
+            }
+        }
+
+
+        void SimpleBind_with_Different_primitive_types()
+        {
+            var simpleClass1 = new SimpleClass1();
+            var simpleClass2 = new SimpleClass1();
+
+            var bindingInfo = new BindingInfo
+            {
+                BindingMode = BindingMode.OneWay,
+                SourcePath = LastName,
+                Source = simpleClass1,
+                Target = simpleClass2,
+                TargetPath = Year
+            };
+
+            bindingInfo.Connect();
+
+            simpleClass1.LastName = "56";
+
+            MustEqual(56, simpleClass2.Year);
+        }
+
+        void SimpleBind_with_Converter()
+        {
+            var simpleClass1 = new SimpleClass1();
+            var simpleClass2 = new SimpleClass1();
+
+            var bindingInfo = new BindingInfo
+            {
+                BindingMode = BindingMode.OneWay,
+                SourcePath = LastName,
+                Source = simpleClass1,
+                Target = simpleClass2,
+                TargetPath = Year,
+                Converter = new ATo56Converter()
+            };
+
+            bindingInfo.Connect();
+
+            simpleClass1.LastName = "A";
+
+            MustEqual(56, simpleClass2.Year);
+        }
+
 
         public void BindingInBag()
         {

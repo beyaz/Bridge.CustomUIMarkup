@@ -11,14 +11,15 @@ namespace System
             return value.ToUpper();
         }
     }
-    public class MissingMemberException : Exception
+    public class MissingMemberException : SystemException
     {
         #region Constructors
-        public MissingMemberException(string message, Exception innerException = null) : base(message, innerException)
+        public MissingMemberException(string message=null, Exception innerException = null) : base(message, innerException)
         {
         }
         #endregion
     }
+    
 
     [Serializable]
     sealed class Empty

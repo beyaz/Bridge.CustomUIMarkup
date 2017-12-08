@@ -23,7 +23,7 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;IsTraceEnabled</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
@@ -36,18 +36,27 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include=".Net Override\SR.cs" />
+    <Compile Include=".Net Override\System.Collections.Generic\Extensions.cs" />
+    <Compile Include=".Net Override\System.Collections.ObjectModel\Collection.cs" />
+    <Compile Include=".Net Override\System.Collections.ObjectModel\ObservableCollection.cs" />
+    <Compile Include=".Net Override\System.Collections.Specialized\overides.cs" />
     <Compile Include=".Net Override\System.ComponentModel\TypeConverterAttribute.cs" />
     <Compile Include=".Net Override\System.Reflection\Extensions.cs" />
-    <Compile Include=".Net Override\System.Windows.Controls\BooleanToVisibilityConverter.cs" />
     <Compile Include=".Net Override\System.Windows.Controls\Orientation.cs" />
-    <Compile Include=".Net Override\System.Windows.Controls\SplitPanel.cs" />
-    <Compile Include=".Net Override\System.Windows.Controls\TextBlock.cs" />
+    <Compile Include=".Net Override\System.Windows.Controls\Control.cs" />
+    <Compile Include=".Net Override\System\Cast.cs" />
+    <Compile Include=".Net Override\System\Exceptions.cs" />
+    <Compile Include=".Net Override\System\ThrowHelper.cs" />
+    <Compile Include="Libraries\SemanticUI\DataGrid.cs" />
+    <Compile Include="Libraries\SemanticUI\FieldString.cs" />
+    <Compile Include="Libraries\SemanticUI\TextBlock.cs" />
     <Compile Include=".Net Override\System.Windows.Data\BindingInfo.cs" />
     <Compile Include=".Net Override\System.Windows.Data\IValueConverter.cs" />
     <Compile Include=".Net Override\System.Windows\DependencyObject.cs" />
     <Compile Include=".Net Override\System.Windows\DependencyProperty.cs" />
+    <Compile Include=".Net Override\System.Windows\FrameworkElement.ChildManagement.cs" />
     <Compile Include=".Net Override\System.Windows\FrameworkElement_a.cs" />
-    <Compile Include=".Net Override\System.Windows\FrameworkElement_div.cs" />
     <Compile Include=".Net Override\System.Windows\FrameworkElement_img.cs" />
     <Compile Include=".Net Override\System.Windows\PropertyMetadata.cs" />
     <Compile Include=".Net Override\System.Windows\PropertyPath.cs" />
@@ -57,29 +66,32 @@
     <Compile Include=".Net Override\System\ComponentModel\BagChangedEventArgs.cs" />
     <Compile Include=".Net Override\System\ComponentModel\Extensions.cs" />
     <Compile Include=".Net Override\System\Extensions.cs" />
+    <Compile Include="Common\Trace.cs" />
     <Compile Include="Bridge.CustomUIMarkup_DesignerSamples\App.cs" />
     <Compile Include="Bridge.CustomUIMarkup_DesignerSamples\ExampleDataContext.cs" />
     <Compile Include="Bridge.CustomUIMarkup_DesignerSamples\ExampleInfo.cs" />
     <Compile Include="Bridge.jQuery2\Extensions.cs" />
     <Compile Include=".Net Override\System.Text\EncodingHelper.cs" />
     <Compile Include="Common\FileUtil.cs" />
-    <Compile Include="Common\XmlHelper.cs" />
+    <Compile Include=".Net Override\System.Xml\XmlHelper.cs" />
+    <Compile Include="Libraries\CodeMirror\Elements.cs" />
     <Compile Include="Libraries\SemanticUI\comment.cs" />
+    <Compile Include="Libraries\SemanticUI\Elements.cs" />
     <Compile Include="Libraries\SemanticUI\ui_rating.cs" />
+    <Compile Include="Libraries\split_js\Elements.cs" />
+    <Compile Include="Libraries\split_js\SplitPanel.cs" />
+    <Compile Include="Libraries\Swiper\Elements.cs" />
+    <Compile Include="Libraries\viewerjs\Elements.cs" />
     <Compile Include="Libraries\viewerjs\Viewer.cs" />
+    <Compile Include="Resources.cs" />
     <Compile Include="Tokenizers\Tokenizer.cs" />
-    <Compile Include="Libraries\jssor\Carousel.cs" />
     <Compile Include="Libraries\SemanticUI\Align.cs" />
     <Compile Include="Libraries\SemanticUI\Field.cs" />
-    <Compile Include="Libraries\SemanticUI\ui_form.cs" />
-    <Compile Include="Libraries\SemanticUI\Header.cs" />
-    <Compile Include="Libraries\SemanticUI\Icon.cs" />
     <Compile Include="Libraries\SemanticUI\IconType.cs" />
-    <Compile Include="Libraries\SemanticUI\ui_image.cs" />
-    <Compile Include="Libraries\SemanticUI\ui_segment.cs" />
     <Compile Include="Libraries\SemanticUI\Size.cs" />
+    <Compile Include=".Net Override\System.Windows\Template.cs" />
     <Compile Include="UI\TypeFinder.cs" />
-    <Compile Include="UI\UIEditor.cs" />
+    <Compile Include="Libraries\CodeMirror\UIEditor.cs" />
     <Compile Include="UI\XmlEditor.cs" />
     <Compile Include="Libraries\Swiper\Slider.cs" />
     <Compile Include=".Net Override\System.Windows.Data\BindingMode.cs" />
@@ -92,30 +104,22 @@
     <Compile Include=".Net Override\System\ComponentModel\ReflectionHelper.cs" />
     <Compile Include="Common\ScriptLoader.cs" />
     <Compile Include="UI\Builder.cs" />
-    <Compile Include="Libraries\SemanticUI\Button.cs" />
-    <Compile Include="Libraries\SemanticUI\column.cs" />
     <Compile Include="Libraries\SemanticUI\Combo.cs" />
-    <Compile Include="Libraries\SemanticUI\ui_container.cs" />
     <Compile Include="Libraries\SemanticUI\ElementBase.cs" />
-    <Compile Include="Libraries\SemanticUI\row.cs" />
-    <Compile Include="Libraries\SemanticUI\ui_grid.cs" />
     <Compile Include="Libraries\SemanticUI\InputText.cs" />
     <Compile Include="Libraries\SemanticUI\Modal.cs" />
     <Compile Include="Libraries\SemanticUI\NumberToWord.cs" />
-    <Compile Include="Libraries\SemanticUI\ui_stacked.cs" />
     <Compile Include="Libraries\SemanticUI\TabItem.cs" />
     <Compile Include="Libraries\SemanticUI\ui_top_attached_tabular_menu.cs" />
     <Compile Include="Libraries\SemanticUI\TextArea.cs" />
-    <Compile Include="Libraries\SemanticUI\UniformGrid.cs" />
     <Compile Include=".Net Override\System.cs" />
     <Compile Include=".Net Override\System.Windows\FrameworkElement.cs" />
-    <Compile Include=".Net Override\System.Xml.cs" />
+    <Compile Include=".Net Override\System.Xml\System.Xml.cs" />
     <Compile Include="Libraries\CodeMirror\XmlEditor.cs" />
     <Compile Include=".Net Override\System.Windows.Markup\IAddChild.cs" />
     <Compile Include="Common\XmlIntellisenseInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Libraries\SemanticUI\comment.Template.xml" />
     <Content Include="Lib\viewerjs\viewer.common.js" />
     <Content Include="Lib\viewerjs\viewer.css" />
     <Content Include="Lib\viewerjs\viewer.esm.js" />
@@ -189,11 +193,6 @@
     <Reference Include="Retyped.swiper, Version=3.4.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Retyped.swiper.3.4.6532\lib\net40\Retyped.swiper.dll</HintPath>
     </Reference>
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="Lib\jssor\jssor.Carousel.js" />
-    <Content Include="Lib\jssor\Carousel.css" />
-    <Content Include="Lib\jssor\jssor.slider-26.5.0.min.js" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

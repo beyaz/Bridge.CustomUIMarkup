@@ -2,41 +2,51 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
-using Bridge.jQuery2;
+using System.Windows.Controls;
 using Retyped;
 
 namespace Bridge.CustomUIMarkup.Libraries.SemanticUI
 {
-    public class ui_top_attached_tabular_menu : ElementBase
+    public class ui_top_attached_tabular_menu : Control
     {
-        #region Constants
-        const string active = "active";
-        #endregion
-
-        #region Fields
-        jQuery _menuElement;
-        #endregion
-
         #region Constructors
         public ui_top_attached_tabular_menu()
         {
-            AfterInitDOM += OnAfterInitDOM;
-            AfterAddChild += OnAfterAddChild;
-            BeforeConnectToParent += OnBeforeConnectToParent;
+            AfterLogicalChildAdd += OnAfterAddChild;
+            BeforeConnectToLogicalParent += OnBeforeConnectToParent;
         }
         #endregion
 
+        #region Public Properties
+        public override string DefaultTemplateAsXml => "<div>" +
+                                                       "    <div class = 'ui top attached tabular menu' />" +
+                                                       "</div>";
+        #endregion
+
         #region Properties
-        IEnumerable<TabItem> Tabs => from tab in Childeren select tab as TabItem;
+        IEnumerable<TabItem> Tabs => from tab in LogicalChilderen select tab as TabItem;
+        #endregion
+
+        #region Public Methods
+        public void AddTab(TabItem tabItem)
+        {
+            GetVisualChildAt(0).AddVisualChild(tabItem.GetVisualChildAt(0));
+
+            AddVisualChild(tabItem.GetVisualChildAt(1));
+
+            tabItem.GetVisualChildAt(0)._root.Click(() => { ActivateTab(tabItem); });
+        }
         #endregion
 
         #region Methods
         void ActivateTab(TabItem tabItem)
         {
-            RemoveClassActive();
+            foreach (var tab in Tabs)
+            {
+                tab.IsActive = false;
+            }
 
-            tabItem._headerElement.AddClass(active);
-            tabItem._contentElement.AddClass(active);
+            tabItem.IsActive = true;
         }
 
         void OnAfterAddChild(FrameworkElement element)
@@ -46,34 +56,15 @@ namespace Bridge.CustomUIMarkup.Libraries.SemanticUI
             {
                 throw new ArgumentException();
             }
-
-            _menuElement.Append(tabItem._headerElement);
-
-            _root.Append(tabItem._contentElement);
-
-            tabItem._headerElement.Click(() => { ActivateTab(tabItem); });
+            AddTab(tabItem);
         }
 
-        void OnAfterInitDOM()
-        {
-            _menuElement = DOM.div("ui top attached tabular menu").AppendTo(_root);
-        }
-
-        void OnBeforeConnectToParent()
+        void OnBeforeConnectToParent(FrameworkElement parent)
         {
             _root.As<semantic_ui.JQuery>().tab();
             if (Tabs.Any())
             {
                 ActivateTab(Tabs.FirstOrDefault());
-            }
-        }
-
-        void RemoveClassActive()
-        {
-            foreach (var tabItem in Tabs)
-            {
-                tabItem._contentElement.RemoveClass(active);
-                tabItem._headerElement.RemoveClass(active);
             }
         }
         #endregion

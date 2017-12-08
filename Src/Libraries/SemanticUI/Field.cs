@@ -1,126 +1,91 @@
-﻿using System;
-using System.Linq;
+﻿using System.ComponentModel;
 using System.Windows;
-using Bridge.CustomUIMarkup.Common;
-using Bridge.jQuery2;
 
 namespace Bridge.CustomUIMarkup.Libraries.SemanticUI
 {
-    public class Field : ElementBase
+    public class Field : ContentControl
     {
+        #region Constructors
         public Field()
         {
-            AfterAddChild += (el) => { ReOrderElements(); };
+            this.OnPropertyChanged(nameof(ErrorMessage), () =>
+            {
+                if (ErrorMessage == null)
+                {
+                    Class = "field";
+                    ErrorMessageVisibility = Visibility.Collapsed;
+                    return;
+                }
+
+                Class = "field error";
+                ErrorMessageVisibility = Visibility.Visible;
+            });
+
+            this.OnPropertyChanged(nameof(Label), () =>
+            {
+                if (Label == null)
+                {
+                    LabelVisibility = Visibility.Collapsed;
+                    return;
+                }
+
+                LabelVisibility = Visibility.Visible;
+            });
         }
-        #region Fields
-        jQuery _labelElement, _errorElement;
         #endregion
 
-        #region Public Methods
-        
-
-        public override void InitDOM()
+        #region Public Properties
+        public override string DefaultTemplateAsXml
         {
-            _root = DOM.div("field");
+            get
+            {
+                return
+                    "<div class='field'>" +
+                    "   <label Visibility = '{LabelVisibility}'>{Label}</label>" +
+                    "   <ContentPresenter />" +
+                    "   <div class = 'ui red pointing label transition' Visibility = '{ErrorMessageVisibility}'> {ErrorMessage} </div>" +
+                    "</div>";
+            }
         }
         #endregion
 
-        void ReOrderElements()
+        #region Visibility LabelVisbility
+        public static readonly DependencyProperty LabelVisibilityProperty = DependencyProperty.Register(nameof(LabelVisibility), typeof(Visibility), typeof(Field), new PropertyMetadata(Visibility.Collapsed));
+
+        public Visibility LabelVisibility
         {
-            _root.Remove();
-
-            if (_labelElement.IsNotNull())
-            {
-                _root.SetFirstChild(_labelElement);
-            }
-            if (Childeren.Count == 1)
-            {
-                _root.SetLastChild(Childeren.First()._root);
-            }
-
-            if (_errorElement.IsNotNull())
-            {
-                _root.SetLastChild(_errorElement);
-            }
+            get { return (Visibility) GetValue(LabelVisibilityProperty); }
+            set { SetValue(LabelVisibilityProperty, value); }
         }
+        #endregion
+
+        #region Visibility ErrorMessageVisbility
+        public static readonly DependencyProperty ErrorMessageVisibilityProperty = DependencyProperty.Register(nameof(ErrorMessageVisibility), typeof(Visibility), typeof(Field), new PropertyMetadata(Visibility.Collapsed));
+
+        public Visibility ErrorMessageVisibility
+        {
+            get { return (Visibility) GetValue(ErrorMessageVisibilityProperty); }
+            set { SetValue(ErrorMessageVisibilityProperty, value); }
+        }
+        #endregion
 
         #region ErrorMessageProperty
-        public static readonly DependencyProperty ErrorMessageProperty = DependencyProperty.Register(nameof(ErrorMessage), typeof(string), typeof(Field), new PropertyMetadata(OnErrorMessageChanged));
+        public static readonly DependencyProperty ErrorMessageProperty = DependencyProperty.Register(nameof(ErrorMessage), typeof(string), typeof(Field));
 
         public string ErrorMessage
         {
-            get { return (string) this[nameof(ErrorMessage)]; }
-            set { this[nameof(ErrorMessage)] = value; }
-        }
-
-        static void OnErrorMessageChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-        {
-            var me = (Field) d;
-            var value = (string) e.NewValue;
-            if (value.IsNullOrWhiteSpace())
-            {
-                me.RemoveError();
-            }
-            else
-            {
-                me.InitError((string) e.NewValue);
-            }
-        }
-
-        void InitError(string errorMessage)
-        {
-            _errorElement = DOM.div("ui red pointing label transition visible").Html(errorMessage);
-            _root.AddClass("error");
-
-            ReOrderElements();
-        }
-
-        void RemoveError()
-        {
-            _errorElement.RemoveFromParent();
-            _errorElement = null;
-            _root.RemoveClass("error");
+            get { return (string) GetValue(ErrorMessageProperty); }
+            set { SetValue(ErrorMessageProperty, value); }
         }
         #endregion
 
         #region LabelProperty
-        public static readonly DependencyProperty LabelProperty = DependencyProperty.Register(nameof(Label), typeof(string), typeof(Field), new PropertyMetadata(OnLabelChanged));
+        public static readonly DependencyProperty LabelProperty = DependencyProperty.Register(nameof(Label), typeof(string), typeof(Field));
 
         public string Label
         {
-            get { return (string) this[nameof(Label)]; }
-            set { this[nameof(Label)] = value; }
-        }
-
-        static void OnLabelChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-        {
-            var me = (Field) d;
-            var value = (string) e.NewValue;
-            if (value.IsNullOrWhiteSpace())
-            {
-                me.RemoveLabel();
-            }
-            else
-            {
-                me.InitLabel(value);
-            }
-        }
-
-        void InitLabel(string label)
-        {
-            if (_labelElement.IsNull())
-            {
-                _labelElement = DOM.label();
-                ReOrderElements();
-            }
-
-            _labelElement.Html(label);
-        }
-
-        void RemoveLabel()
-        {
-            _labelElement?.RemoveFromParent();
-            _labelElement = null;
+            get { return (string) GetValue(LabelProperty); }
+            set { SetValue(LabelProperty, value); }
         }
         #endregion
     }

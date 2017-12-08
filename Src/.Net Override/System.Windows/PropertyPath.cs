@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel;
+using System.Globalization;
 
 namespace System.Windows
 {
@@ -84,8 +85,16 @@ namespace System.Windows
             var instance = lastTrigger.Instance;
             var propertyName = lastTrigger.PropertyName;
 
+            var propertyType = ReflectionHelper.FindProperty(instance, propertyName)?.PropertyType;
+            if (propertyType != null)
+            {
+                value =  Cast.To(value, propertyType, CultureInfo.CurrentCulture);
+            }
+
             ReflectionHelper.SetPropertyValue(instance, propertyName, value);
         }
+
+        
 
         public void Walk(object instance)
         {

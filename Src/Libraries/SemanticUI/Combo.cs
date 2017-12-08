@@ -3,20 +3,24 @@ using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Windows;
-using Bridge.jQuery2;
+using System.Windows.Controls;
 using Retyped;
 
 namespace Bridge.CustomUIMarkup.Libraries.SemanticUI
 {
-    public class Combo : FrameworkElement
+    public class Combo : Control
     {
         #region Fields
-        jQuery _iconElement, _defaultTextElement, _menuElement, _hidden;
+#pragma warning disable 649
+        FrameworkElement _menu, _hidden;
+#pragma warning restore 649
         #endregion
 
         #region Constructors
         public Combo()
         {
+            BeforeConnectToLogicalParent += parent => { _root.As<semantic_ui.JQuery>().dropdown(); };
+
             PropertyChanged += (s, e) =>
             {
                 if (e.PropertyName == nameof(ItemsSource) ||
@@ -26,19 +30,6 @@ namespace Bridge.CustomUIMarkup.Libraries.SemanticUI
                     TryToBind();
                 }
             };
-        }
-        #endregion
-
-        #region Public Methods
-        public override void InitDOM()
-        {
-            _root = DOM.div("ui selection dropdown");
-
-            _hidden = DOM.input("hidden").AppendTo(_root).On("change", ValueChanged);
-
-            _iconElement = DOM.i("dropdown icon").AppendTo(_root);
-            _defaultTextElement = DOM.div("default text").AppendTo(_root);
-            _menuElement = DOM.div("menu").AppendTo(_root);
 
             PropertyChanged += (e, args) =>
             {
@@ -47,22 +38,33 @@ namespace Bridge.CustomUIMarkup.Libraries.SemanticUI
                     SetOptionsFrom((Options + "").Split(','));
                 }
             };
-
-            _root.As<semantic_ui.JQuery>().dropdown();
         }
+        #endregion
 
+        #region Public Properties
+        public override string DefaultTemplateAsXml => "<div class = 'ui selection dropdown'>" +
+                                                       "    <input type = 'hidden' on.change ='ValueChanged' x.Name='_hidden' />" +
+                                                       "    <i class = 'dropdown icon' />" +
+                                                       "    <div class = 'default text' >{DefaultText}</div>" +
+                                                       "    <div class = 'menu' x.Name='_menu' />" +
+                                                       "</div>";
+        #endregion
+
+        #region Public Methods
         public void SetOptionsFrom(IEnumerable<string> options)
         {
-            _menuElement.Empty();
+            _menu.ClearVisualChilds();
 
             foreach (var option in options)
             {
-                var optionElement = DOM.div("item");
+                var optionElement = new HtmlElement("div", "item")
+                {
+                    InnerHTML = option
+                };
 
-                optionElement.Html(option);
                 optionElement.Attr("data-value", option);
 
-                _menuElement.Append(optionElement);
+                _menu.AddLogicalChild(optionElement);
             }
         }
         #endregion
@@ -83,27 +85,41 @@ namespace Bridge.CustomUIMarkup.Libraries.SemanticUI
                 return;
             }
 
-            _menuElement.Empty();
+            _menu.ClearVisualChilds();
 
             foreach (var record in enumerableItemSource)
             {
-                var optionElement = DOM.div("item");
+                var optionElement = new HtmlElement("div", "item");
 
                 var text = ReflectionHelper.GetPropertyValue(record, DisplayMemberPath) + "";
                 var value = ReflectionHelper.GetPropertyValue(record, SelectedValuePath) + "";
 
-                optionElement.Html(text);
+                optionElement.InnerHTML = text;
                 optionElement.Attr("data-value", value);
 
-                _menuElement.Append(optionElement);
+                _menu.AddLogicalChild(optionElement);
             }
         }
 
+        // ReSharper disable once UnusedMember.Local
         void ValueChanged()
         {
             SelectedValue = _hidden.Val();
         }
         #endregion
+
+        #region string DefaultText
+        public static readonly DependencyProperty DefaultTextProperty = DependencyProperty.Register(
+            "DefaultText", typeof(string), typeof(Combo), new PropertyMetadata(default(string)));
+
+        public string DefaultText
+        {
+            get { return (string) GetValue(DefaultTextProperty); }
+            set { SetValue(DefaultTextProperty, value); }
+        }
+        #endregion
+
+        // jQuery _iconElement, _defaultTextElement, _menuElement, _hidden;
 
         #region object Options
         object _options;

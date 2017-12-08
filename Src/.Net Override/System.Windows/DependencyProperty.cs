@@ -46,6 +46,10 @@ namespace System.Windows
         }
         static string CreateKey(Type ownerType, string propertyName)
         {
+            if (ownerType == null)
+            {
+                throw new ArgumentNullException(nameof(ownerType));
+            }
             
 
             return CreateKey(ownerType.FullName, propertyName);

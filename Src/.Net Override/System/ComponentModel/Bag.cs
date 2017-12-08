@@ -86,6 +86,11 @@ namespace System.ComponentModel
                 }
             }
 
+            if (ReferenceEquals(oldValue,null ) && ReferenceEquals(value,null) )
+            {
+                return;
+            }
+
             _entries[propertyName] = value;
 
             OnPropertyChanged(propertyName, value, oldValue);

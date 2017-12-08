@@ -1,56 +1,41 @@
-
-
-
 using System;
 using System.Windows;
+using System.Windows.Controls;
 using System.Xml;
-using Bridge.CustomUIMarkup.Common;
-using Bridge.jQuery2;
+using Bridge.CustomUIMarkup.Libraries.SemanticUI;
+using Bridge.CustomUIMarkup.UI;
 
-namespace Bridge.CustomUIMarkup.UI
+namespace Bridge.CustomUIMarkup.Libraries.CodeMirror
 {
-    class UIEditor : FrameworkElement
+    class UIEditor : Control
     {
-        public UIEditor()
-        {
-            CreateBuilder = () => new Builder();
-        }
         #region Fields
         Builder _builder;
         #endregion
 
         #region Public Properties
-        public Func<Builder> CreateBuilder { get; set; }
-        public FrameworkElement OutputElement { get; private set; }
+        public override string DefaultTemplateAsXml
+        {
+            get
+            {
+                return
+                    "<div  HeightPercent = '100' WidthPercent = '100'>" +
+                    "    <SplitPanel Orientation='horizontal' HeightPercent = '100' WidthPercent = '100'>" +
+                    "        <XmlEditor Text ='{" + nameof(SourceText) + @"}' HeightPercent = '100' WidthPercent = '100' " +
+                    "                   OnTextChanged = '{" + nameof(OnTextChanged) + @"}' " +
+                    "                   OnCursorLineNumberChanged = '{" + nameof(OnCursorLineNumberChanged) + @"}' />" +
+                    "        <div Border = '1px solid Green' HeightPercent = '100' WidthPercent = '100' />" +
+                    "    </SplitPanel>" +
+                    "</div>";
+            }
+        }
         #endregion
 
         #region Properties
-        jQuery Container => OutputElement.Childeren[1].Root;
-
-
-
-        string Template => @"
-<SplitPanel Orientation='horizontal' HeightPercent = '100' WidthPercent = '100'>
-    <XmlEditor Text ='{" + nameof(SourceText) + @"}' HeightPercent = '100' WidthPercent = '100' 
-        OnTextChanged = '{" + nameof(OnTextChanged) + @"}' 
-        OnCursorLineNumberChanged = '{" + nameof(OnCursorLineNumberChanged) + @"}' 
-         />
-    <div Border = '1px solid Green' HeightPercent = '100' WidthPercent = '100' />
-</SplitPanel>";
+        FrameworkElement Container => GetVisualChildAt(0).GetLogicalChildAt(1);
         #endregion
 
         #region Public Methods
-        public override void InitDOM()
-        {
-            var builder = CreateBuilder();
-            builder.XmlString = Template;
-            builder.DataContext = this;
-
-            OutputElement = builder.Build();
-
-            _root = OutputElement.Root;
-        }
-
         public void OnCursorLineNumberChanged(int lineNumber)
         {
             _builder?.FocusToLine(lineNumber);
@@ -65,17 +50,17 @@ namespace Bridge.CustomUIMarkup.UI
                 return;
             }
 
-            _builder = CreateBuilder();
-            _builder.XmlString = SourceText;
-            _builder.DataContext = SourceDataContext;
-            _builder.IsDesignMode = true;
-
-            object component = null;
+            _builder = new Builder
+            {
+                XmlString = SourceText,
+                DataContext = SourceDataContext,
+                IsDesignMode = true
+            };
 
             try
             {
-                component = _builder.Build();
-                SetOutput(((FrameworkElement)component).Root);
+                var component = _builder.Build();
+                SetOutput(component);
             }
             catch (XmlException e)
             {
@@ -91,18 +76,25 @@ namespace Bridge.CustomUIMarkup.UI
         #region Methods
         void ClearOutput()
         {
-            Container.Empty();
+            Container.ClearVisualChilds();
         }
 
         void SetErrorMessage(string message)
         {
-            Container.SetFirstChild(DOM.div().Html(message));
+            ClearOutput();
+
+            var textBlock = Builder.Create<TextBlock>();
+
+            textBlock.Text = message;
+
+            Container.AddLogicalChild(textBlock);
         }
 
-        void SetOutput(jQuery element)
+        void SetOutput(FrameworkElement element)
         {
-            Container.Empty();
-            element.AppendTo(Container);
+            ClearOutput();
+
+            Container.AddLogicalChild(element);
         }
         #endregion
 

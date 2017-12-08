@@ -1,47 +1,35 @@
 ﻿using System.Windows;
-using Bridge.jQuery2;
+using System.Windows.Controls;
+using Bridge.CustomUIMarkup.UI;
 
 namespace Bridge.CustomUIMarkup.Libraries.Swiper
 {
-    public class Slider : FrameworkElement
+    public class Slider : Control
     {
-        #region Fields
-        // ReSharper disable once UnassignedField.Global
-        public dynamic _wrapper;
-
-        jQuery swiper_wrapper;
-        #endregion
-
         #region Constructors
         public Slider()
         {
-            BeforeConnectToParent += InitWrapper;
-            AfterAddChild += CreateSlide;
+            BeforeConnectToLogicalParent += InitWrapper;
+            AfterLogicalChildAdd += CreateSlide;
         }
         #endregion
 
-        #region Public Methods
-        public override void InitDOM()
-        {
-            _root = DOM.div("swiper-container");
-            Id.ToString();
-
-            swiper_wrapper = DOM.div("swiper-wrapper").AppendTo(_root);
-
-            //DOM.div("swiper-pagination").AppendTo(_root);
-
-            //DOM.div("swiper-button-next").AppendTo(_root);
-            //DOM.div("swiper-button-prev").AppendTo(_root);
-        }
+        #region Public Properties
+        public override string DefaultTemplateAsXml => "<div class='swiper-container'>" +
+                                                       "    <div class='swiper-wrapper' />" +
+                                                       "</div>";
         #endregion
 
         #region Methods
         void CreateSlide(FrameworkElement element)
         {
-            DOM.div("swiper-slide").AppendTo(swiper_wrapper).Append(element._root);
+            var item = Builder.Create<SwiperItemControl>();
+            item.Content = element;
+
+            GetVisualChildAt(0).AddVisualChild(item);
         }
 
-        void InitWrapper()
+        void InitWrapper(FrameworkElement parent)
         {
             // ReSharper disable once UnusedVariable
             var delay = Delay;
@@ -52,7 +40,7 @@ namespace Bridge.CustomUIMarkup.Libraries.Swiper
 
 setTimeout(function(){
 
-    me._wrapper = new Swiper(me._root, {
+    new Swiper(me._root, {
       spaceBetween: 30,
       centeredSlides: true,
       autoplay: {
@@ -68,6 +56,15 @@ setTimeout(function(){
 ");
         }
         #endregion
+
+        internal class SwiperItemControl : ContentControl
+        {
+            #region Public Properties
+            public override string DefaultTemplateAsXml => "<div class='swiper-slide'>" +
+                                                           "    <ContentPresenter />" +
+                                                           "</div>";
+            #endregion
+        }
 
         #region int Delay
         public static readonly DependencyProperty DelayProperty = DependencyProperty.Register(nameof(Delay), typeof(string), typeof(Slider), new PropertyMetadata(2000));
