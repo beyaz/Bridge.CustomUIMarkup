@@ -2,7 +2,7 @@
 
 namespace Bridge.CustomUIMarkup.Libraries.split_js
 {
-    static class Elements
+    public  static class Elements
     {
         #region Public Methods
         public static void RegisterToBuilder()

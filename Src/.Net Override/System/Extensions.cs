@@ -7,40 +7,6 @@ namespace System
     /// </summary>
     public static class Extensions
     {
-
-        /// <summary>
-        ///     Gets default value of <paramref name="type" />
-        /// </summary>
-        public static object GetDefaultValue(this Type type)
-        {
-            if (type.IsClass)
-            {
-
-
-                return null;
-            }
-
-            return Activator.CreateInstance(type);
-        }
-
-        /// <summary>
-        ///     Removes value from start of str
-        /// </summary>
-        public static string RemoveFromStart(this string data, string value)
-        {
-            if (data == null)
-            {
-                return null;
-            }
-
-            if (data.StartsWith(value))
-            {
-                return data.Substring(value.Length, data.Length - value.Length);
-            }
-
-            return data;
-        }
-
         #region Properties
         /// <summary>
         ///     Gets the default format provider.
@@ -52,10 +18,6 @@ namespace System
         /// <summary>
         ///     Compares the specified right.
         /// </summary>
-        /// <param name="left">The left.</param>
-        /// <param name="right">The right.</param>
-        /// <param name="formatProvider">The format provider.</param>
-        /// <returns></returns>
         public static int Compare(this object left, object right, IFormatProvider formatProvider = null)
         {
             if (ReferenceEquals(left, null) && ReferenceEquals(right, null))
@@ -74,6 +36,19 @@ namespace System
             }
 
             return Convert.ToDecimal(left, formatProvider).CompareTo(Convert.ToDecimal(right, formatProvider));
+        }
+
+        /// <summary>
+        ///     Gets default value of <paramref name="type" />
+        /// </summary>
+        public static object GetDefaultValue(this Type type)
+        {
+            if (type.IsClass)
+            {
+                return null;
+            }
+
+            return Activator.CreateInstance(type);
         }
 
         /// <summary>
@@ -162,7 +137,6 @@ namespace System
                 throw new ArgumentNullException(nameof(type));
             }
 
-
             if (type == typeof(byte) ||
                 type == typeof(sbyte) ||
                 type == typeof(ushort) ||
@@ -223,6 +197,37 @@ namespace System
         public static bool? IsString(this object value)
         {
             return value is string;
+        }
+
+        /// <summary>
+        ///     Removes value from end of str
+        /// </summary>
+        public static string RemoveFromEnd(this string data, string value)
+        {
+            if (data.EndsWith(value))
+            {
+                return data.Substring(0, data.Length - value.Length);
+            }
+
+            return data;
+        }
+
+        /// <summary>
+        ///     Removes value from start of str
+        /// </summary>
+        public static string RemoveFromStart(this string data, string value)
+        {
+            if (data == null)
+            {
+                return null;
+            }
+
+            if (data.StartsWith(value))
+            {
+                return data.Substring(value.Length, data.Length - value.Length);
+            }
+
+            return data;
         }
 
         /// <summary>
@@ -361,6 +366,7 @@ namespace System
             }
             return Convert.ToInt32(value, formatProvider);
         }
+
         /// <summary>
         ///     To the int32 nullable.
         /// </summary>
@@ -383,5 +389,3 @@ namespace System
         #endregion
     }
 }
-
-

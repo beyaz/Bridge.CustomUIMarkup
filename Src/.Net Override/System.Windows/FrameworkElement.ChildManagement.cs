@@ -127,7 +127,10 @@ namespace System.Windows
             _visualChilderen?.Clear();
         }
 
-        
+        public void ClearLogicalChilds()
+        {
+            _logicalChilderen?.Clear();
+        }
 
         #region IReadOnlyList<FrameworkElement> VisualChilderen
         List<FrameworkElement> _visualChilderen;

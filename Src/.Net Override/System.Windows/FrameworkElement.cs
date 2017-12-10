@@ -68,23 +68,7 @@ namespace System.Windows
             AfterAddChild?.Invoke(element);
         }
 
-        public object GetValue(DependencyProperty dp)
-        {
-            var value = this[dp.Name];
-            if (value == null)
-            {
-                if (dp.PropertyMetadata?.DefaultValue != null)
-                {
-                    return dp.PropertyMetadata.DefaultValue;
-                }
-
-                if (dp.PropertyType.IsEnum)
-                {
-                    return Enum.Parse(dp.PropertyType, "0");
-                }
-            }
-            return value;
-        }
+       
 
         public virtual void InitDOM()
         {
@@ -99,10 +83,7 @@ namespace System.Windows
             _root.On(eventName, handler);
         }
 
-        public void SetValue(DependencyProperty dp, object value)
-        {
-            this[dp.Name] = value;
-        }
+        
         #endregion
 
         #region Methods

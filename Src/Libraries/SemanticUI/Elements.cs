@@ -1,9 +1,10 @@
 ﻿using System.Windows;
+using System.Windows.Controls;
 using Bridge.CustomUIMarkup.UI;
 
 namespace Bridge.CustomUIMarkup.Libraries.SemanticUI
 {
-    static class Elements
+    public static class Elements
     {
 
         static HtmlElement CreateElement(string tag = null, string className = null)
@@ -129,6 +130,8 @@ namespace Bridge.CustomUIMarkup.Libraries.SemanticUI
 
 
             Builder.Register("ItemsControl", () => new ItemsControl("div"));
+            Builder.Register("DataGrid", () => new DataGrid("ui celled table"));
+            Builder.Register("ListBox", () => new ListBox()); 
 
         }
         #endregion

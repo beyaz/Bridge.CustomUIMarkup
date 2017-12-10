@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using Bridge;
 
 namespace Bridge.CustomUIMarkup.Common
 {
@@ -23,6 +22,11 @@ namespace Bridge.CustomUIMarkup.Common
             }
 
             Script.Call("console.log", Value);
+        }
+
+        public static void OperationWasCanceled(string operationName, string reason)
+        {
+            Script.Call("console.log", reason + "For this reason operation was canceled.@operationName:" + operationName);
         }
         #endregion
     }

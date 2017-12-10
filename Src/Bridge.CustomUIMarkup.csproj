@@ -50,6 +50,7 @@
     <Compile Include=".Net Override\System\ThrowHelper.cs" />
     <Compile Include="Libraries\SemanticUI\DataGrid.cs" />
     <Compile Include="Libraries\SemanticUI\FieldString.cs" />
+    <Compile Include="Libraries\SemanticUI\ItemsControl.cs" />
     <Compile Include="Libraries\SemanticUI\TextBlock.cs" />
     <Compile Include=".Net Override\System.Windows.Data\BindingInfo.cs" />
     <Compile Include=".Net Override\System.Windows.Data\IValueConverter.cs" />

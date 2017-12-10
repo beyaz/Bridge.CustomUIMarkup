@@ -193,21 +193,9 @@ namespace Bridge.CustomUIMarkup.UI
             }
             else
             {
-                var parentNodeName = xmlNode.ParentNode.Name;
-                // <ItemsControl.ItemTemplate>
-                if (xmlNode.Name.StartsWith(parentNodeName + "."))
+                if (TryToInitParentProperty(xmlNode))
                 {
-                    var propertyName = xmlNode.Name.RemoveFromStart(parentNodeName + ".");
-                    if (propertyName != null)
-                    {
-                        var propertyInfo = _currentInstance.GetType().GetProperty(propertyName);
-                        if (propertyInfo != null)
-                        {
-                            var propertyValue =  Template.CreateFrom(xmlNode.ChildNodes[1]);
-                            ReflectionHelper.SetPropertyValue(_currentInstance,propertyName,propertyValue);
-                            return null;
-                        }
-                    }
+                    return null;
                 }
 
                 instance = CreateInstance(xmlNode);
@@ -262,13 +250,9 @@ namespace Bridge.CustomUIMarkup.UI
             {
                 var nodeAttribute = attributes[i];
 
-                if (nodeAttribute.Name == "DataContext")
-                {
-                    continue;
-                }
-
                 ProcessAttribute(instance, nodeAttribute.Name, nodeAttribute.Value);
             }
+
 
             var childNodes = xmlNode.ChildNodes;
 
@@ -278,104 +262,155 @@ namespace Bridge.CustomUIMarkup.UI
             {
                 var childNode = childNodes[i];
 
-                if (childNode.NodeType == NodeType.Comment)
-                {
-                    continue;
-                }
-
-                if (childNode.NodeType == NodeType.Text)
-                {
-                    // skip empty spaces
-                    var html = new jQuery(childNode).Text();
-                    if (string.IsNullOrWhiteSpace(html))
-                    {
-                        continue;
-                    }
-
-                    // maybe <div> {LastName} </div>
-                    var bindingInfo = BindingInfo.TryParseExpression(html);
-                    if (bindingInfo != null)
-                    {
-                        bindingInfo.BindingMode = BindingMode.OneWay;
-
-                        bindingInfo.Source = instance;
-                        bindingInfo.SourcePath = "DataContext." + bindingInfo.SourcePath.Path;
-
-                        bindingInfo.Target = instance;
-                        bindingInfo.TargetPath = nameof(instance.InnerHTML);
-
-                        bindingInfo.Connect();
-                        continue;
-                    }
-
-                    var instanceAsContentControl = instance as ContentControl;
-                    if (instanceAsContentControl!=null)
-                    {
-                        instanceAsContentControl.Content = html;
-                        continue;
-                    }
-
-                    instance.InnerHTML = html;
-                    continue;
-                }
-
-                var subControl = BuildNode(childNode);
-
-                var subNodeAlreadyProcessed = subControl == null;
-                if (subNodeAlreadyProcessed)
-                {
-                    continue;
-                }
-
-                if (!_isBuildingTemplate)
-                {
-                    var subControlDataContextAttribute = childNode.Attributes["DataContext"];
-                    if (subControlDataContextAttribute == null)
-                    {
-                        var bindingInfo = new BindingInfo
-                        {
-                            BindingMode = BindingMode.OneWay,
-                            Source = instance,
-                            SourcePath = "DataContext",
-                            Target = subControl,
-                            TargetPath = "DataContext"
-                        };
-                        bindingInfo.Connect();
-                    }
-                    else
-                    {
-                        var bi = BindingInfo.TryParseExpression(subControlDataContextAttribute.Value);
-                        if (bi == null)
-                        {
-                            throw new InvalidOperationException("InvalidBindingExpression:" + subControlDataContextAttribute.Value);
-                        }
-                        bi.BindingMode = BindingMode.OneWay;
-                        bi.Source = instance;
-                        bi.SourcePath = "DataContext." + bi.SourcePath.Path;
-                        bi.Target = subControl;
-                        bi.TargetPath = "DataContext";
-                        bi.Connect();
-                    }
-                }
-
-                // instance.AddVisualChild(subControl);
-
-                //if (!_isBuildingTemplate)
-                //{
-                //    instance.AddLogicalChild(subControl);
-                //}
-
-                if (_isBuildingTemplate && rootIsNull) // complex işlerde karışıyor incele TODO:WhiteSone
-                {
-                    instance.AddVisualChild(subControl);
-                }
-                else
-                {
-                    instance.AddLogicalChild(subControl);
-                }
+                BuildNode(childNode, instance, rootIsNull);
             }
 
             return instance;
+        }
+
+        bool TryToInitParentProperty(XmlNode xmlNode)
+        {
+            var parentNodeName = xmlNode.ParentNode.Name;
+            // <ItemsControl.ItemTemplate>
+            if (xmlNode.Name.StartsWith(parentNodeName + "."))
+            {
+                var propertyName = xmlNode.Name.RemoveFromStart(parentNodeName + ".");
+                if (propertyName != null)
+                {
+                    var propertyInfo = _currentInstance.GetType().GetProperty(propertyName);
+                    if (propertyInfo != null)
+                    {
+                        if (propertyInfo.PropertyType == typeof(Template))
+                        {
+                            var propertyValue = Template.CreateFrom(GetFirstNodeSkipCommentAndText(xmlNode.ChildNodes));
+                            ReflectionHelper.SetPropertyValue(_currentInstance, propertyName, propertyValue);
+                            return true;
+                        }
+
+                        throw new NotImplementedException(xmlNode.Name);
+                    }
+                }
+            }
+            return false;
+        }
+
+        static XmlNode GetFirstNodeSkipCommentAndText(XmlNodeList xmlNodeList)
+        {
+            var len = xmlNodeList.Count;
+
+            for (var i = 0; i < len; i++)
+            {
+                var node = xmlNodeList[i];
+                var nodeType = node.NodeType;
+
+                if (nodeType == NodeType.Comment||
+                    nodeType == NodeType.Text)
+                {
+                    continue;
+                }
+
+                return node;
+            }
+
+            throw new InvalidOperationException("NodeCannotBeEmpty.");
+        }
+        void BuildNode(XmlNode childNode, FrameworkElement parentInstance, bool rootIsNull)
+        {
+            if (childNode.NodeType == NodeType.Comment)
+            {
+                return;
+            }
+
+            if (childNode.NodeType == NodeType.Text)
+            {
+                // skip empty spaces
+                var html = new jQuery(childNode).Text();
+                if (string.IsNullOrWhiteSpace(html))
+                {
+                    return;
+                }
+
+                // maybe <div> {LastName} </div>
+                var bindingInfo = BindingInfo.TryParseExpression(html);
+                if (bindingInfo != null)
+                {
+                    bindingInfo.BindingMode = BindingMode.OneWay;
+
+                    bindingInfo.Source = parentInstance;
+                    bindingInfo.SourcePath = "DataContext." + bindingInfo.SourcePath.Path;
+
+                    bindingInfo.Target = parentInstance;
+                    bindingInfo.TargetPath = nameof(parentInstance.InnerHTML);
+
+                    bindingInfo.Connect();
+                    return;
+                }
+
+                var instanceAsContentControl = parentInstance as ContentControl;
+                if (instanceAsContentControl != null)
+                {
+                    instanceAsContentControl.Content = html;
+                    return;
+                }
+
+                parentInstance.InnerHTML = html;
+                return;
+            }
+
+            var subControl = BuildNode(childNode);
+
+            var subNodeAlreadyProcessed = subControl == null;
+            if (subNodeAlreadyProcessed)
+            {
+                return;
+            }
+
+            if (!_isBuildingTemplate)
+            {
+                var subControlDataContextAttribute = childNode.Attributes["DataContext"];
+                if (subControlDataContextAttribute == null)
+                {
+                    var bindingInfo = new BindingInfo
+                    {
+                        BindingMode = BindingMode.OneWay,
+                        Source = parentInstance,
+                        SourcePath = "DataContext",
+                        Target = subControl,
+                        TargetPath = "DataContext"
+                    };
+                    bindingInfo.Connect();
+                }
+                else
+                {
+                    var bi = BindingInfo.TryParseExpression(subControlDataContextAttribute.Value);
+                    if (bi == null)
+                    {
+                        throw new InvalidOperationException("InvalidBindingExpression:" + subControlDataContextAttribute.Value);
+                    }
+                    bi.BindingMode = BindingMode.OneWay;
+                    bi.Source = parentInstance;
+                    bi.SourcePath = "DataContext." + bi.SourcePath.Path;
+                    bi.Target = subControl;
+                    bi.TargetPath = "DataContext";
+                    bi.Connect();
+                }
+            }
+
+            // instance.AddVisualChild(subControl);
+
+            //if (!_isBuildingTemplate)
+            //{
+            //    instance.AddLogicalChild(subControl);
+            //}
+
+            if (_isBuildingTemplate && rootIsNull) // complex işlerde karışıyor incele TODO:WhiteSone
+            {
+                parentInstance.AddVisualChild(subControl);
+            }
+            else
+            {
+                parentInstance.AddLogicalChild(subControl);
+            }
         }
 
         FrameworkElement CreateInstance(XmlNode xmlNode)
@@ -406,6 +441,14 @@ namespace Bridge.CustomUIMarkup.UI
 
         void ProcessAttribute(FrameworkElement instance, string name, string value)
         {
+
+
+            if (name == "DataContext")
+            {
+                return;
+            }
+
+
             var nameUpperCase = name.ToUpperCase();
 
             if (name == "class")
