@@ -1995,6 +1995,11 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
                 IsUserDefinedTag: function (tag) {
                     return System.Linq.Enumerable.from(tag).contains(46) || System.Linq.Enumerable.from(tag).contains(45) || System.Linq.Enumerable.from(tag).contains(58);
                 },
+                InitDOM: function (instance) {
+                    if (instance._root == null) {
+                        instance.InitDOM();
+                    }
+                },
                 GetFirstNodeSkipCommentAndText: function (xmlNodeList) {
                     var len = xmlNodeList.length;
 
@@ -2121,27 +2126,10 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
                     instance.DataContext = this.DataContext;
                 }
 
-                if (instance._root == null) {
-                    instance.InitDOM();
 
-                    //var template = instance.Template ?? Template.GetDefaultTemplate(instance.GetType());
 
-                    //if (  !rootIsNull && template != null)
-                    //{
-                    //    Build(template, instance);
+                Bridge.CustomUIMarkup.UI.Builder.InitDOM(instance);
 
-                    //    if (instance._root == null)
-                    //    {
-                    //        throw new InvalidOperationException("Template must have root node.");
-                    //    }
-                    //}
-                    //else
-                    //{
-                    //    instance.InitDOM();
-                    //}
-                }
-
-                instance.InvokeAfterInitDOM();
 
                 var attributes = xmlNode.attributes;
 
@@ -6728,8 +6716,7 @@ if(fn)
             BeforeLogicalChildAdd: null,
             AfterVisualChildAdd: null,
             BeforeConnectToLogicalParent: null,
-            BeforeConnectToVisualParent: null,
-            "AfterInitDOM": null
+            BeforeConnectToVisualParent: null
         },
         props: {
             _el: {
@@ -7070,9 +7057,6 @@ if(fn)
             },
             On: function (eventName, handler) {
                 this._root.on(eventName, handler);
-            },
-            InvokeAfterInitDOM: function () {
-                !Bridge.staticEquals(this.AfterInitDOM, null) ? this.AfterInitDOM() : null;
             }
         }
     });
@@ -8668,16 +8652,25 @@ $( '<style> '+css+'</style>' ).appendTo( 'head' );
                     throw new System.ArgumentException("MustbeList:ItemsSource@ItemsSource.Type:" + (Bridge.Reflection.getTypeFullName(Bridge.getType(this["ItemsSource"])) || ""));
                 }
 
-                if (this["ItemTemplate"] == null) {
-                    throw new System.ArgumentNullException("ItemTemplate");
-                }
+                var itemTemplate = this["ItemTemplate"];
 
                 var len = System.Array.getCount(list);
                 for (var i = 0; i < len; i = (i + 1) | 0) {
                     var itemData = { v : System.Array.getItem(list, i) };
 
-                    var builder = ($t = new Bridge.CustomUIMarkup.UI.Builder(), $t._rootNode = this["ItemTemplate"].Root, $t.DataContext = itemData.v, $t);
-                    var item = builder.Build();
+
+                    var item = null;
+                    if (itemTemplate != null) {
+                        var builder = ($t = new Bridge.CustomUIMarkup.UI.Builder(), $t._rootNode = this["ItemTemplate"].Root, $t.DataContext = itemData.v, $t);
+                        item = builder.Build();
+                    } else {
+                        var textBlock = Bridge.CustomUIMarkup.UI.Builder.Create(Bridge.CustomUIMarkup.Libraries.SemanticUI.TextBlock);
+                        textBlock["InnerHTML"] = itemData.v != null ? itemData.v.toString() : null;
+
+                        item = textBlock;
+
+                    }
+
 
                     item.On("click", (function ($me, itemData) {
                         return Bridge.fn.bind($me, function () {

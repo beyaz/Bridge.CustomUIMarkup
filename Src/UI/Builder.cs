@@ -223,28 +223,10 @@ namespace Bridge.CustomUIMarkup.UI
                 instance.DataContext = DataContext;
             }
 
-            if (instance._root == null)
-            {
-                instance.InitDOM();
 
-                //var template = instance.Template ?? Template.GetDefaultTemplate(instance.GetType());
 
-                //if (  !rootIsNull && template != null)
-                //{
-                //    Build(template, instance);
+            InitDOM(instance);
 
-                //    if (instance._root == null)
-                //    {
-                //        throw new InvalidOperationException("Template must have root node.");
-                //    }
-                //}
-                //else
-                //{
-                //    instance.InitDOM();
-                //}
-            }
-
-            instance.InvokeAfterInitDOM();
 
             var attributes = xmlNode.Attributes;
 
@@ -269,6 +251,14 @@ namespace Bridge.CustomUIMarkup.UI
             }
 
             return instance;
+        }
+
+        static void InitDOM(FrameworkElement instance)
+        {
+            if (instance._root == null)
+            {
+                instance.InitDOM();
+            }
         }
 
         bool TryToInitParentProperty(XmlNode xmlNode)

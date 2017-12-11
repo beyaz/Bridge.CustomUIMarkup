@@ -2,6 +2,7 @@
 using System.ComponentModel;
 using System.Windows.Controls.Primitives;
 using Bridge.CustomUIMarkup.Common;
+using Bridge.CustomUIMarkup.Libraries.SemanticUI;
 using Bridge.CustomUIMarkup.UI;
 
 namespace System.Windows.Controls.Primitives
@@ -106,23 +107,34 @@ namespace System.Windows.Controls
                 throw new ArgumentException("MustbeList:" + nameof(ItemsSource)+ "@ItemsSource.Type:"+ ItemsSource.GetType().FullName);
             }
 
-            if (ItemTemplate == null)
-            {
-                throw new ArgumentNullException(nameof(ItemTemplate));
-            }
+            var itemTemplate = ItemTemplate;
 
             var len = list.Count;
             for (var i = 0; i < len; i++)
             {
                 var itemData = list[i];
 
-                var builder = new Builder
+
+                FrameworkElement item = null;
+                if (itemTemplate != null)
                 {
-                    _rootNode = ItemTemplate.Root,
-                    DataContext = itemData
-                    // Caller = this
-                };
-                var item = builder.Build();
+                    var builder = new Builder
+                    {
+                        _rootNode = ItemTemplate.Root,
+                        DataContext = itemData
+                        // Caller = this
+                    };
+                    item = builder.Build();
+                }
+                else
+                {
+                    var textBlock = Builder.Create<TextBlock>();
+                    textBlock.InnerHTML = itemData?.ToString();
+
+                    item = textBlock;
+
+                }
+               
 
                 item.On("click", () =>
                 {

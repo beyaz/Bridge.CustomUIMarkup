@@ -40,9 +40,7 @@ namespace System.Windows
         }
         #endregion
 
-        #region Public Events
-        public event Action AfterInitDOM;
-        #endregion
+       
 
    
 
@@ -72,10 +70,7 @@ namespace System.Windows
         #endregion
 
         #region Methods
-        internal void InvokeAfterInitDOM()
-        {
-            AfterInitDOM?.Invoke();
-        }
+       
 
         protected static PropertyMetadata AddCssClassOnTrueElseRemove(string cssClass)
         {
