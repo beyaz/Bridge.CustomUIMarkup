@@ -1979,6 +1979,18 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
 
                     builder.BuildNode$1(builder._rootNode);
                 },
+                Build2: function (xmlTemplate, dataContext, caller) {
+                    var $t;
+                    var builder = ($t = new Bridge.CustomUIMarkup.UI.Builder(), $t.XmlString = xmlTemplate, $t.DataContext = dataContext, $t.Caller = caller, $t);
+
+
+
+                    var content = builder.Build();
+
+                    Bridge.CustomUIMarkup.UI.Builder.InitDOM(caller);
+
+                    caller.AddLogicalChild(content);
+                },
                 BuildControlTemplate: function (xmlTemplate, control) {
                     var $t;
                     var builder = ($t = new Bridge.CustomUIMarkup.UI.Builder(), $t._rootNode = xmlTemplate.Root, $t.DataContext = control, $t._isBuildingTemplate = true, $t);
@@ -2125,12 +2137,7 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
                     this.LineNumberToControlMap.set(lineNumber, instance);
                 }
 
-                //if (instance.DataContext == null)
-                {
-                    instance.DataContext = this.DataContext;
-                }
-
-
+                instance.DataContext = this.DataContext;
 
                 Bridge.CustomUIMarkup.UI.Builder.InitDOM(instance);
 
@@ -2155,20 +2162,19 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
                     var subItem = this.BuildNode(childNode, instance);
 
                     this.Connect(instance, subItem, rootIsNull);
-
                 }
 
                 return instance;
             },
-            BuildNode: function (childNode, parentInstance) {
+            BuildNode: function (xmlNode, parentInstance) {
                 var $t;
-                if (childNode.nodeType === 8) {
+                if (xmlNode.nodeType === 8) {
                     return null;
                 }
 
-                if (childNode.nodeType === 3) {
+                if (xmlNode.nodeType === 3) {
                     // skip empty spaces
-                    var html = $(childNode).text();
+                    var html = $(xmlNode).text();
                     if (System.String.isNullOrWhiteSpace(html)) {
                         return null;
                     }
@@ -2198,7 +2204,7 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
                     return null;
                 }
 
-                var subControl = this.BuildNode$1(childNode);
+                var subControl = this.BuildNode$1(xmlNode);
 
                 var subNodeAlreadyProcessed = subControl == null;
                 if (subNodeAlreadyProcessed) {
@@ -2206,7 +2212,7 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
                 }
 
                 if (!this._isBuildingTemplate) {
-                    var subControlDataContextAttribute = childNode.attributes.DataContext;
+                    var subControlDataContextAttribute = xmlNode.attributes.DataContext;
                     if (subControlDataContextAttribute == null) {
                         var bindingInfo1 = ($t = new System.Windows.Data.BindingInfo(), $t.BindingMode = System.Windows.Data.BindingMode.OneWay, $t.Source = parentInstance, $t.SourcePath = System.Windows.PropertyPath.op_Implicit("DataContext"), $t.Target = subControl, $t.TargetPath = System.Windows.PropertyPath.op_Implicit("DataContext"), $t);
                         bindingInfo1.Connect();
@@ -9003,6 +9009,17 @@ $( '<style> '+css+'</style>' ).appendTo( 'head' );
 
                 this["SelectedItem"] = System.ComponentModel.ReflectionHelper.GetPropertyValue(itemDataContext, this.SelectedValuePath);
 
+            }
+        }
+    });
+
+    Bridge.define("System.Windows.UserControl", {
+        inherits: [System.Windows.ContentControl],
+        props: {
+            DefaultTemplateAsXml: {
+                get: function () {
+                    return "<div>    <ContentPresenter /></div>";
+                }
             }
         }
     });

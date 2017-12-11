@@ -76,6 +76,24 @@ namespace Bridge.CustomUIMarkup.UI
             return builder.Build();
         }
 
+        public static void Build2(string xmlTemplate, object dataContext, FrameworkElement caller)
+        {
+            var builder = new Builder
+            {
+                XmlString = xmlTemplate,
+                DataContext = dataContext,
+                Caller = caller
+            };
+
+            
+
+            var content =  builder.Build();
+
+            InitDOM(caller);
+
+            caller.AddLogicalChild(content);
+        }
+
         public static FrameworkElement Build(string xmlTemplate, object dataContext)
         {
             var builder = new Builder
