@@ -87,8 +87,8 @@ namespace Bridge.CustomUIMarkup.Libraries.SemanticUI
                 var arr = value1.Split(':').Where(x=>!string.IsNullOrWhiteSpace(x)).ToArray();
                 Columns.Add(new DataGridColumn
                 {
-                    Name = arr[0],
-                    Label = arr[1]
+                    Name = (arr[0]+"").Trim(),
+                    Label = (arr[1] + "").Trim(),
                 });
             }
         }

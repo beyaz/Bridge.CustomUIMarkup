@@ -7812,7 +7812,7 @@ me._editor.display.wrapper.style.height = '95%';
                         var arr = System.Linq.Enumerable.from(System.String.split(value1, [58].map(function(i) {{ return String.fromCharCode(i); }}))).where(function (x) {
                                 return !System.String.isNullOrWhiteSpace(x);
                             }).toArray(System.String);
-                        System.Array.add(this.Columns, ($t1 = new Bridge.CustomUIMarkup.Libraries.SemanticUI.DataGridColumn(), $t1.Name = arr[System.Array.index(0, arr)], $t1.Label = arr[System.Array.index(1, arr)], $t1), Bridge.CustomUIMarkup.Libraries.SemanticUI.DataGridColumn);
+                        System.Array.add(this.Columns, ($t1 = new Bridge.CustomUIMarkup.Libraries.SemanticUI.DataGridColumn(), $t1.Name = ((arr[System.Array.index(0, arr)] || "") + "").trim(), $t1.Label = ((arr[System.Array.index(1, arr)] || "") + "").trim(), $t1), Bridge.CustomUIMarkup.Libraries.SemanticUI.DataGridColumn);
                     }
                 } finally {
                     if (Bridge.is($t, System.IDisposable)) {
@@ -9013,7 +9013,7 @@ $( '<style> '+css+'</style>' ).appendTo( 'head' );
         }
     });
 
-    Bridge.define("System.Windows.UserControl", {
+    Bridge.define("System.Windows.UserControl2", {
         inherits: [System.Windows.ContentControl],
         props: {
             DefaultTemplateAsXml: {
