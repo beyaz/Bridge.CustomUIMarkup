@@ -1979,6 +1979,12 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
 
                     builder.BuildNode$1(builder._rootNode);
                 },
+                BuildControlTemplate: function (xmlTemplate, control) {
+                    var $t;
+                    var builder = ($t = new Bridge.CustomUIMarkup.UI.Builder(), $t._rootNode = xmlTemplate.Root, $t.DataContext = control, $t._isBuildingTemplate = true, $t);
+
+                    builder.BuildNode$1(builder._rootNode);
+                },
                 Create: function (T) {
                     var control = Bridge.createInstance(T);
 
@@ -2104,8 +2110,6 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
                     }
 
 
-
-
                     instance = this.CreateInstance(xmlNode);
                 }
 
@@ -2148,22 +2152,25 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
                 for (var i1 = 0; i1 < len; i1 = (i1 + 1) | 0) {
                     var childNode = childNodes[i1];
 
-                    this.BuildNode(childNode, instance, rootIsNull);
+                    var subItem = this.BuildNode(childNode, instance);
+
+                    this.Connect(instance, subItem, rootIsNull);
+
                 }
 
                 return instance;
             },
-            BuildNode: function (childNode, parentInstance, rootIsNull) {
+            BuildNode: function (childNode, parentInstance) {
                 var $t;
                 if (childNode.nodeType === 8) {
-                    return;
+                    return null;
                 }
 
                 if (childNode.nodeType === 3) {
                     // skip empty spaces
                     var html = $(childNode).text();
                     if (System.String.isNullOrWhiteSpace(html)) {
-                        return;
+                        return null;
                     }
 
                     // maybe <div> {LastName} </div>
@@ -2178,24 +2185,24 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
                         bindingInfo.TargetPath = System.Windows.PropertyPath.op_Implicit("InnerHTML");
 
                         bindingInfo.Connect();
-                        return;
+                        return null;
                     }
 
                     var instanceAsContentControl = Bridge.as(parentInstance, System.Windows.ContentControl);
                     if (instanceAsContentControl != null) {
                         instanceAsContentControl.Content = html;
-                        return;
+                        return null;
                     }
 
                     parentInstance["InnerHTML"] = html;
-                    return;
+                    return null;
                 }
 
                 var subControl = this.BuildNode$1(childNode);
 
                 var subNodeAlreadyProcessed = subControl == null;
                 if (subNodeAlreadyProcessed) {
-                    return;
+                    return null;
                 }
 
                 if (!this._isBuildingTemplate) {
@@ -2217,17 +2224,23 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
                     }
                 }
 
-                // instance.AddVisualChild(subControl);
+                return subControl;
 
-                //if (!_isBuildingTemplate)
-                //{
-                //    instance.AddLogicalChild(subControl);
-                //}
+            },
+            Connect: function (parent, subItem, rootIsNull) {
+
+                if (subItem == null) {
+                    return;
+                }
+                var subItemAsFrameworkElement = Bridge.as(subItem, System.Windows.FrameworkElement);
+                if (subItemAsFrameworkElement == null) {
+                    return;
+                }
 
                 if (this._isBuildingTemplate && rootIsNull) {
-                    parentInstance.AddVisualChild(subControl);
+                    parent.AddVisualChild(subItemAsFrameworkElement);
                 } else {
-                    parentInstance.AddLogicalChild(subControl);
+                    parent.AddLogicalChild(subItemAsFrameworkElement);
                 }
             },
             TryToInitParentProperty: function (xmlNode) {

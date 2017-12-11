@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics.Contracts;
 using System.Globalization;
 using System.Linq;
 using System.Windows;
@@ -93,6 +94,18 @@ namespace Bridge.CustomUIMarkup.UI
                 _rootNode = xmlTemplate.Root,
                 DataContext = dataContext,
                 Caller = caller ?? dataContext,
+                _isBuildingTemplate = true
+            };
+
+            builder.BuildNode(builder._rootNode);
+        }
+
+        internal static void BuildControlTemplate(Template xmlTemplate, FrameworkElement control)
+        {
+            var builder = new Builder
+            {
+                _rootNode = xmlTemplate.Root,
+                DataContext = control,
                 _isBuildingTemplate = true
             };
 
@@ -199,8 +212,6 @@ namespace Bridge.CustomUIMarkup.UI
                 }
 
 
-
-
                 instance = CreateInstance(xmlNode);
             }
 
@@ -247,10 +258,35 @@ namespace Bridge.CustomUIMarkup.UI
             {
                 var childNode = childNodes[i];
 
-                BuildNode(childNode, instance, rootIsNull);
+                var subItem = BuildNode(childNode, instance);
+
+                Connect(instance, subItem, rootIsNull);
             }
 
             return instance;
+        }
+
+        void Connect(FrameworkElement parent, object subItem, bool rootIsNull)
+        {
+
+            if (subItem == null)
+            {
+               return;
+            }
+            var subItemAsFrameworkElement = subItem as FrameworkElement;
+            if (subItemAsFrameworkElement == null)
+            {
+                return;
+            }
+
+            if (_isBuildingTemplate && rootIsNull) // complex işlerde karışıyor incele TODO:WhiteSone
+            {
+                parent.AddVisualChild(subItemAsFrameworkElement);
+            }
+            else
+            {
+                parent.AddLogicalChild(subItemAsFrameworkElement);
+            }
         }
 
         static void InitDOM(FrameworkElement instance)
@@ -317,20 +353,20 @@ namespace Bridge.CustomUIMarkup.UI
 
             throw new InvalidOperationException("NodeCannotBeEmpty.");
         }
-        void BuildNode(XmlNode childNode, FrameworkElement parentInstance, bool rootIsNull)
+        object BuildNode(XmlNode xmlNode, FrameworkElement parentInstance)
         {
-            if (childNode.NodeType == NodeType.Comment)
+            if (xmlNode.NodeType == NodeType.Comment)
             {
-                return;
+                return null;
             }
 
-            if (childNode.NodeType == NodeType.Text)
+            if (xmlNode.NodeType == NodeType.Text)
             {
                 // skip empty spaces
-                var html = new jQuery(childNode).Text();
+                var html = new jQuery(xmlNode).Text();
                 if (string.IsNullOrWhiteSpace(html))
                 {
-                    return;
+                    return null;
                 }
 
                 // maybe <div> {LastName} </div>
@@ -346,31 +382,31 @@ namespace Bridge.CustomUIMarkup.UI
                     bindingInfo.TargetPath = nameof(parentInstance.InnerHTML);
 
                     bindingInfo.Connect();
-                    return;
+                    return null;
                 }
 
                 var instanceAsContentControl = parentInstance as ContentControl;
                 if (instanceAsContentControl != null)
                 {
                     instanceAsContentControl.Content = html;
-                    return;
+                    return null;
                 }
 
                 parentInstance.InnerHTML = html;
-                return;
+                return null;
             }
 
-            var subControl = BuildNode(childNode);
+            var subControl = BuildNode(xmlNode);
 
             var subNodeAlreadyProcessed = subControl == null;
             if (subNodeAlreadyProcessed)
             {
-                return;
+                return null;
             }
 
             if (!_isBuildingTemplate)
             {
-                var subControlDataContextAttribute = childNode.Attributes["DataContext"];
+                var subControlDataContextAttribute = xmlNode.Attributes["DataContext"];
                 if (subControlDataContextAttribute == null)
                 {
                     var bindingInfo = new BindingInfo
@@ -399,21 +435,8 @@ namespace Bridge.CustomUIMarkup.UI
                 }
             }
 
-            // instance.AddVisualChild(subControl);
-
-            //if (!_isBuildingTemplate)
-            //{
-            //    instance.AddLogicalChild(subControl);
-            //}
-
-            if (_isBuildingTemplate && rootIsNull) // complex işlerde karışıyor incele TODO:WhiteSone
-            {
-                parentInstance.AddVisualChild(subControl);
-            }
-            else
-            {
-                parentInstance.AddLogicalChild(subControl);
-            }
+            return subControl;
+            
         }
 
         FrameworkElement CreateInstance(XmlNode xmlNode)
