@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Diagnostics.Contracts;
 using System.Globalization;
 using System.Linq;
 using System.Windows;
@@ -229,12 +228,7 @@ namespace Bridge.CustomUIMarkup.UI
                 LineNumberToControlMap[lineNumber] = instance;
             }
 
-            //if (instance.DataContext == null)
-            {
-                instance.DataContext = DataContext;
-            }
-
-
+            instance.DataContext = DataContext;
 
             InitDOM(instance);
 
