@@ -131,7 +131,10 @@ namespace Bridge.CustomUIMarkup.Libraries.SemanticUI
 
             Builder.Register("ItemsControl", () => new ItemsControl("div"));
             Builder.Register("DataGrid", () => new DataGrid("ui celled table"));
-            Builder.Register("ListBox", () => new ListBox()); 
+            Builder.Register("ListBox", () => new ListBox());
+
+            
+            
 
         }
         #endregion

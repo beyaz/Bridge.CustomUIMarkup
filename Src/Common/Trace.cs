@@ -26,7 +26,7 @@ namespace Bridge.CustomUIMarkup.Common
 
         public static void OperationWasCanceled(string operationName, string reason)
         {
-            Script.Call("console.log", reason + "For this reason operation was canceled.@operationName:" + operationName);
+            Script.Call("console.log", reason + " For this reason operation was canceled.@operationName:" + operationName);
         }
         #endregion
     }

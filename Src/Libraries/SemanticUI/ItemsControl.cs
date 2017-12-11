@@ -94,7 +94,7 @@ namespace System.Windows.Controls
             if (ItemsSource == null)
             {
 #if IsTraceEnabled
-                Trace.OperationWasCanceled(nameof(ReRender), nameof(ItemsSource) + "is null");
+                Trace.OperationWasCanceled(nameof(ReRender), nameof(ItemsSource) + "is null.");
 
 #endif
                 return;
@@ -103,7 +103,7 @@ namespace System.Windows.Controls
             var list = ItemsSource as IList;
             if (list == null)
             {
-                throw new ArgumentException("MustbeList:" + nameof(ItemsSource));
+                throw new ArgumentException("MustbeList:" + nameof(ItemsSource)+ "@ItemsSource.Type:"+ ItemsSource.GetType().FullName);
             }
 
             if (ItemTemplate == null)

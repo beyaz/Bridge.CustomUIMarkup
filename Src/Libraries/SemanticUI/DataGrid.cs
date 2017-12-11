@@ -2,7 +2,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
 using System.Windows;
+using Bridge.CustomUIMarkup.Common;
 using Bridge.CustomUIMarkup.UI;
 
 namespace Bridge.CustomUIMarkup.Libraries.SemanticUI
@@ -54,6 +56,43 @@ namespace Bridge.CustomUIMarkup.Libraries.SemanticUI
 
     class DataGrid : HtmlElement
     {
+
+
+
+        #region string ColumnNames
+        string _columnNames;
+        public string ColumnNames
+        {
+            get { return _columnNames; }
+            set
+            {
+                if (_columnNames != value)
+                {
+                    _columnNames = value;
+                    OnPropertyChanged("ColumnNames");
+                }
+            }
+        }
+        #endregion
+
+
+
+
+        void ParseColumnNames()
+        {
+            Columns.Clear();
+
+            foreach (var value1 in ColumnNames.Split(',').Where(x => !string.IsNullOrWhiteSpace(x)))
+            {
+                var arr = value1.Split(':').Where(x=>!string.IsNullOrWhiteSpace(x)).ToArray();
+                Columns.Add(new DataGridColumn
+                {
+                    Name = arr[0],
+                    Label = arr[1]
+                });
+            }
+        }
+
         public IList<DataGridColumn> Columns { get; } = new List<DataGridColumn>();
 
 
@@ -61,6 +100,10 @@ namespace Bridge.CustomUIMarkup.Libraries.SemanticUI
         public DataGrid(string className = null) : base("table", className)
         {
             BeforeConnectToLogicalParent += OnBeforeConnectToLogicalParent;
+
+            this.OnPropertyChanged(nameof(ColumnNames), ParseColumnNames);
+
+            this.OnPropertyChanged(nameof(ItemsSource), ReRender);
         }
         #endregion
 
@@ -90,15 +133,24 @@ namespace Bridge.CustomUIMarkup.Libraries.SemanticUI
         HtmlElement _thead, _thead_first_tr, _tbody;
         void ReRender()
         {
+
+            ClearVisualChilds();
+            ClearLogicalChilds();
+
             if (ItemsSource == null)
             {
-                throw new ArgumentNullException(nameof(ItemsSource));
+#if IsTraceEnabled
+                Trace.OperationWasCanceled(nameof(ReRender), nameof(ItemsSource) + "is null.");
+
+#endif
+
+                return;
             }
 
             var list = ItemsSource as IList;
             if (list == null)
             {
-                throw new ArgumentException("MustbeList:" + nameof(ItemsSource));
+                throw new ArgumentException("MustbeList:" + nameof(ItemsSource) + "@ItemsSource.Type:" + ItemsSource?.GetType().FullName);
             }
 
            

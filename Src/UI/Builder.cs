@@ -198,6 +198,9 @@ namespace Bridge.CustomUIMarkup.UI
                     return null;
                 }
 
+
+
+
                 instance = CreateInstance(xmlNode);
             }
 
@@ -285,6 +288,16 @@ namespace Bridge.CustomUIMarkup.UI
                             var propertyValue = Template.CreateFrom(GetFirstNodeSkipCommentAndText(xmlNode.ChildNodes));
                             ReflectionHelper.SetPropertyValue(_currentInstance, propertyName, propertyValue);
                             return true;
+                        }
+
+                        /*
+                                <DataGrid.Columns>
+                                    <DataGridColumn Name='FullName' Label='Adı SoyAdı' />
+                                </DataGrid.Columns>
+                            */
+                        if (propertyInfo.SetMethod == null)
+                        {
+                            
                         }
 
                         throw new NotImplementedException(xmlNode.Name);

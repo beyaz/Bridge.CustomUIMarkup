@@ -1,7 +1,6 @@
 ﻿using System.ComponentModel;
 using System.Diagnostics.Contracts;
 using System.Windows.Controls;
-using System.Windows.Markup;
 using Bridge.CustomUIMarkup.Common;
 using Bridge.CustomUIMarkup.Libraries.SemanticUI;
 using Bridge.CustomUIMarkup.UI;
@@ -20,7 +19,7 @@ namespace System.Windows
         #endregion
     }
 
-    public partial class FrameworkElement : DependencyObject, IAddChild
+    public partial class FrameworkElement : DependencyObject
     {
         #region Constructors
         public FrameworkElement(string tag = null, string className = null)
@@ -45,28 +44,14 @@ namespace System.Windows
         public event Action AfterInitDOM;
         #endregion
 
-        #region Events
-        protected event Action<FrameworkElement> AfterAddChild;
-        protected event Action<FrameworkElement> BeforeAddChild;
-
-        protected event Action BeforeConnectToParent;
-        #endregion
+   
 
         #region Public Properties
         public jQuery Root => _root;
         #endregion
 
         #region Public Methods
-        public virtual void Add(FrameworkElement element)
-        {
-            element.BeforeConnectToParent?.Invoke();
-
-            AddChild(element);
-
-            BeforeAddChild?.Invoke(element);
-
-            AfterAddChild?.Invoke(element);
-        }
+      
 
        
 
@@ -143,10 +128,7 @@ namespace System.Windows
             return DependencyProperty.Register(name, propertyType, ownerType, new PropertyMetadata(propertyChangedCallback));
         }
 
-        protected virtual void AddChild(FrameworkElement element)
-        {
-            element._root.AppendTo(_root);
-        }
+       
         #endregion
 
         #region BorderProperty
