@@ -2011,7 +2011,6 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
                 },
                 LoadComponent: function (control, xml) {
                     var $t;
-
                     var builder = ($t = new Bridge.CustomUIMarkup.UI.Builder(), $t._rootNode = System.Xml.XmlHelper.GetRootNode(xml), $t.DataContext = control, $t.Caller = control, $t);
 
                     var subControl = builder.BuildNode(builder._rootNode, control);

@@ -6,9 +6,10 @@ namespace Bridge.CustomUIMarkup.Test
     {
         #region Fields
         protected string SampleImageUrl_350_150 = "http://via.placeholder.com/350x150";
+        protected string SampleImageUrl_350_151 = "http://via.placeholder.com/350x151";
         #endregion
 
-       
+
 
         protected void MustTrue(bool condition)
         {

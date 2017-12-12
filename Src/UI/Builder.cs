@@ -140,7 +140,6 @@ namespace Bridge.CustomUIMarkup.UI
 
         internal static void LoadComponent(FrameworkElement control,string xml)
         {
-           
             var builder = new Builder
             {
                 _rootNode = XmlHelper.GetRootNode(xml),
