@@ -30,6 +30,14 @@ namespace Bridge.CustomUIMarkup.Test
                 throw new InvalidCastException("@expected: " + expected + " , @actual: " + actual);
             }
         }
+        protected void AssertNotNull(object value)
+        {
+            if (value == null)
+            {
+                throw new InvalidCastException("@value can not be null.");
+            }
+        }
+        
         protected void MustEqual(int expected, int actual)
         {
             if (expected != actual)

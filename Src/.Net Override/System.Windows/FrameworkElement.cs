@@ -530,8 +530,41 @@ namespace System.Windows
         {
            
             AfterLogicalChildAdd += CanOnlyBeOneChild;
-            AfterVisualChildAdd += OnAfterVisualChildAdd;
             AfterLogicalChildAdd += AssignFirstLogicalChildToContent;
+            AfterTemplateApplied += InitializeContentPresenter;
+        }
+
+        void InitializeContentPresenter()
+        {
+            _contentPresenter =  Find(this);
+            if (_contentPresenter == null)
+            {
+                throw new InvalidOperationException("ContentPresenter must be defined in template.");
+            }
+
+        }
+
+        static ContentPresenter Find(FrameworkElement element)
+        {
+            var elementAsContentPresenter = element as ContentPresenter;
+
+            if (elementAsContentPresenter != null)
+            {
+                return elementAsContentPresenter;
+            }
+
+            var len = element.VisualChilderenCount;
+
+            for (var i = 0; i < len; i++)
+            {
+                elementAsContentPresenter = Find(element.GetVisualChildAt(i));
+                if (elementAsContentPresenter != null)
+                {
+                    return elementAsContentPresenter;
+                }
+            }
+
+            return null;
         }
         #endregion
 
@@ -555,20 +588,14 @@ namespace System.Windows
         {
             if (LogicalChilderenCount == 2)
             {
+                Trace.Log("GetLogicalChildAt(0)", GetLogicalChildAt(0));
+                Trace.Log("GetLogicalChildAt(1)", GetLogicalChildAt(1));
+
                 throw new InvalidOperationException("Content cannot be set more than once.");
             }
         }
 
-        void OnAfterVisualChildAdd(FrameworkElement child)
-        {
-            var contentPresenter = child as ContentPresenter;
-            if (contentPresenter != null)
-            {
-                Contract.Assert(_contentPresenter == null, "ContentPresenter cannot be set more than once.");
-
-                _contentPresenter = contentPresenter;
-            }
-        }
+        
 
         bool _isContentChanging;
         void OnContentChanged()

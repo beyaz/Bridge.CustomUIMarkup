@@ -17,19 +17,22 @@ namespace Bridge.CustomUIMarkup.Test
             Bridge.CustomUIMarkup.Libraries.Swiper.Elements.RegisterToBuilder();
 
 
-            ContentControlTest.RunAll();
-            BuilderTest.RunAll();
 
-            TokenizerTest.Run();
-            BindingInfoTest.RunAll();
-            
-            HTMLBindingInfoTest.RunAll();
-            InputTextTest.RunAll();
+            Z_Builder2Test.RunAll();
 
-            TabItemTest.RunAll();
-            DataGridTest.RunAll();
+            //ContentControlTest.RunAll();
+            //BuilderTest.RunAll();
 
-            ItemsControlTests.RunAll();
+            //TokenizerTest.Run();
+            //BindingInfoTest.RunAll();
+
+            //HTMLBindingInfoTest.RunAll();
+            //InputTextTest.RunAll();
+
+            //TabItemTest.RunAll();
+            //DataGridTest.RunAll();
+
+            //ItemsControlTests.RunAll();
 
             Console.WriteLine("Success");
         }

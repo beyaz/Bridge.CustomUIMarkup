@@ -33,7 +33,10 @@ namespace System.Windows
             element._root.Attr(attributeName, value);
             return element;
         }
-
+        public static string Attr<T>(this T element, string attributeName) where T : FrameworkElement
+        {
+            return element._root.Attr(attributeName);
+        }
         public static string html<T>(this T element) where T : FrameworkElement
         {
             return element._root.Html();
@@ -138,6 +141,20 @@ namespace System.Windows
         public FrameworkElement GetVisualChildAt(int index)
         {
             return VisualChilderen[index];
+        }
+
+        internal FrameworkElement GetVisualChildAt(params int[] indexes)
+        {
+            var currentElement = this;
+            var len = indexes.Length;
+            for (var i = 0; i < len; i++)
+            {
+                var index = indexes[i];
+
+                currentElement =  currentElement.GetVisualChildAt(index);
+            }
+
+            return currentElement;
         }
 
 

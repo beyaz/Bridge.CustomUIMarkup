@@ -55,7 +55,7 @@ namespace System.Windows.Controls
                 return ;
             }
 
-            Builder.Build(template, this);
+            Builder.BuildControlTemplate(template, this);
 
             AfterTemplateApplied?.Invoke();
         }

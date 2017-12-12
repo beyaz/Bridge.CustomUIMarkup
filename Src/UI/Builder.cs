@@ -35,7 +35,6 @@ namespace Bridge.CustomUIMarkup.UI
 
         Dictionary<int, object> _lineNumberToControlMap;
 
-        FrameworkElement _root;
 
         internal XmlNode  _rootNode;
         #endregion
@@ -87,11 +86,11 @@ namespace Bridge.CustomUIMarkup.UI
 
             
 
-            var content =  builder.Build();
+            builder.Build();
 
-            InitDOM(caller);
+            // InitDOM(caller);
 
-            caller.AddLogicalChild(content);
+            // caller.AddLogicalChild(content);
         }
 
         public static FrameworkElement Build(string xmlTemplate, object dataContext)
@@ -123,11 +122,44 @@ namespace Bridge.CustomUIMarkup.UI
             {
                 _rootNode = xmlTemplate.Root,
                 DataContext = control,
-                _isBuildingTemplate = true
+                Caller = control,
+                _isBuildingTemplate = true,
             };
 
-            builder.BuildNode(builder._rootNode);
+            var subControl =  builder.BuildNode(builder._rootNode,control);
+
+            var subControlAsFrameworkElement = subControl as FrameworkElement;
+            if (subControlAsFrameworkElement == null)
+            {
+                throw new InvalidOperationException("TemplateControlFirstItemMustBeHTMLElement");
+            }
+
+            control._root = subControlAsFrameworkElement._root;
+            control.AddVisualChild(subControlAsFrameworkElement);
         }
+
+        internal static void LoadComponent(FrameworkElement control,string xml)
+        {
+           
+            var builder = new Builder
+            {
+                _rootNode = XmlHelper.GetRootNode(xml),
+                DataContext = control,
+                Caller = control
+            };
+
+            var subControl = builder.BuildNode(builder._rootNode, control);
+
+            var subControlAsFrameworkElement = subControl as FrameworkElement;
+            if (subControlAsFrameworkElement == null)
+            {
+                throw new InvalidOperationException("ControlFirstItemMustBeHTMLElement");
+            }
+
+            InitDOM(control);
+            control.AddLogicalChild(subControlAsFrameworkElement);
+        }
+
 
         public static T Create<T>() where T : Control, new()
         {
@@ -184,60 +216,18 @@ namespace Bridge.CustomUIMarkup.UI
         object _currentInstance;
         FrameworkElement BuildNode(XmlNode xmlNode)
         {
-            var rootIsNull = _root == null;
-
-            FrameworkElement instance = null;
-            var rootInstanceIsCaller = false;
-            FrameworkElement callerAsFrameworkElement = null;
-
-            if (rootIsNull)
+            if (TryToInitParentProperty(xmlNode))
             {
-                if (_isBuildingTemplate)
-                {
-                    rootInstanceIsCaller = true;
-                }
-
-                callerAsFrameworkElement = Caller as FrameworkElement;
-                if (callerAsFrameworkElement != null)
-                {
-                    rootInstanceIsCaller = true;
-                }
+                return null;
             }
 
-            if (rootInstanceIsCaller)
-            {
-                if (callerAsFrameworkElement == null)
-                {
-                    throw new InvalidOperationException("Caller class mustbe inherit from FrameworkElement.");
-                }
 
-                instance = callerAsFrameworkElement;
+            var instance = CreateInstance(xmlNode);
 
-                var copy = CreateInstance(xmlNode);
-                if (copy._root == null)
-                {
-                    copy.InitDOM();
-                }
-                instance._root = copy._root;
-                // TODO: copy create etmeden yapılabilmeli
-            }
-            else
-            {
-                if (TryToInitParentProperty(xmlNode))
-                {
-                    return null;
-                }
-
-
-                instance = CreateInstance(xmlNode);
-            }
 
             _currentInstance = instance;
 
-            if (rootIsNull)
-            {
-                _root = instance;
-            }
+            
 
             if (IsDesignMode)
             {
@@ -249,7 +239,6 @@ namespace Bridge.CustomUIMarkup.UI
             instance.DataContext = DataContext;
 
             InitDOM(instance);
-
 
             var attributes = xmlNode.Attributes;
 
@@ -272,13 +261,14 @@ namespace Bridge.CustomUIMarkup.UI
 
                 var subItem = BuildNode(childNode, instance);
 
-                Connect(instance, subItem, rootIsNull);
+                Connect(instance, subItem);
             }
 
             return instance;
         }
 
-        void Connect(FrameworkElement parent, object subItem, bool rootIsNull)
+
+        void Connect(FrameworkElement parent, object subItem)
         {
 
             if (subItem == null)
@@ -291,14 +281,9 @@ namespace Bridge.CustomUIMarkup.UI
                 return;
             }
 
-            if (_isBuildingTemplate && rootIsNull) // complex işlerde karışıyor incele TODO:WhiteSone
-            {
-                parent.AddVisualChild(subItemAsFrameworkElement);
-            }
-            else
-            {
-                parent.AddLogicalChild(subItemAsFrameworkElement);
-            }
+           
+
+            parent.AddLogicalChild(subItemAsFrameworkElement);
         }
 
         static void InitDOM(FrameworkElement instance)
@@ -408,13 +393,60 @@ namespace Bridge.CustomUIMarkup.UI
                 return null;
             }
 
-            var subControl = BuildNode(xmlNode);
 
-            var subNodeAlreadyProcessed = subControl == null;
-            if (subNodeAlreadyProcessed)
+
+            //
+            if (TryToInitParentProperty(xmlNode))
             {
                 return null;
             }
+
+
+            var instance = CreateInstance(xmlNode);
+
+
+            _currentInstance = instance;
+
+
+
+            if (IsDesignMode)
+            {
+                var lineNumber = xmlNode.GetOriginalLineNumber(_rootNode, XmlString);
+
+                LineNumberToControlMap[lineNumber] = instance;
+            }
+
+            instance.DataContext = DataContext;
+
+            InitDOM(instance);
+
+            var attributes = xmlNode.Attributes;
+
+            var len = attributes.Count;
+            for (var i = 0; i < len; i++)
+            {
+                var nodeAttribute = attributes[i];
+
+                ProcessAttribute(instance, nodeAttribute.Name, nodeAttribute.Value);
+            }
+
+
+            var childNodes = xmlNode.ChildNodes;
+
+            len = childNodes.Count;
+
+            for (var i = 0; i < len; i++)
+            {
+                var childNode = childNodes[i];
+
+                var subItem = BuildNode(childNode, instance);
+
+                Connect(instance, subItem);
+            }
+            //
+
+
+            
 
             if (!_isBuildingTemplate)
             {
@@ -426,7 +458,7 @@ namespace Bridge.CustomUIMarkup.UI
                         BindingMode = BindingMode.OneWay,
                         Source = parentInstance,
                         SourcePath = "DataContext",
-                        Target = subControl,
+                        Target = instance,
                         TargetPath = "DataContext"
                     };
                     bindingInfo.Connect();
@@ -441,13 +473,13 @@ namespace Bridge.CustomUIMarkup.UI
                     bi.BindingMode = BindingMode.OneWay;
                     bi.Source = parentInstance;
                     bi.SourcePath = "DataContext." + bi.SourcePath.Path;
-                    bi.Target = subControl;
+                    bi.Target = instance;
                     bi.TargetPath = "DataContext";
                     bi.Connect();
                 }
             }
 
-            return subControl;
+            return instance;
             
         }
 

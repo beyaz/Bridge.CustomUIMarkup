@@ -289,6 +289,10 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
 
                     console.log(Bridge.unbox(Value));
                 },
+                Log$1: function (message, element) {
+                    console.log(message);
+                    console.log(element != null && element._root != null ? element._root.get(0) : null);
+                },
                 OperationWasCanceled: function (operationName, reason) {
                     console.log((reason || "") + " For this reason operation was canceled.@operationName:" + (operationName || ""));
                 }
@@ -1985,17 +1989,40 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
 
 
 
-                    var content = builder.Build();
+                    builder.Build();
 
-                    Bridge.CustomUIMarkup.UI.Builder.InitDOM(caller);
+                    // InitDOM(caller);
 
-                    caller.AddLogicalChild(content);
+                    // caller.AddLogicalChild(content);
                 },
                 BuildControlTemplate: function (xmlTemplate, control) {
                     var $t;
-                    var builder = ($t = new Bridge.CustomUIMarkup.UI.Builder(), $t._rootNode = xmlTemplate.Root, $t.DataContext = control, $t._isBuildingTemplate = true, $t);
+                    var builder = ($t = new Bridge.CustomUIMarkup.UI.Builder(), $t._rootNode = xmlTemplate.Root, $t.DataContext = control, $t.Caller = control, $t._isBuildingTemplate = true, $t);
 
-                    builder.BuildNode$1(builder._rootNode);
+                    var subControl = builder.BuildNode(builder._rootNode, control);
+
+                    var subControlAsFrameworkElement = Bridge.as(subControl, System.Windows.FrameworkElement);
+                    if (subControlAsFrameworkElement == null) {
+                        throw new System.InvalidOperationException("TemplateControlFirstItemMustBeHTMLElement");
+                    }
+
+                    control._root = subControlAsFrameworkElement._root;
+                    control.AddVisualChild(subControlAsFrameworkElement);
+                },
+                LoadComponent: function (control, xml) {
+                    var $t;
+
+                    var builder = ($t = new Bridge.CustomUIMarkup.UI.Builder(), $t._rootNode = System.Xml.XmlHelper.GetRootNode(xml), $t.DataContext = control, $t.Caller = control, $t);
+
+                    var subControl = builder.BuildNode(builder._rootNode, control);
+
+                    var subControlAsFrameworkElement = Bridge.as(subControl, System.Windows.FrameworkElement);
+                    if (subControlAsFrameworkElement == null) {
+                        throw new System.InvalidOperationException("ControlFirstItemMustBeHTMLElement");
+                    }
+
+                    Bridge.CustomUIMarkup.UI.Builder.InitDOM(control);
+                    control.AddLogicalChild(subControlAsFrameworkElement);
                 },
                 Create: function (T) {
                     var control = Bridge.createInstance(T);
@@ -2040,7 +2067,6 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
             XmlString: null,
             _isBuildingTemplate: false,
             _lineNumberToControlMap: null,
-            _root: null,
             _rootNode: null,
             Caller: null,
             DataContext: null,
@@ -2086,50 +2112,17 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
                 Bridge.CustomUIMarkup.Common.Extensions.highlight(query);
             },
             BuildNode$1: function (xmlNode) {
-                var rootIsNull = this._root == null;
-
-                var instance = null;
-                var rootInstanceIsCaller = false;
-                var callerAsFrameworkElement = null;
-
-                if (rootIsNull) {
-                    if (this._isBuildingTemplate) {
-                        rootInstanceIsCaller = true;
-                    }
-
-                    callerAsFrameworkElement = Bridge.as(this.Caller, System.Windows.FrameworkElement);
-                    if (callerAsFrameworkElement != null) {
-                        rootInstanceIsCaller = true;
-                    }
+                if (this.TryToInitParentProperty(xmlNode)) {
+                    return null;
                 }
 
-                if (rootInstanceIsCaller) {
-                    if (callerAsFrameworkElement == null) {
-                        throw new System.InvalidOperationException("Caller class mustbe inherit from FrameworkElement.");
-                    }
 
-                    instance = callerAsFrameworkElement;
+                var instance = this.CreateInstance(xmlNode);
 
-                    var copy = this.CreateInstance(xmlNode);
-                    if (copy._root == null) {
-                        copy.InitDOM();
-                    }
-                    instance._root = copy._root;
-                    // TODO: copy create etmeden yapılabilmeli
-                } else {
-                    if (this.TryToInitParentProperty(xmlNode)) {
-                        return null;
-                    }
-
-
-                    instance = this.CreateInstance(xmlNode);
-                }
 
                 this["_currentInstance"] = instance;
 
-                if (rootIsNull) {
-                    this._root = instance;
-                }
+
 
                 if (this["IsDesignMode"]) {
                     var lineNumber = Bridge.CustomUIMarkup.Common.Extensions.GetOriginalLineNumber(xmlNode, this._rootNode, this.XmlString);
@@ -2140,7 +2133,6 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
                 instance.DataContext = this.DataContext;
 
                 Bridge.CustomUIMarkup.UI.Builder.InitDOM(instance);
-
 
                 var attributes = xmlNode.attributes;
 
@@ -2161,7 +2153,7 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
 
                     var subItem = this.BuildNode(childNode, instance);
 
-                    this.Connect(instance, subItem, rootIsNull);
+                    this.Connect(instance, subItem);
                 }
 
                 return instance;
@@ -2204,17 +2196,61 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
                     return null;
                 }
 
-                var subControl = this.BuildNode$1(xmlNode);
 
-                var subNodeAlreadyProcessed = subControl == null;
-                if (subNodeAlreadyProcessed) {
+
+                //
+                if (this.TryToInitParentProperty(xmlNode)) {
                     return null;
                 }
+
+
+                var instance = this.CreateInstance(xmlNode);
+
+
+                this["_currentInstance"] = instance;
+
+
+
+                if (this["IsDesignMode"]) {
+                    var lineNumber = Bridge.CustomUIMarkup.Common.Extensions.GetOriginalLineNumber(xmlNode, this._rootNode, this.XmlString);
+
+                    this.LineNumberToControlMap.set(lineNumber, instance);
+                }
+
+                instance.DataContext = this.DataContext;
+
+                Bridge.CustomUIMarkup.UI.Builder.InitDOM(instance);
+
+                var attributes = xmlNode.attributes;
+
+                var len = attributes.length;
+                for (var i = 0; i < len; i = (i + 1) | 0) {
+                    var nodeAttribute = attributes[i];
+
+                    this.ProcessAttribute(instance, nodeAttribute.nodeName, nodeAttribute.nodeValue);
+                }
+
+
+                var childNodes = xmlNode.childNodes;
+
+                len = childNodes.length;
+
+                for (var i1 = 0; i1 < len; i1 = (i1 + 1) | 0) {
+                    var childNode = childNodes[i1];
+
+                    var subItem = this.BuildNode(childNode, instance);
+
+                    this.Connect(instance, subItem);
+                }
+                //
+
+
+
 
                 if (!this._isBuildingTemplate) {
                     var subControlDataContextAttribute = xmlNode.attributes.DataContext;
                     if (subControlDataContextAttribute == null) {
-                        var bindingInfo1 = ($t = new System.Windows.Data.BindingInfo(), $t.BindingMode = System.Windows.Data.BindingMode.OneWay, $t.Source = parentInstance, $t.SourcePath = System.Windows.PropertyPath.op_Implicit("DataContext"), $t.Target = subControl, $t.TargetPath = System.Windows.PropertyPath.op_Implicit("DataContext"), $t);
+                        var bindingInfo1 = ($t = new System.Windows.Data.BindingInfo(), $t.BindingMode = System.Windows.Data.BindingMode.OneWay, $t.Source = parentInstance, $t.SourcePath = System.Windows.PropertyPath.op_Implicit("DataContext"), $t.Target = instance, $t.TargetPath = System.Windows.PropertyPath.op_Implicit("DataContext"), $t);
                         bindingInfo1.Connect();
                     } else {
                         var bi = System.Windows.Data.BindingInfo.TryParseExpression(subControlDataContextAttribute.nodeValue);
@@ -2224,16 +2260,16 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
                         bi.BindingMode = System.Windows.Data.BindingMode.OneWay;
                         bi.Source = parentInstance;
                         bi.SourcePath = System.Windows.PropertyPath.op_Implicit("DataContext." + (bi.SourcePath.Path || ""));
-                        bi.Target = subControl;
+                        bi.Target = instance;
                         bi.TargetPath = System.Windows.PropertyPath.op_Implicit("DataContext");
                         bi.Connect();
                     }
                 }
 
-                return subControl;
+                return instance;
 
             },
-            Connect: function (parent, subItem, rootIsNull) {
+            Connect: function (parent, subItem) {
 
                 if (subItem == null) {
                     return;
@@ -2243,11 +2279,9 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
                     return;
                 }
 
-                if (this._isBuildingTemplate && rootIsNull) {
-                    parent.AddVisualChild(subItemAsFrameworkElement);
-                } else {
-                    parent.AddLogicalChild(subItemAsFrameworkElement);
-                }
+
+
+                parent.AddLogicalChild(subItemAsFrameworkElement);
             },
             TryToInitParentProperty: function (xmlNode) {
                 var parentNodeName = xmlNode.parentNode.nodeName;
@@ -5552,6 +5586,9 @@ if(fn)
                     element._root.attr(attributeName, value);
                     return element;
                 },
+                Attr$1: function (T, element, attributeName) {
+                    return element._root.attr(attributeName);
+                },
                 html: function (T, element) {
                     return element._root.html();
                 },
@@ -7052,6 +7089,18 @@ if(fn)
             GetVisualChildAt: function (index) {
                 return System.Array.getItem(this.VisualChilderen, index, System.Windows.FrameworkElement);
             },
+            GetVisualChildAt$1: function (indexes) {
+                if (indexes === void 0) { indexes = []; }
+                var currentElement = this;
+                var len = indexes.length;
+                for (var i = 0; i < len; i = (i + 1) | 0) {
+                    var index = indexes[System.Array.index(i, indexes)];
+
+                    currentElement = currentElement.GetVisualChildAt(index);
+                }
+
+                return currentElement;
+            },
             GetVisualChilderen: function () {
                 if (this._visualChilderen == null) {
                     this._visualChilderen = new (System.Collections.Generic.List$1(System.Windows.FrameworkElement)).ctor();
@@ -7170,7 +7219,7 @@ if(fn)
                     return;
                 }
 
-                Bridge.CustomUIMarkup.UI.Builder.Build(template, this);
+                Bridge.CustomUIMarkup.UI.Builder.BuildControlTemplate(template, this);
 
                 !Bridge.staticEquals(this.AfterTemplateApplied, null) ? this.AfterTemplateApplied() : null;
             }
@@ -8017,6 +8066,24 @@ me._editor.display.wrapper.style.height = '95%';
                 }
             },
             methods: {
+                Find: function (element) {
+                    var elementAsContentPresenter = Bridge.as(element, System.Windows.ContentPresenter);
+
+                    if (elementAsContentPresenter != null) {
+                        return elementAsContentPresenter;
+                    }
+
+                    var len = element.VisualChilderenCount;
+
+                    for (var i = 0; i < len; i = (i + 1) | 0) {
+                        elementAsContentPresenter = System.Windows.ContentControl.Find(element.GetVisualChildAt(i));
+                        if (elementAsContentPresenter != null) {
+                            return elementAsContentPresenter;
+                        }
+                    }
+
+                    return null;
+                },
                 OnContentChanged: function (d, e) {
                     Bridge.cast(d, System.Windows.ContentControl).OnContentChanged();
                 }
@@ -8042,11 +8109,18 @@ me._editor.display.wrapper.style.height = '95%';
                 System.Windows.Controls.Control.ctor.call(this);
 
                 this.addAfterLogicalChildAdd(Bridge.fn.cacheBind(this, this.CanOnlyBeOneChild));
-                this.addAfterVisualChildAdd(Bridge.fn.cacheBind(this, this.OnAfterVisualChildAdd));
                 this.addAfterLogicalChildAdd(Bridge.fn.cacheBind(this, this.AssignFirstLogicalChildToContent));
+                this.addAfterTemplateApplied(Bridge.fn.cacheBind(this, this.InitializeContentPresenter));
             }
         },
         methods: {
+            InitializeContentPresenter: function () {
+                this._contentPresenter = System.Windows.ContentControl.Find(this);
+                if (this._contentPresenter == null) {
+                    throw new System.InvalidOperationException("ContentPresenter must be defined in template.");
+                }
+
+            },
             AssignFirstLogicalChildToContent: function (element) {
                 if (this._isContentChanging) {
                     return;
@@ -8056,15 +8130,10 @@ me._editor.display.wrapper.style.height = '95%';
             },
             CanOnlyBeOneChild: function (child) {
                 if (this.LogicalChilderenCount === 2) {
-                    throw new System.InvalidOperationException("Content cannot be set more than once.");
-                }
-            },
-            OnAfterVisualChildAdd: function (child) {
-                var contentPresenter = Bridge.as(child, System.Windows.ContentPresenter);
-                if (contentPresenter != null) {
-                    System.Diagnostics.Contracts.Contract.assert(4, this, function () { return this._contentPresenter == null; }, "ContentPresenter cannot be set more than once.");
+                    Bridge.CustomUIMarkup.Common.Trace.Log$1("GetLogicalChildAt(0)", this.GetLogicalChildAt(0));
+                    Bridge.CustomUIMarkup.Common.Trace.Log$1("GetLogicalChildAt(1)", this.GetLogicalChildAt(1));
 
-                    this._contentPresenter = contentPresenter;
+                    throw new System.InvalidOperationException("Content cannot be set more than once.");
                 }
             },
             OnContentChanged: function () {

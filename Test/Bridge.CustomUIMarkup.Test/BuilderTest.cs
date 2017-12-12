@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Windows;
+using Bridge.CustomUIMarkup.Common;
 using Bridge.CustomUIMarkup.UI;
 
 namespace Bridge.CustomUIMarkup.Test
@@ -96,7 +97,7 @@ namespace Bridge.CustomUIMarkup.Test
             new BuilderTest().ComponentCreationTestWithChilds();
             new BuilderTest().ComponentCreationTestWithOtherElements();
             new BuilderTest().VisualTreeTest_TemplateControl();
-            new BuilderTest().LogicalTreeTest();
+            
             new BuilderTest().LogicalTreeTest2();
             new BuilderTest().VisualTreeTest();
             new BuilderTest().VisualTreeTest_multiple_child();
@@ -167,40 +168,7 @@ namespace Bridge.CustomUIMarkup.Test
             MustEqual("Şaziye", ui.Root.Html());
         }
 
-        public void LogicalTreeTest()
-        {
-            var model = new SimpleClass1
-            {
-                LastName = "A",
-                Child = new SimpleClass1
-                {
-                    LastName = "B",
-
-                    Child = new SimpleClass1
-                    {
-                        LastName = "C"
-                    }
-                }
-            };
-
-            var ui = Builder.Build("<div class='{LastName}'> " +
-                                   "    <div class='{Child.LastName}'> " +
-                                   "        <div class='{Child.Child.LastName}' />" +
-                                   "    </div>" +
-                                   "</div>", model, null);
-
-            MustEqual(1, ui.LogicalChilderen.Count);
-
-            MustEqual("A", ui._root.Attr("class"));
-
-            MustEqual("B", ui.GetLogicalChildAt(0)._root.Attr("class"));
-
-            MustEqual(1, ui.GetLogicalChildAt(0).LogicalChilderen.Count);
-
-            MustEqual("C", ui.GetLogicalChildAt(0).GetLogicalChildAt(0)._root.Attr("class"));
-
-            
-        }
+        
 
         public void LogicalTreeTest2()
         {
@@ -208,7 +176,7 @@ namespace Bridge.CustomUIMarkup.Test
             {
                 LastName = "A",
                 Child = new SimpleClass1
-                {
+                { 
                     LastName = "B",
 
                     Child = new SimpleClass1
@@ -219,11 +187,17 @@ namespace Bridge.CustomUIMarkup.Test
             };
 
             var userControl = Builder.Create<UserControl2>();
-            Builder.Build2("<div class='{LastName}'> " +
-                                   "    <div class='{Child.LastName}'> " +
-                                   "        <div class='{Child.Child.LastName}' />" +
+
+            Trace.Log("userControl.GetVisualChildAt(0)", userControl.GetVisualChildAt(0));
+
+
+            Builder.Build2("<div id='0' class='{LastName}'> " +
+                                   "    <div id='1' class='{Child.LastName}'> " +
+                                   "        <div id='2' class='{Child.Child.LastName}' />" +
                                    "    </div>" +
                                    "</div>", model, userControl);
+
+            Trace.Log("userControl.GetVisualChildAt(0)" , userControl.GetVisualChildAt(0));
 
 
             var ui = userControl.GetLogicalChildAt(0);

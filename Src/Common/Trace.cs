@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Windows;
 
 namespace Bridge.CustomUIMarkup.Common
 {
@@ -22,6 +23,12 @@ namespace Bridge.CustomUIMarkup.Common
             }
 
             Script.Call("console.log", Value);
+        }
+
+        public static void Log(string message, FrameworkElement element)
+        {
+            Script.Call("console.log", message);
+            Script.Call("console.log", element?._root?.Get(0));
         }
 
         public static void OperationWasCanceled(string operationName, string reason)
