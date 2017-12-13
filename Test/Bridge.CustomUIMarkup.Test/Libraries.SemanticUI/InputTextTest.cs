@@ -146,23 +146,7 @@ namespace Bridge.CustomUIMarkup.Libraries.SemanticUI
             MustEqual("x", childElement._root.Attr("yx"));
         }
 
-        void ClassBindingTest()
-        {
-            var model = new SimpleClass1
-            {
-                LastName = "A"
-            };
-
-            var template = @"<div class='{LastName}' />";
-
-            var ui = Builder.Build(template, model, null);
-
-            MustEqual("A", ui._root.Attr("class"));
-
-            model.LastName = "b";
-
-            MustEqual("b", ui._root.Attr("class"));
-        }
+       
 
         void ClassBindingTest2()
         {

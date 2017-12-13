@@ -16,7 +16,6 @@ namespace Bridge.CustomUIMarkup.Libraries.SemanticUI
         {
             var dataGrid = new DataGrid("ui celled padded table")
             {
-                
                 ItemsSource = new List<SimpleClass1>
                 {
                     new SimpleClass1
@@ -32,6 +31,7 @@ namespace Bridge.CustomUIMarkup.Libraries.SemanticUI
                         LastName = "B"
                     }
                 },
+
                 Columns =
                 {
                     new DataGridColumn
@@ -53,7 +53,6 @@ namespace Bridge.CustomUIMarkup.Libraries.SemanticUI
             div.AddLogicalChild(dataGrid);
 
 
-            Trace.Log(this, div._el);
 
 
 

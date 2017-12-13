@@ -29,7 +29,7 @@ namespace Bridge.CustomUIMarkup.Test
             InputTextTest.RunAll();
 
             TabItemTest.RunAll();
-            //DataGridTest.RunAll();
+            DataGridTest.RunAll();
 
             ItemsControlTests.RunAll();
 

@@ -64,34 +64,9 @@ namespace Bridge.CustomUIMarkup.UI
         #endregion
 
         #region Public Methods
-        public static FrameworkElement Build(string xmlTemplate, object dataContext, object caller)
-        {
-            var builder = new Builder
-            {
-                XmlString = xmlTemplate,
-                DataContext = dataContext,
-                Caller = caller
-            };
-            return builder.Build();
-        }
+       
 
-        public static void Build2(string xmlTemplate, object dataContext, FrameworkElement caller)
-        {
-            var builder = new Builder
-            {
-                XmlString = xmlTemplate,
-                DataContext = dataContext,
-                Caller = caller
-            };
-
-            
-
-            builder.Build();
-
-            // InitDOM(caller);
-
-            // caller.AddLogicalChild(content);
-        }
+      
 
         public static FrameworkElement Build(string xmlTemplate, object dataContext)
         {
@@ -103,18 +78,7 @@ namespace Bridge.CustomUIMarkup.UI
             return builder.Build();
         }
 
-        public static void Build(Template xmlTemplate, object dataContext, object caller = null)
-        {
-            var builder = new Builder
-            {
-                _rootNode = xmlTemplate.Root,
-                DataContext = dataContext,
-                Caller = caller ?? dataContext,
-                _isBuildingTemplate = true
-            };
-
-            builder.BuildNode(builder._rootNode);
-        }
+       
 
         internal static void BuildControlTemplate(Template xmlTemplate, FrameworkElement control)
         {
