@@ -58,7 +58,6 @@ namespace Bridge.CustomUIMarkup.Libraries.SemanticUI
         {
             new InputTextTest().Template_creation();
 
-            new InputTextTest().ClassBindingTest();
             new InputTextTest().ClassBindingTest2();
             new InputTextTest().FieldLogicalChildTest();
             new InputTextTest().FieldBindingTest();
@@ -77,11 +76,12 @@ namespace Bridge.CustomUIMarkup.Libraries.SemanticUI
         {
             var model = new SimpleClass1();
 
-            var div = new Builder
+            var div = new FrameworkElement
             {
-                XmlString = "<div><div yx = '{LastName}' /></div>",
                 DataContext = model
-            }.Build();
+            }.LoadComponent("<div><div yx = '{LastName}' /></div>").GetLogicalChildAt(0);
+
+
 
             var el = div.GetLogicalChildAt(0);
 
@@ -97,6 +97,8 @@ namespace Bridge.CustomUIMarkup.Libraries.SemanticUI
             MustEqual("yyy", el._root.Attr("yx"));
         }
 
+
+        
         void Binding_Custom_Attribute_Parend_DataContext_Changed()
         {
             var model = new SimpleClass1
@@ -113,11 +115,8 @@ namespace Bridge.CustomUIMarkup.Libraries.SemanticUI
                 }
             };
 
-            var el = new Builder
-            {
-                XmlString = "<div> <div DataContext = '{Child}' yx='{Child.Child.LastName}' /> </div>",
-                DataContext = model
-            }.Build();
+            var el = BuildAndGetFirstLogicalChild("<div> <div DataContext = '{Child}' yx='{Child.Child.LastName}' /> </div>", model
+            );
 
             var childElement = el.GetLogicalChildAt(0);
 
@@ -170,6 +169,11 @@ namespace Bridge.CustomUIMarkup.Libraries.SemanticUI
                 LastName = "a"
             };
 
+            var fe = new FrameworkElement
+            {
+                DataContext = model
+            };
+
             var template = "<div>" +
                            "    <TextBox  Text='{LastName}' />" +
                            "    <field>" +
@@ -177,7 +181,9 @@ namespace Bridge.CustomUIMarkup.Libraries.SemanticUI
                            "	</field>" +
                            "</div>";
 
-            var ui = Builder.Build(template, model);
+            Builder.LoadComponent(fe,template);
+
+            var ui = fe.GetLogicalChildAt(0);
 
             var first = (InputText) ui.GetLogicalChildAt(0);
             var field = (Field) ui.GetLogicalChildAt(1);
@@ -203,11 +209,17 @@ namespace Bridge.CustomUIMarkup.Libraries.SemanticUI
 
         void FieldLogicalChildTest()
         {
+            var fe = new FrameworkElement();
+
+
             var template = "<field>" +
                            "<textBox  />" +
                            "</field>";
 
-            var ui = Builder.Build(template, null);
+            Builder.LoadComponent(fe,template);
+
+            var ui = fe.GetLogicalChildAt(0);
+
             MustTrue(ui is Field);
             MustEqual(1, ui.LogicalChilderenCount);
 
@@ -216,9 +228,19 @@ namespace Bridge.CustomUIMarkup.Libraries.SemanticUI
 
         void On_Parent_DataContext_Changed()
         {
+
+            
             var model = new SimpleClass1();
 
-            var div = Builder.Build("<div><textBox Text='{LastName}' /></div>", model);
+
+            var fe = new FrameworkElement
+            {
+                DataContext = model
+            };
+
+            Builder.LoadComponent(fe,"<div><textBox Text='{LastName}' /></div>");
+
+            var div = fe.GetLogicalChildAt(0);
 
             var el = (InputText) div.GetLogicalChildAt(0);
 
@@ -248,13 +270,20 @@ namespace Bridge.CustomUIMarkup.Libraries.SemanticUI
                 }
             };
 
-            var div = new Builder
-            {
-                XmlString = "<div><textBox DataContext = '{Binding Child}'  Text='{LastName}' /></div>",
-                DataContext = model
-            }.Build();
+            var div = BuildAndGetFirstLogicalChild("<div id='q0' ><textBox id='q1' DataContext = '{Binding Child}'  Text='{LastName}' /></div>", model);
+
+            MustEqual("q0", div.Attr("id"));
+
+            MustEqualByReference(model,div.DataContext);
+
 
             var el = (InputText) div.GetLogicalChildAt(0);
+
+            MustEqual("q1",el.Attr("id"));
+
+            MustEqualByReference(model.Child, el.DataContext);
+
+
 
             MustEqual("a", el.Text);
 
@@ -292,11 +321,9 @@ namespace Bridge.CustomUIMarkup.Libraries.SemanticUI
                 }
             };
 
-            var el = (InputText) new Builder
-            {
-                XmlString = "<textBox Text='{Child.Child.Child.LastName}' />",
-                DataContext = model
-            }.Build();
+            var el = (InputText)BuildAndGetFirstLogicalChild("<textBox Text='{Child.Child.Child.LastName}' />", model);
+
+
 
             MustEqual("a", el.Text);
 
@@ -339,11 +366,9 @@ namespace Bridge.CustomUIMarkup.Libraries.SemanticUI
                 }
             };
 
-            var el = new Builder
-            {
-                XmlString = "<div>{Child.Child.Child.LastName}</div>",
-                DataContext = model
-            }.Build();
+            var el = BuildAndGetFirstLogicalChild("<div>{Child.Child.Child.LastName}</div>", model);
+
+
 
             MustEqual("a", el.InnerHTML);
 
@@ -374,11 +399,7 @@ namespace Bridge.CustomUIMarkup.Libraries.SemanticUI
         {
             var simpleClass1 = new SimpleClass1();
 
-            var el = (InputText) new Builder
-            {
-                XmlString = "<textBox Text='{LastName}' />",
-                DataContext = simpleClass1
-            }.Build();
+            var el = (InputText) BuildAndGetFirstLogicalChild("<textBox Text='{LastName}' />", simpleClass1);
 
             simpleClass1.LastName = "abc";
 

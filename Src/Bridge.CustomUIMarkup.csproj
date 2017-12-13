@@ -92,6 +92,7 @@
     <Compile Include="Libraries\SemanticUI\IconType.cs" />
     <Compile Include="Libraries\SemanticUI\Size.cs" />
     <Compile Include=".Net Override\System.Windows\Template.cs" />
+    <Compile Include="UI\Extensions.cs" />
     <Compile Include="UI\TypeFinder.cs" />
     <Compile Include="Libraries\CodeMirror\UIEditor.cs" />
     <Compile Include="UI\XmlEditor.cs" />

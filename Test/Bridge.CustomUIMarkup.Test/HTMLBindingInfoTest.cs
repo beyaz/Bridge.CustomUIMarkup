@@ -133,12 +133,15 @@ namespace Bridge.CustomUIMarkup.Test
 
             MustEqual("A", div.Html());
 
-            var builder = new Builder
-            {
-                DataContext = model,
-                XmlString = "<div>{UserInfo.StringProperty0}</div>"
-            };
-            div = builder.Build().Root;
+
+            div = BuildAndGetFirstLogicalChild("<div>{UserInfo.StringProperty0}</div>", model).Root;
+
+
+
+
+
+
+
 
             MustEqual("A", div.Html());
 

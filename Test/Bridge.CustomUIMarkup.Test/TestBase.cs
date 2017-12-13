@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Windows;
+using Bridge.CustomUIMarkup.UI;
 
 namespace Bridge.CustomUIMarkup.Test
 {
@@ -9,6 +11,14 @@ namespace Bridge.CustomUIMarkup.Test
         protected string SampleImageUrl_350_151 = "http://via.placeholder.com/350x151";
         #endregion
 
+
+        protected FrameworkElement BuildAndGetFirstLogicalChild(string xmlString, object dataContext)
+        {
+            return new FrameworkElement
+            {
+                DataContext = dataContext
+            }.LoadComponent(xmlString).GetLogicalChildAt(0);
+        }
 
 
         protected void MustTrue(bool condition)

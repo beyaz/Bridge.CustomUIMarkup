@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Text;
@@ -90,6 +89,11 @@ namespace Bridge.CustomUIMarkup.Libraries.SemanticUI
                 }
             };
 
+            var fe = new FrameworkElement
+            {
+                DataContext = dataContext
+            };
+
 
             var xml = "<ItemsControl  ItemsSource ='{Users}' class='ui list'>" +
                       "     <ItemsControl.ItemTemplate>" +
@@ -100,12 +104,13 @@ namespace Bridge.CustomUIMarkup.Libraries.SemanticUI
                       "</ItemsControl>";
 
 
-            var itemsControl = Builder.Build(xml, dataContext);
+            Builder.LoadComponent(fe,xml);
+
+            var itemsControl = fe.GetLogicalChildAt(0);
 
 
-            
 
-            
+
 
 
 

@@ -118,13 +118,17 @@ namespace System.Windows.Controls
                 FrameworkElement item = null;
                 if (itemTemplate != null)
                 {
-                    var builder = new Builder
+                    var fe = new FrameworkElement
                     {
-                        _rootNode = ItemTemplate.Root,
                         DataContext = itemData
-                        // Caller = this
                     };
-                    item = builder.Build();
+
+                    Builder.LoadComponent(fe, ItemTemplate.Root);
+                    
+                    item = fe.GetLogicalChildAt(0);
+
+
+
                 }
                 else
                 {

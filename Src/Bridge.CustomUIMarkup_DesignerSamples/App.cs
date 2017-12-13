@@ -1,11 +1,13 @@
-﻿using Bridge.CustomUIMarkup.UI;
+﻿using System.Windows;
+using Bridge.CustomUIMarkup.UI;
 using Bridge.jQuery2;
 
 namespace Bridge.CustomUIMarkup_DesignerSamples
 {
-    public class App
+
+
+    class AppContainer:HtmlElement
     {
-        #region Properties
         static string TestUI => @"
 
 <div class='ui two row grid' HeightPercent = '100' WidthPercent = '100' >
@@ -27,6 +29,16 @@ namespace Bridge.CustomUIMarkup_DesignerSamples
 
 
 ";
+        public  AppContainer()
+        {
+            Builder.LoadComponent(this,TestUI);
+        }
+    }
+
+    public class App
+    {
+        #region Properties
+     
         #endregion
 
         #region Public Methods
@@ -46,13 +58,16 @@ namespace Bridge.CustomUIMarkup_DesignerSamples
         
         static void RenderUIEditor()
         {
-            var model = new ExampleDataContext
+            var appContainer = new AppContainer
             {
-                CurrentTemplate = "Write xml code here.",
-                Inner = new ExampleDataContext { CurrentTemplate = "Write xml code here" }
+                DataContext = new ExampleDataContext
+                {
+                    CurrentTemplate = "Write xml code here.",
+                    Inner = new ExampleDataContext { CurrentTemplate = "Write xml code here" }
+                }
             };
 
-            Builder.Build(TestUI, model).RenderInBody();
+            appContainer.RenderInBody();
         }
         #endregion
     }

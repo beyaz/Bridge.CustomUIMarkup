@@ -4,8 +4,8 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Windows;
+using System.Windows.Controls;
 using Bridge.CustomUIMarkup.Common;
-using Bridge.CustomUIMarkup.UI;
 
 namespace Bridge.CustomUIMarkup.Libraries.SemanticUI
 {
@@ -13,9 +13,11 @@ namespace Bridge.CustomUIMarkup.Libraries.SemanticUI
     {
         Text
     }
+    
 
-   public class DataGridColumn:DependencyObject
-   {
+    public class DataGridColumn: Control
+    {
+        public override string DefaultTemplateAsXml => "<th>{Label}</th>";
 
         #region DataGridCellEditorType EditorType
         public static readonly DependencyProperty EditorTypeProperty = DependencyProperty.Register(
@@ -113,7 +115,6 @@ namespace Bridge.CustomUIMarkup.Libraries.SemanticUI
             ReRender();
         }
 
-        Template _headerTemplate =Template.CreateFromXml("<th>{Label}</th>");
 
         string SelectedRowBackground = "#27ae60";
 
@@ -131,6 +132,10 @@ namespace Bridge.CustomUIMarkup.Libraries.SemanticUI
         }
 
         HtmlElement _thead, _thead_first_tr, _tbody;
+
+
+       
+
         void ReRender()
         {
 
@@ -165,7 +170,7 @@ namespace Bridge.CustomUIMarkup.Libraries.SemanticUI
 
             foreach (var columnInfo in Columns)
             {
-                _thead_first_tr.AddVisualChild(Builder.Build("<th>{Label}</th>", columnInfo));
+                _thead_first_tr.AddVisualChild(columnInfo);
             }
 
             AddVisualChild(_tbody = new HtmlElement("tbody"));

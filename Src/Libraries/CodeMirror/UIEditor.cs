@@ -1,7 +1,9 @@
 using System;
+using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
 using System.Xml;
+using Bridge.CustomUIMarkup.Common;
 using Bridge.CustomUIMarkup.Libraries.SemanticUI;
 using Bridge.CustomUIMarkup.UI;
 
@@ -9,9 +11,7 @@ namespace Bridge.CustomUIMarkup.Libraries.CodeMirror
 {
     class UIEditor : Control
     {
-        #region Fields
-        Builder _builder;
-        #endregion
+     
 
         #region Public Properties
         public override string DefaultTemplateAsXml
@@ -38,8 +38,26 @@ namespace Bridge.CustomUIMarkup.Libraries.CodeMirror
         #region Public Methods
         public void OnCursorLineNumberChanged(int lineNumber)
         {
-            _builder?.FocusToLine(lineNumber);
+            FocusToLine(lineNumber);
         }
+
+
+         void FocusToLine(int lineNumber)
+        {
+            lineNumber = lineNumber + 1;
+            FrameworkElement component = null;
+            _lineNumberToControlMap?.TryGetValue(lineNumber, out component);
+            if (component == null)
+            {
+                return;
+            }
+
+            var query = component._root;
+
+            query.highlight();
+        }
+
+        readonly Dictionary<int,FrameworkElement> _lineNumberToControlMap = new Dictionary<int, FrameworkElement>();
 
         public void OnTextChanged()
         {
@@ -50,16 +68,27 @@ namespace Bridge.CustomUIMarkup.Libraries.CodeMirror
                 return;
             }
 
-            _builder = new Builder
-            {
-                XmlString = SourceText,
-                DataContext = SourceDataContext,
-                IsDesignMode = true
-            };
+
+
+           
 
             try
             {
-                var component = _builder.Build();
+
+
+                var fe = new FrameworkElement
+                {
+                    DataContext = SourceDataContext,
+
+                };
+
+                
+                Builder.LoadComponent(fe, XmlHelper.GetRootNode(SourceText),true, (line, element) => { _lineNumberToControlMap[line] = element; });
+
+
+
+                var component = fe.GetLogicalChildAt(0);
+
                 SetOutput(component);
             }
             catch (XmlException e)

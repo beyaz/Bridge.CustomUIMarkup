@@ -2,6 +2,7 @@
 using System.Windows;
 using Bridge.CustomUIMarkup.Common;
 using Bridge.CustomUIMarkup.Test;
+using Bridge.CustomUIMarkup.UI;
 
 namespace Bridge.CustomUIMarkup.Libraries.SemanticUI
 {
@@ -14,6 +15,15 @@ namespace Bridge.CustomUIMarkup.Libraries.SemanticUI
 
         void Simple()
         {
+            var dataGridColumn = Builder.Create<DataGridColumn>();
+            dataGridColumn.Label = "Label_A";
+            dataGridColumn.Name = "LastName";
+
+
+            var dataGridColumn2 = Builder.Create<DataGridColumn>();
+            dataGridColumn2.Label = "Label_Year";
+            dataGridColumn2.Name = "Year";
+
             var dataGrid = new DataGrid("ui celled padded table")
             {
                 ItemsSource = new List<SimpleClass1>
@@ -34,17 +44,7 @@ namespace Bridge.CustomUIMarkup.Libraries.SemanticUI
 
                 Columns =
                 {
-                    new DataGridColumn
-                    {
-                       Label = "Label_A",
-                        Name = "LastName",
-                    },
-
-                    new DataGridColumn
-                    {
-                        Label = "Label_Year",
-                        Name = "Year",
-                    }
+                    dataGridColumn,dataGridColumn2
                 }
             };
 

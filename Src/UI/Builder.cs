@@ -33,10 +33,7 @@ namespace Bridge.CustomUIMarkup.UI
 
         bool _isBuildingTemplate;
 
-        Dictionary<int, object> _lineNumberToControlMap;
-
-
-        internal XmlNode  _rootNode;
+        internal XmlNode _rootNode;
         #endregion
 
         #region Public Properties
@@ -48,38 +45,7 @@ namespace Bridge.CustomUIMarkup.UI
         public TypeFinder TypeFinder { get; set; } = new TypeFinder();
         #endregion
 
-        #region Properties
-        Dictionary<int, object> LineNumberToControlMap
-        {
-            get
-            {
-                if (_lineNumberToControlMap == null)
-                {
-                    _lineNumberToControlMap = new Dictionary<int, object>();
-                }
-
-                return _lineNumberToControlMap;
-            }
-        }
-        #endregion
-
         #region Public Methods
-       
-
-      
-
-        public static FrameworkElement Build(string xmlTemplate, object dataContext)
-        {
-            var builder = new Builder
-            {
-                XmlString = xmlTemplate,
-                DataContext = dataContext
-            };
-            return builder.Build();
-        }
-
-       
-
         internal static void BuildControlTemplate(Template xmlTemplate, FrameworkElement control)
         {
             var builder = new Builder
@@ -87,10 +53,10 @@ namespace Bridge.CustomUIMarkup.UI
                 _rootNode = xmlTemplate.Root,
                 DataContext = control,
                 Caller = control,
-                _isBuildingTemplate = true,
+                _isBuildingTemplate = true
             };
 
-            var subControl =  builder.BuildNode(builder._rootNode,control);
+            var subControl = builder.BuildNode(builder._rootNode, control);
 
             var subControlAsFrameworkElement = subControl as FrameworkElement;
             if (subControlAsFrameworkElement == null)
@@ -102,14 +68,26 @@ namespace Bridge.CustomUIMarkup.UI
             control.AddVisualChild(subControlAsFrameworkElement);
         }
 
-        internal static void LoadComponent(FrameworkElement control,string xml)
+        internal static void LoadComponent(FrameworkElement control, string xml)
+        {
+            LoadComponent(control, XmlHelper.GetRootNode(xml));
+        }
+
+        internal static void LoadComponent(FrameworkElement control, XmlNode node, bool IsDesignMode = false, Action<int, FrameworkElement> ElementCreatedAtLine = null, string xml = null)
         {
             var builder = new Builder
             {
-                _rootNode = XmlHelper.GetRootNode(xml),
+                _rootNode = node,
                 DataContext = control,
-                Caller = control
+                Caller = control,
+                IsDesignMode = IsDesignMode,
+                XmlString = xml
             };
+
+            if (ElementCreatedAtLine != null)
+            {
+                builder.ElementCreatedAtLine += ElementCreatedAtLine;
+            }
 
             var subControl = builder.BuildNode(builder._rootNode, control);
 
@@ -123,7 +101,6 @@ namespace Bridge.CustomUIMarkup.UI
             control.AddLogicalChild(subControlAsFrameworkElement);
         }
 
-
         public static T Create<T>() where T : Control, new()
         {
             var control = new T();
@@ -134,32 +111,6 @@ namespace Bridge.CustomUIMarkup.UI
         public static void Register(string tag, Func<FrameworkElement> func)
         {
             _elementCreators[tag.ToUpper()] = func;
-        }
-
-        public FrameworkElement Build()
-        {
-            var rootNode = _rootNode;
-            if (rootNode == null)
-            {
-                rootNode = _rootNode = XmlHelper.GetRootNode(XmlString);
-            }
-
-            return BuildNode(rootNode);
-        }
-
-        public virtual void FocusToLine(int lineNumber)
-        {
-            lineNumber = lineNumber + 1;
-            object component = null;
-            _lineNumberToControlMap?.TryGetValue(lineNumber, out component);
-            if (component == null)
-            {
-                return;
-            }
-
-            var query = ((FrameworkElement) component)._root;
-
-            query.highlight();
         }
         #endregion
 
@@ -177,74 +128,19 @@ namespace Bridge.CustomUIMarkup.UI
         }
 
         object _currentInstance;
-        FrameworkElement BuildNode(XmlNode xmlNode)
-        {
-            if (TryToInitParentProperty(xmlNode))
-            {
-                return null;
-            }
-
-
-            var instance = CreateInstance(xmlNode);
-
-
-            _currentInstance = instance;
-
-            
-
-            if (IsDesignMode)
-            {
-                var lineNumber = xmlNode.GetOriginalLineNumber(_rootNode, XmlString);
-
-                LineNumberToControlMap[lineNumber] = instance;
-            }
-
-            instance.DataContext = DataContext;
-
-            InitDOM(instance);
-
-            var attributes = xmlNode.Attributes;
-
-            var len = attributes.Count;
-            for (var i = 0; i < len; i++)
-            {
-                var nodeAttribute = attributes[i];
-
-                ProcessAttribute(instance, nodeAttribute.Name, nodeAttribute.Value);
-            }
-
-
-            var childNodes = xmlNode.ChildNodes;
-
-            len = childNodes.Count;
-
-            for (var i = 0; i < len; i++)
-            {
-                var childNode = childNodes[i];
-
-                var subItem = BuildNode(childNode, instance);
-
-                Connect(instance, subItem);
-            }
-
-            return instance;
-        }
-
 
         void Connect(FrameworkElement parent, object subItem)
         {
-
             if (subItem == null)
             {
-               return;
+                return;
             }
+
             var subItemAsFrameworkElement = subItem as FrameworkElement;
             if (subItemAsFrameworkElement == null)
             {
                 return;
             }
-
-           
 
             parent.AddLogicalChild(subItemAsFrameworkElement);
         }
@@ -283,13 +179,13 @@ namespace Bridge.CustomUIMarkup.UI
                             */
                         if (propertyInfo.SetMethod == null)
                         {
-                            
                         }
 
                         throw new NotImplementedException(xmlNode.Name);
                     }
                 }
             }
+
             return false;
         }
 
@@ -302,7 +198,7 @@ namespace Bridge.CustomUIMarkup.UI
                 var node = xmlNodeList[i];
                 var nodeType = node.NodeType;
 
-                if (nodeType == NodeType.Comment||
+                if (nodeType == NodeType.Comment ||
                     nodeType == NodeType.Text)
                 {
                     continue;
@@ -313,6 +209,9 @@ namespace Bridge.CustomUIMarkup.UI
 
             throw new InvalidOperationException("NodeCannotBeEmpty.");
         }
+
+        event Action<int, FrameworkElement> ElementCreatedAtLine;
+
         object BuildNode(XmlNode xmlNode, FrameworkElement parentInstance)
         {
             if (xmlNode.NodeType == NodeType.Comment)
@@ -356,62 +255,28 @@ namespace Bridge.CustomUIMarkup.UI
                 return null;
             }
 
-
-
             //
             if (TryToInitParentProperty(xmlNode))
             {
                 return null;
             }
 
-
             var instance = CreateInstance(xmlNode);
 
-
             _currentInstance = instance;
-
-
 
             if (IsDesignMode)
             {
                 var lineNumber = xmlNode.GetOriginalLineNumber(_rootNode, XmlString);
 
-                LineNumberToControlMap[lineNumber] = instance;
+                ElementCreatedAtLine?.Invoke(lineNumber, instance);
             }
 
-            instance.DataContext = DataContext;
-
-            InitDOM(instance);
-
-            var attributes = xmlNode.Attributes;
-
-            var len = attributes.Count;
-            for (var i = 0; i < len; i++)
+            if (_isBuildingTemplate)
             {
-                var nodeAttribute = attributes[i];
-
-                ProcessAttribute(instance, nodeAttribute.Name, nodeAttribute.Value);
+                instance.DataContext = DataContext;
             }
-
-
-            var childNodes = xmlNode.ChildNodes;
-
-            len = childNodes.Count;
-
-            for (var i = 0; i < len; i++)
-            {
-                var childNode = childNodes[i];
-
-                var subItem = BuildNode(childNode, instance);
-
-                Connect(instance, subItem);
-            }
-            //
-
-
-            
-
-            if (!_isBuildingTemplate)
+            else
             {
                 var subControlDataContextAttribute = xmlNode.Attributes["DataContext"];
                 if (subControlDataContextAttribute == null)
@@ -433,6 +298,7 @@ namespace Bridge.CustomUIMarkup.UI
                     {
                         throw new InvalidOperationException("InvalidBindingExpression:" + subControlDataContextAttribute.Value);
                     }
+
                     bi.BindingMode = BindingMode.OneWay;
                     bi.Source = parentInstance;
                     bi.SourcePath = "DataContext." + bi.SourcePath.Path;
@@ -442,8 +308,32 @@ namespace Bridge.CustomUIMarkup.UI
                 }
             }
 
+            InitDOM(instance);
+
+            var attributes = xmlNode.Attributes;
+
+            var len = attributes.Count;
+            for (var i = 0; i < len; i++)
+            {
+                var nodeAttribute = attributes[i];
+
+                ProcessAttribute(instance, nodeAttribute.Name, nodeAttribute.Value);
+            }
+
+            var childNodes = xmlNode.ChildNodes;
+
+            len = childNodes.Count;
+
+            for (var i = 0; i < len; i++)
+            {
+                var childNode = childNodes[i];
+
+                var subItem = BuildNode(childNode, instance);
+
+                Connect(instance, subItem);
+            }
+
             return instance;
-            
         }
 
         FrameworkElement CreateInstance(XmlNode xmlNode)
@@ -474,13 +364,10 @@ namespace Bridge.CustomUIMarkup.UI
 
         void ProcessAttribute(FrameworkElement instance, string name, string value)
         {
-
-
             if (name == "DataContext")
             {
                 return;
             }
-
 
             var nameUpperCase = name.ToUpperCase();
 
@@ -582,7 +469,7 @@ namespace Bridge.CustomUIMarkup.UI
                     return;
                 }
 
-                var methodInfo = Caller.GetType().GetMethod(value,ReflectionHelper.AllBindings);
+                var methodInfo = Caller.GetType().GetMethod(value, ReflectionHelper.AllBindings);
 
                 instance.On(eventName, () => { methodInfo.Invoke(Caller); });
                 return;
@@ -607,7 +494,7 @@ namespace Bridge.CustomUIMarkup.UI
             if (name == "x.Name")
             {
                 ReflectionHelper.SetNonStaticField(Caller, value, instance);
-                
+
                 return;
             }
 
