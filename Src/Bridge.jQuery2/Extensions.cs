@@ -4,6 +4,9 @@ namespace Bridge.jQuery2
 {
     public static class Extensions
     {
+
+        
+
         #region Public Methods
         public static jQuery AppendTo(this jQuery query, ICollection<jQuery> list)
         {

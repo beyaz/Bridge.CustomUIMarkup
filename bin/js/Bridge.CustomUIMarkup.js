@@ -2544,6 +2544,40 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
         }
     });
 
+    /** @namespace Bridge.Html5 */
+
+    /**
+     * The extensions
+     *
+     * @static
+     * @abstract
+     * @public
+     * @class Bridge.Html5.Extensions
+     */
+    Bridge.define("Bridge.Html5.Extensions", {
+        statics: {
+            methods: {
+                /**
+                 * Ases the HTML string.
+                 *
+                 * @static
+                 * @public
+                 * @this Bridge.Html5.Extensions
+                 * @memberof Bridge.Html5.Extensions
+                 * @param   {Element}    element
+                 * @return  {string}
+                 */
+                AsHtmlString: function (element) {
+                    var div = document.createElement("div");
+
+                    div.appendChild(element.cloneNode(true));
+
+                    return System.String.replaceAll(div.innerHTML, "\"", "'");
+                }
+            }
+        }
+    });
+
     Bridge.define("Bridge.jQuery2.Extensions", {
         statics: {
             methods: {

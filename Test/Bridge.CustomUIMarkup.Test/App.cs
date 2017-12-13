@@ -21,7 +21,6 @@ namespace Bridge.CustomUIMarkup.Test
             Z_Builder2Test.RunAll();
 
             //ContentControlTest.RunAll();
-            //BuilderTest.RunAll();
 
             //TokenizerTest.Run();
             //BindingInfoTest.RunAll();
