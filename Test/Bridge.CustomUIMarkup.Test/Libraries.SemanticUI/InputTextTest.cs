@@ -420,15 +420,21 @@ namespace Bridge.CustomUIMarkup.Libraries.SemanticUI
                 StringProperty1 = "B"
             };
 
-            var template = Template.CreateFromXml(@"<div class='{StringProperty0}'>   <div Visibility='{LabelVisbility}'> <div x='{StringProperty1}' /> </div> </div>");
+            var template = Template.CreateFromXml("<div class='{StringProperty0}'>   " +
+                                                  "     <div Visibility='{LabelVisbility}'> " +
+                                                  "         <div x='{StringProperty1}' /> " +
+                                                  "     </div> " +
+                                                  "</div>");
 
-            Builder.Build(template, fe);
+            Builder.BuildControlTemplate(template, fe);
 
-            MustEqual("A", fe._root.Attr("class"));
+            AssertNotNull(fe._root);
 
-            MustEqual("B", fe.GetVisualChildAt(0).GetVisualChildAt(0)._root.Attr("x"));
+            MustEqual("A", fe.Attr("class"));
 
-            MustTrue(fe.GetVisualChildAt(0).Visibility == Visibility.Collapsed);
+            MustEqual("B", fe.GetVisualChildAt(0,0,0).Attr("x"));
+
+            MustTrue(fe.GetVisualChildAt(0,0).Visibility == Visibility.Collapsed);
         }
         #endregion
     }

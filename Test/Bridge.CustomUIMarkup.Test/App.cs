@@ -20,13 +20,13 @@ namespace Bridge.CustomUIMarkup.Test
 
             Z_Builder2Test.RunAll();
 
-            //ContentControlTest.RunAll();
+            ContentControlTest.RunAll();
 
-            //TokenizerTest.Run();
-            //BindingInfoTest.RunAll();
+            TokenizerTest.Run();
+            BindingInfoTest.RunAll();
 
-            //HTMLBindingInfoTest.RunAll();
-            //InputTextTest.RunAll();
+            HTMLBindingInfoTest.RunAll();
+            InputTextTest.RunAll();
 
             //TabItemTest.RunAll();
             //DataGridTest.RunAll();

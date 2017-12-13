@@ -44,7 +44,6 @@
     <Compile Include="Libraries.SemanticUI\TabItemTest.cs" />
     <Compile Include="Tokenizers\TokenizerTest.cs" />
     <Compile Include="Libraries.SemanticUI\InputTextTest.cs" />
-    <Compile Include="BuilderTest.cs" />
     <Compile Include="HTMLBindingInfoTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TestBase.cs" />
