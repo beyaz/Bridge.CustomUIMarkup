@@ -21,7 +21,7 @@ namespace Bridge.CustomUIMarkup.Libraries.SemanticUI
 
         static string GetHeaderTextFromDOM(TabItem tabItem)
         {
-            return tabItem.GetVisualChildAt(0).html();
+            return tabItem.HeaderElement.html();
         }
 
         void TabItem_Content()
@@ -43,7 +43,6 @@ namespace Bridge.CustomUIMarkup.Libraries.SemanticUI
 
             tabControl.AddTab(tabItem);
 
-            MustEqualByReference(tabItem.GetVisualChildAt(1), tabControl.GetVisualChildAt(1));
 
             tabItem.Header = "C";
             tabItem.Content = fe = new FrameworkElement("y3");

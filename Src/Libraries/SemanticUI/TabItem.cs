@@ -5,12 +5,8 @@ namespace Bridge.CustomUIMarkup.Libraries.SemanticUI
 {
     public class TabItem : ContentControl
     {
-        #region Constructors
-        public TabItem()
-        {
-            AfterTemplateApplied += OnAfterTemplateApplied;
-        }
-        #endregion
+        internal FrameworkElement HeaderElement => GetVisualChildAt(0).GetVisualChildAt(0);
+        internal FrameworkElement BodyElement => GetVisualChildAt(0).GetVisualChildAt(1);
 
         #region Public Properties
         public override string DefaultTemplateAsXml => "<div>" +
@@ -21,12 +17,7 @@ namespace Bridge.CustomUIMarkup.Libraries.SemanticUI
                                                        "</div>";
         #endregion
 
-        #region Methods
-        void OnAfterTemplateApplied()
-        {
-            _contentPresenter = (ContentPresenter) GetVisualChildAt(1).GetVisualChildAt(0);
-        }
-        #endregion
+       
 
         #region HeaderProperty
         public static readonly DependencyProperty HeaderProperty = DependencyProperty.Register(nameof(Header), typeof(string), typeof(TabItem));

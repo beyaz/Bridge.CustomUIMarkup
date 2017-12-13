@@ -170,13 +170,13 @@ namespace Bridge.CustomUIMarkup.Libraries.SemanticUI
 
             var template = Template.CreateFromXml(@"<div class='{Class}' />");
 
-            Builder.Build(template, fe);
+            Builder.BuildControlTemplate(template, fe);
 
-            MustEqual(null, fe._root.Attr("class"));
+            MustEqual(null, fe.Attr("class"));
 
             fe.Class = "b";
 
-            MustEqual("b", fe._root.Attr("class"));
+            MustEqual("b", fe.Attr("class"));
         }
 
         void FieldBindingTest()

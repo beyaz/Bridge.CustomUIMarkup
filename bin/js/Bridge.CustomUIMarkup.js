@@ -8462,9 +8462,9 @@ me._editor.display.wrapper.style.height = '95%';
         },
         methods: {
             AddTab: function (tabItem) {
-                this.GetVisualChildAt(0).AddVisualChild(tabItem.GetVisualChildAt(0));
+                this.GetVisualChildAt(0).AddVisualChild(tabItem.HeaderElement);
 
-                this.AddVisualChild(tabItem.GetVisualChildAt(1));
+                this.AddVisualChild(tabItem.BodyElement);
 
                 tabItem.GetVisualChildAt(0)._root.click(Bridge.fn.bind(this, function () {
                     this.ActivateTab(tabItem);
@@ -8956,6 +8956,16 @@ $( '<style> '+css+'</style>' ).appendTo( 'head' );
             }
         },
         props: {
+            HeaderElement: {
+                get: function () {
+                    return this.GetVisualChildAt(0).GetVisualChildAt(0);
+                }
+            },
+            BodyElement: {
+                get: function () {
+                    return this.GetVisualChildAt(0).GetVisualChildAt(1);
+                }
+            },
             DefaultTemplateAsXml: {
                 get: function () {
                     return "<div>    <a class = 'item' data-tab='{Id}' >{Header}</a>    <div class = 'ui bottom attached tab segment' data-tab = '{Id}' >        <ContentPresenter />    </div></div>";
@@ -8976,18 +8986,6 @@ $( '<style> '+css+'</style>' ).appendTo( 'head' );
                 set: function (value) {
                     this.SetValue$1(Bridge.CustomUIMarkup.Libraries.SemanticUI.TabItem["IsActiveProperty"], Bridge.box(value, System.Boolean, System.Boolean.toString));
                 }
-            }
-        },
-        ctors: {
-            ctor: function () {
-                this.$initialize();
-                System.Windows.ContentControl.ctor.call(this);
-                this.addAfterTemplateApplied(Bridge.fn.cacheBind(this, this.OnAfterTemplateApplied));
-            }
-        },
-        methods: {
-            OnAfterTemplateApplied: function () {
-                this._contentPresenter = Bridge.cast(this.GetVisualChildAt(1).GetVisualChildAt(0), System.Windows.ContentPresenter);
             }
         }
     });

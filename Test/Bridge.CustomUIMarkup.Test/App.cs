@@ -28,10 +28,10 @@ namespace Bridge.CustomUIMarkup.Test
             HTMLBindingInfoTest.RunAll();
             InputTextTest.RunAll();
 
-            //TabItemTest.RunAll();
+            TabItemTest.RunAll();
             //DataGridTest.RunAll();
 
-            //ItemsControlTests.RunAll();
+            ItemsControlTests.RunAll();
 
             Console.WriteLine("Success");
         }

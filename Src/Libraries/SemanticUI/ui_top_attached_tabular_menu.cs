@@ -30,9 +30,9 @@ namespace Bridge.CustomUIMarkup.Libraries.SemanticUI
         #region Public Methods
         public void AddTab(TabItem tabItem)
         {
-            GetVisualChildAt(0).AddVisualChild(tabItem.GetVisualChildAt(0));
+            GetVisualChildAt(0).AddVisualChild(tabItem.HeaderElement);
 
-            AddVisualChild(tabItem.GetVisualChildAt(1));
+            AddVisualChild(tabItem.BodyElement);
 
             tabItem.GetVisualChildAt(0)._root.Click(() => { ActivateTab(tabItem); });
         }
