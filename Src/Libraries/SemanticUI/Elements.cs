@@ -35,6 +35,8 @@ namespace Bridge.CustomUIMarkup.Libraries.SemanticUI
                 Builder.Register(className.Replace(" ", "_"), () => CreateElement("div", className));
             }
 
+            
+
             // TextBlock
             Builder.Register("TextBlock", Builder.Create<TextBlock>);
 
@@ -94,7 +96,10 @@ namespace Bridge.CustomUIMarkup.Libraries.SemanticUI
                 "ui button",
                 "ui active button",
                 "ui basic button",
-                "ui basic active button"
+                "ui basic active button",
+                "ui pagination menu",
+                "active item"
+
             };
 
             foreach (var className in classNames)
@@ -131,6 +136,7 @@ namespace Bridge.CustomUIMarkup.Libraries.SemanticUI
 
             Builder.Register("ItemsControl", () => new ItemsControl("div"));
             Builder.Register("DataGrid", () => new DataGrid("ui celled table"));
+            Builder.Register("DataGridColumn", () => new DataGridColumn()); 
             Builder.Register("ListBox", () => new ListBox());
 
             

@@ -5,6 +5,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Data;
 using Bridge.CustomUIMarkup.Common;
 
 namespace Bridge.CustomUIMarkup.Libraries.SemanticUI
@@ -55,6 +56,9 @@ namespace Bridge.CustomUIMarkup.Libraries.SemanticUI
        
 
     }
+
+
+   
 
     class DataGrid : HtmlElement
     {

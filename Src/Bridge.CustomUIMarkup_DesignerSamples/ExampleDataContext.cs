@@ -227,14 +227,14 @@ namespace Bridge.CustomUIMarkup_DesignerSamples
 
                 new ExampleInfo
                 {
-                    Name = "Carousel",
+                    Name = "DataGrid",
                     XmlTemplate =
                         @"
 
 
-<ui.container>
-    <Carousel DataSource='img/carousel_1.jpg,img/carousel_2.jpg,img/carousel_3.jpg' />
-</ui.container>
+<ui-container>
+    <DataGrid />
+</ui-container>
 
 "
                 },

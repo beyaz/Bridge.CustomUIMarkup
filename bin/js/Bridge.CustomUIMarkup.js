@@ -704,6 +704,8 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
                         })(this, className1));
                     }
 
+
+
                     // TextBlock
                     Bridge.CustomUIMarkup.UI.Builder.Register("TextBlock", function () { return Bridge.CustomUIMarkup.UI.Builder.Create(Bridge.CustomUIMarkup.Libraries.SemanticUI.TextBlock); });
 
@@ -741,7 +743,7 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
                     Bridge.CustomUIMarkup.UI.Builder.Register("ui.selection.dropdown", function () { return Bridge.CustomUIMarkup.UI.Builder.Create(Bridge.CustomUIMarkup.Libraries.SemanticUI.Combo); });
 
 
-                    var classNames = System.Array.init(["ui segment", "ui form", "ui grid", "ui page grid", "ui text menu navbar", "left menu", "ui stacked", "computer tablet only row", "ui navbar menu", "mobile only row", "right menu", "ui hidden clearing divider", "card", "ui card", "ui cards", "extra content", "content", "ui divider", "item", "ui menu", "ui vertical menu", "ui equal width grid", "ui container", "ui button", "ui active button", "ui basic button", "ui basic active button"], System.String);
+                    var classNames = System.Array.init(["ui segment", "ui form", "ui grid", "ui page grid", "ui text menu navbar", "left menu", "ui stacked", "computer tablet only row", "ui navbar menu", "mobile only row", "right menu", "ui hidden clearing divider", "card", "ui card", "ui cards", "extra content", "content", "ui divider", "item", "ui menu", "ui vertical menu", "ui equal width grid", "ui container", "ui button", "ui active button", "ui basic button", "ui basic active button", "ui pagination menu", "active item"], System.String);
 
                     $t = Bridge.getEnumerator(classNames);
                     try {
@@ -834,6 +836,9 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
                     });
                     Bridge.CustomUIMarkup.UI.Builder.Register("DataGrid", function () {
                         return new Bridge.CustomUIMarkup.Libraries.SemanticUI.DataGrid("ui celled table");
+                    });
+                    Bridge.CustomUIMarkup.UI.Builder.Register("DataGridColumn", function () {
+                        return new Bridge.CustomUIMarkup.Libraries.SemanticUI.DataGridColumn();
                     });
                     Bridge.CustomUIMarkup.UI.Builder.Register("ListBox", function () {
                         return new System.Windows.Controls.ListBox();
@@ -2082,9 +2087,17 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
                     if (propertyName != null) {
                         var propertyInfo = Bridge.Reflection.getMembers(Bridge.getType(this["_currentInstance"]), 16, 284, propertyName);
                         if (propertyInfo != null) {
-                            if (Bridge.referenceEquals(propertyInfo.rt, System.Windows.Template)) {
+                            var propertyType = propertyInfo.rt;
+                            if (Bridge.referenceEquals(propertyType, System.Windows.Template)) {
                                 var propertyValue = System.Windows.Template.CreateFrom(Bridge.CustomUIMarkup.UI.Builder.GetFirstNodeSkipCommentAndText(xmlNode.childNodes));
                                 System.ComponentModel.ReflectionHelper.SetPropertyValue(this["_currentInstance"], propertyName, propertyValue);
+                                return true;
+                            }
+
+                            if (System.Extensions.IsNumeric$1(propertyType) || Bridge.referenceEquals(propertyType, System.String)) {
+                                var innerHTML = (System.String.concat(xmlNode.innerHTML, "")).trim();
+
+                                this.ProcessAttribute(Bridge.cast(this["_currentInstance"], System.Windows.FrameworkElement), propertyName, innerHTML);
                                 return true;
                             }
 
@@ -2094,6 +2107,9 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
                                    </DataGrid.Columns>
                             */
                             if (propertyInfo.s == null) {
+                                System.Boolean.toString(Bridge.Reflection.isGenericType(propertyType));
+                                Bridge.Reflection.getGenericArguments(propertyType).toString();
+
                             }
 
                             throw new System.NotImplementedException(xmlNode.nodeName);
@@ -2103,6 +2119,39 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
 
                 return false;
             },
+            BuildTextNode: function (xmlNode, parentInstance) {
+                // skip empty spaces
+                // var html = xmlNode.InnerText;
+
+                var html = Bridge.CustomUIMarkup.UI.Extensions.GetInnerText(xmlNode);
+                if (System.String.isNullOrWhiteSpace(html)) {
+                    return null;
+                }
+
+                // maybe <div> {LastName} </div>
+                var bindingInfo = System.Windows.Data.BindingInfo.TryParseExpression(html);
+                if (bindingInfo != null) {
+                    bindingInfo.BindingMode = System.Windows.Data.BindingMode.OneWay;
+
+                    bindingInfo.Source = parentInstance;
+                    bindingInfo.SourcePath = System.Windows.PropertyPath.op_Implicit("DataContext." + (bindingInfo.SourcePath.Path || ""));
+
+                    bindingInfo.Target = parentInstance;
+                    bindingInfo.TargetPath = System.Windows.PropertyPath.op_Implicit("InnerHTML");
+
+                    bindingInfo.Connect();
+                    return null;
+                }
+
+                var instanceAsContentControl = Bridge.as(parentInstance, System.Windows.ContentControl);
+                if (instanceAsContentControl != null) {
+                    instanceAsContentControl.Content = html;
+                    return null;
+                }
+
+                parentInstance["InnerHTML"] = html;
+                return null;
+            },
             BuildNode: function (xmlNode, parentInstance) {
                 var $t;
                 if (xmlNode.nodeType === 8) {
@@ -2110,35 +2159,7 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
                 }
 
                 if (xmlNode.nodeType === 3) {
-                    // skip empty spaces
-                    var html = $(xmlNode).text();
-                    if (System.String.isNullOrWhiteSpace(html)) {
-                        return null;
-                    }
-
-                    // maybe <div> {LastName} </div>
-                    var bindingInfo = System.Windows.Data.BindingInfo.TryParseExpression(html);
-                    if (bindingInfo != null) {
-                        bindingInfo.BindingMode = System.Windows.Data.BindingMode.OneWay;
-
-                        bindingInfo.Source = parentInstance;
-                        bindingInfo.SourcePath = System.Windows.PropertyPath.op_Implicit("DataContext." + (bindingInfo.SourcePath.Path || ""));
-
-                        bindingInfo.Target = parentInstance;
-                        bindingInfo.TargetPath = System.Windows.PropertyPath.op_Implicit("InnerHTML");
-
-                        bindingInfo.Connect();
-                        return null;
-                    }
-
-                    var instanceAsContentControl = Bridge.as(parentInstance, System.Windows.ContentControl);
-                    if (instanceAsContentControl != null) {
-                        instanceAsContentControl.Content = html;
-                        return null;
-                    }
-
-                    parentInstance["InnerHTML"] = html;
-                    return null;
+                    return this.BuildTextNode(xmlNode, parentInstance);
                 }
 
                 //
@@ -2161,8 +2182,8 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
                 } else {
                     var subControlDataContextAttribute = xmlNode.attributes.DataContext;
                     if (subControlDataContextAttribute == null) {
-                        var bindingInfo1 = ($t = new System.Windows.Data.BindingInfo(), $t.BindingMode = System.Windows.Data.BindingMode.OneWay, $t.Source = parentInstance, $t.SourcePath = System.Windows.PropertyPath.op_Implicit("DataContext"), $t.Target = instance, $t.TargetPath = System.Windows.PropertyPath.op_Implicit("DataContext"), $t);
-                        bindingInfo1.Connect();
+                        var bindingInfo = ($t = new System.Windows.Data.BindingInfo(), $t.BindingMode = System.Windows.Data.BindingMode.OneWay, $t.Source = parentInstance, $t.SourcePath = System.Windows.PropertyPath.op_Implicit("DataContext"), $t.Target = instance, $t.TargetPath = System.Windows.PropertyPath.op_Implicit("DataContext"), $t);
+                        bindingInfo.Connect();
                     } else {
                         var bi = System.Windows.Data.BindingInfo.TryParseExpression(subControlDataContextAttribute.nodeValue);
                         if (bi == null) {
@@ -2352,6 +2373,13 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
     Bridge.define("Bridge.CustomUIMarkup.UI.Extensions", {
         statics: {
             methods: {
+                GetInnerText: function (xmlNode) {
+                    if (xmlNode.nodeType === 3) {
+                        return Bridge.unbox(xmlNode.textContent);
+                    }
+
+                    return Bridge.unbox(xmlNode.innerHTML);
+                },
                 LoadComponent: function (T, element, xml) {
                     Bridge.CustomUIMarkup.UI.Builder.LoadComponent(element, xml);
 
@@ -5968,7 +5996,7 @@ if(fn)
                         _o1.add(($t = new Bridge.CustomUIMarkup_DesignerSamples.ExampleInfo(), $t.Name = "Tabs", $t.XmlTemplate = "\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n<div Padding='11'>\r\n\t<ui_top_attached_tabular_menu>\r\n\t\t<Tab Header ='Header1' AddClass='active'>\r\n  \t\t\t<div class='ui segment'>\r\n                <ui.header.3> Product description</ui.header.3>\r\n          \t    <p>Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Vestibulum tortor quam, feugiat vitae, ultricies eget, tempor sit amet, ante. Donec eu libero sit amet quam egestas semper. Aenean ultricies mi vitae est. Mauris placerat eleifend leo.</p>\r\n            </div>\r\n  \t\t</Tab>  \r\n  \r\n  \t\t<Tab Header ='Header2'> \r\n  \t\t\tWrite Content here 2\r\n  \t\t</Tab> \r\n\t</ui_top_attached_tabular_menu> \r\n</div>\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n", $t));
                         _o1.add(($t = new Bridge.CustomUIMarkup_DesignerSamples.ExampleInfo(), $t.Name = "Viewverjs", $t.XmlTemplate = "\r\n\r\n\r\n\r\n<div>\r\n  <ImageGalery>\r\n      <img src='img/carousel_1.jpg'  />\r\n      <img src='img/carousel_1.jpg'  />\r\n      <img src='img/carousel_1.jpg'  />\r\n      <img src='img/carousel_1.jpg'  />\r\n      <img src='img/carousel_1.jpg'  />\r\n      <img src='img/carousel_1.jpg'  />\r\n      <img src='img/carousel_1.jpg'  />\r\n      <img src='img/carousel_1.jpg'  />\r\n      <img src='img/carousel_1.jpg'  />\r\n      <img src='img/carousel_1.jpg'  />\r\n      <img src='img/carousel_1.jpg'  />\r\n      <img src='img/carousel_1.jpg'  />\r\n      <img src='img/carousel_1.jpg'  />\r\n      <img src='img/carousel_1.jpg'  />\r\n      <img src='img/carousel_1.jpg'  />\r\n      <img src='img/carousel_1.jpg'  />\r\n      <img src='img/carousel_1.jpg'  />\r\n  </ImageGalery>\r\n</div>\r\n\r\n\r\n\r\n\r\n\r\n", $t));
                         _o1.add(($t = new Bridge.CustomUIMarkup_DesignerSamples.ExampleInfo(), $t.Name = "All", $t.XmlTemplate = "\r\n\r\n\r\n\r\n\r\n\r\n<ui.page.grid>\r\n   <ui.container>\r\n      <ui.text.menu.navbar FontSize='18'>\r\n         <left.menu>\r\n            <item>Project Name</item>\r\n         </left.menu>\r\n         <right.menu>\r\n            <item>Home</item>\r\n            <item>About</item>\r\n            <item>Contact</item>\r\n         </right.menu>\r\n      </ui.text.menu.navbar>\r\n      <ui.divider MarginBottom='10' />\r\n      <Carousel DataSource='img/carousel_1.jpg,img/carousel_2.jpg,img/carousel_3.jpg' />\r\n      <ui.divider MarginBottom='10' />\r\n\t  <ui.cards>\r\n\t  \r\n\t\t  <card>\r\n\t\t\t <ui.image Src='http://www.samsunkorkuciftligi.com/upload/20170314__2069208026.jpg' />\r\n\t\t\t <content Align='Center'>\r\n\t\t\t\t<Header Align='Center'>Motor Safari</Header>\r\n\t\t\t\t<description>Macera sizi bekliyor...</description>\r\n\t\t\t\t<ui.basic.button Text='İncele' MarginTop='11' AddClass='yellow' />\r\n\t\t\t </content>\r\n\t\t  </card>\r\n\t\t  \r\n\t\t  <card>\r\n\t\t\t <ui.image Src='http://www.samsunkorkuciftligi.com/upload/20170314__2069208026.jpg' />\r\n\t\t\t <content Align='Center'>\r\n\t\t\t\t<Header Align='Center'>Motor Safari</Header>\r\n\t\t\t\t<description>Macera sizi bekliyor...</description>\r\n\t\t\t\t<ui.basic.button Text='İncele' MarginTop='11' AddClass='yellow' />\r\n\t\t\t </content>\r\n\t\t  </card>\r\n\t\t  \r\n\t  </ui.cards>\r\n   </ui.container>\r\n</ui.page.grid>\r\n\r\n\r\n\r\n", $t));
-                        _o1.add(($t = new Bridge.CustomUIMarkup_DesignerSamples.ExampleInfo(), $t.Name = "Carousel", $t.XmlTemplate = "\r\n\r\n\r\n<ui.container>\r\n    <Carousel DataSource='img/carousel_1.jpg,img/carousel_2.jpg,img/carousel_3.jpg' />\r\n</ui.container>\r\n\r\n", $t));
+                        _o1.add(($t = new Bridge.CustomUIMarkup_DesignerSamples.ExampleInfo(), $t.Name = "DataGrid", $t.XmlTemplate = "\r\n\r\n\r\n<ui-container>\r\n    <DataGrid />\r\n</ui-container>\r\n\r\n", $t));
                         _o1.add(($t = new Bridge.CustomUIMarkup_DesignerSamples.ExampleInfo(), $t.Name = "Card", $t.XmlTemplate = "\r\n\r\n<ui.cards>\r\n\r\n    <card>\r\n\t    <ui.image Src='http://www.samsunkorkuciftligi.com/upload/20170314__2069208026.jpg'/>\r\n\t    <content Align='Center'>\r\n            <Header Align='Center' >Motor Safari</Header>\r\n            <description> Macera sizi bekliyor...</description>\r\n            <ui.basic.button Text='İncele' MarginTop='11' AddClass='yellow' />\r\n        </content>\t\r\n    </card>\r\n\r\n</ui.cards>\r\n", $t));
                         _o1.add(($t = new Bridge.CustomUIMarkup_DesignerSamples.ExampleInfo(), $t.Name = "Grid.column", $t.XmlTemplate = "\r\n\r\n\r\n<ui.grid>\r\n  \r\n    <column Width='27' Align='Center'>\r\n        <Icon Type='Setting' Color='#ffbb00' FontSize='17' />\r\n    </column>\r\n  \r\n  \t<Column Width='80'>\r\n        <TextBlock Text='Start Date:' Color='#888888' FontSize='13' FontWeight='600' TextWrapping='NoWrap' />\r\n    </Column>\r\n  \t\r\n  \t<Column   Align='Left' >\r\n        <TextBlock Text='November 1, 2017 15:30' Color='#888888' FontSize='12' FontWeight='600' TextWrapping='NoWrap' />\r\n    </Column>\r\n</ui.grid>\r\n\r\n", $t));
                         _o1.add(($t = new Bridge.CustomUIMarkup_DesignerSamples.ExampleInfo(), $t.Name = "Form", $t.XmlTemplate = "\r\n\r\n\r\n<ui.segment>\r\n  <ui.page.grid Align='Center' MarginTop='5'>\r\n      <ui.form  Padding='55' Border='1px solid #ddd'>\r\n        <ui.header.3>Input form</ui.header.3>\r\n     <Field Value='A' Label='yy'>\r\n        <TextBox PlaceHolder='Write 1' />\r\n     </Field>\r\n     <ui.stacked>\r\n        <Field Value='A' Label='yy' >\r\n           <TextBox PlaceHolder='Write 1' IsMandatory='True' />\r\n        </Field>\r\n     </ui.stacked>\r\n     <ui.equal.width.grid>\r\n        <column>\r\n           <Field Value='A' Label='yy'>\r\n              <TextBox PlaceHolder='Write 1' />\r\n           </Field>\r\n        </column>\r\n        <column>\r\n           <Field Value='A' Label='yy'>\r\n              <TextBox PlaceHolder='Write 1' />\r\n           </Field>\r\n        </column>\r\n     </ui.equal.width.grid>\r\n        \r\n        <ui.grid>\r\n          <column Align='Right'>\r\n        \t\t<ui.button Text='No'   />\r\n            \t<ui.button Text='Yes'  AddClass='positive'  />\r\n            </column>\r\n        </ui.grid>\r\n  </ui.form>\r\n  </ui.page.grid>\r\n</ui.segment>\r\n\r\n\r\n\r\n\r\n", $t));

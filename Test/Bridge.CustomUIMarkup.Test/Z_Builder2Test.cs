@@ -109,6 +109,8 @@ namespace Bridge.CustomUIMarkup.Test
             new Z_Builder2Test().VisualTreeTest_multiple_child();
             new Z_Builder2Test().VisualTreeTest_TemplateControl();
             new Z_Builder2Test().LogicalTreeTest2();
+            new Z_Builder2Test().SubElementAsAttribute();
+            
         }
         #endregion
 
@@ -335,6 +337,18 @@ namespace Bridge.CustomUIMarkup.Test
             MustEqual("IMG", ui._root.Get(0).TagName);
 
             MustEqual(SampleImageUrl_350_150, ui.Attr("src"));
+        }
+
+        void SubElementAsAttribute()
+        {
+
+            var ui = BuildAndGetFirstLogicalChild("<div>" +
+                                                  "     <div.Height> 56 </div.Height>" +
+                                                  "</div>", null);
+
+            MustEqual("56px", ui._root.Css("height"));
+
+            
         }
 
         void img_src_test_with_binding()

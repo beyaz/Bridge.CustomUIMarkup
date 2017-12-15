@@ -165,10 +165,19 @@ namespace Bridge.CustomUIMarkup.UI
                     var propertyInfo = _currentInstance.GetType().GetProperty(propertyName);
                     if (propertyInfo != null)
                     {
-                        if (propertyInfo.PropertyType == typeof(Template))
+                        var propertyType = propertyInfo.PropertyType;
+                        if (propertyType == typeof(Template))
                         {
                             var propertyValue = Template.CreateFrom(GetFirstNodeSkipCommentAndText(xmlNode.ChildNodes));
                             ReflectionHelper.SetPropertyValue(_currentInstance, propertyName, propertyValue);
+                            return true;
+                        }
+
+                        if (propertyType.IsNumeric() || propertyType == typeof(string))
+                        {
+                            var innerHTML = (xmlNode["innerHTML"] + "").Trim();
+
+                            ProcessAttribute((FrameworkElement)_currentInstance,propertyName,innerHTML);
                             return true;
                         }
 
@@ -179,6 +188,9 @@ namespace Bridge.CustomUIMarkup.UI
                             */
                         if (propertyInfo.SetMethod == null)
                         {
+                            propertyType.IsGenericType.ToString();
+                            propertyType.GetGenericArguments().ToString();
+
                         }
 
                         throw new NotImplementedException(xmlNode.Name);
@@ -212,6 +224,42 @@ namespace Bridge.CustomUIMarkup.UI
 
         event Action<int, FrameworkElement> ElementCreatedAtLine;
 
+
+        object BuildTextNode(XmlNode xmlNode, FrameworkElement parentInstance)
+        {
+            // skip empty spaces
+            var html = xmlNode.GetInnerText();
+            if (string.IsNullOrWhiteSpace(html))
+            {
+                return null;
+            }
+
+            // maybe <div> {LastName} </div>
+            var bindingInfo = BindingInfo.TryParseExpression(html);
+            if (bindingInfo != null)
+            {
+                bindingInfo.BindingMode = BindingMode.OneWay;
+
+                bindingInfo.Source = parentInstance;
+                bindingInfo.SourcePath = "DataContext." + bindingInfo.SourcePath.Path;
+
+                bindingInfo.Target = parentInstance;
+                bindingInfo.TargetPath = nameof(parentInstance.InnerHTML);
+
+                bindingInfo.Connect();
+                return null;
+            }
+
+            var instanceAsContentControl = parentInstance as ContentControl;
+            if (instanceAsContentControl != null)
+            {
+                instanceAsContentControl.Content = html;
+                return null;
+            }
+
+            parentInstance.InnerHTML = html;
+            return null;
+        }
         object BuildNode(XmlNode xmlNode, FrameworkElement parentInstance)
         {
             if (xmlNode.NodeType == NodeType.Comment)
@@ -221,38 +269,7 @@ namespace Bridge.CustomUIMarkup.UI
 
             if (xmlNode.NodeType == NodeType.Text)
             {
-                // skip empty spaces
-                var html = new jQuery(xmlNode).Text();
-                if (string.IsNullOrWhiteSpace(html))
-                {
-                    return null;
-                }
-
-                // maybe <div> {LastName} </div>
-                var bindingInfo = BindingInfo.TryParseExpression(html);
-                if (bindingInfo != null)
-                {
-                    bindingInfo.BindingMode = BindingMode.OneWay;
-
-                    bindingInfo.Source = parentInstance;
-                    bindingInfo.SourcePath = "DataContext." + bindingInfo.SourcePath.Path;
-
-                    bindingInfo.Target = parentInstance;
-                    bindingInfo.TargetPath = nameof(parentInstance.InnerHTML);
-
-                    bindingInfo.Connect();
-                    return null;
-                }
-
-                var instanceAsContentControl = parentInstance as ContentControl;
-                if (instanceAsContentControl != null)
-                {
-                    instanceAsContentControl.Content = html;
-                    return null;
-                }
-
-                parentInstance.InnerHTML = html;
-                return null;
+                return BuildTextNode(xmlNode,parentInstance);
             }
 
             //
