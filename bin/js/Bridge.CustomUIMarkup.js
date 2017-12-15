@@ -2083,6 +2083,8 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
 
                 var instance = this.CreateInstance(xmlNode);
 
+
+
                 this["_currentInstance"] = instance;
 
                 if (this["IsDesignMode"]) {
@@ -2093,8 +2095,25 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
 
                 this.InitializeDataContext(xmlNode, instance, parentInstance);
 
-                Bridge.CustomUIMarkup.UI.Builder.InitDOM(instance);
 
+
+                this.ProcessAttributes(xmlNode, instance);
+
+                var childNodes = xmlNode.childNodes;
+
+                var len = childNodes.length;
+
+                for (var i = 0; i < len; i = (i + 1) | 0) {
+                    var childNode = childNodes[i];
+
+                    var subItem = this.BuildNode(childNode, instance);
+
+                    this.Connect(instance, subItem);
+                }
+
+                return instance;
+            },
+            ProcessAttributes: function (xmlNode, instance) {
                 var attributes = xmlNode.attributes;
 
                 var len = attributes.length;
@@ -2103,20 +2122,6 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
 
                     this.ProcessAttribute(instance, nodeAttribute.nodeName, nodeAttribute.nodeValue);
                 }
-
-                var childNodes = xmlNode.childNodes;
-
-                len = childNodes.length;
-
-                for (var i1 = 0; i1 < len; i1 = (i1 + 1) | 0) {
-                    var childNode = childNodes[i1];
-
-                    var subItem = this.BuildNode(childNode, instance);
-
-                    this.Connect(instance, subItem);
-                }
-
-                return instance;
             },
             BuildTextNode: function (xmlNode, parentInstance) {
                 // skip empty spaces
@@ -2159,10 +2164,11 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
                     return;
                 }
 
-                parent.AddLogicalChild(subItemAsFrameworkElement);
+                Bridge.unbox(parent).AddLogicalChild(subItemAsFrameworkElement);
             },
-            CreateInstance: function (xmlNode) {
+            CreateInstanceInternal: function (xmlNode) {
                 var $t;
+
                 var tag = xmlNode.nodeName.toUpperCase();
 
                 var creatorFunc = { v : null };
@@ -2182,6 +2188,12 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
                 }
 
                 return Bridge.cast(Bridge.createInstance(controlType), System.Windows.FrameworkElement);
+            },
+            CreateInstance: function (xmlNode) {
+                var instance = this.CreateInstanceInternal(xmlNode);
+                Bridge.CustomUIMarkup.UI.Builder.InitDOM(instance);
+
+                return instance;
             },
             InitializeDataContext: function (xmlNode, instance, parentInstance) {
                 var $t;
@@ -2236,7 +2248,7 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
 
                     if (System.String.contains(name,".") === false) {
                         if (targetProperty == null) {
-                            ($t = new System.Windows.Data.HTMLBindingInfo(), $t.Source = instance, $t.SourcePath = new System.Windows.PropertyPath("DataContext." + (bi.SourcePath.Path || "")), $t.Target$1 = instance._root, $t.TargetPath = System.Windows.PropertyPath.op_Implicit(name), $t.BindingMode = System.Windows.Data.BindingMode.OneWay, $t).Connect();
+                            ($t = new System.Windows.Data.HTMLBindingInfo(), $t.Source = instance, $t.SourcePath = new System.Windows.PropertyPath("DataContext." + (bi.SourcePath.Path || "")), $t.Target$1 = Bridge.unbox(instance)._root, $t.TargetPath = System.Windows.PropertyPath.op_Implicit(name), $t.BindingMode = System.Windows.Data.BindingMode.OneWay, $t).Connect();
 
                             return;
                         }
@@ -2292,7 +2304,7 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
 
                         var mi = Bridge.Reflection.getMembers(Bridge.getType(this.Caller), 8, 284, methodName);
 
-                        instance.On(eventName, Bridge.fn.bind(this, function () {
+                        Bridge.unbox(instance).On(eventName, Bridge.fn.bind(this, function () {
                             Bridge.Reflection.midel(mi, Bridge.unbox(this.Caller))(firstParameter);
                         }));
                         return;
@@ -2300,7 +2312,7 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
 
                     var methodInfo1 = Bridge.Reflection.getMembers(Bridge.getType(this.Caller), 8, System.ComponentModel.ReflectionHelper.AllBindings | 256, value);
 
-                    instance.On(eventName, Bridge.fn.bind(this, function () {
+                    Bridge.unbox(instance).On(eventName, Bridge.fn.bind(this, function () {
                         Bridge.Reflection.midel(methodInfo1, Bridge.unbox(this.Caller))(null);
                     }));
                     return;
@@ -2308,7 +2320,7 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
 
                 if (System.String.startsWith(nameUpperCase, "CSS.")) {
                     var styleAttributeName = name.substr(4);
-                    instance._root.css(styleAttributeName, value);
+                    Bridge.unbox(instance)._root.css(styleAttributeName, value);
                     return;
                 }
 
@@ -2326,46 +2338,79 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
                     return;
                 }
 
-                instance._root.attr(name, value);
+                Bridge.unbox(instance)._root.attr(name, value);
             },
             TryToInitParentProperty: function (xmlNode) {
                 var parentNodeName = xmlNode.parentNode.nodeName;
+                var nodeName = xmlNode.nodeName;
+
+
                 // <ItemsControl.ItemTemplate>
-                if (System.String.startsWith(xmlNode.nodeName, (parentNodeName || "") + ".")) {
-                    var propertyName = System.Extensions.RemoveFromStart(xmlNode.nodeName, (parentNodeName || "") + ".");
-                    if (propertyName != null) {
-                        var propertyInfo = Bridge.Reflection.getMembers(Bridge.getType(this["_currentInstance"]), 16, 284, propertyName);
-                        if (propertyInfo != null) {
-                            var propertyType = propertyInfo.rt;
-                            if (Bridge.referenceEquals(propertyType, System.Windows.Template)) {
-                                var propertyValue = System.Windows.Template.CreateFrom(Bridge.CustomUIMarkup.UI.Builder.GetFirstNodeSkipCommentAndText(xmlNode.childNodes));
-                                System.ComponentModel.ReflectionHelper.SetPropertyValue(this["_currentInstance"], propertyName, propertyValue);
-                                return true;
-                            }
 
-                            if (System.Extensions.IsNumeric$1(propertyType) || Bridge.referenceEquals(propertyType, System.String)) {
-                                var innerHTML = (System.String.concat(xmlNode.innerHTML, "")).trim();
+                if (!System.String.startsWith(nodeName, (parentNodeName || "") + ".")) {
+                    return false;
+                }
 
-                                this.ProcessAttribute(Bridge.cast(this["_currentInstance"], System.Windows.FrameworkElement), propertyName, innerHTML);
-                                return true;
-                            }
+                var propertyName = System.Extensions.RemoveFromStart(nodeName, (parentNodeName || "") + ".");
+                if (propertyName == null) {
+                    return false;
+                }
 
-                            /* 
+                var propertyInfo = Bridge.Reflection.getMembers(Bridge.getType(this["_currentInstance"]), 16, 284, propertyName);
+                if (propertyInfo == null) {
+                    return false;
+                }
+
+
+                var propertyType = propertyInfo.rt;
+                if (Bridge.referenceEquals(propertyType, System.Windows.Template)) {
+                    var propertyValue = System.Windows.Template.CreateFrom(Bridge.CustomUIMarkup.UI.Builder.GetFirstNodeSkipCommentAndText(xmlNode.childNodes));
+                    System.ComponentModel.ReflectionHelper.SetPropertyValue(this["_currentInstance"], propertyName, propertyValue);
+                    return true;
+                }
+
+                if (System.Extensions.IsNumeric$1(propertyType) || Bridge.referenceEquals(propertyType, System.String)) {
+                    var innerHTML = ((Bridge.CustomUIMarkup.UI.Extensions.GetInnerText(xmlNode) || "") + "").trim();
+
+                    this.ProcessAttribute(this["_currentInstance"], propertyName, innerHTML);
+                    return true;
+                }
+
+                /* 
                                    <DataGrid.Columns>
                                        <DataGridColumn Name='FullName' Label='Adı SoyAdı' />
                                    </DataGrid.Columns>
-                            */
-                            if (propertyInfo.s == null) {
-                                System.Boolean.toString(Bridge.Reflection.isGenericType(propertyType));
-                                Bridge.Reflection.getGenericArguments(propertyType).toString();
-                            }
+                */
+                if (propertyInfo.s == null) {
+                    var collection = Bridge.Reflection.midel(propertyInfo.g, Bridge.unbox(this["_currentInstance"]))();
 
-                            throw new System.NotImplementedException(xmlNode.nodeName);
+                    var addMethod = Bridge.Reflection.getMembers(Bridge.getType(collection), 8, 284, "Add");
+
+
+                    var childNodes = xmlNode.childNodes;
+
+                    var len = childNodes.length;
+
+                    for (var i = 0; i < len; i = (i + 1) | 0) {
+                        var childNode = childNodes[i];
+
+                        if (childNode.nodeType !== 1) {
+                            continue;
                         }
+
+                        var subItem = this.CreateInstance(childNode);
+
+                        this.ProcessAttributes(childNode, subItem);
+
+                        Bridge.Reflection.midel(addMethod, Bridge.unbox(collection))(subItem);
                     }
+
+                    return true;
+
                 }
 
-                return false;
+                throw new System.NotImplementedException(nodeName);
+
             }
         }
     });

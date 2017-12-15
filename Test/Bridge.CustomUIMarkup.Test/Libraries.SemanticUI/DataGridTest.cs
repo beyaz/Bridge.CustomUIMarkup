@@ -14,7 +14,7 @@ namespace Bridge.CustomUIMarkup.Libraries.SemanticUI
         public static void RunAll()
         {
             new DataGridTest().Simple();
-             // new DataGridTest().XmlParse();
+            new DataGridTest().XmlParse();
         }
 
         void Simple()
