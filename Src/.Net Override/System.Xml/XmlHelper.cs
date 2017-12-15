@@ -14,6 +14,7 @@ namespace System.Xml
         {
             try
             {
+                xmlString = xmlString.Replace("x:Name=", "x.Name = ").Replace("x:Name =", "x.Name = ");
                 return jQuery.ParseXML(xmlString).As<XmlDocument>();
             }
             catch (Exception e)

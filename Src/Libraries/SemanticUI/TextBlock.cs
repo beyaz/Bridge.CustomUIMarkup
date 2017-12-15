@@ -5,8 +5,6 @@ namespace Bridge.CustomUIMarkup.Libraries.SemanticUI
 {
     public class TextBlock : Control
     {
-        
-
         #region Public Properties
         public override string DefaultTemplateAsXml
         {

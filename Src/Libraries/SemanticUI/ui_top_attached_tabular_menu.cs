@@ -9,6 +9,12 @@ namespace Bridge.CustomUIMarkup.Libraries.SemanticUI
 {
     public class ui_top_attached_tabular_menu : Control
     {
+        #region Fields
+#pragma warning disable 649
+        FrameworkElement _headerContainer;
+#pragma warning restore 649
+        #endregion
+
         #region Constructors
         public ui_top_attached_tabular_menu()
         {
@@ -19,7 +25,7 @@ namespace Bridge.CustomUIMarkup.Libraries.SemanticUI
 
         #region Public Properties
         public override string DefaultTemplateAsXml => "<div>" +
-                                                       "    <div class = 'ui top attached tabular menu' />" +
+                                                       "    <div x:Name ='_headerContainer'  class = 'ui top attached tabular menu' />" +
                                                        "</div>";
         #endregion
 
@@ -30,11 +36,11 @@ namespace Bridge.CustomUIMarkup.Libraries.SemanticUI
         #region Public Methods
         public void AddTab(TabItem tabItem)
         {
-            GetVisualChildAt(0).AddVisualChild(tabItem.HeaderElement);
+            _headerContainer.AddVisualChild(tabItem._headerElement);
 
-            AddVisualChild(tabItem.BodyElement);
+            AddVisualChild(tabItem._bodyElement);
 
-            tabItem.GetVisualChildAt(0)._root.Click(() => { ActivateTab(tabItem); });
+            tabItem._headerElement._root.Click(() => { ActivateTab(tabItem); });
         }
         #endregion
 
@@ -56,6 +62,7 @@ namespace Bridge.CustomUIMarkup.Libraries.SemanticUI
             {
                 throw new ArgumentException();
             }
+
             AddTab(tabItem);
         }
 

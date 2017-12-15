@@ -31,7 +31,9 @@ namespace Bridge.CustomUIMarkup_DesignerSamples
 ";
         public  AppContainer()
         {
+            
             Builder.LoadComponent(this,TestUI);
+            HeightPercent = 100;
         }
     }
 
@@ -64,6 +66,15 @@ namespace Bridge.CustomUIMarkup_DesignerSamples
                 {
                     CurrentTemplate = "Write xml code here.",
                     Inner = new ExampleDataContext { CurrentTemplate = "Write xml code here" }
+                }
+            };
+
+            appContainer.DataContext = new ExampleDataContext
+            {
+                CurrentTemplate = "Write xml code here.",
+                Inner = new ExampleDataContext
+                {
+                    CurrentTemplate = "Write xml code here"
                 }
             };
 

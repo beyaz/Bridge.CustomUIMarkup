@@ -21,7 +21,7 @@ namespace Bridge.CustomUIMarkup.Libraries.SemanticUI
 
         static string GetHeaderTextFromDOM(TabItem tabItem)
         {
-            return tabItem.HeaderElement.html();
+            return tabItem._headerElement.html();
         }
 
         void TabItem_Content()

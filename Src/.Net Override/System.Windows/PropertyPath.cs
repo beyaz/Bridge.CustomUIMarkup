@@ -63,12 +63,12 @@ namespace System.Windows
             for (var i = 0; i < len; i++)
             {
                 var trigger = Triggers[i];
-                if (i == last)
-                {
-                    trigger.OnPropertyValueChanged = onPropertyValueChanged;
-                    trigger.Listen();
-                    continue;
-                }
+                //if (i == last)
+                //{
+                //    trigger.OnPropertyValueChanged = onPropertyValueChanged;
+                //    trigger.Listen();
+                //    continue;
+                //}
 
                 trigger.OnPropertyValueChanged = () =>
                 {

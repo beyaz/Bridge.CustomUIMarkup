@@ -2432,6 +2432,8 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
                     var $t, $t1, $t2;
                     var appContainer = ($t = new Bridge.CustomUIMarkup_DesignerSamples.AppContainer(), $t.DataContext = ($t1 = new Bridge.CustomUIMarkup_DesignerSamples.ExampleDataContext(), $t1.CurrentTemplate = "Write xml code here.", $t1["Inner"] = ($t2 = new Bridge.CustomUIMarkup_DesignerSamples.ExampleDataContext(), $t2.CurrentTemplate = "Write xml code here", $t2), $t1), $t);
 
+                    appContainer.DataContext = ($t = new Bridge.CustomUIMarkup_DesignerSamples.ExampleDataContext(), $t.CurrentTemplate = "Write xml code here.", $t["Inner"] = ($t1 = new Bridge.CustomUIMarkup_DesignerSamples.ExampleDataContext(), $t1.CurrentTemplate = "Write xml code here", $t1), $t);
+
                     appContainer.RenderInBody();
                 }
             }
@@ -5624,11 +5626,12 @@ if(fn)
 
                 for (var i = 0; i < len; i = (i + 1) | 0) {
                     var trigger = this.Triggers.getItem(i);
-                    if (i === last) {
-                        trigger.OnPropertyValueChanged = onPropertyValueChanged;
-                        trigger.Listen();
-                        continue;
-                    }
+                    //if (i == last)
+                    //{
+                    //    trigger.OnPropertyValueChanged = onPropertyValueChanged;
+                    //    trigger.Listen();
+                    //    continue;
+                    //}
 
                     trigger.OnPropertyValueChanged = Bridge.fn.bind(this, function () {
                         this.Listen(instance, onPropertyValueChanged);
@@ -5877,6 +5880,7 @@ if(fn)
                 },
                 Parse: function (xmlString) {
                     try {
+                        xmlString = System.String.replaceAll(System.String.replaceAll(xmlString, "x:Name=", "x.Name = "), "x:Name =", "x.Name = ");
                         return $.parseXML(xmlString);
                     }
                     catch (e) {
@@ -7170,7 +7174,7 @@ if(fn)
             },
             Container: {
                 get: function () {
-                    return this.GetVisualChildAt(0).GetLogicalChildAt(1);
+                    return this.GetVisualChildAt$1([0, 0]).GetLogicalChildAt(1);
                 }
             },
             SourceText: {
@@ -7237,7 +7241,7 @@ if(fn)
 
                     Bridge.CustomUIMarkup.UI.Builder.LoadComponent$1(fe, System.Xml.XmlHelper.GetRootNode(this.SourceText), true, Bridge.fn.bind(this, function (line, element) {
                         this._lineNumberToControlMap.set(line, element);
-                    }));
+                    }), this.SourceText);
 
 
 
@@ -7250,9 +7254,13 @@ if(fn)
                     var e;
                     if (Bridge.is($e1, System.Xml.XmlException)) {
                         e = $e1;
+                        Bridge.Console.clear();
+                        Bridge.Console.log(e);
                         this.SetErrorMessage(e.toString());
                     } else {
                         e = $e1;
+                        Bridge.Console.clear();
+                        Bridge.Console.log(e);
                         this.SetErrorMessage(e.toString());
                     }
                 }
@@ -8366,10 +8374,13 @@ me._editor.display.wrapper.style.height = '95%';
 
     Bridge.define("Bridge.CustomUIMarkup.Libraries.SemanticUI.ui_top_attached_tabular_menu", {
         inherits: [System.Windows.Controls.Control],
+        fields: {
+            _headerContainer: null
+        },
         props: {
             DefaultTemplateAsXml: {
                 get: function () {
-                    return "<div>    <div class = 'ui top attached tabular menu' /></div>";
+                    return "<div>    <div x:Name ='_headerContainer'  class = 'ui top attached tabular menu' /></div>";
                 }
             },
             Tabs: {
@@ -8390,11 +8401,11 @@ me._editor.display.wrapper.style.height = '95%';
         },
         methods: {
             AddTab: function (tabItem) {
-                this.GetVisualChildAt(0).AddVisualChild(tabItem.HeaderElement);
+                this._headerContainer.AddVisualChild(tabItem._headerElement);
 
-                this.AddVisualChild(tabItem.BodyElement);
+                this.AddVisualChild(tabItem._bodyElement);
 
-                tabItem.GetVisualChildAt(0)._root.click(Bridge.fn.bind(this, function () {
+                tabItem._headerElement._root.click(Bridge.fn.bind(this, function () {
                     this.ActivateTab(tabItem);
                 }));
             },
@@ -8418,6 +8429,7 @@ me._editor.display.wrapper.style.height = '95%';
                 if (tabItem == null) {
                     throw new System.ArgumentException();
                 }
+
                 this.AddTab(tabItem);
             },
             OnBeforeConnectToParent: function (parent) {
@@ -8456,6 +8468,16 @@ me._editor.display.wrapper.style.height = '95%';
                     return "<div>   <div class='{Class}' />   <div class='{Class}' /></div>";
                 }
             },
+            Left: {
+                get: function () {
+                    return this.GetVisualChildAt$1([0, 0]);
+                }
+            },
+            Right: {
+                get: function () {
+                    return this.GetVisualChildAt$1([0, 1]);
+                }
+            },
             Orientation: {
                 get: function () {
                     return System.Nullable.getValue(Bridge.cast(Bridge.unbox(this.GetValue$1(Bridge.CustomUIMarkup.Libraries.split_js.SplitPanel.OrientationProperty)), System.Int32));
@@ -8477,9 +8499,9 @@ me._editor.display.wrapper.style.height = '95%';
         methods: {
             AfterAddChildElement: function (element) {
                 if (this.LogicalChilderenCount === 1) {
-                    this.GetVisualChildAt(0).AddVisualChild(element);
+                    this.Left.AddVisualChild(element);
                 } else {
-                    this.GetVisualChildAt(1).AddVisualChild(element);
+                    this.Right.AddVisualChild(element);
                 }
             },
             ReInitializeWrapper: function (parent) {
@@ -8503,9 +8525,9 @@ me._editor.display.wrapper.style.height = '95%';
             },
             Split: function () {
                 // ReSharper disable once UnusedVariable
-                var left = this.GetVisualChildAt(0)._root.get(0);
+                var left = this.Left._root.get(0);
                 // ReSharper disable once UnusedVariable
-                var right = this.GetVisualChildAt(1)._root.get(0);
+                var right = this.Right._root.get(0);
 
                 return Split([ left, right], { sizes:[50,50],  direction:this._direction });
                 ;
@@ -8658,7 +8680,9 @@ $( '<style> '+css+'</style>' ).appendTo( 'head' );
             ctor: function () {
                 this.$initialize();
                 System.Windows.HtmlElement.ctor.call(this);
+
                 Bridge.CustomUIMarkup.UI.Builder.LoadComponent(this, Bridge.CustomUIMarkup_DesignerSamples.AppContainer["TestUI"]);
+                this.HeightPercent = 100;
             }
         }
     });
@@ -8900,29 +8924,23 @@ $( '<style> '+css+'</style>' ).appendTo( 'head' );
                     var tabItem = Bridge.cast(d, Bridge.CustomUIMarkup.Libraries.SemanticUI.TabItem);
 
                     if (System.Extensions.ToBoolean(e.NewValue)) {
-                        tabItem.GetVisualChildAt(0).Class = "item active";
-                        tabItem.GetVisualChildAt(1).Class = "ui bottom attached tab segment active";
+                        tabItem._headerElement.Class = "item active";
+                        tabItem._bodyElement.Class = "ui bottom attached tab segment active";
                     } else {
-                        tabItem.GetVisualChildAt(0).Class = "item";
-                        tabItem.GetVisualChildAt(1).Class = "ui bottom attached tab segment";
+                        tabItem._headerElement.Class = "item";
+                        tabItem._bodyElement.Class = "ui bottom attached tab segment";
                     }
                 }
             }
         },
+        fields: {
+            _headerElement: null,
+            _bodyElement: null
+        },
         props: {
-            HeaderElement: {
-                get: function () {
-                    return this.GetVisualChildAt(0).GetVisualChildAt(0);
-                }
-            },
-            BodyElement: {
-                get: function () {
-                    return this.GetVisualChildAt(0).GetVisualChildAt(1);
-                }
-            },
             DefaultTemplateAsXml: {
                 get: function () {
-                    return "<div>    <a class = 'item' data-tab='{Id}' >{Header}</a>    <div class = 'ui bottom attached tab segment' data-tab = '{Id}' >        <ContentPresenter />    </div></div>";
+                    return "<div>    <a x:Name = '_headerElement' class = 'item' data-tab='{Id}' >{Header}</a>    <div x:Name = '_BodyElement' class = 'ui bottom attached tab segment' data-tab = '{Id}' >        <ContentPresenter />    </div></div>";
                 }
             },
             Header: {

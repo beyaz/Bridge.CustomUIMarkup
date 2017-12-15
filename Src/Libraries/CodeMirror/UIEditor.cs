@@ -6,6 +6,7 @@ using System.Xml;
 using Bridge.CustomUIMarkup.Common;
 using Bridge.CustomUIMarkup.Libraries.SemanticUI;
 using Bridge.CustomUIMarkup.UI;
+using Console = Bridge.Utils.Console;
 
 namespace Bridge.CustomUIMarkup.Libraries.CodeMirror
 {
@@ -32,7 +33,7 @@ namespace Bridge.CustomUIMarkup.Libraries.CodeMirror
         #endregion
 
         #region Properties
-        FrameworkElement Container => GetVisualChildAt(0).GetLogicalChildAt(1);
+        FrameworkElement Container => GetVisualChildAt(0,0).GetLogicalChildAt(1);
         #endregion
 
         #region Public Methods
@@ -83,7 +84,7 @@ namespace Bridge.CustomUIMarkup.Libraries.CodeMirror
                 };
 
                 
-                Builder.LoadComponent(fe, XmlHelper.GetRootNode(SourceText),true, (line, element) => { _lineNumberToControlMap[line] = element; });
+                Builder.LoadComponent(fe, XmlHelper.GetRootNode(SourceText),true, (line, element) => { _lineNumberToControlMap[line] = element; }, SourceText);
 
 
 
@@ -93,10 +94,14 @@ namespace Bridge.CustomUIMarkup.Libraries.CodeMirror
             }
             catch (XmlException e)
             {
+                Console.Clear();
+                Console.Log(e);
                 SetErrorMessage(e.ToString());
             }
             catch (Exception e)
             {
+                Console.Clear();
+                Console.Log(e);
                 SetErrorMessage(e.ToString());
             }
         }

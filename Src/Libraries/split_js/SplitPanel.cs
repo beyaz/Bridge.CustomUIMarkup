@@ -26,16 +26,18 @@ namespace Bridge.CustomUIMarkup.Libraries.split_js
                                                        "</div>";
         #endregion
 
+        FrameworkElement Left => GetVisualChildAt(0, 0);
+        FrameworkElement Right => GetVisualChildAt(0, 1);
         #region Methods
         void AfterAddChildElement(FrameworkElement element)
         {
             if (LogicalChilderenCount == 1)
             {
-                GetVisualChildAt(0).AddVisualChild(element);
+                Left.AddVisualChild(element);
             }
             else
             {
-                GetVisualChildAt(1).AddVisualChild(element);
+                Right.AddVisualChild(element);
             }
         }
 
@@ -63,9 +65,9 @@ namespace Bridge.CustomUIMarkup.Libraries.split_js
         object Split()
         {
             // ReSharper disable once UnusedVariable
-            var left = GetVisualChildAt(0)._root.Get(0);
+            var left = Left._root.Get(0);
             // ReSharper disable once UnusedVariable
-            var right = GetVisualChildAt(1)._root.Get(0);
+            var right = Right._root.Get(0);
 
             return Script.Write<object>(@"Split([ left, right], { sizes:[50,50],  direction:this._direction });");
         }

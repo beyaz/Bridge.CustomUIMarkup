@@ -5,13 +5,16 @@ namespace Bridge.CustomUIMarkup.Libraries.SemanticUI
 {
     public class TabItem : ContentControl
     {
-        internal FrameworkElement HeaderElement => GetVisualChildAt(0).GetVisualChildAt(0);
-        internal FrameworkElement BodyElement => GetVisualChildAt(0).GetVisualChildAt(1);
+#pragma warning disable 649
+        internal FrameworkElement _headerElement;
+
+        internal FrameworkElement _bodyElement;
+#pragma warning restore 649
 
         #region Public Properties
         public override string DefaultTemplateAsXml => "<div>" +
-                                                       "    <a class = 'item' data-tab='{Id}' >{Header}</a>" +
-                                                       "    <div class = 'ui bottom attached tab segment' data-tab = '{Id}' >" +
+                                                       "    <a x:Name = '_headerElement' class = 'item' data-tab='{Id}' >{Header}</a>" +
+                                                       "    <div x:Name = '_BodyElement' class = 'ui bottom attached tab segment' data-tab = '{Id}' >" +
                                                        "        <ContentPresenter />" +
                                                        "    </div>" +
                                                        "</div>";
@@ -39,13 +42,13 @@ namespace Bridge.CustomUIMarkup.Libraries.SemanticUI
 
             if (e.NewValue.ToBoolean())
             {
-                tabItem.GetVisualChildAt(0).Class = "item active";
-                tabItem.GetVisualChildAt(1).Class = "ui bottom attached tab segment active";
+                tabItem._headerElement.Class = "item active";
+                tabItem._bodyElement.Class = "ui bottom attached tab segment active";
             }
             else
             {
-                tabItem.GetVisualChildAt(0).Class = "item";
-                tabItem.GetVisualChildAt(1).Class = "ui bottom attached tab segment";
+                tabItem._headerElement.Class = "item";
+                tabItem._bodyElement.Class = "ui bottom attached tab segment";
             }
         }
 
