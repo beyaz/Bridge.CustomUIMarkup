@@ -10,7 +10,6 @@ using System.Xml;
 using Bridge.CustomUIMarkup.Common;
 using Bridge.CustomUIMarkup.Tokenizers;
 using Bridge.Html5;
-using Bridge.jQuery2;
 
 namespace Bridge.CustomUIMarkup.UI
 {
@@ -31,9 +30,15 @@ namespace Bridge.CustomUIMarkup.UI
         #region Fields
         public string XmlString;
 
-        bool _isBuildingTemplate;
-
         internal XmlNode _rootNode;
+
+        object _currentInstance;
+
+        bool _isBuildingTemplate;
+        #endregion
+
+        #region Events
+        event Action<int, FrameworkElement> ElementCreatedAtLine;
         #endregion
 
         #region Public Properties
@@ -46,6 +51,27 @@ namespace Bridge.CustomUIMarkup.UI
         #endregion
 
         #region Public Methods
+        public static T Create<T>() where T : Control, new()
+        {
+            var control = new T();
+
+            return ApplyTemplate(control);
+        }
+
+        public static void Register(string tag, Func<FrameworkElement> func)
+        {
+            _elementCreators[tag.ToUpper()] = func;
+        }
+        #endregion
+
+        #region Methods
+        internal static T ApplyTemplate<T>(T control) where T : Control
+        {
+            control?.ApplyTemplate();
+
+            return control;
+        }
+
         internal static void BuildControlTemplate(Template xmlTemplate, FrameworkElement control)
         {
             var builder = new Builder
@@ -101,106 +127,6 @@ namespace Bridge.CustomUIMarkup.UI
             control.AddLogicalChild(subControlAsFrameworkElement);
         }
 
-        public static T Create<T>() where T : Control, new()
-        {
-            var control = new T();
-
-            return ApplyTemplate(control);
-        }
-
-        public static void Register(string tag, Func<FrameworkElement> func)
-        {
-            _elementCreators[tag.ToUpper()] = func;
-        }
-        #endregion
-
-        #region Methods
-        internal static T ApplyTemplate<T>(T control) where T : Control
-        {
-            control?.ApplyTemplate();
-
-            return control;
-        }
-
-        static bool IsUserDefinedTag(string tag)
-        {
-            return tag.Contains('.') || tag.Contains('-') || tag.Contains(':');
-        }
-
-        object _currentInstance;
-
-        void Connect(FrameworkElement parent, object subItem)
-        {
-            if (subItem == null)
-            {
-                return;
-            }
-
-            var subItemAsFrameworkElement = subItem as FrameworkElement;
-            if (subItemAsFrameworkElement == null)
-            {
-                return;
-            }
-
-            parent.AddLogicalChild(subItemAsFrameworkElement);
-        }
-
-        static void InitDOM(FrameworkElement instance)
-        {
-            if (instance._root == null)
-            {
-                instance.InitDOM();
-            }
-        }
-
-        bool TryToInitParentProperty(XmlNode xmlNode)
-        {
-            var parentNodeName = xmlNode.ParentNode.Name;
-            // <ItemsControl.ItemTemplate>
-            if (xmlNode.Name.StartsWith(parentNodeName + "."))
-            {
-                var propertyName = xmlNode.Name.RemoveFromStart(parentNodeName + ".");
-                if (propertyName != null)
-                {
-                    var propertyInfo = _currentInstance.GetType().GetProperty(propertyName);
-                    if (propertyInfo != null)
-                    {
-                        var propertyType = propertyInfo.PropertyType;
-                        if (propertyType == typeof(Template))
-                        {
-                            var propertyValue = Template.CreateFrom(GetFirstNodeSkipCommentAndText(xmlNode.ChildNodes));
-                            ReflectionHelper.SetPropertyValue(_currentInstance, propertyName, propertyValue);
-                            return true;
-                        }
-
-                        if (propertyType.IsNumeric() || propertyType == typeof(string))
-                        {
-                            var innerHTML = (xmlNode["innerHTML"] + "").Trim();
-
-                            ProcessAttribute((FrameworkElement)_currentInstance,propertyName,innerHTML);
-                            return true;
-                        }
-
-                        /*
-                                <DataGrid.Columns>
-                                    <DataGridColumn Name='FullName' Label='Adı SoyAdı' />
-                                </DataGrid.Columns>
-                            */
-                        if (propertyInfo.SetMethod == null)
-                        {
-                            propertyType.IsGenericType.ToString();
-                            propertyType.GetGenericArguments().ToString();
-
-                        }
-
-                        throw new NotImplementedException(xmlNode.Name);
-                    }
-                }
-            }
-
-            return false;
-        }
-
         static XmlNode GetFirstNodeSkipCommentAndText(XmlNodeList xmlNodeList)
         {
             var len = xmlNodeList.Count;
@@ -222,8 +148,77 @@ namespace Bridge.CustomUIMarkup.UI
             throw new InvalidOperationException("NodeCannotBeEmpty.");
         }
 
-        event Action<int, FrameworkElement> ElementCreatedAtLine;
+        static void InitDOM(FrameworkElement instance)
+        {
+            if (instance._root == null)
+            {
+                instance.InitDOM();
+            }
+        }
 
+        static bool IsUserDefinedTag(string tag)
+        {
+            return tag.Contains('.') || tag.Contains('-') || tag.Contains(':');
+        }
+
+        object BuildNode(XmlNode xmlNode, FrameworkElement parentInstance)
+        {
+            if (xmlNode.NodeType == NodeType.Comment)
+            {
+                return null;
+            }
+
+            if (xmlNode.NodeType == NodeType.Text)
+            {
+                return BuildTextNode(xmlNode, parentInstance);
+            }
+
+            //
+            if (TryToInitParentProperty(xmlNode))
+            {
+                return null;
+            }
+
+            var instance = CreateInstance(xmlNode);
+
+            _currentInstance = instance;
+
+            if (IsDesignMode)
+            {
+                var lineNumber = xmlNode.GetOriginalLineNumber(_rootNode, XmlString);
+
+                ElementCreatedAtLine?.Invoke(lineNumber, instance);
+            }
+
+            InitializeDataContext(xmlNode, instance, parentInstance);
+
+            InitDOM(instance);
+
+            var attributes = xmlNode.Attributes;
+
+            var len = attributes.Count;
+            for (var i = 0; i < len; i++)
+            {
+                var nodeAttribute = attributes[i];
+
+                ProcessAttribute(instance, nodeAttribute.Name, nodeAttribute.Value);
+            }
+
+            var childNodes = xmlNode.ChildNodes;
+
+            len = childNodes.Count;
+
+            for (var i = 0; i < len; i++)
+            {
+                var childNode = childNodes[i];
+
+                var subItem = BuildNode(childNode, instance);
+
+                Connect(instance, subItem);
+            }
+
+            return instance;
+        }
 
         object BuildTextNode(XmlNode xmlNode, FrameworkElement parentInstance)
         {
@@ -260,35 +255,51 @@ namespace Bridge.CustomUIMarkup.UI
             parentInstance.InnerHTML = html;
             return null;
         }
-        object BuildNode(XmlNode xmlNode, FrameworkElement parentInstance)
+
+        void Connect(FrameworkElement parent, object subItem)
         {
-            if (xmlNode.NodeType == NodeType.Comment)
+            if (subItem == null)
             {
-                return null;
+                return;
             }
 
-            if (xmlNode.NodeType == NodeType.Text)
+            var subItemAsFrameworkElement = subItem as FrameworkElement;
+            if (subItemAsFrameworkElement == null)
             {
-                return BuildTextNode(xmlNode,parentInstance);
+                return;
             }
 
-            //
-            if (TryToInitParentProperty(xmlNode))
+            parent.AddLogicalChild(subItemAsFrameworkElement);
+        }
+
+        FrameworkElement CreateInstance(XmlNode xmlNode)
+        {
+            var tag = xmlNode.Name.ToUpper();
+
+            Func<FrameworkElement> creatorFunc = null;
+            _elementCreators.TryGetValue(tag.ToUpper(), out creatorFunc);
+            if (creatorFunc != null)
             {
-                return null;
+                return creatorFunc();
             }
 
-            var instance = CreateInstance(xmlNode);
+            var controlType = TypeFinder?.FindType(tag);
 
-            _currentInstance = instance;
-
-            if (IsDesignMode)
+            if (controlType == null)
             {
-                var lineNumber = xmlNode.GetOriginalLineNumber(_rootNode, XmlString);
+                if (IsUserDefinedTag(xmlNode.Name) == false)
+                {
+                    return new HtmlElement(xmlNode.Name);
+                }
 
-                ElementCreatedAtLine?.Invoke(lineNumber, instance);
+                throw new ArgumentException("NotRecognizedTag:" + tag);
             }
 
+            return (FrameworkElement) Activator.CreateInstance(controlType);
+        }
+
+        void InitializeDataContext(XmlNode xmlNode, FrameworkElement instance, FrameworkElement parentInstance)
+        {
             if (_isBuildingTemplate)
             {
                 instance.DataContext = DataContext;
@@ -324,59 +335,6 @@ namespace Bridge.CustomUIMarkup.UI
                     bi.Connect();
                 }
             }
-
-            InitDOM(instance);
-
-            var attributes = xmlNode.Attributes;
-
-            var len = attributes.Count;
-            for (var i = 0; i < len; i++)
-            {
-                var nodeAttribute = attributes[i];
-
-                ProcessAttribute(instance, nodeAttribute.Name, nodeAttribute.Value);
-            }
-
-            var childNodes = xmlNode.ChildNodes;
-
-            len = childNodes.Count;
-
-            for (var i = 0; i < len; i++)
-            {
-                var childNode = childNodes[i];
-
-                var subItem = BuildNode(childNode, instance);
-
-                Connect(instance, subItem);
-            }
-
-            return instance;
-        }
-
-        FrameworkElement CreateInstance(XmlNode xmlNode)
-        {
-            var tag = xmlNode.Name.ToUpper();
-
-            Func<FrameworkElement> creatorFunc = null;
-            _elementCreators.TryGetValue(tag.ToUpper(), out creatorFunc);
-            if (creatorFunc != null)
-            {
-                return creatorFunc();
-            }
-
-            var controlType = TypeFinder?.FindType(tag);
-
-            if (controlType == null)
-            {
-                if (IsUserDefinedTag(xmlNode.Name) == false)
-                {
-                    return new HtmlElement(xmlNode.Name);
-                }
-
-                throw new ArgumentException("NotRecognizedTag:" + tag);
-            }
-
-            return (FrameworkElement) Activator.CreateInstance(controlType);
         }
 
         void ProcessAttribute(FrameworkElement instance, string name, string value)
@@ -516,6 +474,53 @@ namespace Bridge.CustomUIMarkup.UI
             }
 
             instance._root.Attr(name, value);
+        }
+
+        bool TryToInitParentProperty(XmlNode xmlNode)
+        {
+            var parentNodeName = xmlNode.ParentNode.Name;
+            // <ItemsControl.ItemTemplate>
+            if (xmlNode.Name.StartsWith(parentNodeName + "."))
+            {
+                var propertyName = xmlNode.Name.RemoveFromStart(parentNodeName + ".");
+                if (propertyName != null)
+                {
+                    var propertyInfo = _currentInstance.GetType().GetProperty(propertyName);
+                    if (propertyInfo != null)
+                    {
+                        var propertyType = propertyInfo.PropertyType;
+                        if (propertyType == typeof(Template))
+                        {
+                            var propertyValue = Template.CreateFrom(GetFirstNodeSkipCommentAndText(xmlNode.ChildNodes));
+                            ReflectionHelper.SetPropertyValue(_currentInstance, propertyName, propertyValue);
+                            return true;
+                        }
+
+                        if (propertyType.IsNumeric() || propertyType == typeof(string))
+                        {
+                            var innerHTML = (xmlNode["innerHTML"] + "").Trim();
+
+                            ProcessAttribute((FrameworkElement) _currentInstance, propertyName, innerHTML);
+                            return true;
+                        }
+
+                        /*
+                                <DataGrid.Columns>
+                                    <DataGridColumn Name='FullName' Label='Adı SoyAdı' />
+                                </DataGrid.Columns>
+                            */
+                        if (propertyInfo.SetMethod == null)
+                        {
+                            propertyType.IsGenericType.ToString();
+                            propertyType.GetGenericArguments().ToString();
+                        }
+
+                        throw new NotImplementedException(xmlNode.Name);
+                    }
+                }
+            }
+
+            return false;
         }
         #endregion
     }
