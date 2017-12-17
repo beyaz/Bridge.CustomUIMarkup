@@ -54,8 +54,12 @@ namespace Bridge.CustomUIMarkup.Libraries.SemanticUI
             Text = _inputElement.Val();
         }
 
+        public event Action<jQueryKeyboardEvent> KeyPress;
+
         void OnKeyPress(jQueryKeyboardEvent e)
         {
+            KeyPress?.Invoke(e);
+
             if (AllowOnlyNumericInputs)
             {
                 DisableNonNumericValues(e);

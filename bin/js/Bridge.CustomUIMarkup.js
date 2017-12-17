@@ -837,9 +837,7 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
                     Bridge.CustomUIMarkup.UI.Builder.Register("DataGrid", function () {
                         return new Bridge.CustomUIMarkup.Libraries.SemanticUI.DataGrid("ui celled table");
                     });
-                    Bridge.CustomUIMarkup.UI.Builder.Register("DataGridColumn", function () {
-                        return new Bridge.CustomUIMarkup.Libraries.SemanticUI.DataGridColumn();
-                    });
+                    Bridge.CustomUIMarkup.UI.Builder.Register("DataGridColumn", function () { return Bridge.CustomUIMarkup.UI.Builder.Create(Bridge.CustomUIMarkup.Libraries.SemanticUI.DataGridColumn); });
                     Bridge.CustomUIMarkup.UI.Builder.Register("ListBox", function () {
                         return new System.Windows.Controls.ListBox();
                     });
@@ -6036,6 +6034,7 @@ if(fn)
                 System.ComponentModel.Bag.ctor.call(this);
                 this.Examples = function (_o1) {
                         var $t;
+                        _o1.add(($t = new Bridge.CustomUIMarkup_DesignerSamples.ExampleInfo(), $t.Name = "DataGrid", $t.XmlTemplate = "\r\n\r\n\r\n<div Padding='11'>\r\n\t<DataGrid ItemsSource='{Examples}'>\r\n\t\t<DataGrid.Columns>\r\n\t\t\t<DataGridColumn Label='Label_A'    Name = 'Name' />\r\n\t\t\t<DataGridColumn Label='xxxx'    Name = 'Name' />\r\n\t\t</DataGrid.Columns>\r\n\t</DataGrid>\r\n</div> \r\n\r\n", $t));
                         _o1.add(($t = new Bridge.CustomUIMarkup_DesignerSamples.ExampleInfo(), $t.Name = "Add review", $t.XmlTemplate = "\r\n\r\n\r\n<ui.segment Margin='11'>\r\n\t<ui.form >\r\n\t\t<ui.header.2>Add a review</ui.header.2>\r\n\r\n\t\t<field Label='your Rating'>\r\n\t\t\t<ui_rating  MaxRate='5'  />\r\n\t\t</field>\r\n\r\n\t\t<field Label='Name' >\r\n\t\t\t<textBox  IsMandatory='true' />\r\n\t\t</field>\r\n\r\n\t\t<field Label='Your review'>\r\n\t\t\t<textArea  IsMandatory='true' />\r\n\t\t</field>\r\n\r\n\t\t<ui.basic.button> Gönder\r\n\t\t</ui.basic.button>\r\n\r\n\t</ui.form>\r\n\r\n</ui.segment>\r\n\r\n", $t));
                         _o1.add(($t = new Bridge.CustomUIMarkup_DesignerSamples.ExampleInfo(), $t.Name = "comments", $t.XmlTemplate = "\r\n\r\n<ui_comments>\r\n\t<comment AvatarImageUrl='img/AvatarImageSample.jpg'  \r\n             Author='adana'\r\n             MetadataTimeInfo='11 agustos Pazar 5:44 AM'\r\n             Text='uzuncana bir comment br  sdfsdfsdfsgggguzuncana bir comment br  sdfsdfsdfsgggguzuncana bir comment br  sdfsdfsdfsgggguzuncana bir comment br  sdfsdfsdfsgggguzuncana bir comment br  sdfsdfsdfsgggguzuncana bir comment br  sdfsdfsdfsgggguzuncana bir comment br  sdfsdfsdfsgggg'\r\n             />\r\n  \r\n  <comment AvatarImageUrl='img/AvatarImageSample.jpg'  \r\n             Author='ahmet'\r\n             MetadataTimeInfo='11 agustos Pazar 5:44 AM'\r\n             Text='uzuncana bir comment br  sdfsdfsdfsgggguzuncana bir comment br  sdfsdfsdfsgggguzuncana bir comment br  sdfsdfsdfsgggguzuncana bir comment br  sdfsdfsdfsgggguzuncana bir comment br  sdfsdfsdfsgggguzuncana bir comment br  sdfsdfsdfsgggguzuncana bir comment br  sdfsdfsdfsgggg'\r\n             />\r\n    \r\n   <comment AvatarImageUrl='img/AvatarImageSample.jpg'  \r\n             Author='xyz'\r\n             MetadataTimeInfo='11 agustos Pazar 5:44 AM'\r\n             Text='uzuncana bir comment br  sdfsdfsdfsgggguzuncana bir comment br  sdfsdfsdfsgggguzuncana bir comment br  sdfsdfsdfsgggguzuncana bir comment br  sdfsdfsdfsgggguzuncana bir comment br  sdfsdfsdfsgggguzuncana bir comment br  sdfsdfsdfsgggguzuncana bir comment br  sdfsdfsdfsgggg'\r\n             />\r\n  \r\n</ui_comments>\r\n\r\n", $t));
                         _o1.add(($t = new Bridge.CustomUIMarkup_DesignerSamples.ExampleInfo(), $t.Name = "Tabs", $t.XmlTemplate = "\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n<div Padding='11'>\r\n\t<ui_top_attached_tabular_menu>\r\n\t\t<Tab Header ='Header1' AddClass='active'>\r\n  \t\t\t<div class='ui segment'>\r\n                <ui.header.3> Product description</ui.header.3>\r\n          \t    <p>Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Vestibulum tortor quam, feugiat vitae, ultricies eget, tempor sit amet, ante. Donec eu libero sit amet quam egestas semper. Aenean ultricies mi vitae est. Mauris placerat eleifend leo.</p>\r\n            </div>\r\n  \t\t</Tab>  \r\n  \r\n  \t\t<Tab Header ='Header2'> \r\n  \t\t\tWrite Content here 2\r\n  \t\t</Tab> \r\n\t</ui_top_attached_tabular_menu> \r\n</div>\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n", $t));
@@ -7789,14 +7788,34 @@ me._editor.display.wrapper.style.height = '95%';
 
     Bridge.define("Bridge.CustomUIMarkup.Libraries.SemanticUI.DataGrid", {
         inherits: [System.Windows.HtmlElement],
+        statics: {
+            methods: {
+                Wrap: function (me, root) {
+                    
+
+setTimeout(function()
+{
+    var options = 
+    {
+        destroy:true,
+        language:dataTables_language   
+    };
+
+    me._wrapper = root.DataTable(options); 
+
+},0) ;
+                }
+            }
+        },
         fields: {
-            _columnNames: null,
-            Columns: null,
-            SelectedRowBackground: null,
             _selectedRow: null,
             _thead: null,
             _thead_first_tr: null,
             _tbody: null,
+            _wrapper: null,
+            SelectedRowBackground: null,
+            Columns: null,
+            _columnNames: null,
             _itemsSource: null
         },
         props: {
@@ -7825,8 +7844,8 @@ me._editor.display.wrapper.style.height = '95%';
         },
         ctors: {
             init: function () {
-                this.Columns = new (System.Collections.Generic.List$1(Bridge.CustomUIMarkup.Libraries.SemanticUI.DataGridColumn)).ctor();
                 this.SelectedRowBackground = "#27ae60";
+                this.Columns = new (System.Collections.Generic.List$1(Bridge.CustomUIMarkup.Libraries.SemanticUI.DataGridColumn)).ctor();
             },
             ctor: function (className) {
                 if (className === void 0) { className = null; }
@@ -7841,6 +7860,16 @@ me._editor.display.wrapper.style.height = '95%';
             }
         },
         methods: {
+            MarkSelectedRow: function (element) {
+                this._selectedRow != null ? this._selectedRow._root.css("background", "") : null;
+
+                element.Root.css("background", this.SelectedRowBackground);
+
+                this._selectedRow = element;
+            },
+            OnBeforeConnectToLogicalParent: function (arg) {
+                this.ReRender();
+            },
             ParseColumnNames: function () {
                 var $t, $t1;
                 System.Array.clear(this.Columns, Bridge.CustomUIMarkup.Libraries.SemanticUI.DataGridColumn);
@@ -7861,19 +7890,8 @@ me._editor.display.wrapper.style.height = '95%';
                         $t.System$IDisposable$dispose();
                     }
                 }},
-            OnBeforeConnectToLogicalParent: function (arg) {
-                this.ReRender();
-            },
-            MarkSelectedRow: function (element) {
-                this._selectedRow != null ? this._selectedRow._root.css("background", "") : null;
-
-                element.Root.css("background", this.SelectedRowBackground);
-
-                this._selectedRow = element;
-            },
             ReRender: function () {
                 var $t, $t1, $t2;
-
                 this.ClearVisualChilds();
                 this.ClearLogicalChilds();
 
@@ -7889,15 +7907,9 @@ me._editor.display.wrapper.style.height = '95%';
                     throw new System.ArgumentException("MustbeList:ItemsSource@ItemsSource.Type:" + ((($t = this["ItemsSource"]) != null ? Bridge.Reflection.getTypeFullName(Bridge.getType($t)) : null) || ""));
                 }
 
-
-
-
                 this.AddVisualChild((this._thead = new System.Windows.HtmlElement("thead")));
 
                 this._thead.AddVisualChild((this._thead_first_tr = new System.Windows.HtmlElement("tr")));
-
-
-
 
                 $t1 = Bridge.getEnumerator(this.Columns, Bridge.CustomUIMarkup.Libraries.SemanticUI.DataGridColumn);
                 try {
@@ -7911,10 +7923,6 @@ me._editor.display.wrapper.style.height = '95%';
                     }
                 }
                 this.AddVisualChild((this._tbody = new System.Windows.HtmlElement("tbody")));
-
-
-
-
 
                 var len = System.Array.getCount(list);
                 for (var i = 0; i < len; i = (i + 1) | 0) {
@@ -7930,8 +7938,6 @@ me._editor.display.wrapper.style.height = '95%';
 
                             var cellValue = System.ComponentModel.ReflectionHelper.GetPropertyValue(itemData, columnInfo1.Name);
 
-
-
                             if (columnInfo1.EditorType === Bridge.CustomUIMarkup.Libraries.SemanticUI.DataGridCellEditorType.Text) {
                                 td["InnerHTML"] = cellValue != null ? cellValue.toString() : null;
                             } else {
@@ -7939,7 +7945,6 @@ me._editor.display.wrapper.style.height = '95%';
                             }
 
                             tr.v.AddLogicalChild(td);
-
                         }
                     } finally {
                         if (Bridge.is($t2, System.IDisposable)) {
@@ -7955,8 +7960,11 @@ me._editor.display.wrapper.style.height = '95%';
                     })(this, tr));
                 }
 
+                var root = this._root;
 
+                var me = this;
 
+                Bridge.CustomUIMarkup.Libraries.SemanticUI.DataGrid.Wrap(me, root);
             }
         }
     });
@@ -8275,6 +8283,9 @@ me._editor.display.wrapper.style.height = '95%';
             "AllowOnlyNumericInputs": false,
             _cornerLabelDiv: null
         },
+        events: {
+            KeyPress: null
+        },
         props: {
             DefaultTemplateAsXml: {
                 get: function () {
@@ -8334,6 +8345,8 @@ me._editor.display.wrapper.style.height = '95%';
                 this.Text = this._inputElement.val();
             },
             OnKeyPress: function (e) {
+                !Bridge.staticEquals(this.KeyPress, null) ? this.KeyPress(e) : null;
+
                 if (this["AllowOnlyNumericInputs"]) {
                     this.DisableNonNumericValues(e);
                 }

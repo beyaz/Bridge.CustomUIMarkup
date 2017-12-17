@@ -2,44 +2,45 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
 using Bridge.CustomUIMarkup.Common;
 
 namespace Bridge.CustomUIMarkup.Libraries.SemanticUI
 {
-   public enum DataGridCellEditorType
+    public enum DataGridCellEditorType
     {
         Text
     }
-    
 
-    public class DataGridColumn: Control
+    public class DataGridColumn : Control
     {
+        #region Public Properties
         public override string DefaultTemplateAsXml => "<th>{Label}</th>";
+        #endregion
 
         #region DataGridCellEditorType EditorType
         public static readonly DependencyProperty EditorTypeProperty = DependencyProperty.Register(
-          "EditorType", typeof(DataGridCellEditorType), typeof(DataGridColumn), new PropertyMetadata(default(DataGridCellEditorType)));
+            "EditorType", typeof(DataGridCellEditorType), typeof(DataGridColumn), new PropertyMetadata(default(DataGridCellEditorType)));
 
         public DataGridCellEditorType EditorType
         {
-            get { return (DataGridCellEditorType)GetValue(EditorTypeProperty); }
+            get { return (DataGridCellEditorType) GetValue(EditorTypeProperty); }
             set { SetValue(EditorTypeProperty, value); }
-        } 
+        }
         #endregion
 
         #region string Label
         public static readonly DependencyProperty LabelProperty = DependencyProperty.Register(
-         "Label", typeof(string), typeof(DataGridColumn), new PropertyMetadata(default(string)));
+            "Label", typeof(string), typeof(DataGridColumn), new PropertyMetadata(default(string)));
 
         public string Label
         {
-            get { return (string)GetValue(LabelProperty); }
+            get { return (string) GetValue(LabelProperty); }
             set { SetValue(LabelProperty, value); }
-        } 
+        }
         #endregion
 
         #region string Name
@@ -48,59 +49,25 @@ namespace Bridge.CustomUIMarkup.Libraries.SemanticUI
 
         public string Name
         {
-            get { return (string)GetValue(NameProperty); }
+            get { return (string) GetValue(NameProperty); }
             set { SetValue(NameProperty, value); }
-        } 
+        }
         #endregion
-
-       
-
     }
-
-
-   
 
     class DataGrid : HtmlElement
     {
+        #region Fields
+        FrameworkElement _selectedRow;
 
+        HtmlElement _thead, _thead_first_tr, _tbody;
 
+#pragma warning disable 169
+        object _wrapper;
+#pragma warning restore 169
 
-        #region string ColumnNames
-        string _columnNames;
-        public string ColumnNames
-        {
-            get { return _columnNames; }
-            set
-            {
-                if (_columnNames != value)
-                {
-                    _columnNames = value;
-                    OnPropertyChanged("ColumnNames");
-                }
-            }
-        }
+        string SelectedRowBackground = "#27ae60";
         #endregion
-
-
-
-
-        void ParseColumnNames()
-        {
-            Columns.Clear();
-
-            foreach (var value1 in ColumnNames.Split(',').Where(x => !string.IsNullOrWhiteSpace(x)))
-            {
-                var arr = value1.Split(':').Where(x=>!string.IsNullOrWhiteSpace(x)).ToArray();
-                Columns.Add(new DataGridColumn
-                {
-                    Name = (arr[0]+"").Trim(),
-                    Label = (arr[1] + "").Trim(),
-                });
-            }
-        }
-
-        public IList<DataGridColumn> Columns { get; } = new List<DataGridColumn>();
-
 
         #region Constructors
         public DataGrid(string className = null) : base("table", className)
@@ -113,36 +80,60 @@ namespace Bridge.CustomUIMarkup.Libraries.SemanticUI
         }
         #endregion
 
+        #region Public Properties
+        public IList<DataGridColumn> Columns { get; } = new List<DataGridColumn>();
+        #endregion
+
         #region Methods
-        void OnBeforeConnectToLogicalParent(FrameworkElement arg)
+        [SuppressMessage("ReSharper", "UnusedParameter.Local")]
+        static void Wrap(object me, object root)
         {
-            ReRender();
+            Script.Write(@"
+
+setTimeout(function()
+{
+    var options = 
+    {
+        destroy:true,
+        language:dataTables_language   
+    };
+
+    me._wrapper = root.DataTable(options); 
+
+},0) ");
         }
-
-
-        string SelectedRowBackground = "#27ae60";
-
-
-
-        FrameworkElement _selectedRow;
 
         void MarkSelectedRow(FrameworkElement element)
         {
-            _selectedRow?._root.Css("background","");
+            _selectedRow?._root.Css("background", "");
 
             element.Root.Css("background", SelectedRowBackground);
 
             _selectedRow = element;
         }
 
-        HtmlElement _thead, _thead_first_tr, _tbody;
+        void OnBeforeConnectToLogicalParent(FrameworkElement arg)
+        {
+            ReRender();
+        }
 
+        void ParseColumnNames()
+        {
+            Columns.Clear();
 
-       
+            foreach (var value1 in ColumnNames.Split(',').Where(x => !string.IsNullOrWhiteSpace(x)))
+            {
+                var arr = value1.Split(':').Where(x => !string.IsNullOrWhiteSpace(x)).ToArray();
+                Columns.Add(new DataGridColumn
+                {
+                    Name = (arr[0] + "").Trim(),
+                    Label = (arr[1] + "").Trim()
+                });
+            }
+        }
 
         void ReRender()
         {
-
             ClearVisualChilds();
             ClearLogicalChilds();
 
@@ -162,15 +153,9 @@ namespace Bridge.CustomUIMarkup.Libraries.SemanticUI
                 throw new ArgumentException("MustbeList:" + nameof(ItemsSource) + "@ItemsSource.Type:" + ItemsSource?.GetType().FullName);
             }
 
-           
-
-
-            AddVisualChild(_thead= new HtmlElement("thead"));
+            AddVisualChild(_thead = new HtmlElement("thead"));
 
             _thead.AddVisualChild(_thead_first_tr = new HtmlElement("tr"));
-
-            
-            
 
             foreach (var columnInfo in Columns)
             {
@@ -178,10 +163,6 @@ namespace Bridge.CustomUIMarkup.Libraries.SemanticUI
             }
 
             AddVisualChild(_tbody = new HtmlElement("tbody"));
-
-
-
-
 
             var len = list.Count;
             for (var i = 0; i < len; i++)
@@ -194,9 +175,7 @@ namespace Bridge.CustomUIMarkup.Libraries.SemanticUI
                 {
                     var td = new HtmlElement("td");
 
-                    var cellValue = ReflectionHelper.GetPropertyValue(itemData,columnInfo.Name);
-
-                    
+                    var cellValue = ReflectionHelper.GetPropertyValue(itemData, columnInfo.Name);
 
                     if (columnInfo.EditorType == DataGridCellEditorType.Text)
                     {
@@ -208,7 +187,6 @@ namespace Bridge.CustomUIMarkup.Libraries.SemanticUI
                     }
 
                     tr.AddLogicalChild(td);
-
                 }
 
                 _tbody.AddLogicalChild(tr);
@@ -216,8 +194,28 @@ namespace Bridge.CustomUIMarkup.Libraries.SemanticUI
                 tr.On("click", () => { MarkSelectedRow(tr); });
             }
 
+            var root = _root;
 
+            var me = this;
 
+            Wrap(me, root);
+        }
+        #endregion
+
+        #region string ColumnNames
+        string _columnNames;
+
+        public string ColumnNames
+        {
+            get { return _columnNames; }
+            set
+            {
+                if (_columnNames != value)
+                {
+                    _columnNames = value;
+                    OnPropertyChanged("ColumnNames");
+                }
+            }
         }
         #endregion
 
@@ -236,7 +234,6 @@ namespace Bridge.CustomUIMarkup.Libraries.SemanticUI
                 }
             }
         }
-
         #endregion
     }
 }

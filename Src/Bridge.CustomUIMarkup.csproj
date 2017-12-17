@@ -123,6 +123,10 @@
     <Compile Include="Common\XmlIntellisenseInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Lib\semantic-ui-DataTable\dataTables.semanticui.min.css" />
+    <Content Include="Lib\semantic-ui-DataTable\dataTables.semanticui.min.js" />
+    <Content Include="Lib\semantic-ui-DataTable\dataTables.TR.js" />
+    <Content Include="Lib\semantic-ui-DataTable\jquery.dataTables.min.js" />
     <Content Include="Lib\viewerjs\viewer.common.js" />
     <Content Include="Lib\viewerjs\viewer.css" />
     <Content Include="Lib\viewerjs\viewer.esm.js" />

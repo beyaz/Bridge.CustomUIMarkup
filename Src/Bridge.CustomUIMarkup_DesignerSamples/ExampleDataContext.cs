@@ -37,6 +37,25 @@ namespace Bridge.CustomUIMarkup_DesignerSamples
 
                 new ExampleInfo
                 {
+                    Name = "DataGrid",
+                    XmlTemplate =
+                        @"
+
+
+<div Padding='11'>
+	<DataGrid ItemsSource='{Examples}'>
+		<DataGrid.Columns>
+			<DataGridColumn Label='Label_A'    Name = 'Name' />
+			<DataGridColumn Label='xxxx'    Name = 'Name' />
+		</DataGrid.Columns>
+	</DataGrid>
+</div> 
+
+"
+                },
+
+                new ExampleInfo
+                {
                     Name = "Add review",
                     XmlTemplate =
                         @"
