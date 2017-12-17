@@ -24,21 +24,22 @@ namespace Bridge.CustomUIMarkup.Libraries.SemanticUI
             {
                 return
                     "<div class='ui input'>" +
-                    "   <input type='text' />" +
+                    "   <input type='text'  x:Name = '_inputElement' />" +
                     "</div>";
             }
         }
         #endregion
 
         #region Properties
-        protected jQuery _inputElement => GetVisualChildAt(0).Root;
+        // ReSharper disable once UnassignedField.Global
+        protected FrameworkElement _inputElement;
         #endregion
 
         #region Methods
         void AttachEvents()
         {
-            _inputElement.FocusOut(OnFocusOut);
-            _inputElement.KeyPress(OnKeyPress);
+            _inputElement._root. FocusOut(OnFocusOut);
+            _inputElement._root.KeyPress(OnKeyPress);
         }
 
         void DisableNonNumericValues(jQueryKeyboardEvent e)
@@ -80,7 +81,7 @@ namespace Bridge.CustomUIMarkup.Libraries.SemanticUI
         {
             var me = (InputText) d;
 
-            me._inputElement.Val((string) e.NewValue);
+            me._inputElement._root.Val((string) e.NewValue);
         }
         #endregion
 

@@ -6,6 +6,8 @@ using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
+using System.Windows.Data;
 using Bridge.CustomUIMarkup.Common;
 
 namespace Bridge.CustomUIMarkup.Libraries.SemanticUI
@@ -55,7 +57,7 @@ namespace Bridge.CustomUIMarkup.Libraries.SemanticUI
         #endregion
     }
 
-    class DataGrid : HtmlElement
+    class DataGrid : MultiSelector
     {
         #region Fields
         FrameworkElement _selectedRow;
@@ -70,13 +72,15 @@ namespace Bridge.CustomUIMarkup.Libraries.SemanticUI
         #endregion
 
         #region Constructors
-        public DataGrid(string className = null) : base("table", className)
+        public DataGrid()
         {
             BeforeConnectToLogicalParent += OnBeforeConnectToLogicalParent;
 
             this.OnPropertyChanged(nameof(ColumnNames), ParseColumnNames);
 
-            this.OnPropertyChanged(nameof(ItemsSource), ReRender);
+            AfterConnectToLogicalParent += () => { this.OnPropertyChanged(nameof(ItemsSource), ReRender); };
+            
+
         }
         #endregion
 
@@ -153,7 +157,11 @@ setTimeout(function()
                 throw new ArgumentException("MustbeList:" + nameof(ItemsSource) + "@ItemsSource.Type:" + ItemsSource?.GetType().FullName);
             }
 
-            AddVisualChild(_thead = new HtmlElement("thead"));
+            var table = new HtmlElement("table","ui celled table");
+
+            AddLogicalChild(table);
+
+            table.AddVisualChild(_thead = new HtmlElement("thead"));
 
             _thead.AddVisualChild(_thead_first_tr = new HtmlElement("tr"));
 
@@ -162,7 +170,7 @@ setTimeout(function()
                 _thead_first_tr.AddVisualChild(columnInfo);
             }
 
-            AddVisualChild(_tbody = new HtmlElement("tbody"));
+            table.AddVisualChild(_tbody = new HtmlElement("tbody"));
 
             var len = list.Count;
             for (var i = 0; i < len; i++)
@@ -179,12 +187,22 @@ setTimeout(function()
 
                     if (columnInfo.EditorType == DataGridCellEditorType.Text)
                     {
-                        td.InnerHTML = cellValue?.ToString();
+                         td.InnerHTML = cellValue?.ToString();
                     }
                     else
                     {
                         throw new NotImplementedException(columnInfo.EditorType.ToString());
                     }
+
+                    //var bindingInfo = new BindingInfo
+                    //{
+                    //    Source = itemData,
+                    //    SourcePath = columnInfo.Name,
+                    //    BindingMode = BindingMode.OneWay,
+                    //    Target = td,
+                    //    TargetPath = nameof(td.InnerHTML)
+                    //};
+                    //bindingInfo.Connect();
 
                     tr.AddLogicalChild(td);
                 }
@@ -192,13 +210,16 @@ setTimeout(function()
                 _tbody.AddLogicalChild(tr);
 
                 tr.On("click", () => { MarkSelectedRow(tr); });
+
+                tr.On("click", () => { RaiseEvent_ItemClicked(itemData); });
+
+                
             }
 
-            var root = _root;
 
             var me = this;
 
-            Wrap(me, root);
+            Wrap(me, table._root);
         }
         #endregion
 
@@ -219,21 +240,6 @@ setTimeout(function()
         }
         #endregion
 
-        #region object ItemsSource
-        object _itemsSource;
-
-        public object ItemsSource
-        {
-            get { return _itemsSource; }
-            set
-            {
-                if (_itemsSource != value)
-                {
-                    _itemsSource = value;
-                    OnPropertyChanged("ItemsSource");
-                }
-            }
-        }
-        #endregion
+        
     }
 }

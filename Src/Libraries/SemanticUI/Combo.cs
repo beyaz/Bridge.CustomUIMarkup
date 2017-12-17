@@ -37,6 +37,11 @@ namespace Bridge.CustomUIMarkup.Libraries.SemanticUI
                 {
                     SetOptionsFrom((Options + "").Split(','));
                 }
+
+                if (args.PropertyName == nameof(SelectedValue))
+                {
+                    _hidden._root.Val(args.NewValue+"");
+                }
             };
         }
         #endregion
@@ -104,7 +109,7 @@ namespace Bridge.CustomUIMarkup.Libraries.SemanticUI
         // ReSharper disable once UnusedMember.Local
         void ValueChanged()
         {
-            SelectedValue = _hidden.Val();
+             SelectedValue = _hidden.Val();
         }
         #endregion
 

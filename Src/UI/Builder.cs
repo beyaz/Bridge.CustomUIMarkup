@@ -65,7 +65,7 @@ namespace Bridge.CustomUIMarkup.UI
         #endregion
 
         #region Methods
-        internal static T ApplyTemplate<T>(T control) where T : Control
+        public static T ApplyTemplate<T>(T control) where T : Control
         {
             control?.ApplyTemplate();
 
@@ -94,7 +94,7 @@ namespace Bridge.CustomUIMarkup.UI
             control.AddVisualChild(subControlAsFrameworkElement);
         }
 
-        internal static void LoadComponent(FrameworkElement control, string xml)
+        public static void LoadComponent(FrameworkElement control, string xml)
         {
             LoadComponent(control, XmlHelper.GetRootNode(xml));
         }

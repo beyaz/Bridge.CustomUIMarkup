@@ -61,6 +61,11 @@ namespace System.Windows.Controls.Primitives
         } 
         #endregion
     }
+
+    public class MultiSelector : Selector
+    {
+
+    }
 }
 
 namespace System.Windows.Controls
@@ -85,7 +90,13 @@ namespace System.Windows.Controls
 
         public event Action<object> ItemClicked;
 
-        
+        protected void RaiseEvent_ItemClicked(object itemDataContext)
+        {
+            ItemClicked?.Invoke(itemDataContext);
+        }
+
+
+
 
         void ReRender()
         {

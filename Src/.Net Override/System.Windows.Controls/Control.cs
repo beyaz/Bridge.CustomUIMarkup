@@ -60,4 +60,12 @@ namespace System.Windows.Controls
             AfterTemplateApplied?.Invoke();
         }
     }
+
+
+    public class UserControl : ContentControl
+    {
+        public override string DefaultTemplateAsXml => "<div>" +
+                                                       "    <ContentPresenter />" +
+                                                       "</div>";
+    }
 }

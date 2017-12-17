@@ -28,7 +28,7 @@ namespace Bridge.CustomUIMarkup.Libraries.SemanticUI
             dataGridColumn2.Label = "Label_Year";
             dataGridColumn2.Name = "Year";
 
-            var dataGrid = new DataGrid("ui celled padded table")
+            var dataGrid = new DataGrid()
             {
                 ItemsSource = new List<SimpleClass1>
                 {

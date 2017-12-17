@@ -32,7 +32,7 @@ namespace Bridge.CustomUIMarkup.Libraries.SemanticUI
             var value = e.NewValue as int?;
             if (value.HasValue)
             {
-                me._inputElement.Attr("rows", value.Value);
+                me._inputElement._root.Attr("rows", value.Value);
             }
         }
         #endregion
