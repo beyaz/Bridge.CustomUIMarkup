@@ -2149,7 +2149,8 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
                     return null;
                 }
 
-                parentInstance["InnerHTML"] = html;
+                parentInstance._root.append(html);
+
                 return null;
             },
             Connect: function (parent, subItem) {

@@ -110,7 +110,9 @@ namespace Bridge.CustomUIMarkup.Test
             new Z_Builder2Test().VisualTreeTest_TemplateControl();
             new Z_Builder2Test().LogicalTreeTest2();
             new Z_Builder2Test().SubElementAsAttribute();
-            
+            new Z_Builder2Test().TextNode(); 
+
+
         }
         #endregion
 
@@ -349,6 +351,14 @@ namespace Bridge.CustomUIMarkup.Test
             MustEqual("56px", ui._root.Css("height"));
 
             
+        }
+
+        void TextNode()
+        {
+            var htmlString = "<div id='A'><i id='B'></i>klm</div>";
+            var ui = BuildAndGetFirstLogicalChild(htmlString, null);
+
+            MustEqual(htmlString, ui._el.AsHtmlString());
         }
 
         void img_src_test_with_binding()

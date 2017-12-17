@@ -258,8 +258,9 @@ namespace Bridge.CustomUIMarkup.UI
                 instanceAsContentControl.Content = html;
                 return null;
             }
-
-            parentInstance.InnerHTML = html;
+            
+            parentInstance._root.Append(html);
+            
             return null;
         }
 
