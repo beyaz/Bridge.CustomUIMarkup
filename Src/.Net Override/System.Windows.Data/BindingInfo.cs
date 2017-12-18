@@ -108,9 +108,16 @@ namespace System.Windows.Data
             UpdateTarget();
         }
 
+
+        protected virtual object GetTargetValue()
+        {
+            return TargetPath.GetPropertyValue();
+        }
+
+
         public virtual void UpdateSource()
         {
-            SourcePath.SetPropertyValue(TargetPath.GetPropertyValue());
+            SourcePath.SetPropertyValue(GetTargetValue());
         }
 
         public virtual void UpdateTarget()

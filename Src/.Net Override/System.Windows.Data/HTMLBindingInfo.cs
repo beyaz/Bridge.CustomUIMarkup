@@ -22,7 +22,16 @@ namespace System.Windows.Data
                 return null;
             }
 
-            return new HTMLBindingInfo {SourcePath = bindingInfo.SourcePath};
+            return new HTMLBindingInfo
+            {
+                SourcePath = bindingInfo.SourcePath
+            };
+        }
+
+
+        protected override object GetTargetValue()
+        {
+            return Target.Val();
         }
 
         public override void UpdateTarget()
@@ -48,8 +57,36 @@ namespace System.Windows.Data
         #endregion
 
         #region Methods
+        internal static bool TargetCanUpdateSource(jQuery element)
+        {
+            if (element.Get(0).TagName == "INPUT")
+            {
+                var type = element.Attr("type");
+
+                if (type?.ToUpperCase() == "HIDDEN")
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
         protected override void ConnectTargetToSource()
         {
+            var element = Target;
+
+            if (element.Get(0).TagName == "INPUT")
+            {
+                var type = element.Attr("type");
+
+                if (type?.ToUpperCase() == "HIDDEN")
+                {
+                    Target.On("change", UpdateSource);
+                    return;
+                }
+            }
+
             Target.FocusOut(ev => { UpdateSource(); });
         }
         #endregion

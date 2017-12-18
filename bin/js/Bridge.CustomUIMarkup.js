@@ -831,16 +831,10 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
                     });
 
 
-                    Bridge.CustomUIMarkup.UI.Builder.Register("ItemsControl", function () {
-                        return new System.Windows.Controls.ItemsControl("div");
-                    });
-                    Bridge.CustomUIMarkup.UI.Builder.Register("DataGrid", function () {
-                        return new Bridge.CustomUIMarkup.Libraries.SemanticUI.DataGrid();
-                    });
+                    Bridge.CustomUIMarkup.UI.Builder.Register("ItemsControl", function () { return Bridge.CustomUIMarkup.UI.Builder.Create(System.Windows.Controls.ItemsControl); });
+                    Bridge.CustomUIMarkup.UI.Builder.Register("DataGrid", function () { return Bridge.CustomUIMarkup.UI.Builder.Create(Bridge.CustomUIMarkup.Libraries.SemanticUI.DataGrid); });
                     Bridge.CustomUIMarkup.UI.Builder.Register("DataGridColumn", function () { return Bridge.CustomUIMarkup.UI.Builder.Create(Bridge.CustomUIMarkup.Libraries.SemanticUI.DataGridColumn); });
-                    Bridge.CustomUIMarkup.UI.Builder.Register("ListBox", function () {
-                        return new System.Windows.Controls.ListBox();
-                    });
+                    Bridge.CustomUIMarkup.UI.Builder.Register("ListBox", function () { return Bridge.CustomUIMarkup.UI.Builder.Create(System.Windows.Controls.ListBox); });
 
 
 
@@ -2247,7 +2241,14 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
 
                     if (System.String.contains(name,".") === false) {
                         if (targetProperty == null) {
-                            ($t = new System.Windows.Data.HTMLBindingInfo(), $t.Source = instance, $t.SourcePath = new System.Windows.PropertyPath("DataContext." + (bi.SourcePath.Path || "")), $t.Target$1 = Bridge.unbox(instance)._root, $t.TargetPath = System.Windows.PropertyPath.op_Implicit(name), $t.BindingMode = System.Windows.Data.BindingMode.OneWay, $t).Connect();
+                            var htmlBindingInfo = ($t = new System.Windows.Data.HTMLBindingInfo(), $t.Source = instance, $t.SourcePath = new System.Windows.PropertyPath("DataContext." + (bi.SourcePath.Path || "")), $t.Target$1 = Bridge.unbox(instance)._root, $t.TargetPath = System.Windows.PropertyPath.op_Implicit(name), $t.BindingMode = System.Windows.Data.BindingMode.OneWay, $t);
+
+                            if (System.Windows.Data.HTMLBindingInfo.TargetCanUpdateSource(htmlBindingInfo.Target$1)) {
+                                htmlBindingInfo.BindingMode = System.Windows.Data.BindingMode.TwoWay;
+                            }
+
+
+                            htmlBindingInfo.Connect();
 
                             return;
                         }
@@ -5338,8 +5339,11 @@ if(fn)
 
                 this.UpdateTarget();
             },
+            GetTargetValue: function () {
+                return this.TargetPath.GetPropertyValue();
+            },
             UpdateSource: function () {
-                this.SourcePath.SetPropertyValue(this.TargetPath.GetPropertyValue());
+                this.SourcePath.SetPropertyValue(this.GetTargetValue());
             },
             UpdateTarget: function () {
                 var value = this.SourcePath.GetPropertyValue();
@@ -6548,6 +6552,17 @@ if(fn)
                     }
 
                     return ($t = new System.Windows.Data.HTMLBindingInfo(), $t.SourcePath = bindingInfo.SourcePath, $t);
+                },
+                TargetCanUpdateSource: function (element) {
+                    if (Bridge.referenceEquals(element.get(0).tagName, "INPUT")) {
+                        var type = element.attr("type");
+
+                        if (Bridge.referenceEquals((type != null ? type.toUpperCase() : null), "HIDDEN")) {
+                            return true;
+                        }
+                    }
+
+                    return false;
                 }
             }
         },
@@ -6562,6 +6577,9 @@ if(fn)
             }
         },
         methods: {
+            GetTargetValue: function () {
+                return this.Target$1.val();
+            },
             UpdateTarget: function () {
                 var value = this.SourcePath.GetPropertyValue();
 
@@ -6580,6 +6598,17 @@ if(fn)
                 this.Target$1.attr(this.TargetPath.Path, System.String.concat(value, ""));
             },
             ConnectTargetToSource: function () {
+                var element = this.Target$1;
+
+                if (Bridge.referenceEquals(element.get(0).tagName, "INPUT")) {
+                    var type = element.attr("type");
+
+                    if (Bridge.referenceEquals((type != null ? type.toUpperCase() : null), "HIDDEN")) {
+                        this.Target$1.on("change", Bridge.fn.cacheBind(this, this.UpdateSource));
+                        return;
+                    }
+                }
+
                 this.Target$1.focusout(Bridge.fn.bind(this, function (ev) {
                         this.UpdateSource();
                     }));
@@ -7792,7 +7821,7 @@ me._editor.display.wrapper.style.height = '95%';
     });
 
     Bridge.define("System.Windows.Controls.ItemsControl", {
-        inherits: [System.Windows.HtmlElement],
+        inherits: [System.Windows.Controls.Control],
         fields: {
             _itemsSource: null,
             "ItemTemplate": null
@@ -7801,6 +7830,11 @@ me._editor.display.wrapper.style.height = '95%';
             "ItemClicked": null
         },
         props: {
+            DefaultTemplateAsXml: {
+                get: function () {
+                    return "<div />";
+                }
+            },
             "ItemsSource": {
                 get: function () {
                     return this._itemsSource;
@@ -7814,12 +7848,11 @@ me._editor.display.wrapper.style.height = '95%';
             }
         },
         ctors: {
-            ctor: function (tag, className) {
-                if (tag === void 0) { tag = null; }
-                if (className === void 0) { className = null; }
-
+            ctor: function () {
                 this.$initialize();
-                System.Windows.HtmlElement.ctor.call(this, tag, className);
+                System.Windows.Controls.Control.ctor.call(this);
+                this.addAfterLogicalChildAdd(Bridge.fn.cacheBind(this, this.AddVisualChild));
+
                 this.addBeforeConnectToLogicalParent(Bridge.fn.cacheBind(this, this.OnBeforeConnectToLogicalParent));
 
                 System.ComponentModel.Extensions.OnPropertyChanged(this, "ItemsSource", Bridge.fn.cacheBind(this, this.ReRender));
@@ -7834,8 +7867,7 @@ me._editor.display.wrapper.style.height = '95%';
             },
             ReRender: function () {
                 var $t;
-                this.ClearVisualChilds();
-                this.ClearLogicalChilds();
+
 
                 if (this["ItemsSource"] == null) {
                     Bridge.CustomUIMarkup.Common.Trace.OperationWasCanceled("ReRender", "ItemsSourceis null.");
@@ -7847,6 +7879,11 @@ me._editor.display.wrapper.style.height = '95%';
                 if (list == null) {
                     throw new System.ArgumentException("MustbeList:ItemsSource@ItemsSource.Type:" + (Bridge.Reflection.getTypeFullName(Bridge.getType(this["ItemsSource"])) || ""));
                 }
+
+
+                this.ClearVisualChilds();
+                this.ClearLogicalChilds();
+
 
                 var itemTemplate = this["ItemTemplate"];
 
@@ -9111,6 +9148,11 @@ setTimeout(function()
             _columnNames: null
         },
         props: {
+            DefaultTemplateAsXml: {
+                get: function () {
+                    return "<div />";
+                }
+            },
             ColumnNames: {
                 get: function () {
                     return this._columnNames;
@@ -9175,8 +9217,7 @@ setTimeout(function()
                 }},
             ReRender$1: function () {
                 var $t, $t1, $t2;
-                this.ClearVisualChilds();
-                this.ClearLogicalChilds();
+
 
                 if (this["ItemsSource"] == null) {
                     Bridge.CustomUIMarkup.Common.Trace.OperationWasCanceled("ReRender", "ItemsSourceis null.");
@@ -9189,6 +9230,9 @@ setTimeout(function()
                 if (list == null) {
                     throw new System.ArgumentException("MustbeList:ItemsSource@ItemsSource.Type:" + ((($t = this["ItemsSource"]) != null ? Bridge.Reflection.getTypeFullName(Bridge.getType($t)) : null) || ""));
                 }
+
+                this.ClearVisualChilds();
+                this.ClearLogicalChilds();
 
                 var table = new System.Windows.HtmlElement("table", "ui celled table");
 

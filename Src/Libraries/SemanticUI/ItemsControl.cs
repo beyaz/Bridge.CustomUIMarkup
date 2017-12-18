@@ -70,11 +70,15 @@ namespace System.Windows.Controls.Primitives
 
 namespace System.Windows.Controls
 {
-    public class ItemsControl : HtmlElement
+    public class ItemsControl : Control
     {
+        public override string DefaultTemplateAsXml => "<div />";
+
         #region Constructors
-        public ItemsControl(string tag = null, string className = null) : base(tag, className)
+        public ItemsControl() 
         {
+            AfterLogicalChildAdd += AddVisualChild;
+
             BeforeConnectToLogicalParent += OnBeforeConnectToLogicalParent;
 
             this.OnPropertyChanged(nameof(ItemsSource), ReRender);
@@ -100,8 +104,7 @@ namespace System.Windows.Controls
 
         void ReRender()
         {
-            ClearVisualChilds();
-            ClearLogicalChilds();
+            
 
             if (ItemsSource == null)
             {
@@ -117,6 +120,11 @@ namespace System.Windows.Controls
             {
                 throw new ArgumentException("MustbeList:" + nameof(ItemsSource)+ "@ItemsSource.Type:"+ ItemsSource.GetType().FullName);
             }
+
+
+            ClearVisualChilds();
+            ClearLogicalChilds();
+
 
             var itemTemplate = ItemTemplate;
 

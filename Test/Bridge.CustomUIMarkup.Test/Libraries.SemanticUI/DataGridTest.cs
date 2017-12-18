@@ -28,33 +28,33 @@ namespace Bridge.CustomUIMarkup.Libraries.SemanticUI
             dataGridColumn2.Label = "Label_Year";
             dataGridColumn2.Name = "Year";
 
-            var dataGrid = new DataGrid()
+            var itemsSource = new List<SimpleClass1>
             {
-                ItemsSource = new List<SimpleClass1>
+                new SimpleClass1
                 {
-                    new SimpleClass1
-                    {
 
-                        Year = 5,
-                        LastName = "A",
+                    Year = 5,
+                    LastName = "A",
 
-                    },
-                    new SimpleClass1
-                    {
-                        Year = 6,
-                        LastName = "B"
-                    }
                 },
-
-                Columns =
+                new SimpleClass1
                 {
-                    dataGridColumn,dataGridColumn2
+                    Year = 6,
+                    LastName = "B"
                 }
             };
+
+            var dataGrid = Builder.Create<DataGrid>();
+            dataGrid.Columns.Add(dataGridColumn);
+            dataGrid.Columns.Add(dataGridColumn2);
+
+           
 
             var div = new HtmlElement("div", "ttt");
 
             div.AddLogicalChild(dataGrid);
+
+            dataGrid.ItemsSource = itemsSource;
 
 
 

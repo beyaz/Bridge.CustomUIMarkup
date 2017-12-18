@@ -110,7 +110,8 @@ namespace Bridge.CustomUIMarkup.Test
             new Z_Builder2Test().VisualTreeTest_TemplateControl();
             new Z_Builder2Test().LogicalTreeTest2();
             new Z_Builder2Test().SubElementAsAttribute();
-            new Z_Builder2Test().TextNode(); 
+            new Z_Builder2Test().TextNode();
+            new Z_Builder2Test().InputTypeHidden(); 
 
 
         }
@@ -359,6 +360,30 @@ namespace Bridge.CustomUIMarkup.Test
             var ui = BuildAndGetFirstLogicalChild(htmlString, null);
 
             MustEqual(htmlString, ui._el.AsHtmlString());
+        }
+
+        void InputTypeHidden()
+        {
+            var model = new SimpleClass1
+            {
+                LastName = "Neşet Ertaş"
+            };
+
+            var htmlString = "<input id='A' type='hidden' value='{LastName,Mode=TwoWay}' />";
+
+            var ui = BuildAndGetFirstLogicalChild(htmlString, model);
+
+            MustEqual( "<input id='A' type='hidden' value='Neşet Ertaş'>",ui._el.AsHtmlString());
+
+            model.LastName = "Qwr";
+
+            MustEqual("<input id='A' type='hidden' value='Qwr'>", ui._el.AsHtmlString());
+
+            ui._root.Val("xyZ").Change();
+
+            MustEqual("xyZ", model.LastName);
+
+
         }
 
         void img_src_test_with_binding()

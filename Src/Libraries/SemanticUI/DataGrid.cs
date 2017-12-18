@@ -7,7 +7,6 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
-using System.Windows.Data;
 using Bridge.CustomUIMarkup.Common;
 
 namespace Bridge.CustomUIMarkup.Libraries.SemanticUI
@@ -59,6 +58,7 @@ namespace Bridge.CustomUIMarkup.Libraries.SemanticUI
 
     class DataGrid : MultiSelector
     {
+        public override string DefaultTemplateAsXml => "<div />";
         #region Fields
         FrameworkElement _selectedRow;
 
@@ -138,8 +138,7 @@ setTimeout(function()
 
         void ReRender()
         {
-            ClearVisualChilds();
-            ClearLogicalChilds();
+           
 
             if (ItemsSource == null)
             {
@@ -156,6 +155,9 @@ setTimeout(function()
             {
                 throw new ArgumentException("MustbeList:" + nameof(ItemsSource) + "@ItemsSource.Type:" + ItemsSource?.GetType().FullName);
             }
+
+            ClearVisualChilds();
+            ClearLogicalChilds();
 
             var table = new HtmlElement("table","ui celled table");
 

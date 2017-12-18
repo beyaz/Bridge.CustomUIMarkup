@@ -391,14 +391,22 @@ namespace Bridge.CustomUIMarkup.UI
                 {
                     if (targetProperty == null)
                     {
-                        new HTMLBindingInfo
+                        var htmlBindingInfo = new HTMLBindingInfo
                         {
                             Source = instance,
                             SourcePath = new PropertyPath("DataContext." + bi.SourcePath.Path),
                             Target = instance.As<FrameworkElement>()._root,
                             TargetPath = name,
                             BindingMode = BindingMode.OneWay
-                        }.Connect();
+                        };
+
+                        if (HTMLBindingInfo.TargetCanUpdateSource(htmlBindingInfo.Target))
+                        {
+                            htmlBindingInfo.BindingMode = BindingMode.TwoWay;
+                        }
+
+
+                        htmlBindingInfo.Connect();
 
                         return;
                     }

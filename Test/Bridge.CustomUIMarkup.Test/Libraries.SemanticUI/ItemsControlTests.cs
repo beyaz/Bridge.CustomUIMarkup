@@ -21,12 +21,13 @@ namespace Bridge.CustomUIMarkup.Libraries.SemanticUI
         }
         void TestVisualChilderenCounts()
         {
-            var itemsControl = new ItemsControl("div", "oprt")
-            {
-                ItemTemplate = Template.CreateFromXml("<div>" +
+            var itemsControl = Builder.Create<ItemsControl>();
+
+            
+                itemsControl.ItemTemplate = Template.CreateFromXml("<div>" +
                                                       "     <yt>{LastName}</yt>" +
-                                                      "</div>"),
-                ItemsSource = new List<SimpleClass1>
+                                                      "</div>");
+                itemsControl.ItemsSource = new List<SimpleClass1>
                 {
                     new SimpleClass1
                     {
@@ -36,8 +37,8 @@ namespace Bridge.CustomUIMarkup.Libraries.SemanticUI
                     {
                         LastName = "B"
                     }
-                }
-            };
+                };
+            
 
 
 
