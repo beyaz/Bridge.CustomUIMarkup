@@ -8,6 +8,66 @@ using Retyped;
 
 namespace Bridge.CustomUIMarkup.Libraries.SemanticUI
 {
+
+    public class DatePicker : Control
+    {
+        #region DateTime? Value
+        public static readonly DependencyProperty ValueProperty = DependencyProperty.Register(
+           "Value", typeof(DateTime?), typeof(DatePicker), new PropertyMetadata(default(DateTime?), OnValueChanged));
+
+        public DateTime? Value
+        {
+            get { return (DateTime?)GetValue(ValueProperty); }
+            set { SetValue(ValueProperty, value); }
+        }
+
+        static void OnValueChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            var datePicker = (DatePicker)d;
+
+            var root = datePicker._root;
+            var value = e.NewValue as DateTime?;
+            var valueAsString = "";
+            if (value.HasValue)
+            {
+                valueAsString = value.ToString();
+            }
+
+            Script.Write("root.calendar('set date',valueAsString);");
+        }
+        #endregion
+
+
+        public DatePicker()
+        {
+            object _wrapper;
+
+            BeforeConnectToLogicalParent += parent =>
+            {
+                var root = _root;
+                Script.Write("root.calendar({type: 'date'});");
+            };
+
+        }
+        #region string DefaultText
+        public static readonly DependencyProperty DefaultTextProperty = DependencyProperty.Register(
+            "DefaultText", typeof(string), typeof(DatePicker), new PropertyMetadata(default(string)));
+
+        public string DefaultText
+        {
+            get { return (string)GetValue(DefaultTextProperty); }
+            set { SetValue(DefaultTextProperty, value); }
+        }
+        #endregion
+
+        public override string DefaultTemplateAsXml => "<div class='ui calendar'>" +
+                                                       "    <div class='ui input left icon'>" +
+                                                       "        <i class='calendar icon'/>" +
+                                                       "        <input type='text' placeholder='{DefaultText}'/>" +
+                                                       "    </div>" +
+                                                       "</div>";
+
+    }
     public class Combo : Control
     {
         #region Fields

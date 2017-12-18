@@ -742,6 +742,9 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
                     Bridge.CustomUIMarkup.UI.Builder.Register("comboBox", function () { return Bridge.CustomUIMarkup.UI.Builder.Create(Bridge.CustomUIMarkup.Libraries.SemanticUI.Combo); });
                     Bridge.CustomUIMarkup.UI.Builder.Register("ui.selection.dropdown", function () { return Bridge.CustomUIMarkup.UI.Builder.Create(Bridge.CustomUIMarkup.Libraries.SemanticUI.Combo); });
 
+                    Bridge.CustomUIMarkup.UI.Builder.Register("DatePicker", function () { return Bridge.CustomUIMarkup.UI.Builder.Create(Bridge.CustomUIMarkup.Libraries.SemanticUI.DatePicker); });
+
+
 
                     var classNames = System.Array.init(["ui segment", "ui form", "ui grid", "ui page grid", "ui text menu navbar", "left menu", "ui stacked", "computer tablet only row", "ui navbar menu", "mobile only row", "right menu", "ui hidden clearing divider", "card", "ui card", "ui cards", "extra content", "content", "ui divider", "item", "ui menu", "ui vertical menu", "ui equal width grid", "ui container", "ui button", "ui active button", "ui basic button", "ui basic active button", "ui pagination menu", "active item"], System.String);
 
@@ -7984,6 +7987,72 @@ me._editor.display.wrapper.style.height = '95%';
                 set: function (value) {
                     this.SetValue$1(Bridge.CustomUIMarkup.Libraries.SemanticUI.DataGridColumn.NameProperty, value);
                 }
+            }
+        }
+    });
+
+    Bridge.define("Bridge.CustomUIMarkup.Libraries.SemanticUI.DatePicker", {
+        inherits: [System.Windows.Controls.Control],
+        statics: {
+            fields: {
+                ValueProperty: null,
+                DefaultTextProperty: null
+            },
+            ctors: {
+                init: function () {
+                    this.ValueProperty = System.Windows.DependencyProperty.Register$1("Value", System.Nullable$1(System.DateTime), Bridge.CustomUIMarkup.Libraries.SemanticUI.DatePicker, new System.Windows.PropertyMetadata.$ctor1(null, Bridge.CustomUIMarkup.Libraries.SemanticUI.DatePicker.OnValueChanged));
+                    this.DefaultTextProperty = System.Windows.DependencyProperty.Register$1("DefaultText", System.String, Bridge.CustomUIMarkup.Libraries.SemanticUI.DatePicker, new System.Windows.PropertyMetadata.ctor(null));
+                }
+            },
+            methods: {
+                OnValueChanged: function (d, e) {
+                    var datePicker = Bridge.cast(d, Bridge.CustomUIMarkup.Libraries.SemanticUI.DatePicker);
+
+                    var root = datePicker._root;
+                    var value = Bridge.as(e.NewValue, System.DateTime, true);
+                    var valueAsString = "";
+                    if (System.Nullable.hasValue(value)) {
+                        valueAsString = System.Nullable.toString(value, function ($t) { return System.DateTime.format($t); });
+                    }
+
+                    root.calendar('set date',valueAsString);
+                }
+            }
+        },
+        props: {
+            Value: {
+                get: function () {
+                    return Bridge.cast(Bridge.unbox(this.GetValue$1(Bridge.CustomUIMarkup.Libraries.SemanticUI.DatePicker.ValueProperty)), System.DateTime, true);
+                },
+                set: function (value) {
+                    this.SetValue$1(Bridge.CustomUIMarkup.Libraries.SemanticUI.DatePicker.ValueProperty, Bridge.box(value, System.DateTime, System.Nullable.toStringFn(System.DateTime.format), System.Nullable.getHashCode));
+                }
+            },
+            DefaultText: {
+                get: function () {
+                    return Bridge.cast(this.GetValue$1(Bridge.CustomUIMarkup.Libraries.SemanticUI.DatePicker.DefaultTextProperty), System.String);
+                },
+                set: function (value) {
+                    this.SetValue$1(Bridge.CustomUIMarkup.Libraries.SemanticUI.DatePicker.DefaultTextProperty, value);
+                }
+            },
+            DefaultTemplateAsXml: {
+                get: function () {
+                    return "<div class='ui calendar'>    <div class='ui input left icon'>        <i class='calendar icon'/>        <input type='text' placeholder='{DefaultText}'/>    </div></div>";
+                }
+            }
+        },
+        ctors: {
+            ctor: function () {
+                this.$initialize();
+                System.Windows.Controls.Control.ctor.call(this);
+                var _wrapper;
+
+                this.addBeforeConnectToLogicalParent(Bridge.fn.bind(this, function (parent) {
+                    var root = this._root;
+                    root.calendar({type: 'date'});
+                }));
+
             }
         }
     });

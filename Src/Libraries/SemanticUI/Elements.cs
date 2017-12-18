@@ -67,6 +67,9 @@ namespace Bridge.CustomUIMarkup.Libraries.SemanticUI
             Builder.Register("comboBox", Builder.Create<Combo>);
             Builder.Register("ui.selection.dropdown", Builder.Create<Combo>);
 
+            Builder.Register("DatePicker", Builder.Create<DatePicker>);
+            
+
 
             var classNames = new[]
             {
