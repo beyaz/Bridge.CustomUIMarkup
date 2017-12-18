@@ -48,7 +48,7 @@ namespace System.Windows.Data
 
             if (path == "VALUE")
             {
-                Target.Val(value + "");
+                Target.Val(value + "").Change();
                 return;
             }
 

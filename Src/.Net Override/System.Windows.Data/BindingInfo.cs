@@ -117,11 +117,21 @@ namespace System.Windows.Data
 
         public virtual void UpdateSource()
         {
+            if (SourcePath.IsNotReadyToUpdate)
+            {
+                return;
+            }
+
             SourcePath.SetPropertyValue(GetTargetValue());
         }
 
         public virtual void UpdateTarget()
         {
+            if (TargetPath.IsNotReadyToUpdate)
+            {
+                return;
+            }
+
             var value = SourcePath.GetPropertyValue();
 
             if (Converter != null)

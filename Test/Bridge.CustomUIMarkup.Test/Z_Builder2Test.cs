@@ -1,6 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel;
 using System.Windows;
 using Bridge.CustomUIMarkup.Common;
+using Bridge.CustomUIMarkup.Libraries.SemanticUI;
 using Bridge.CustomUIMarkup.UI;
 using Bridge.Html5;
 
@@ -111,7 +114,9 @@ namespace Bridge.CustomUIMarkup.Test
             new Z_Builder2Test().LogicalTreeTest2();
             new Z_Builder2Test().SubElementAsAttribute();
             new Z_Builder2Test().TextNode();
-            new Z_Builder2Test().InputTypeHidden(); 
+            new Z_Builder2Test().InputTypeHidden();
+
+            new Z_Builder2Test().combo_SelectedValueTest();
 
 
         }
@@ -153,6 +158,8 @@ namespace Bridge.CustomUIMarkup.Test
             MustEqual(2, contentPresenter.GetVisualChildAt(0).LogicalChilderenCount);
             MustEqual(2, contentPresenter.GetVisualChildAt(0).VisualChilderenCount);
         }
+
+        
 
         void class_attribute_must_support_binding()
         {
@@ -385,6 +392,71 @@ namespace Bridge.CustomUIMarkup.Test
 
 
         }
+
+        class ComboModel : Bag
+        {
+            public List<SimpleClass1> Items { get; set; }
+
+            #region int SelectedYear
+            int _selectedYear;
+            public int SelectedYear
+            {
+                get { return _selectedYear; }
+                set
+                {
+                    if (_selectedYear != value)
+                    {
+                        _selectedYear = value;
+                        OnPropertyChanged("SelectedYear");
+                    }
+                }
+            }
+            #endregion
+
+
+        }
+
+        void combo_SelectedValueTest()
+        {
+            var model = new ComboModel
+            {
+                Items = new List<SimpleClass1>
+                {
+                    new SimpleClass1
+                    {
+                        LastName = "Neşet Ertaş",
+                        Year = 5
+                    },
+                    new SimpleClass1
+                    {
+                        LastName = "Neşet Ertaş2",
+                        Year = 7
+                    }
+                },
+                SelectedYear = 5
+            };
+           
+
+            var htmlString = @"
+
+ <combo ItemsSource ='{Items}' 
+                         DisplayMemberPath='LastName' 
+                         SelectedValuePath='Year'
+                         SelectedValue='{SelectedYear}' />
+
+";
+
+            var ui = (Combo)BuildAndGetFirstLogicalChild(htmlString, model);
+
+           MustEqual(5, Cast.To<int>(ui.SelectedValue));
+
+            ui.SelectedValue = 7;
+
+            MustEqual(7,model.SelectedYear);
+
+
+        }
+
 
         void img_src_test_with_binding()
         {

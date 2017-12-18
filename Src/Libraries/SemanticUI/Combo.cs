@@ -13,13 +13,30 @@ namespace Bridge.CustomUIMarkup.Libraries.SemanticUI
         #region Fields
 #pragma warning disable 649
         FrameworkElement _menu, _hidden;
+        object _wrapper;
 #pragma warning restore 649
         #endregion
 
         #region Constructors
         public Combo()
         {
-            BeforeConnectToLogicalParent += parent => { _root.As<semantic_ui.JQuery>().dropdown(); };
+            BeforeConnectToLogicalParent += parent =>
+            {
+                _wrapper = _root.As<semantic_ui.JQuery>().dropdown();
+
+                PropertyChanged += (e, args) =>
+                {
+                    if (Options is string)
+                    {
+                        SetOptionsFrom((Options + "").Split(','));
+                    }
+
+                    if (args.PropertyName == nameof(SelectedValue))
+                    {
+                        _hidden._root.Val(args.NewValue + "");
+                    }
+                };
+            };
 
             PropertyChanged += (s, e) =>
             {
@@ -31,24 +48,13 @@ namespace Bridge.CustomUIMarkup.Libraries.SemanticUI
                 }
             };
 
-            PropertyChanged += (e, args) =>
-            {
-                if (Options is string)
-                {
-                    SetOptionsFrom((Options + "").Split(','));
-                }
-
-                if (args.PropertyName == nameof(SelectedValue))
-                {
-                    _hidden._root.Val(args.NewValue+"");
-                }
-            };
+            
         }
         #endregion
 
         #region Public Properties
         public override string DefaultTemplateAsXml => "<div class = 'ui selection dropdown'>" +
-                                                       "    <input type = 'hidden' on.change ='ValueChanged' x.Name='_hidden' />" +
+                                                       "    <input type = 'hidden' value='{SelectedValue}'  x.Name = '_hidden' />" +
                                                        "    <i class = 'dropdown icon' />" +
                                                        "    <div class = 'default text' >{DefaultText}</div>" +
                                                        "    <div class = 'menu' x.Name='_menu' />" +
@@ -106,11 +112,7 @@ namespace Bridge.CustomUIMarkup.Libraries.SemanticUI
             }
         }
 
-        // ReSharper disable once UnusedMember.Local
-        void ValueChanged()
-        {
-             SelectedValue = _hidden.Val();
-        }
+        
         #endregion
 
         #region string DefaultText

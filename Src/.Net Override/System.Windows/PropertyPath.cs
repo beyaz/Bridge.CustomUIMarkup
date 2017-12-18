@@ -104,6 +104,9 @@ namespace System.Windows
         }
         #endregion
 
+        internal bool IsNotReadyToUpdate => !_pathLastNodeIsReachable;
+
+        bool _pathLastNodeIsReachable = true;
         #region Methods
         internal void ParsePath(object instance, string path)
         {
@@ -111,6 +114,7 @@ namespace System.Windows
             {
                 if (instance == null)
                 {
+                    _pathLastNodeIsReachable = false;
                     return;
                 }
 

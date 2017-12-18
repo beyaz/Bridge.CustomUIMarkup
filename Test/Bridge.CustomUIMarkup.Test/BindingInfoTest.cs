@@ -98,8 +98,97 @@ namespace Bridge.CustomUIMarkup.Test
             new BindingInfoTest().SimpleBindWithSameValues();
             new BindingInfoTest().TwoWayCircularBindingMustbeSupport();
             new BindingInfoTest().TwoWayCircularBindingBetweenThreeItemsMustbeSupport();
+            new BindingInfoTest().InvalidPathBindingOperationTest();
+            new BindingInfoTest().InvalidPathBindingOperationTest2(); 
         }
 
+
+        void InvalidPathBindingOperationTest()
+        {
+            var source = new SimpleClass1
+            {
+                Child = new SimpleClass1
+                {
+                    Child = new SimpleClass1
+                    {
+                        LastName = "A"
+                    }
+                }
+            };
+
+            var target = new SimpleClass1();
+            
+            new BindingInfo
+            {
+                BindingMode = BindingMode.TwoWay,
+                Source = source,
+                SourcePath = "Child.Child.LastName",
+                
+                Target = target,
+                TargetPath = "Child.LastName"
+            }.Connect();
+
+
+            MustEqualByReference(null,target.Child);
+
+            source.Child.Child.LastName = "B";
+
+            MustEqualByReference(null, target.Child);
+
+            target.Child = new SimpleClass1
+            {
+                LastName = "C"
+            };
+
+
+            MustEqual("C", source.Child.Child.LastName);
+            
+        }
+
+        void InvalidPathBindingOperationTest2()
+        {
+            var source = new SimpleClass1();
+
+            var target = new SimpleClass1
+            {
+                Child = new SimpleClass1
+                {
+                    Child = new SimpleClass1
+                    {
+                        LastName = "A"
+                    }
+                }
+            };
+
+            new BindingInfo
+            {
+                BindingMode = BindingMode.TwoWay,
+                Source = source,
+                SourcePath = "Child.Child.LastName",
+
+                Target = target,
+                TargetPath = "Child.Child.LastName"
+            }.Connect();
+
+
+            MustEqualByReference(null, source.Child);
+
+            target.Child.Child.LastName = "B";
+
+            MustEqualByReference(null, source.Child);
+
+            source.Child = new SimpleClass1
+            {
+                Child = new  SimpleClass1
+                {
+                    LastName = "C"
+                }
+            };
+
+
+            MustEqual("C", target.Child.Child.LastName);
+
+        }
 
         class ATo56Converter:IValueConverter
         {

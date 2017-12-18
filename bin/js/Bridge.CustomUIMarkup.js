@@ -5343,9 +5343,17 @@ if(fn)
                 return this.TargetPath.GetPropertyValue();
             },
             UpdateSource: function () {
+                if (this.SourcePath["IsNotReadyToUpdate"]) {
+                    return;
+                }
+
                 this.SourcePath.SetPropertyValue(this.GetTargetValue());
             },
             UpdateTarget: function () {
+                if (this.TargetPath["IsNotReadyToUpdate"]) {
+                    return;
+                }
+
                 var value = this.SourcePath.GetPropertyValue();
 
                 if (this.Converter != null) {
@@ -5656,18 +5664,25 @@ if(fn)
         },
         fields: {
             Triggers: null,
-            Path: null
+            Path: null,
+            "_pathLastNodeIsReachable": false
         },
         props: {
             LastTrigger: {
                 get: function () {
                     return this.Triggers.getItem(((this.Triggers.Count - 1) | 0));
                 }
+            },
+            "IsNotReadyToUpdate": {
+                get: function () {
+                    return !this["_pathLastNodeIsReachable"];
+                }
             }
         },
         ctors: {
             init: function () {
                 this.Triggers = new (System.Collections.Generic.List$1(System.Windows.PropertyPath.Trigger)).ctor();
+                this["_pathLastNodeIsReachable"] = true;
             },
             ctor: function (path) {
                 this.$initialize();
@@ -5738,6 +5753,7 @@ if(fn)
                 var $t;
                 while (true) {
                     if (instance == null) {
+                        this["_pathLastNodeIsReachable"] = false;
                         return;
                     }
 
@@ -6591,7 +6607,7 @@ if(fn)
                 }
 
                 if (Bridge.referenceEquals(path, "VALUE")) {
-                    this.Target$1.val(System.String.concat(value, ""));
+                    this.Target$1.val(System.String.concat(value, "")).change();
                     return;
                 }
 
@@ -7603,6 +7619,7 @@ me._editor.display.wrapper.style.height = '95%';
         fields: {
             _menu: null,
             _hidden: null,
+            _wrapper: null,
             _options: null,
             _itemsSource: null,
             _displayMemberPath: null,
@@ -7612,7 +7629,7 @@ me._editor.display.wrapper.style.height = '95%';
         props: {
             DefaultTemplateAsXml: {
                 get: function () {
-                    return "<div class = 'ui selection dropdown'>    <input type = 'hidden' on.change ='ValueChanged' x.Name='_hidden' />    <i class = 'dropdown icon' />    <div class = 'default text' >{DefaultText}</div>    <div class = 'menu' x.Name='_menu' /></div>";
+                    return "<div class = 'ui selection dropdown'>    <input type = 'hidden' value='{SelectedValue}'  x.Name = '_hidden' />    <i class = 'dropdown icon' />    <div class = 'default text' >{DefaultText}</div>    <div class = 'menu' x.Name='_menu' /></div>";
                 }
             },
             DefaultText: {
@@ -7684,7 +7701,17 @@ me._editor.display.wrapper.style.height = '95%';
                 this.$initialize();
                 System.Windows.Controls.Control.ctor.call(this);
                 this.addBeforeConnectToLogicalParent(Bridge.fn.bind(this, function (parent) {
-                    this._root.dropdown();
+                    this._wrapper = this._root.dropdown();
+
+                    this.addPropertyChanged(Bridge.fn.bind(this, function (e, args) {
+                        if (Bridge.is(this.Options, System.String)) {
+                            this.SetOptionsFrom(System.String.split((System.String.concat(this.Options, "")), [44].map(function(i) {{ return String.fromCharCode(i); }})));
+                        }
+
+                        if (Bridge.referenceEquals(args.propertyName, "SelectedValue")) {
+                            this._hidden._root.val(System.String.concat(args.newValue, ""));
+                        }
+                    }));
                 }));
 
                 this.addPropertyChanged(Bridge.fn.bind(this, function (s, e) {
@@ -7693,15 +7720,7 @@ me._editor.display.wrapper.style.height = '95%';
                     }
                 }));
 
-                this.addPropertyChanged(Bridge.fn.bind(this, function (e, args) {
-                    if (Bridge.is(this.Options, System.String)) {
-                        this.SetOptionsFrom(System.String.split((System.String.concat(this.Options, "")), [44].map(function(i) {{ return String.fromCharCode(i); }})));
-                    }
 
-                    if (Bridge.referenceEquals(args.propertyName, "SelectedValue")) {
-                        this._hidden._root.val(System.String.concat(args.newValue, ""));
-                    }
-                }));
             }
         },
         methods: {
@@ -7754,10 +7773,7 @@ me._editor.display.wrapper.style.height = '95%';
                     if (Bridge.is($t, System.IDisposable)) {
                         $t.System$IDisposable$dispose();
                     }
-                }},
-            ValueChanged: function () {
-                this.SelectedValue = System.Windows.FrameworkElementExtensions.Val(Bridge.global.System.Windows.FrameworkElement, this._hidden);
-            }
+                }}
         }
     });
 
