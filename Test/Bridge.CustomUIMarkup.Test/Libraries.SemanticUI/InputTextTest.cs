@@ -68,6 +68,7 @@ namespace Bridge.CustomUIMarkup.Libraries.SemanticUI
             new InputTextTest().OnDataContext_Changed_InnerHTML();
             new InputTextTest().Binding_Custom_Attribute();
             new InputTextTest().Binding_Custom_Attribute_Parend_DataContext_Changed();
+            new InputTextTest().FieldStringDataContext(); 
         }
         #endregion
 
@@ -415,6 +416,103 @@ namespace Bridge.CustomUIMarkup.Libraries.SemanticUI
             };
 
             MustEqual("yyy", el.Text);
+        }
+
+        void FieldStringDataContext()
+        {
+            var model = new SimpleClass1
+            {
+                Child = new SimpleClass1
+                {
+                    Child = new SimpleClass1
+                    {
+                        LastName = "A"
+                    }
+                }
+            };
+
+            var xmlString = "<div>" +
+                            "      <FieldString Value='{Child.Child.LastName}' />" +
+                            "</div>";
+
+            var fe = new FrameworkElement
+            {
+                DataContext = model
+            };
+
+            var el = fe.LoadComponent(xmlString).GetLogicalChildAt(0);
+            
+
+            var fieldString = (FieldString)el.GetLogicalChildAt(0);
+
+            MustEqual("A", fieldString.Value);
+
+            model.Child = new SimpleClass1
+            {
+                Child = new SimpleClass1
+                {
+                    LastName = "B"
+                }
+            };
+
+            MustEqual("B", fieldString.Value);
+
+
+            fe.DataContext = new SimpleClass1
+            {
+                Child = new SimpleClass1
+                {
+                    Child = new SimpleClass1
+                    {
+                        LastName = "C"
+                    }
+                }
+            };
+
+            MustEqual("C", fieldString.Value);
+
+            fieldString.Value = "P";
+
+            Assert.AreEqual("P",((SimpleClass1)fe.DataContext).Child.Child.LastName);
+
+
+            // test with empty data context 
+
+
+            model = new SimpleClass1
+            {
+                Child = new SimpleClass1
+                {
+                    Child = new SimpleClass1
+                    {
+                        LastName = "E"
+                    }
+                }
+            };
+
+            fe = new FrameworkElement();
+            // fe.DataContext = model;
+
+
+            el = fe.LoadComponent(xmlString).GetLogicalChildAt(0);
+            fieldString = (FieldString)el.GetLogicalChildAt(0);
+
+            MustEqual(null, fieldString.Value);
+
+            Assert.True(fieldString.DataContext == null);
+
+            fe.DataContext = model;
+
+            Assert.True(fieldString.DataContext == model);
+
+            MustEqual("E", fieldString.Value);
+
+            fieldString.Value = "X";
+
+            MustEqual("X", model.Child.Child.LastName);
+
+
+
         }
 
         void Template_creation()

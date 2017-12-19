@@ -8,6 +8,8 @@ namespace System.Windows
     {
         #region Fields
         internal readonly List<Trigger> Triggers = new List<Trigger>();
+
+        bool _pathLastNodeIsReachable = true;
         #endregion
 
         #region Constructors
@@ -22,6 +24,7 @@ namespace System.Windows
         #endregion
 
         #region Properties
+        internal bool IsNotReadyToUpdate => !_pathLastNodeIsReachable;
         Trigger LastTrigger => Triggers[Triggers.Count - 1];
         #endregion
 
@@ -35,6 +38,7 @@ namespace System.Windows
         {
             Triggers.ForEach(t => t.StopListen());
             Triggers.Clear();
+            _pathLastNodeIsReachable = true;
         }
 
         public object GetPropertyValue()
@@ -58,17 +62,10 @@ namespace System.Windows
             Walk(instance);
 
             var len = Triggers.Count;
-            var last = len - 1;
 
             for (var i = 0; i < len; i++)
             {
                 var trigger = Triggers[i];
-                //if (i == last)
-                //{
-                //    trigger.OnPropertyValueChanged = onPropertyValueChanged;
-                //    trigger.Listen();
-                //    continue;
-                //}
 
                 trigger.OnPropertyValueChanged = () =>
                 {
@@ -88,13 +85,11 @@ namespace System.Windows
             var propertyType = ReflectionHelper.FindProperty(instance, propertyName)?.PropertyType;
             if (propertyType != null)
             {
-                value =  Cast.To(value, propertyType, CultureInfo.CurrentCulture);
+                value = Cast.To(value, propertyType, CultureInfo.CurrentCulture);
             }
 
             ReflectionHelper.SetPropertyValue(instance, propertyName, value);
         }
-
-        
 
         public void Walk(object instance)
         {
@@ -104,9 +99,6 @@ namespace System.Windows
         }
         #endregion
 
-        internal bool IsNotReadyToUpdate => !_pathLastNodeIsReachable;
-
-        bool _pathLastNodeIsReachable = true;
         #region Methods
         internal void ParsePath(object instance, string path)
         {
@@ -165,6 +157,7 @@ namespace System.Windows
                 {
                     return;
                 }
+
                 InstanceAsNotifyPropertyChanged.PropertyChanged += OnChange;
             }
 
@@ -174,6 +167,7 @@ namespace System.Windows
                 {
                     return;
                 }
+
                 InstanceAsNotifyPropertyChanged.PropertyChanged -= OnChange;
             }
 

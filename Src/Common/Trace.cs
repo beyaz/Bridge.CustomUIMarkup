@@ -4,7 +4,7 @@ using System.Windows;
 
 namespace Bridge.CustomUIMarkup.Common
 {
-    class Trace
+    public class Trace
     {
         #region Static Fields
         internal static readonly Dictionary<Type, bool> DisabledTypesForTrace = new Dictionary<Type, bool>();

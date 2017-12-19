@@ -99,9 +99,65 @@ namespace Bridge.CustomUIMarkup.Test
             new BindingInfoTest().TwoWayCircularBindingMustbeSupport();
             new BindingInfoTest().TwoWayCircularBindingBetweenThreeItemsMustbeSupport();
             new BindingInfoTest().InvalidPathBindingOperationTest();
-            new BindingInfoTest().InvalidPathBindingOperationTest2(); 
+            new BindingInfoTest().InvalidPathBindingOperationTest2();
+
+            new BindingInfoTest().CheckInvalidPropertyPath();
         }
 
+        void CheckInvalidPropertyPath()
+        {
+            var source = new SimpleClass1
+            {
+                Child = new SimpleClass1
+                {
+                    Child = new SimpleClass1
+                    {
+                        LastName = "A"
+                    }
+                }
+            };
+
+            var path = "Child.Child.LastName";
+
+            var propertyPath = new PropertyPath(path);
+
+            propertyPath.ParsePath(source, path);
+
+            Assert.False(propertyPath.IsNotReadyToUpdate);
+
+
+            path = "Child.LastName";
+
+             propertyPath = new PropertyPath(path);
+
+            propertyPath.ParsePath(source, path);
+
+            Assert.False(propertyPath.IsNotReadyToUpdate);
+
+
+            // 
+            path = "Child.XXX.LastName";
+
+            propertyPath = new PropertyPath(path);
+
+            propertyPath.ParsePath(source, path);
+
+            Assert.True(propertyPath.IsNotReadyToUpdate);
+
+
+            path = "Child.Child.LastName";
+
+            propertyPath = new PropertyPath(path);
+
+            propertyPath.Listen(source,()=>{});
+            
+            Assert.False(propertyPath.IsNotReadyToUpdate);
+
+            source.Child = null;
+
+            Assert.True(propertyPath.IsNotReadyToUpdate);
+
+        }
 
         void InvalidPathBindingOperationTest()
         {

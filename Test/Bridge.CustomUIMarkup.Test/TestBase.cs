@@ -11,6 +11,14 @@ namespace Bridge.CustomUIMarkup.Test
         protected string SampleImageUrl_350_151 = "http://via.placeholder.com/350x151";
         #endregion
 
+        #region Methods
+        protected void AssertNotNull(object value)
+        {
+            if (value == null)
+            {
+                throw new InvalidCastException("@value can not be null.");
+            }
+        }
 
         protected FrameworkElement BuildAndGetFirstLogicalChild(string xmlString, object dataContext)
         {
@@ -20,20 +28,6 @@ namespace Bridge.CustomUIMarkup.Test
             }.LoadComponent(xmlString).GetLogicalChildAt(0);
         }
 
-
-        protected void MustTrue(bool condition)
-        {
-            if (condition)
-            {
-                return;
-            }
-            
-            
-                throw new InvalidCastException("Test Failed.Expects True");
-            
-        }
-
-        #region Methods
         protected void MustEqual(string expected, string actual)
         {
             if (expected != actual)
@@ -41,14 +35,7 @@ namespace Bridge.CustomUIMarkup.Test
                 throw new InvalidCastException("@expected: " + expected + " , @actual: " + actual);
             }
         }
-        protected void AssertNotNull(object value)
-        {
-            if (value == null)
-            {
-                throw new InvalidCastException("@value can not be null.");
-            }
-        }
-        
+
         protected void MustEqual(int expected, int actual)
         {
             if (expected != actual)
@@ -56,6 +43,7 @@ namespace Bridge.CustomUIMarkup.Test
                 throw new InvalidCastException("@expected: " + expected + " , @actual: " + actual);
             }
         }
+
         protected void MustEqualByReference(object expected, object actual)
         {
             if (!ReferenceEquals(expected, actual))
@@ -63,6 +51,56 @@ namespace Bridge.CustomUIMarkup.Test
                 throw new InvalidCastException("@expected: " + expected + " , @actual: " + actual);
             }
         }
+
+        protected void MustTrue(bool condition)
+        {
+            if (condition)
+            {
+                return;
+            }
+
+            throw new InvalidCastException("Test Failed.Expects True");
+        }
         #endregion
+
+        protected static class Assert
+        {
+            #region Public Methods
+            public static void False(bool condition)
+            {
+                if (condition)
+                {
+                    throw new InvalidOperationException("Test Failed.Expects False");
+                }
+            }
+
+            public static void True(bool condition)
+            {
+                if (condition)
+                {
+                    return;
+                }
+
+                throw new InvalidOperationException("Test Failed.Expects True");
+            }
+
+            public static void AreEqual(string expected, string actual)
+            {
+                if (expected != actual)
+                {
+                    throw new InvalidCastException("@expected: " + expected + " , @actual: " + actual);
+                }
+            }
+
+            public static void AreEqual(int expected, int actual)
+            {
+                if (expected != actual)
+                {
+                    throw new InvalidCastException("@expected: " + expected + " , @actual: " + actual);
+                }
+            }
+
+            #endregion
+        }
     }
 }

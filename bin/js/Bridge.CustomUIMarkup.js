@@ -5674,18 +5674,18 @@ if(fn)
         },
         fields: {
             Triggers: null,
-            Path: null,
-            "_pathLastNodeIsReachable": false
+            "_pathLastNodeIsReachable": false,
+            Path: null
         },
         props: {
-            LastTrigger: {
-                get: function () {
-                    return this.Triggers.getItem(((this.Triggers.Count - 1) | 0));
-                }
-            },
             "IsNotReadyToUpdate": {
                 get: function () {
                     return !this["_pathLastNodeIsReachable"];
+                }
+            },
+            LastTrigger: {
+                get: function () {
+                    return this.Triggers.getItem(((this.Triggers.Count - 1) | 0));
                 }
             }
         },
@@ -5705,6 +5705,7 @@ if(fn)
                     t.StopListen();
                 });
                 this.Triggers.clear();
+                this["_pathLastNodeIsReachable"] = true;
             },
             GetPropertyValue: function () {
                 if (this.Triggers.Count === 0) {
@@ -5723,16 +5724,9 @@ if(fn)
                 this.Walk(instance);
 
                 var len = this.Triggers.Count;
-                var last = (len - 1) | 0;
 
                 for (var i = 0; i < len; i = (i + 1) | 0) {
                     var trigger = this.Triggers.getItem(i);
-                    //if (i == last)
-                    //{
-                    //    trigger.OnPropertyValueChanged = onPropertyValueChanged;
-                    //    trigger.Listen();
-                    //    continue;
-                    //}
 
                     trigger.OnPropertyValueChanged = Bridge.fn.bind(this, function () {
                         this.Listen(instance, onPropertyValueChanged);
@@ -5804,12 +5798,14 @@ if(fn)
                 if (this["InstanceAsNotifyPropertyChanged"] == null) {
                     return;
                 }
+
                 this["InstanceAsNotifyPropertyChanged"].System$ComponentModel$INotifyPropertyChanged$addPropertyChanged(Bridge.fn.cacheBind(this, this.OnChange));
             },
             StopListen: function () {
                 if (this["InstanceAsNotifyPropertyChanged"] == null) {
                     return;
                 }
+
                 this["InstanceAsNotifyPropertyChanged"].System$ComponentModel$INotifyPropertyChanged$removePropertyChanged(Bridge.fn.cacheBind(this, this.OnChange));
             },
             toString: function () {
