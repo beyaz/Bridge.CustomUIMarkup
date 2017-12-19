@@ -33,6 +33,8 @@ namespace Bridge.CustomUIMarkup.Test
 
             ItemsControlTests.RunAll();
 
+            CastTest.RunAll();
+
             Console.WriteLine("Success");
         }
         #endregion

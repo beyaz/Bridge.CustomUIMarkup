@@ -2626,6 +2626,7 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
                  * @return  {System.Object}
                  */
                 To$2: function (value, targetType, provider) {
+                    var $t;
                     if (targetType == null) {
                         throw new System.ArgumentNullException("targetType");
                     }
@@ -2633,6 +2634,12 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
                     if (value == null) {
                         return System.Extensions.GetDefaultValue(targetType);
                     }
+
+
+                    if (Bridge.Reflection.isGenericType(targetType) && Bridge.referenceEquals(Bridge.Reflection.getGenericTypeDefinition(targetType), System.Nullable$1)) {
+                        return System.Cast.To$2(value, ($t = Bridge.Reflection.getGenericArguments(targetType))[System.Array.index(0, $t)], provider);
+                    }
+
 
                     var valueType = Bridge.getType(value);
 

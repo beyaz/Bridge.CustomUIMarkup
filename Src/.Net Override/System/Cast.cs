@@ -25,6 +25,13 @@ namespace System
                 return targetType.GetDefaultValue();
             }
 
+            
+            if ( targetType.IsGenericType &&  targetType.GetGenericTypeDefinition() == typeof(Nullable<>))
+            {
+                return To(value,targetType.GetGenericArguments()[0],provider);
+            }
+
+
             var valueType = value.GetType();
 
             if (valueType == targetType)

@@ -38,6 +38,7 @@
   <ItemGroup>
     <Compile Include="App.cs" />
     <Compile Include="BindingInfoTest.cs" />
+    <Compile Include="CastTest.cs" />
     <Compile Include="Libraries.SemanticUI\DataGridTest.cs" />
     <Compile Include="Libraries.SemanticUI\ItemsControlTests.cs" />
     <Compile Include="System.Windows\ContentControlTest.cs" />
