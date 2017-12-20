@@ -2403,6 +2403,9 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
 
                         var subItem = this.CreateInstance(childNode);
 
+
+                        this.InitializeDataContext(childNode, subItem, Bridge.unbox(this["_currentInstance"]));
+
                         this.ProcessAttributes(childNode, subItem);
 
                         Bridge.Reflection.midel(addMethod, Bridge.unbox(collection))(subItem);

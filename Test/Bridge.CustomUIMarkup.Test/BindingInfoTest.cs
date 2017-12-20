@@ -8,6 +8,10 @@ namespace Bridge.CustomUIMarkup.Test
 {
     public class SimpleClass1 : Bag
     {
+
+        public SimpleClass1 SimplePropertyChild { get; set; }
+        public string SimpleStringProperty { get; set; }
+
         #region bool BoolenProperty0
         bool _boolenProperty0;
         public bool BoolenProperty0
@@ -102,6 +106,120 @@ namespace Bridge.CustomUIMarkup.Test
             new BindingInfoTest().InvalidPathBindingOperationTest2();
 
             new BindingInfoTest().CheckInvalidPropertyPath();
+            new BindingInfoTest().CheckSimpleProperties();
+            new BindingInfoTest().CheckSimplePropertiesWithLongPath();
+        }
+
+        void CheckSimplePropertiesWithLongPath()
+        {
+            var source = new SimpleClass1
+            {
+                Child = new SimpleClass1
+                {
+                    SimplePropertyChild = new SimpleClass1
+                    {
+                        SimplePropertyChild = new SimpleClass1
+                        {
+                            SimpleStringProperty = "A"
+                        }
+                    }
+                }
+            };
+
+            var target = new SimpleClass1();
+
+            new BindingInfo
+            {
+                BindingMode = BindingMode.TwoWay,
+                Source = source,
+                SourcePath = "Child.SimplePropertyChild.SimplePropertyChild.SimpleStringProperty",
+
+                Target = target,
+                TargetPath = "Child.LastName"
+            }.Connect();
+
+
+            MustEqualByReference(null, target.Child);
+
+
+            target.Child = new SimpleClass1
+            {
+            };
+
+            source.Child = new SimpleClass1
+            {
+                SimplePropertyChild = new SimpleClass1
+                {
+                    SimplePropertyChild = new SimpleClass1
+                    {
+                        SimpleStringProperty = "X"
+                    }
+                }
+            };
+
+            MustEqual("X", target.Child.LastName);
+
+
+            target.Child = new SimpleClass1
+            {
+                LastName = "C"
+            };
+
+
+            MustEqual("C", source.Child.SimplePropertyChild.SimplePropertyChild.SimpleStringProperty);
+
+        }
+        void CheckSimpleProperties()
+        {
+            var source = new SimpleClass1
+            {
+                Child = new SimpleClass1
+                {
+                    Child = new SimpleClass1
+                    {
+                        SimpleStringProperty = "A"
+                    }
+                }
+            };
+
+            var target = new SimpleClass1();
+
+            new BindingInfo
+            {
+                BindingMode = BindingMode.TwoWay,
+                Source = source,
+                SourcePath = "Child.Child.SimpleStringProperty",
+
+                Target = target,
+                TargetPath = "Child.LastName"
+            }.Connect();
+
+
+            MustEqualByReference(null, target.Child);
+
+            source.Child.Child = new SimpleClass1
+            {
+                SimpleStringProperty = "B"
+            };
+
+            MustEqualByReference(null, target.Child);
+
+            target.Child = new SimpleClass1
+            {
+                LastName = "C"
+            };
+
+
+            MustEqual("C", source.Child.Child.SimpleStringProperty);
+
+
+            source.Child.Child = new SimpleClass1
+            {
+                SimpleStringProperty = "X"
+            };
+
+            MustEqual("X", target.Child.LastName);
+
         }
 
         void CheckInvalidPropertyPath()

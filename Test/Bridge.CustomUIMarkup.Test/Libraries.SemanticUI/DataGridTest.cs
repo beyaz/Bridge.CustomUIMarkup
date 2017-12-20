@@ -80,8 +80,17 @@ namespace Bridge.CustomUIMarkup.Libraries.SemanticUI
             }
             #endregion
 
+            public Labels Label { get; set; }=new Labels();
 
         }
+
+        public class Labels
+        {
+            public string XXX { get; set; } = Label_XXX;
+        }
+
+        const string Label_XXX= "A3fq136hqw_5";
+
         void XmlParse()
         {
             var model = new MyClass
@@ -92,7 +101,7 @@ namespace Bridge.CustomUIMarkup.Libraries.SemanticUI
                     {
 
                         Year = 5,
-                        LastName = "A",
+                        LastName = "A"
 
                     },
                     new SimpleClass1
@@ -103,17 +112,18 @@ namespace Bridge.CustomUIMarkup.Libraries.SemanticUI
                 }
             };
 
-            var dataGrid = (DataGrid)BuildAndGetFirstLogicalChild("<DataGrid ItemsSource='{Items}'>" +
-                                                                  "     <DataGrid.Columns>" +
-                                                                  "         <DataGridColumn Label='Label_A'    Name = 'LastName' />" +
-                                                                  "         <DataGridColumn Label='Label_Year' Name = 'Year' />" +
-                                                                  "     </DataGrid.Columns>" +
-                                                                  "</DataGrid>", model);
+            var xmlString = "<DataGrid ItemsSource='{Items}'>" +
+                            "     <DataGrid.Columns>" +
+                            "         <DataGridColumn Label='{Label.XXX}'    Name = 'LastName' />" +
+                            "         <DataGridColumn Label='Label_Year' Name = 'Year' />" +
+                            "     </DataGrid.Columns>" +
+                            "</DataGrid>";
 
-          
+            var dataGrid = (DataGrid)BuildAndGetFirstLogicalChild(xmlString, model);
 
+            var asHtmlString = dataGrid._root.Get(0).AsHtmlString();
 
-           Trace.Log(this,dataGrid._root.Get(0).AsHtmlString());
+            Assert.True(asHtmlString.Contains(Label_XXX));
 
             
 

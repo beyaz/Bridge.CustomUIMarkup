@@ -571,7 +571,10 @@ namespace Bridge.CustomUIMarkup.UI
                     }
 
                     var subItem = CreateInstance(childNode);
-                    
+
+
+                    InitializeDataContext(childNode, subItem, _currentInstance.As<FrameworkElement>());
+
                     ProcessAttributes(childNode,subItem);
 
                     addMethod.Invoke(collection, subItem);
