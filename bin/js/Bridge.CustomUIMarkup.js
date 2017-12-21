@@ -716,6 +716,7 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
                     Bridge.CustomUIMarkup.UI.Builder.Register("textArea", function () { return Bridge.CustomUIMarkup.UI.Builder.Create(Bridge.CustomUIMarkup.Libraries.SemanticUI.TextArea); });
                     Bridge.CustomUIMarkup.UI.Builder.Register("FieldString", function () { return Bridge.CustomUIMarkup.UI.Builder.Create(Bridge.CustomUIMarkup.Libraries.SemanticUI.FieldString); });
                     Bridge.CustomUIMarkup.UI.Builder.Register("FieldInt32", function () { return Bridge.CustomUIMarkup.UI.Builder.Create(Bridge.CustomUIMarkup.Libraries.SemanticUI.FieldInt32); });
+                    Bridge.CustomUIMarkup.UI.Builder.Register("FieldDecimal", function () { return Bridge.CustomUIMarkup.UI.Builder.Create(Bridge.CustomUIMarkup.Libraries.SemanticUI.FieldDecimal); });
                     Bridge.CustomUIMarkup.UI.Builder.Register("ContentPresenter", function () {
                         return new System.Windows.ContentPresenter();
                     });
@@ -8324,8 +8325,9 @@ me._editor.display.wrapper.style.height = '95%';
             }
         },
         fields: {
-            "AllowOnlyNumericInputs": false,
             _inputElement: null,
+            "AllowOnlyDecimalInputs": false,
+            "AllowOnlyNumericInputs": false,
             _cornerLabelDiv: null
         },
         events: {
@@ -8335,6 +8337,11 @@ me._editor.display.wrapper.style.height = '95%';
             DefaultTemplateAsXml: {
                 get: function () {
                     return "<div class='ui input'>   <input type='text'  x:Name = '_inputElement' /></div>";
+                }
+            },
+            _value: {
+                get: function () {
+                    return this._inputElement._root.val();
                 }
             },
             Text: {
@@ -8376,6 +8383,20 @@ me._editor.display.wrapper.style.height = '95%';
                 this._inputElement._root.focusout(Bridge.fn.cacheBind(this, this.OnFocusOut));
                 this._inputElement._root.keypress(Bridge.fn.cacheBind(this, this.OnKeyPress));
             },
+            DisableNonDecimalInputs: function (e) {
+                var isDot = e.which === 46;
+
+                if (isDot) {
+                    var alreadyContainsDot = System.String.indexOf(((this._value || "") + ""), String.fromCharCode(46)) < 0;
+                    if (alreadyContainsDot) {
+                        e.preventDefault();
+                    }
+
+                    return;
+                }
+
+                this.DisableNonNumericValues(e);
+            },
             DisableNonNumericValues: function (e) {
                 if (e.which !== 8 && e.which !== 0 && (e.which < 48 || e.which > 57)) {
                     e.preventDefault();
@@ -8386,6 +8407,11 @@ me._editor.display.wrapper.style.height = '95%';
             },
             OnKeyPress: function (e) {
                 !Bridge.staticEquals(this.KeyPress, null) ? this.KeyPress(e) : null;
+
+                if (this["AllowOnlyDecimalInputs"]) {
+                    this.DisableNonDecimalInputs(e);
+                    return;
+                }
 
                 if (this["AllowOnlyNumericInputs"]) {
                     this.DisableNonNumericValues(e);
@@ -8900,7 +8926,7 @@ $( '<style> '+css+'</style>' ).appendTo( 'head' );
         props: {
             DefaultTemplateAsXml: {
                 get: function () {
-                    return "<div class='field'>   <label Visibility = '{LabelVisibility}'>{Label}</label>   <ContentPresenter />   <div class = 'ui red pointing label transition' Visibility = '{ErrorMessageVisibility}'> {ErrorMessage} </div></div>";
+                    return "<div class = 'field' on.click = 'ClearErrorMessage' >   <label Visibility = '{LabelVisibility}'>{Label}</label>   <ContentPresenter />   <div class = 'ui red pointing label transition' Visibility = '{ErrorMessageVisibility}'> {ErrorMessage} </div></div>";
                 }
             },
             LabelVisibility: {
@@ -8959,6 +8985,13 @@ $( '<style> '+css+'</style>' ).appendTo( 'head' );
 
                     this.LabelVisibility = System.Windows.Visibility.Visible;
                 }));
+            }
+        },
+        methods: {
+            ClearErrorMessage: function () {
+                if (this.ErrorMessage != null) {
+                    this.ErrorMessage = null;
+                }
             }
         }
     });
@@ -9145,6 +9178,35 @@ $( '<style> '+css+'</style>' ).appendTo( 'head' );
         inherits: [System.Windows.Controls.Primitives.Selector]
     });
 
+    Bridge.define("Bridge.CustomUIMarkup.Libraries.SemanticUI.FieldDecimal", {
+        inherits: [Bridge.CustomUIMarkup.Libraries.SemanticUI.Field],
+        statics: {
+            fields: {
+                ValueProperty: null
+            },
+            ctors: {
+                init: function () {
+                    this.ValueProperty = System.Windows.DependencyProperty.Register$1("Value", System.Nullable$1(System.Decimal), Bridge.CustomUIMarkup.Libraries.SemanticUI.FieldDecimal, new System.Windows.PropertyMetadata.ctor(null));
+                }
+            }
+        },
+        props: {
+            DefaultTemplateAsXml: {
+                get: function () {
+                    return "<div class='field' on.click = 'ClearErrorMessage' >   <label Visibility = '{LabelVisibility}'>{Label}</label>   <ContentPresenter>       <textBox Text = '{Value}' AllowOnlyDecimalInputs = 'True' />   </ContentPresenter>   <div class = 'ui red pointing label transition' Visibility = '{ErrorMessageVisibility}'> {ErrorMessage} </div></div>";
+                }
+            },
+            Value: {
+                get: function () {
+                    return Bridge.cast(Bridge.unbox(this.GetValue$1(Bridge.CustomUIMarkup.Libraries.SemanticUI.FieldDecimal.ValueProperty)), System.Decimal, true);
+                },
+                set: function (value) {
+                    this.SetValue$1(Bridge.CustomUIMarkup.Libraries.SemanticUI.FieldDecimal.ValueProperty, value);
+                }
+            }
+        }
+    });
+
     Bridge.define("Bridge.CustomUIMarkup.Libraries.SemanticUI.FieldInt32", {
         inherits: [Bridge.CustomUIMarkup.Libraries.SemanticUI.Field],
         statics: {
@@ -9160,7 +9222,7 @@ $( '<style> '+css+'</style>' ).appendTo( 'head' );
         props: {
             DefaultTemplateAsXml: {
                 get: function () {
-                    return "<div class='field'>   <label Visibility = '{LabelVisibility}'>{Label}</label>   <ContentPresenter>       <textBox Text = '{Value}' AllowOnlyNumericInputs = 'True' />   </ContentPresenter>   <div class = 'ui red pointing label transition' Visibility = '{ErrorMessageVisibility}'> {ErrorMessage} </div></div>";
+                    return "<div class='field' on.click = 'ClearErrorMessage' >   <label Visibility = '{LabelVisibility}'>{Label}</label>   <ContentPresenter>       <textBox Text = '{Value}' AllowOnlyNumericInputs = 'True' />   </ContentPresenter>   <div class = 'ui red pointing label transition' Visibility = '{ErrorMessageVisibility}'> {ErrorMessage} </div></div>";
                 }
             },
             Value: {
@@ -9189,7 +9251,7 @@ $( '<style> '+css+'</style>' ).appendTo( 'head' );
         props: {
             DefaultTemplateAsXml: {
                 get: function () {
-                    return "<div class='field'>   <label Visibility = '{LabelVisibility}'>{Label}</label>   <ContentPresenter>       <textBox Text = '{Value}'/>   </ContentPresenter>   <div class = 'ui red pointing label transition' Visibility = '{ErrorMessageVisibility}'> {ErrorMessage} </div></div>";
+                    return "<div class='field' on.click = 'ClearErrorMessage' >   <label Visibility = '{LabelVisibility}'>{Label}</label>   <ContentPresenter>       <textBox Text = '{Value}'/>   </ContentPresenter>   <div class = 'ui red pointing label transition' Visibility = '{ErrorMessageVisibility}'> {ErrorMessage} </div></div>";
                 }
             },
             Value: {

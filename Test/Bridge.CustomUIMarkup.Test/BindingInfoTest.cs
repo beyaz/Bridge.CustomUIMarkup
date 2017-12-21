@@ -8,6 +8,23 @@ namespace Bridge.CustomUIMarkup.Test
 {
     public class SimpleClass1 : Bag
     {
+        #region DateTime? BeginDate
+        DateTime? _beginDate;
+        public DateTime? BeginDate
+        {
+            get { return _beginDate; }
+            set
+            {
+                if (_beginDate != value)
+                {
+                    _beginDate = value;
+                    OnPropertyChanged("BeginDate");
+                }
+            }
+        }
+        #endregion
+
+
 
         public SimpleClass1 SimplePropertyChild { get; set; }
         public string SimpleStringProperty { get; set; }

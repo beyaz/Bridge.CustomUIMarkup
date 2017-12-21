@@ -8,6 +8,11 @@ namespace Bridge.CustomUIMarkup.Libraries.SemanticUI
 {
     public class InputText : Control
     {
+        #region Fields
+        // ReSharper disable once UnassignedField.Global
+        protected FrameworkElement _inputElement;
+        #endregion
+
         #region Constructors
         public InputText()
         {
@@ -15,7 +20,12 @@ namespace Bridge.CustomUIMarkup.Libraries.SemanticUI
         }
         #endregion
 
+        #region Public Events
+        public event Action<jQueryKeyboardEvent> KeyPress;
+        #endregion
+
         #region Public Properties
+        public bool AllowOnlyDecimalInputs { get; set; }
         public bool AllowOnlyNumericInputs { get; set; }
 
         public override string DefaultTemplateAsXml
@@ -31,15 +41,32 @@ namespace Bridge.CustomUIMarkup.Libraries.SemanticUI
         #endregion
 
         #region Properties
-        // ReSharper disable once UnassignedField.Global
-        protected FrameworkElement _inputElement;
+        string _value => _inputElement._root.Val();
         #endregion
 
         #region Methods
         void AttachEvents()
         {
-            _inputElement._root. FocusOut(OnFocusOut);
+            _inputElement._root.FocusOut(OnFocusOut);
             _inputElement._root.KeyPress(OnKeyPress);
+        }
+
+        void DisableNonDecimalInputs(jQueryKeyboardEvent e)
+        {
+            var isDot = e.Which == 46;
+
+            if (isDot)
+            {
+                var alreadyContainsDot = (_value + "").IndexOf('.') < 0;
+                if (alreadyContainsDot)
+                {
+                    e.PreventDefault();
+                }
+
+                return;
+            }
+
+            DisableNonNumericValues(e);
         }
 
         void DisableNonNumericValues(jQueryKeyboardEvent e)
@@ -55,11 +82,15 @@ namespace Bridge.CustomUIMarkup.Libraries.SemanticUI
             Text = _inputElement.Val();
         }
 
-        public event Action<jQueryKeyboardEvent> KeyPress;
-
         void OnKeyPress(jQueryKeyboardEvent e)
         {
             KeyPress?.Invoke(e);
+
+            if (AllowOnlyDecimalInputs)
+            {
+                DisableNonDecimalInputs(e);
+                return;
+            }
 
             if (AllowOnlyNumericInputs)
             {

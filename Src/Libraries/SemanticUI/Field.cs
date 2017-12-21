@@ -40,7 +40,7 @@ namespace Bridge.CustomUIMarkup.Libraries.SemanticUI
             get
             {
                 return
-                    "<div class='field'>" +
+                    "<div class = 'field' on.click = 'ClearErrorMessage' >" +
                     "   <label Visibility = '{LabelVisibility}'>{Label}</label>" +
                     "   <ContentPresenter />" +
                     "   <div class = 'ui red pointing label transition' Visibility = '{ErrorMessageVisibility}'> {ErrorMessage} </div>" +
@@ -48,6 +48,8 @@ namespace Bridge.CustomUIMarkup.Libraries.SemanticUI
             }
         }
         #endregion
+
+        
 
         #region Visibility LabelVisbility
         public static readonly DependencyProperty LabelVisibilityProperty = DependencyProperty.Register(nameof(LabelVisibility), typeof(Visibility), typeof(Field), new PropertyMetadata(Visibility.Collapsed));
@@ -88,5 +90,14 @@ namespace Bridge.CustomUIMarkup.Libraries.SemanticUI
             set { SetValue(LabelProperty, value); }
         }
         #endregion
+
+
+        protected void ClearErrorMessage()
+        {
+            if (ErrorMessage != null)
+            {
+                ErrorMessage = null;
+            }
+        }
     }
 }

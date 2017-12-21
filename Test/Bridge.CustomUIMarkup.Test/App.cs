@@ -35,6 +35,8 @@ namespace Bridge.CustomUIMarkup.Test
 
             CastTest.RunAll();
 
+            DatePickerTest.RunAll();
+
             Console.WriteLine("Success");
         }
         #endregion
