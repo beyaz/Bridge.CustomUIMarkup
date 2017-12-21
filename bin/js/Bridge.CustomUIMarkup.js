@@ -5619,8 +5619,13 @@ if(fn)
                 html: function (T, element) {
                     return element._root.html();
                 },
-                Val: function (T, element) {
+                Val$1: function (T, element) {
                     return element._root.val();
+                },
+                Val: function (T, element, value) {
+                    element._root.val(value);
+
+                    return element;
                 }
             }
         }
@@ -8387,7 +8392,7 @@ me._editor.display.wrapper.style.height = '95%';
                 var isDot = e.which === 46;
 
                 if (isDot) {
-                    var alreadyContainsDot = System.String.indexOf(((this._value || "") + ""), String.fromCharCode(46)) < 0;
+                    var alreadyContainsDot = System.String.indexOf(((this._value || "") + ""), String.fromCharCode(46)) >= 0;
                     if (alreadyContainsDot) {
                         e.preventDefault();
                     }
@@ -8403,7 +8408,20 @@ me._editor.display.wrapper.style.height = '95%';
                 }
             },
             OnFocusOut: function (e) {
-                this.Text = System.Windows.FrameworkElementExtensions.Val(Bridge.global.System.Windows.FrameworkElement, this._inputElement);
+                var val = System.Windows.FrameworkElementExtensions.Val$1(Bridge.global.System.Windows.FrameworkElement, this._inputElement);
+                if (System.String.isNullOrEmpty(val)) {
+                    return;
+                }
+
+                if (Bridge.referenceEquals(val.trim(), ".")) {
+                    if (this["AllowOnlyDecimalInputs"]) {
+                        System.Windows.FrameworkElementExtensions.Val(Bridge.global.System.Windows.FrameworkElement, this._inputElement, "");
+                        return;
+                    }
+
+                }
+
+                this.Text = val;
             },
             OnKeyPress: function (e) {
                 !Bridge.staticEquals(this.KeyPress, null) ? this.KeyPress(e) : null;

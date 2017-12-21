@@ -46,7 +46,13 @@ namespace System.Windows
         {
             return element._root.Val();
         }
-        
+
+        public static T Val<T>(this T element,string value) where T : FrameworkElement
+        {
+             element._root.Val(value);
+
+            return element;
+        }
     }
 
     partial class FrameworkElement

@@ -57,7 +57,7 @@ namespace Bridge.CustomUIMarkup.Libraries.SemanticUI
 
             if (isDot)
             {
-                var alreadyContainsDot = (_value + "").IndexOf('.') < 0;
+                var alreadyContainsDot = (_value + "").IndexOf('.') >= 0;
                 if (alreadyContainsDot)
                 {
                     e.PreventDefault();
@@ -79,7 +79,23 @@ namespace Bridge.CustomUIMarkup.Libraries.SemanticUI
 
         void OnFocusOut(jQueryFocusEvent e)
         {
-            Text = _inputElement.Val();
+            var val = _inputElement.Val();
+            if ( string.IsNullOrEmpty(val))
+            {
+                return;
+            }
+
+            if (val.Trim()==".")
+            {
+                if (AllowOnlyDecimalInputs)
+                {
+                    _inputElement.Val("");
+                    return;
+                }
+                
+            }
+
+            Text = val;
         }
 
         void OnKeyPress(jQueryKeyboardEvent e)
