@@ -1708,9 +1708,6 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
                 Value: {
                     get: function () {
                         return function (_o1) {
-                                _o1.add(new Bridge.CustomUIMarkup.Tokenizers.TokenDefinition(Bridge.CustomUIMarkup.Tokenizers.TokenType.Binding, "binding", 1));
-                                _o1.add(new Bridge.CustomUIMarkup.Tokenizers.TokenDefinition(Bridge.CustomUIMarkup.Tokenizers.TokenType.Mode, "mode", 1));
-                                _o1.add(new Bridge.CustomUIMarkup.Tokenizers.TokenDefinition(Bridge.CustomUIMarkup.Tokenizers.TokenType.TwoWay, "twoway", 1));
                                 _o1.add(new Bridge.CustomUIMarkup.Tokenizers.TokenDefinition(Bridge.CustomUIMarkup.Tokenizers.TokenType.LeftBracket, "\\{", 1));
                                 _o1.add(new Bridge.CustomUIMarkup.Tokenizers.TokenDefinition(Bridge.CustomUIMarkup.Tokenizers.TokenType.RightBracket, "\\}", 1));
                                 _o1.add(new Bridge.CustomUIMarkup.Tokenizers.TokenDefinition(Bridge.CustomUIMarkup.Tokenizers.TokenType.OpenParenthesis, "\\(", 1));
@@ -1719,7 +1716,6 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
                                 _o1.add(new Bridge.CustomUIMarkup.Tokenizers.TokenDefinition(Bridge.CustomUIMarkup.Tokenizers.TokenType.This, "this", 1));
                                 _o1.add(new Bridge.CustomUIMarkup.Tokenizers.TokenDefinition(Bridge.CustomUIMarkup.Tokenizers.TokenType.NotEquals, "!=", 1));
                                 _o1.add(new Bridge.CustomUIMarkup.Tokenizers.TokenDefinition(Bridge.CustomUIMarkup.Tokenizers.TokenType["Identifier"], "[a-zA-Z_$][a-zA-Z0-9_$]*", 1));
-                                _o1.add(new Bridge.CustomUIMarkup.Tokenizers.TokenDefinition(Bridge.CustomUIMarkup.Tokenizers.TokenType.StringValue, "'([^']*)'", 1));
                                 _o1.add(new Bridge.CustomUIMarkup.Tokenizers.TokenDefinition(Bridge.CustomUIMarkup.Tokenizers.TokenType.NumberValue, "\\d+", 1));
                                 _o1.add(new Bridge.CustomUIMarkup.Tokenizers.TokenDefinition(Bridge.CustomUIMarkup.Tokenizers.TokenType.Comma, ",", 1));
                                 _o1.add(new Bridge.CustomUIMarkup.Tokenizers.TokenDefinition(Bridge.CustomUIMarkup.Tokenizers.TokenType.Dot, ".", 1));
@@ -1930,20 +1926,21 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
             fields: {
                 Binding: 0,
                 Mode: 1,
-                TwoWay: 2,
-                LeftBracket: 3,
-                RightBracket: 4,
-                OpenParenthesis: 5,
-                CloseParenthesis: 6,
-                "Identifier": 7,
-                Comma: 8,
-                Dot: 9,
-                Equals: 10,
-                This: 11,
-                NotEquals: 12,
-                StringValue: 13,
-                SequenceTerminator: 14,
-                NumberValue: 15
+                Converter: 2,
+                TwoWay: 3,
+                LeftBracket: 4,
+                RightBracket: 5,
+                OpenParenthesis: 6,
+                CloseParenthesis: 7,
+                "Identifier": 8,
+                Comma: 9,
+                Dot: 10,
+                Equals: 11,
+                This: 12,
+                NotEquals: 13,
+                StringValue: 14,
+                SequenceTerminator: 15,
+                NumberValue: 16
             }
         }
     });
@@ -5293,49 +5290,73 @@ if(fn)
                         return null;
                     }
 
-
                     var sourcePath = null;
                     var bindingMode = { v : System.Windows.Data.BindingMode.TwoWay };
+                    var valueConverter = null;
 
-                    var tokens = System.Windows.Data.BindingInfo.BindingExpressionTokenizer.Tokenize(value);
-                    var len = System.Array.getCount(tokens, Bridge.CustomUIMarkup.Tokenizers.Token);
-                    for (var i = 0; i < len; i = (i + 1) | 0) {
-                        var token = System.Array.getItem(tokens, i, Bridge.CustomUIMarkup.Tokenizers.Token);
+                    var tokens = System.Linq.Enumerable.from(System.Windows.Data.BindingInfo.BindingExpressionTokenizer.Tokenize(value)).where(function (t) {
+                            return !Bridge.referenceEquals(t.Value, " ");
+                        }).toList(Bridge.CustomUIMarkup.Tokenizers.Token);
+                    var len = tokens.Count;
+                    for (var i = { v : 0 }; i.v < len; i.v = (i.v + 1) | 0) {
+                        var token = tokens.getItem(i.v);
 
-                        if (token.TokenType === Bridge.CustomUIMarkup.Tokenizers.TokenType.Binding || Bridge.referenceEquals(token.Value, " ")) {
+                        if (Bridge.referenceEquals(token.Value.toUpperCase(), "BINDING") || Bridge.referenceEquals(token.Value, " ")) {
                             continue;
                         }
 
                         if (sourcePath == null && token.TokenType === Bridge.CustomUIMarkup.Tokenizers.TokenType["Identifier"]) {
-                            sourcePath = "";
-                            while (i < len) {
-                                token = System.Array.getItem(tokens, i, Bridge.CustomUIMarkup.Tokenizers.Token);
-
-                                if (token.TokenType === Bridge.CustomUIMarkup.Tokenizers.TokenType["Identifier"] || token.TokenType === Bridge.CustomUIMarkup.Tokenizers.TokenType.Dot) {
-                                    sourcePath = (sourcePath || "") + (token.Value || "");
-                                    i = (i + 1) | 0;
-                                } else {
-                                    i = (i - 1) | 0;
-                                    break;
-                                }
-                            }
+                            sourcePath = System.Windows.Data.BindingInfo.ReadPath(tokens, i);
 
                             continue;
                         }
 
+                        if (Bridge.referenceEquals(token.Value.toUpperCase(), "MODE")) {
+                            i.v = (i.v + 1) | 0; // skip mode
+                            i.v = (i.v + 1) | 0; // skip assingment
 
-                        if (token.TokenType === Bridge.CustomUIMarkup.Tokenizers.TokenType.Mode) {
-                            System.Enum.tryParse(Bridge.global.System.Windows.Data.BindingMode, System.Array.getItem(tokens, ((i + 2) | 0), Bridge.CustomUIMarkup.Tokenizers.Token).Value, bindingMode);
+                            System.Enum.tryParse(Bridge.global.System.Windows.Data.BindingMode, tokens.getItem(i.v).Value, bindingMode);
+                            continue;
+                        }
+
+                        if (Bridge.referenceEquals(token.Value.toUpperCase(), "CONVERTER")) {
+                            i.v = (i.v + 1) | 0; // skip converter
+                            i.v = (i.v + 1) | 0; // skip assingment
+
+                            var converterTypeFullName = System.Windows.Data.BindingInfo.ReadPath(tokens, i);
+
+                            var converterType = Bridge.Reflection.getType(converterTypeFullName);
+                            if (converterType == null) {
+                                throw new System.MissingMemberException(converterTypeFullName);
+                            }
+
+                            valueConverter = Bridge.cast(Bridge.createInstance(converterType), System.Windows.Data.IValueConverter);
                         }
                     }
 
-                    return ($t = new System.Windows.Data.BindingInfo(), $t.SourcePath = System.Windows.PropertyPath.op_Implicit(sourcePath), $t.BindingMode = bindingMode.v, $t);
+                    return ($t = new System.Windows.Data.BindingInfo(), $t.SourcePath = System.Windows.PropertyPath.op_Implicit(sourcePath), $t.BindingMode = bindingMode.v, $t.Converter = valueConverter, $t);
+                },
+                ReadPath: function (tokens, i) {
+                    var path = "";
+                    while (true) {
+                        var token = System.Array.getItem(tokens, i.v, Bridge.CustomUIMarkup.Tokenizers.Token);
+
+                        if (token.TokenType === Bridge.CustomUIMarkup.Tokenizers.TokenType["Identifier"] || token.TokenType === Bridge.CustomUIMarkup.Tokenizers.TokenType.Dot) {
+                            path = (path || "") + (token.Value || "");
+                            i.v = (i.v + 1) | 0;
+                        } else {
+                            i.v = (i.v - 1) | 0;
+                            break;
+                        }
+                    }
+
+                    return path;
                 }
             }
         },
         fields: {
-            Converter: null,
             BindingMode: 0,
+            Converter: null,
             Source: null,
             SourcePath: null,
             Target: null,
@@ -5352,9 +5373,6 @@ if(fn)
                 }
 
                 this.UpdateTarget();
-            },
-            GetTargetValue: function () {
-                return this.TargetPath.GetPropertyValue();
             },
             UpdateSource: function () {
                 if (this.SourcePath["IsNotReadyToUpdate"]) {
@@ -5374,7 +5392,6 @@ if(fn)
                     value = this.Converter.System$Windows$Data$IValueConverter$Convert(value, null, null, null);
                 }
 
-
                 this.TargetPath.SetPropertyValue(value);
             },
             ConnectSourceToTarget: function () {
@@ -5382,6 +5399,9 @@ if(fn)
             },
             ConnectTargetToSource: function () {
                 this.TargetPath.Listen(this.Target, Bridge.fn.cacheBind(this, this.UpdateSource));
+            },
+            GetTargetValue: function () {
+                return this.TargetPath.GetPropertyValue();
             }
         }
     });
@@ -6582,7 +6602,7 @@ if(fn)
                         return null;
                     }
 
-                    return ($t = new System.Windows.Data.HTMLBindingInfo(), $t.SourcePath = bindingInfo.SourcePath, $t);
+                    return ($t = new System.Windows.Data.HTMLBindingInfo(), $t.SourcePath = bindingInfo.SourcePath, $t.Converter = bindingInfo.Converter, $t);
                 },
                 TargetCanUpdateSource: function (element) {
                     if (Bridge.referenceEquals(element.get(0).tagName, "INPUT")) {

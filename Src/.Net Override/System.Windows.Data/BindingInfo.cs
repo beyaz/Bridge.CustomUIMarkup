@@ -1,14 +1,22 @@
+using System.Collections.Generic;
+using System.Linq;
 using Bridge.CustomUIMarkup.Tokenizers;
+using Bridge.Html5;
 
 namespace System.Windows.Data
 {
     public class BindingInfo
     {
-        public IValueConverter Converter { get; set; }
-
+        #region Static Fields
+        static readonly Tokenizer BindingExpressionTokenizer = new Tokenizer
+        {
+            TokenDefinitions = BindingExpressionTokenDefinitions.Value
+        };
+        #endregion
 
         #region Public Properties
         public BindingMode BindingMode { get; set; }
+        public IValueConverter Converter { get; set; }
 
         public object Source { get; set; }
 
@@ -39,58 +47,61 @@ namespace System.Windows.Data
                 return null;
             }
 
-
             string sourcePath = null;
-            var bindingMode = Data.BindingMode.TwoWay;
+            var bindingMode = BindingMode.TwoWay;
+            IValueConverter valueConverter = null;
 
-            var tokens = BindingExpressionTokenizer.Tokenize(value);
+            var tokens = BindingExpressionTokenizer.Tokenize(value).Where(t => t.Value != " ").ToList();
             var len = tokens.Count;
             for (int i = 0; i < len; i++)
             {
                 var token = tokens[i];
 
-                if (token.TokenType == TokenType.Binding || token.Value == " ")
+                if (token.Value.ToUpperCase() == "BINDING" || token.Value == " ")
                 {
                     continue;
                 }
 
                 if (sourcePath == null && token.TokenType == TokenType.Identifier)
                 {
-                    sourcePath = "";
-                    while (i<len)
-                    {
-                        token = tokens[i];
+                    sourcePath = ReadPath(tokens, ref i);
 
-                        if (token.TokenType == TokenType.Identifier ||
-                            token.TokenType == TokenType.Dot )
-                        {
-                            sourcePath += token.Value;
-                            i++;
-                        }
-                        else
-                        {
-                            i--;
-                            break;
-                        }
-                    }
-                    
                     continue;
                 }
-                
 
-                if (token.TokenType == TokenType.Mode)
+                if (token.Value.ToUpperCase() == "MODE")
                 {
-                    Enum.TryParse( tokens[i + 2].Value, out bindingMode);
+                    i++; // skip mode
+                    i++; // skip assingment
+
+                    Enum.TryParse(tokens[i].Value, out bindingMode);
+                    continue;
+                }
+
+                if (token.Value.ToUpperCase() == "CONVERTER")
+                {
+                    i++; // skip converter
+                    i++; // skip assingment
+
+                    var converterTypeFullName = ReadPath(tokens, ref i);
+
+                    var converterType = Type.GetType(converterTypeFullName);
+                    if (converterType == null)
+                    {
+                        throw new MissingMemberException(converterTypeFullName);
+                    }
+
+                    valueConverter = (IValueConverter) Activator.CreateInstance(converterType);
                 }
             }
 
-            return new BindingInfo {SourcePath = sourcePath,BindingMode = bindingMode};
+            return new BindingInfo
+            {
+                SourcePath = sourcePath,
+                BindingMode = bindingMode,
+                Converter = valueConverter
+            };
         }
-
-        static readonly Tokenizer BindingExpressionTokenizer = new Tokenizer
-        {
-            TokenDefinitions = BindingExpressionTokenDefinitions.Value
-        };
 
         public void Connect()
         {
@@ -107,13 +118,6 @@ namespace System.Windows.Data
 
             UpdateTarget();
         }
-
-
-        protected virtual object GetTargetValue()
-        {
-            return TargetPath.GetPropertyValue();
-        }
-
 
         public virtual void UpdateSource()
         {
@@ -139,7 +143,6 @@ namespace System.Windows.Data
                 value = Converter.Convert(value, null, null, null);
             }
 
-
             TargetPath.SetPropertyValue(value);
         }
         #endregion
@@ -153,6 +156,34 @@ namespace System.Windows.Data
         protected virtual void ConnectTargetToSource()
         {
             TargetPath.Listen(Target, UpdateSource);
+        }
+
+        protected virtual object GetTargetValue()
+        {
+            return TargetPath.GetPropertyValue();
+        }
+
+        static string ReadPath(IReadOnlyList<Token> tokens, ref int i)
+        {
+            var path = "";
+            while (true)
+            {
+                var token = tokens[i];
+
+                if (token.TokenType == TokenType.Identifier ||
+                    token.TokenType == TokenType.Dot)
+                {
+                    path += token.Value;
+                    i++;
+                }
+                else
+                {
+                    i--;
+                    break;
+                }
+            }
+
+            return path;
         }
         #endregion
     }

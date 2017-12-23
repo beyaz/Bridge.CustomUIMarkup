@@ -6,6 +6,7 @@ using System.Windows.Data;
 
 namespace Bridge.CustomUIMarkup.Test
 {
+    
     public class SimpleClass1 : Bag
     {
         #region DateTime? BeginDate
@@ -461,6 +462,17 @@ namespace Bridge.CustomUIMarkup.Test
             simpleClass1.LastName = "A";
 
             MustEqual(56, simpleClass2.Year);
+
+            var info = BindingInfo.TryParseExpression("{  XXX , Converter = " + typeof(ATo56Converter).FullName + "}");
+
+            Assert.True(info.Converter != null);
+
+
+            info = BindingInfo.TryParseExpression("{   XXX.Y.Z ,  Mode=OneWay  , Converter = " + typeof(ATo56Converter).FullName + "}");
+
+            Assert.True(info.Converter != null);
+            Assert.True(info.BindingMode  == BindingMode.OneWay);
+            Assert.True(info.SourcePath.Path == "XXX.Y.Z");
         }
 
 
@@ -596,6 +608,9 @@ namespace Bridge.CustomUIMarkup.Test
 
             MustEqual("Alex3", simpleClass1.LastName);
         }
+
+        
+
 
         public void TwoWayCircularBindingBetweenThreeItemsMustbeSupport()
         {

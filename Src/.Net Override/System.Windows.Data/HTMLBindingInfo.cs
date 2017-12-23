@@ -24,7 +24,8 @@ namespace System.Windows.Data
 
             return new HTMLBindingInfo
             {
-                SourcePath = bindingInfo.SourcePath
+                SourcePath = bindingInfo.SourcePath,
+                Converter = bindingInfo.Converter
             };
         }
 

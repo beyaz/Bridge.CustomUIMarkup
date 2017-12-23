@@ -9,6 +9,7 @@ namespace Bridge.CustomUIMarkup.Tokenizers
     {
         Binding,
         Mode,
+        Converter,
         TwoWay,
         LeftBracket,
         RightBracket,
@@ -118,9 +119,10 @@ namespace Bridge.CustomUIMarkup.Tokenizers
             {
                 return new List<TokenDefinition>
                 {
-                    new TokenDefinition(TokenType.Binding, "binding", 1),
-                    new TokenDefinition(TokenType.Mode, "mode", 1),
-                    new TokenDefinition(TokenType.TwoWay, "twoway", 1),
+                    //new TokenDefinition(TokenType.Binding, "binding", 1),
+                    //new TokenDefinition(TokenType.Mode, "mode", 1),
+                    //new TokenDefinition(TokenType.Converter, "converter", 1),
+                    //new TokenDefinition(TokenType.TwoWay, "twoway", 1),
                     new TokenDefinition(TokenType.LeftBracket, "\\{", 1),
                     new TokenDefinition(TokenType.RightBracket, "\\}", 1),
                     new TokenDefinition(TokenType.OpenParenthesis, "\\(", 1),
@@ -131,7 +133,7 @@ namespace Bridge.CustomUIMarkup.Tokenizers
                     new TokenDefinition(TokenType.NotEquals, "!=", 1),
                     new TokenDefinition(TokenType.Identifier, "[a-zA-Z_$][a-zA-Z0-9_$]*", 1),
 
-                    new TokenDefinition(TokenType.StringValue, "'([^']*)'", 1),
+                    // new TokenDefinition(TokenType.StringValue, "'([^']*)'", 1),
                     new TokenDefinition(TokenType.NumberValue, "\\d+", 1),
 
                     new TokenDefinition(TokenType.Comma, ",", 1),
