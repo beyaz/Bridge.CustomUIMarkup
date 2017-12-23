@@ -58,7 +58,7 @@ namespace Bridge.CustomUIMarkup.Libraries.SemanticUI
 
     class DataGrid : MultiSelector
     {
-        public override string DefaultTemplateAsXml => "<div />";
+        public override string DefaultTemplateAsXml => "<div  />";
         #region Fields
         FrameworkElement _selectedRow;
 

@@ -672,10 +672,5 @@ namespace System.Windows
         #endregion
     }
 
-    public class UserControl2 : ContentControl
-    {
-        public override string DefaultTemplateAsXml => "<div>" +
-                                                       "    <ContentPresenter />" +
-                                                       "</div>";
-    }
+    
 }

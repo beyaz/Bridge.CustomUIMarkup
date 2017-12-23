@@ -4,6 +4,10 @@ namespace System.Windows.Controls
 {
     public class Control : FrameworkElement
     {
+        #region Events
+        protected internal event Action AfterTemplateApplied;
+        #endregion
+
         #region Public Properties
         public virtual string DefaultTemplateAsXml
         {
@@ -43,29 +47,31 @@ namespace System.Windows.Controls
         }
         #endregion
 
-        protected internal event Action AfterTemplateApplied;
-
-
-        internal  void ApplyTemplate()
+        #region Methods
+        internal void ApplyTemplate()
         {
             var template = Template ?? DefaultTemplate;
 
             if (template == null)
             {
-                return ;
+                return;
             }
 
             Builder.BuildControlTemplate(template, this);
 
             AfterTemplateApplied?.Invoke();
         }
+        #endregion
     }
-
 
     public class UserControl : ContentControl
     {
-        public override string DefaultTemplateAsXml => "<div>" +
-                                                       "    <ContentPresenter />" +
-                                                       "</div>";
+        #region Public Properties
+        public override string DefaultTemplateAsXml =>
+            "<div HeightPercent = '100' " +
+            "     WidthPercent  = '100' >" +
+            "    <ContentPresenter HeightPercent = '100' WidthPercent  = '100' />" +
+            "</div>";
+        #endregion
     }
 }

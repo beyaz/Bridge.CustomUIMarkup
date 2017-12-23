@@ -9175,18 +9175,7 @@ $( '<style> '+css+'</style>' ).appendTo( 'head' );
         props: {
             DefaultTemplateAsXml: {
                 get: function () {
-                    return "<div>    <ContentPresenter /></div>";
-                }
-            }
-        }
-    });
-
-    Bridge.define("System.Windows.UserControl2", {
-        inherits: [System.Windows.ContentControl],
-        props: {
-            DefaultTemplateAsXml: {
-                get: function () {
-                    return "<div>    <ContentPresenter /></div>";
+                    return "<div HeightPercent = '100'      WidthPercent  = '100' >    <ContentPresenter HeightPercent = '100' WidthPercent  = '100' /></div>";
                 }
             }
         }
@@ -9321,7 +9310,7 @@ setTimeout(function()
         props: {
             DefaultTemplateAsXml: {
                 get: function () {
-                    return "<div />";
+                    return "<div  />";
                 }
             },
             ColumnNames: {
