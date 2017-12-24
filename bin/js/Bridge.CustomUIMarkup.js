@@ -6,6 +6,85 @@
 Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
     "use strict";
 
+    Bridge.define("Bridge.CustomUIMarkup.Common.AsyncAjax", {
+        inherits: [Bridge.IPromise],
+        statics: {
+            methods: {
+                Post: function (url, data) {
+                    var $step = 0,
+                        $task1, 
+                        $taskResult1, 
+                        $jumpFromFinally, 
+                        $tcs = new System.Threading.Tasks.TaskCompletionSource(), 
+                        $returnValue, 
+                        promise, 
+                        $t, 
+                        resultHandler, 
+                        task, 
+                        $async_e, 
+                        $asyncBody = Bridge.fn.bind(this, function () {
+                            try {
+                                for (;;) {
+                                    $step = System.Array.min([0,1], $step);
+                                    switch ($step) {
+                                        case 0: {
+                                            promise = ($t = new Bridge.CustomUIMarkup.Common.AsyncAjax(), $t.Url = url, $t.Data = data, $t);
+                                            resultHandler = function (request) {
+                                                return request.ResponseText;
+                                            };
+
+                                            task = System.Threading.Tasks.Task.fromPromise(promise, resultHandler);
+
+                                            $task1 = task;
+                                            $step = 1;
+                                            $task1.continueWith($asyncBody);
+                                            return;
+                                        }
+                                        case 1: {
+                                            $taskResult1 = $task1.getAwaitedResult();
+                                            $tcs.setResult(task.getResult());
+                                            return;
+                                        }
+                                        default: {
+                                            $tcs.setResult(null);
+                                            return;
+                                        }
+                                    }
+                                }
+                            } catch($async_e1) {
+                                $async_e = System.Exception.create($async_e1);
+                                $tcs.setException($async_e);
+                            }
+                        }, arguments);
+
+                    $asyncBody();
+                    return $tcs.task;
+                }
+            }
+        },
+        fields: {
+            ResponseText: null,
+            Data: null,
+            Url: null
+        },
+        alias: ["then", "Bridge$IPromise$then"],
+        methods: {
+            then: function (fulfilledHandler, errorHandler, progressHandler) {
+                if (progressHandler === void 0) { progressHandler = null; }
+                $.ajax({ type: "POST", url: this.Url, data: this.Data, async: true, success: Bridge.fn.bind(this, function (o, s, arg3) {
+                    this.ResponseText = arg3.responseText;
+                    fulfilledHandler.call(null, this);
+                }), error: Bridge.fn.bind(this, function (o, s, arg3) {
+                    Bridge.CustomUIMarkup.Common.Trace.OperationWasCanceled("@POST:" + (this.Url || ""), "Ajax Error Occured.");
+
+                    Bridge.CustomUIMarkup.Common.Trace.Log(o);
+                    Bridge.CustomUIMarkup.Common.Trace.Log(s);
+                    Bridge.CustomUIMarkup.Common.Trace.Log(arg3);
+                }) });
+            }
+        }
+    });
+
     /** @namespace Bridge.CustomUIMarkup.Common */
 
     /**
@@ -279,7 +358,7 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
                 }
             },
             methods: {
-                Log: function (caller, Value) {
+                Log$1: function (caller, Value) {
                     if (caller != null) {
                         var isDisabled = System.Collections.Generic.Extensions.TryGetValue(Bridge.global.Function, System.Boolean, Bridge.CustomUIMarkup.Common.Trace.DisabledTypesForTrace, Bridge.getType(caller), false);
                         if (isDisabled) {
@@ -289,7 +368,10 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
 
                     console.log(Bridge.unbox(Value));
                 },
-                Log$1: function (message, element) {
+                Log: function (Value) {
+                    console.log(Bridge.unbox(Value));
+                },
+                Log$2: function (message, element) {
                     console.log(message);
                     console.log(element != null && element._root != null ? element._root.get(0) : null);
                 },
@@ -7494,7 +7576,7 @@ if(fn)
 
 
                 window.setTimeout(Bridge.fn.bind(this, function () {
-                    Bridge.CustomUIMarkup.Common.Trace.Log(this, this.DataContext);
+                    Bridge.CustomUIMarkup.Common.Trace.Log$1(this, this.DataContext);
                 }), 1003);
             }
         },
@@ -8251,8 +8333,8 @@ me._editor.display.wrapper.style.height = '95%';
             },
             CanOnlyBeOneChild: function (child) {
                 if (this.LogicalChilderenCount === 2) {
-                    Bridge.CustomUIMarkup.Common.Trace.Log$1("GetLogicalChildAt(0)", this.GetLogicalChildAt(0));
-                    Bridge.CustomUIMarkup.Common.Trace.Log$1("GetLogicalChildAt(1)", this.GetLogicalChildAt(1));
+                    Bridge.CustomUIMarkup.Common.Trace.Log$2("GetLogicalChildAt(0)", this.GetLogicalChildAt(0));
+                    Bridge.CustomUIMarkup.Common.Trace.Log$2("GetLogicalChildAt(1)", this.GetLogicalChildAt(1));
 
                     throw new System.InvalidOperationException("Content cannot be set more than once.");
                 }

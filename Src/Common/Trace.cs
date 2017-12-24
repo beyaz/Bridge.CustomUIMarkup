@@ -25,6 +25,11 @@ namespace Bridge.CustomUIMarkup.Common
             Script.Call("console.log", Value);
         }
 
+        public static void Log(object Value)
+        {
+            Script.Call("console.log", Value);
+        }
+
         public static void Log(string message, FrameworkElement element)
         {
             Script.Call("console.log", message);
