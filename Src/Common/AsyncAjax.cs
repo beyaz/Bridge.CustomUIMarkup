@@ -7,6 +7,7 @@ namespace Bridge.CustomUIMarkup.Common
     public class AsyncAjax : IPromise
     {
         #region Fields
+        string _error;
         string ResponseText;
         #endregion
 
@@ -16,7 +17,7 @@ namespace Bridge.CustomUIMarkup.Common
         #endregion
 
         #region Public Methods
-        public static async Task<string> Post(string url, string data)
+        public static async Task<string> Post(string url, string data, Action<string> onError = null)
         {
             var promise = new AsyncAjax
             {
@@ -25,7 +26,9 @@ namespace Bridge.CustomUIMarkup.Common
             };
             var resultHandler = (Func<AsyncAjax, string>) (request => request.ResponseText);
 
-            var task = Task.FromPromise<string>(promise, resultHandler);
+            var errorHandler = (Action<AsyncAjax>) (me => { onError?.Invoke(me._error); });
+
+            var task = Task.FromPromise<string>(promise, resultHandler, errorHandler);
 
             await task;
 
@@ -45,13 +48,18 @@ namespace Bridge.CustomUIMarkup.Common
                     ResponseText = arg3.ResponseText;
                     fulfilledHandler.Call(null, this);
                 },
-                Error = (o, s, arg3) =>
+
+                Error = (jqXhr, status, errror) =>
                 {
                     Trace.OperationWasCanceled("@POST:" + Url, "Ajax Error Occured.");
 
-                    Trace.Log(o);
-                    Trace.Log(s);
-                    Trace.Log(arg3);
+                    Trace.Log(jqXhr);
+
+                    _error = "@status:" + status + " @errror:" + errror;
+
+                    Trace.Log(_error);
+
+                    errorHandler.Call(null, this);
                 }
             });
         }

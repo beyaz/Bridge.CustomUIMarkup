@@ -10,7 +10,7 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
         inherits: [Bridge.IPromise],
         statics: {
             methods: {
-                Post: function (url, data) {
+                Post: function (url, data, onError) {
                     var $step = 0,
                         $task1, 
                         $taskResult1, 
@@ -20,6 +20,7 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
                         promise, 
                         $t, 
                         resultHandler, 
+                        errorHandler, 
                         task, 
                         $async_e, 
                         $asyncBody = Bridge.fn.bind(this, function () {
@@ -28,12 +29,17 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
                                     $step = System.Array.min([0,1], $step);
                                     switch ($step) {
                                         case 0: {
+                                            if (onError === void 0) { onError = null; }
                                             promise = ($t = new Bridge.CustomUIMarkup.Common.AsyncAjax(), $t.Url = url, $t.Data = data, $t);
                                             resultHandler = function (request) {
                                                 return request.ResponseText;
                                             };
 
-                                            task = System.Threading.Tasks.Task.fromPromise(promise, resultHandler);
+                                            errorHandler = function (me) {
+                                                !Bridge.staticEquals(onError, null) ? onError(me._error) : null;
+                                            };
+
+                                            task = System.Threading.Tasks.Task.fromPromise(promise, resultHandler, errorHandler);
 
                                             $task1 = task;
                                             $step = 1;
@@ -63,6 +69,7 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
             }
         },
         fields: {
+            _error: null,
             ResponseText: null,
             Data: null,
             Url: null
@@ -74,12 +81,16 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
                 $.ajax({ type: "POST", url: this.Url, data: this.Data, async: true, success: Bridge.fn.bind(this, function (o, s, arg3) {
                     this.ResponseText = arg3.responseText;
                     fulfilledHandler.call(null, this);
-                }), error: Bridge.fn.bind(this, function (o, s, arg3) {
+                }), error: Bridge.fn.bind(this, function (jqXhr, status, errror) {
                     Bridge.CustomUIMarkup.Common.Trace.OperationWasCanceled("@POST:" + (this.Url || ""), "Ajax Error Occured.");
 
-                    Bridge.CustomUIMarkup.Common.Trace.Log(o);
-                    Bridge.CustomUIMarkup.Common.Trace.Log(s);
-                    Bridge.CustomUIMarkup.Common.Trace.Log(arg3);
+                    Bridge.CustomUIMarkup.Common.Trace.Log(jqXhr);
+
+                    this._error = "@status:" + (status || "") + " @errror:" + (errror || "");
+
+                    Bridge.CustomUIMarkup.Common.Trace.Log(this._error);
+
+                    errorHandler.call(null, this);
                 }) });
             }
         }
