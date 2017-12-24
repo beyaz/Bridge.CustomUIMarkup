@@ -3868,9 +3868,15 @@ if(fn)
 
                     return Bridge.Reflection.getMembers(type, 16, 284, propertyName);
                 },
+                GetMethodInfo: function (instance, methodName) {
+                    var methodInfo = System.ComponentModel.ReflectionHelper.FindMethodInfo(instance, methodName);
+                    if (methodInfo == null) {
+                        throw new System.MissingMemberException("MethodNotFound: " + (Bridge.Reflection.getTypeFullName(Bridge.getType(instance)) || "") + " -> " + (methodName || ""));
+                    }
+
+                    return methodInfo;
+                },
                 GetPropertyValue: function (instance, propertyName) {
-
-
                     var propertyInfo = System.ComponentModel.ReflectionHelper.FindProperty(instance, propertyName);
 
                     if (propertyInfo == null) {
@@ -3901,18 +3907,50 @@ if(fn)
 
                     return Bridge.Reflection.midel(methodInfo, Bridge.unbox(instance)).apply(null, Bridge.unbox(parameters));
                 },
-                AssertParameters: function (instance, memberName) {
+                /**
+                 * Invokes the public non static method.
+                 *
+                 * @static
+                 * @public
+                 * @this System.ComponentModel.ReflectionHelper
+                 * @memberof System.ComponentModel.ReflectionHelper
+                 * @param   {System.Object}    instance      
+                 * @param   {string}           methodName
+                 * @return  {System.Object}
+                 */
+                InvokePublicNonStaticMethod: function (instance, methodName) {
                     if (instance == null) {
                         throw new System.ArgumentNullException("instance");
                     }
 
-                    if (memberName == null) {
-                        throw new System.ArgumentNullException("memberName");
+                    if (methodName == null) {
+                        throw new System.ArgumentNullException("methodName");
                     }
+
+                    var methodInfo = Bridge.Reflection.getMembers(Bridge.getType(instance), 8, 284, methodName);
+                    if (methodInfo == null) {
+                        throw new System.MissingMemberException((Bridge.Reflection.getTypeFullName(Bridge.getType(instance)) || "") + ":" + (methodName || ""));
+                    }
+
+                    return Bridge.Reflection.midel(methodInfo, Bridge.unbox(instance), null)(null);
+                },
+                SetNonStaticField: function (instance, fieldName, value) {
+                    System.ComponentModel.ReflectionHelper.AssertParameters(instance, fieldName);
+
+                    var type = Bridge.getType(instance);
+                    if (type == null) {
+                        throw new System.ArgumentNullException("type");
+                    }
+
+                    var fieldInfo = Bridge.Reflection.getMembers(type, 4, System.ComponentModel.ReflectionHelper.AllBindings | 256, fieldName);
+                    if (fieldInfo == null) {
+                        throw new System.MissingMemberException("FieldNotFound: " + (Bridge.Reflection.getTypeFullName(Bridge.getType(instance)) || "") + " -> " + (fieldName || ""));
+                    }
+
+                    Bridge.Reflection.fieldAccess(fieldInfo, Bridge.unbox(instance), Bridge.unbox(value));
                 },
                 SetPropertyValue: function (instance, propertyName, value) {
                     System.ComponentModel.ReflectionHelper.AssertParameters(instance, propertyName);
-
 
                     var type = Bridge.getType(instance);
                     if (type == null) {
@@ -3933,28 +3971,53 @@ if(fn)
 
                     Bridge.Reflection.midel(propertyInfo.s, Bridge.unbox(instance))(Bridge.unbox(value));
                 },
-                GetMethodInfo: function (instance, methodName) {
-                    var methodInfo = System.ComponentModel.ReflectionHelper.FindMethodInfo(instance, methodName);
-                    if (methodInfo == null) {
-                        throw new System.MissingMemberException("MethodNotFound: " + (Bridge.Reflection.getTypeFullName(Bridge.getType(instance)) || "") + " -> " + (methodName || ""));
+                /**
+                 * Tries the get value.
+                 *
+                 * @static
+                 * @public
+                 * @this System.ComponentModel.ReflectionHelper
+                 * @memberof System.ComponentModel.ReflectionHelper
+                 * @param   {System.Object}    instance        
+                 * @param   {string}           propertyName
+                 * @return  {System.Object}
+                 */
+                TryGetPropertyValue: function (instance, propertyName) {
+                    var property = System.ComponentModel.ReflectionHelper.GetFirstNamedProperty(instance, propertyName);
+                    if (property == null) {
+                        return null;
                     }
-                    return methodInfo;
+
+                    return Bridge.Reflection.midel(property.g, Bridge.unbox(instance))();
                 },
-                SetNonStaticField: function (instance, fieldName, value) {
-                    System.ComponentModel.ReflectionHelper.AssertParameters(instance, fieldName);
-
-                    var type = Bridge.getType(instance);
-                    if (type == null) {
-                        throw new System.ArgumentNullException("type");
+                AssertParameters: function (instance, memberName) {
+                    if (instance == null) {
+                        throw new System.ArgumentNullException("instance");
                     }
 
-                    var fieldInfo = Bridge.Reflection.getMembers(type, 4, System.ComponentModel.ReflectionHelper.AllBindings | 256, fieldName);
-                    if (fieldInfo == null) {
-                        throw new System.MissingMemberException("FieldNotFound: " + (Bridge.Reflection.getTypeFullName(Bridge.getType(instance)) || "") + " -> " + (fieldName || ""));
+                    if (memberName == null) {
+                        throw new System.ArgumentNullException("memberName");
+                    }
+                },
+                /**
+                 * Gets the first named property.
+                 *
+                 * @static
+                 * @private
+                 * @this System.ComponentModel.ReflectionHelper
+                 * @memberof System.ComponentModel.ReflectionHelper
+                 * @param   {System.Object}                     instance        
+                 * @param   {string}                            propertyName
+                 * @return  {System.Reflection.PropertyInfo}
+                 */
+                GetFirstNamedProperty: function (instance, propertyName) {
+                    if (instance == null) {
+                        return null;
                     }
 
-                    Bridge.Reflection.fieldAccess(fieldInfo, Bridge.unbox(instance), Bridge.unbox(value));
-
+                    return System.Linq.Enumerable.from(Bridge.Reflection.getMembers(Bridge.getType(instance), 16, 28)).firstOrDefault(function (p) {
+                            return Bridge.referenceEquals(p.n, propertyName);
+                        }, null);
                 }
             }
         }

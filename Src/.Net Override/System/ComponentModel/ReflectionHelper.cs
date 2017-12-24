@@ -1,10 +1,14 @@
+using System.Linq;
 using System.Reflection;
-using System.Windows;
 
 namespace System.ComponentModel
 {
     public class ReflectionHelper
     {
+        #region Public Properties
+        public static BindingFlags AllBindings => BindingFlags.IgnoreCase | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static;
+        #endregion
+
         #region Public Methods
         public static EventInfo FindEvent(object instance, string eventName)
         {
@@ -48,9 +52,7 @@ namespace System.ComponentModel
             return type.GetMethod(methodName);
         }
 
-        public static BindingFlags AllBindings => BindingFlags.IgnoreCase | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static;
-
-        public static MethodInfo FindMethodInfo(object instance, string methodName,params  Type[]parameterTypes)
+        public static MethodInfo FindMethodInfo(object instance, string methodName, params Type[] parameterTypes)
         {
             if (instance == null)
             {
@@ -70,6 +72,7 @@ namespace System.ComponentModel
 
             return type.GetMethod(methodName, AllBindings, parameterTypes);
         }
+
         public static PropertyInfo FindProperty(object instance, string propertyName)
         {
             if (instance == null)
@@ -91,10 +94,19 @@ namespace System.ComponentModel
             return type.GetProperty(propertyName);
         }
 
+        public static MethodInfo GetMethodInfo(object instance, string methodName)
+        {
+            var methodInfo = FindMethodInfo(instance, methodName);
+            if (methodInfo == null)
+            {
+                throw new MissingMemberException("MethodNotFound: " + instance.GetType().FullName + " -> " + methodName);
+            }
+
+            return methodInfo;
+        }
+
         public static object GetPropertyValue(object instance, string propertyName)
         {
-            
-
             var propertyInfo = FindProperty(instance, propertyName);
 
             if (propertyInfo == null)
@@ -133,22 +145,53 @@ namespace System.ComponentModel
             return methodInfo.Invoke(instance, parameters);
         }
 
-        static void AssertParameters(object instance, string memberName)
+
+        /// <summary>
+        ///     Invokes the public non static method.
+        /// </summary>
+        public static object InvokePublicNonStaticMethod(object instance, string methodName)
         {
             if (instance == null)
             {
-                throw new ArgumentNullException(nameof(instance));
+                throw new ArgumentNullException("instance");
             }
 
-            if (memberName == null)
+            if (methodName == null)
             {
-                throw new ArgumentNullException(nameof(memberName));
+                throw new ArgumentNullException("methodName");
             }
+
+            var methodInfo = instance.GetType().GetMethod(methodName);
+            if (methodInfo == null)
+            {
+                throw new MissingMemberException(instance.GetType().FullName+":"+ methodName);
+            }
+
+            return methodInfo.Invoke(instance, null);
         }
+
+        public static void SetNonStaticField(object instance, string fieldName, object value)
+        {
+            AssertParameters(instance, fieldName);
+
+            var type = instance.GetType();
+            if (type == null)
+            {
+                throw new ArgumentNullException(nameof(type));
+            }
+
+            var fieldInfo = type.GetField(fieldName, AllBindings);
+            if (fieldInfo == null)
+            {
+                throw new MissingMemberException("FieldNotFound: " + instance.GetType().FullName + " -> " + fieldName);
+            }
+
+            fieldInfo.SetValue(instance, value);
+        }
+
         public static void SetPropertyValue(object instance, string propertyName, object value)
         {
-            AssertParameters(instance,propertyName);
-            
+            AssertParameters(instance, propertyName);
 
             var type = instance.GetType();
             if (type == null)
@@ -172,36 +215,48 @@ namespace System.ComponentModel
 
             propertyInfo.SetValue(instance, value);
         }
+
+        /// <summary>
+        ///     Tries the get value.
+        /// </summary>
+        public static object TryGetPropertyValue(object instance, string propertyName)
+        {
+            var property = GetFirstNamedProperty(instance, propertyName);
+            if (property == null)
+            {
+                return null;
+            }
+
+            return property.GetValue(instance);
+        }
         #endregion
 
-        public static MethodInfo GetMethodInfo(object instance, string methodName)
+        #region Methods
+        static void AssertParameters(object instance, string memberName)
         {
-            var methodInfo = FindMethodInfo(instance, methodName);
-            if (methodInfo == null)
+            if (instance == null)
             {
-                throw new MissingMemberException("MethodNotFound: "+ instance.GetType().FullName + " -> "+ methodName);
+                throw new ArgumentNullException(nameof(instance));
             }
-            return methodInfo;
+
+            if (memberName == null)
+            {
+                throw new ArgumentNullException(nameof(memberName));
+            }
         }
 
-        public static void SetNonStaticField(object instance, string fieldName, object value)
+        /// <summary>
+        ///     Gets the first named property.
+        /// </summary>
+        static PropertyInfo GetFirstNamedProperty(object instance, string propertyName)
         {
-            AssertParameters(instance, fieldName);
-
-            var type = instance.GetType();
-            if (type == null)
+            if (instance == null)
             {
-                throw new ArgumentNullException(nameof(type));
+                return null;
             }
 
-            var fieldInfo = type.GetField(fieldName, AllBindings);
-            if (fieldInfo == null)
-            {
-                throw new MissingMemberException("FieldNotFound: " + instance.GetType().FullName + " -> " + fieldName);
-            }
-
-            fieldInfo.SetValue(instance,value);
-
+            return instance.GetType().GetProperties().FirstOrDefault(p => p.Name == propertyName);
         }
+        #endregion
     }
 }
