@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Windows;
-using Bridge.CustomUIMarkup.Common;
 using Bridge.CustomUIMarkup.Libraries.SemanticUI;
 using Bridge.CustomUIMarkup.UI;
 using Bridge.Html5;
