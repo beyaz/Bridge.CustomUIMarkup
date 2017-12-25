@@ -5,7 +5,7 @@
   // Enable the Bridge Console.
   // Default is false.
   "console": {
-    "enabled": false
+    "enabled": true
   },
 
   // Enable browser debugging of C# files.
