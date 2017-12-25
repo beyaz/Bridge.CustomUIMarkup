@@ -201,9 +201,6 @@
     <Reference Include="Retyped.semantic-ui, Version=2.2.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Retyped.semantic-ui.2.2.6532\lib\net40\Retyped.semantic-ui.dll</HintPath>
     </Reference>
-    <Reference Include="Retyped.swiper, Version=3.4.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Retyped.swiper.3.4.6532\lib\net40\Retyped.swiper.dll</HintPath>
-    </Reference>
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
