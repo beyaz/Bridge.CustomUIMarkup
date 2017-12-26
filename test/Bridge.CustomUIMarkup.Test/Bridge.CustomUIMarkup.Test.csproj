@@ -62,7 +62,9 @@
     <Reference Include="Bridge.Html5, Version=16.6.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\packages\Bridge.Html5.16.6.0\lib\net40\Bridge.Html5.dll</HintPath>
     </Reference>
-    <Reference Include="Bridge.jQuery2, Version=2.9.0.0, Culture=neutral, PublicKeyToken=null" />
+    <Reference Include="Bridge.jQuery2, Version=2.10.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Bridge.jQuery.2.11.0\lib\net40\Bridge.jQuery2.dll</HintPath>
+    </Reference>
     <Reference Include="Bridge.QUnit, Version=1.10.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\packages\Bridge.QUnit.1.10.0\lib\net40\Bridge.QUnit.dll</HintPath>
     </Reference>
