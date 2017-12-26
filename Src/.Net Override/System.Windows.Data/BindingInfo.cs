@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.Linq;
 using Bridge.CustomUIMarkup.Tokenizers;
 using Bridge.Html5;
 
@@ -15,16 +14,13 @@ namespace System.Windows.Data
         #endregion
 
         #region Public Properties
-        public BindingMode BindingMode { get; set; }
-        public IValueConverter Converter { get; set; }
-
-        public object Source { get; set; }
-
-        public PropertyPath SourcePath { get; set; }
-
-        public object Target { get; set; }
-
-        public PropertyPath TargetPath { get; set; }
+        public BindingMode     BindingMode        { get; set; }
+        public IValueConverter Converter          { get; set; }
+        public object          ConverterParameter { get; set; }
+        public object          Source             { get; set; }
+        public PropertyPath    SourcePath         { get; set; }
+        public object          Target             { get; set; }
+        public PropertyPath    TargetPath         { get; set; }
         #endregion
 
         #region Public Methods
@@ -47,12 +43,13 @@ namespace System.Windows.Data
                 return null;
             }
 
-            string sourcePath = null;
-            var bindingMode = BindingMode.TwoWay;
-            IValueConverter valueConverter = null;
+            string          sourcePath         = null;
+            var             bindingMode        = BindingMode.TwoWay;
+            IValueConverter valueConverter     = null;
+            string          converterParameter = null;
 
-            var tokens = BindingExpressionTokenizer.Tokenize(value).Where(t => t.Value != " ").ToList();
-            var len = tokens.Count;
+            var tokens = BindingExpressionTokenizer.Tokenize(value);
+            var len    = tokens.Count;
             for (int i = 0; i < len; i++)
             {
                 var token = tokens[i];
@@ -72,16 +69,35 @@ namespace System.Windows.Data
                 if (token.Value.ToUpperCase() == "MODE")
                 {
                     i++; // skip mode
-                    i++; // skip assingment
+
+                    SkipAssignmentAndSpace(tokens,ref i);
 
                     Enum.TryParse(tokens[i].Value, out bindingMode);
+                    continue;
+                }
+
+                if (token.Value.ToUpperCase() == "CONVERTERPARAMETER")
+                {
+                    i++; // skip converterparameter
+                    SkipAssignmentAndSpace(tokens, ref i);
+
+                    converterParameter = ReadConverterParameter(tokens, ref i);
+                    converterParameter = converterParameter.Trim();
+
+                    if (converterParameter.StartsWith("'") && 
+                        converterParameter.EndsWith("'"))
+                    {
+                        converterParameter = converterParameter.RemoveFromStart("'").RemoveFromEnd("'");
+                    }
+
                     continue;
                 }
 
                 if (token.Value.ToUpperCase() == "CONVERTER")
                 {
                     i++; // skip converter
-                    i++; // skip assingment
+
+                    SkipAssignmentAndSpace(tokens, ref i);
 
                     var converterTypeFullName = ReadPath(tokens, ref i);
 
@@ -97,9 +113,10 @@ namespace System.Windows.Data
 
             return new BindingInfo
             {
-                SourcePath = sourcePath,
-                BindingMode = bindingMode,
-                Converter = valueConverter
+                SourcePath         = sourcePath,
+                BindingMode        = bindingMode,
+                Converter          = valueConverter,
+                ConverterParameter = converterParameter
             };
         }
 
@@ -140,7 +157,7 @@ namespace System.Windows.Data
 
             if (Converter != null)
             {
-                value = Converter.Convert(value, null, null, null);
+                value = Converter.Convert(value, null, ConverterParameter, null);
             }
 
             TargetPath.SetPropertyValue(value);
@@ -163,12 +180,64 @@ namespace System.Windows.Data
             return TargetPath.GetPropertyValue();
         }
 
+
+
+        static void SkipAssignmentAndSpace(IReadOnlyList<Token> tokens, ref int i)
+        {
+            var len = tokens.Count;
+
+            while (i < len)
+            {
+                var token = tokens[i];
+
+                if (token.Value == "=" ||
+                    token.Value == " ")
+                {
+                    i++;
+                    continue;
+                }
+                return;
+                
+            }
+
+        }
+
+
+        static string ReadConverterParameter(IReadOnlyList<Token> tokens, ref int i)
+        {
+            var len = tokens.Count;
+
+            var path = "";
+            while (i < len)
+            {
+                var token = tokens[i];
+
+                if (token.TokenType == TokenType.Comma ||
+                    token.TokenType == TokenType.RightBracket)
+                {
+                    i--;
+                    break;
+                }
+
+                path += token.Value;
+                i++;
+            }
+
+            return path;
+        }
+
         static string ReadPath(IReadOnlyList<Token> tokens, ref int i)
         {
             var path = "";
             while (true)
             {
                 var token = tokens[i];
+
+                if (token.Value == " ")
+                {
+                    i++;
+                    continue;
+                }
 
                 if (token.TokenType == TokenType.Identifier ||
                     token.TokenType == TokenType.Dot)

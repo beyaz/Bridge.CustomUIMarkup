@@ -1696,10 +1696,6 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
         }
     });
 
-    Bridge.define("System.Windows.Markup.IAddChild", {
-        $kind: "interface"
-    });
-
     Bridge.define("Bridge.CustomUIMarkup.Libraries.SemanticUI.NumberToWord", {
         statics: {
             fields: {
@@ -5449,13 +5445,12 @@ if(fn)
                     var sourcePath = null;
                     var bindingMode = { v : System.Windows.Data.BindingMode.TwoWay };
                     var valueConverter = null;
+                    var converterParameter = null;
 
-                    var tokens = System.Linq.Enumerable.from(System.Windows.Data.BindingInfo.BindingExpressionTokenizer.Tokenize(value)).where(function (t) {
-                            return !Bridge.referenceEquals(t.Value, " ");
-                        }).toList(Bridge.CustomUIMarkup.Tokenizers.Token);
-                    var len = tokens.Count;
+                    var tokens = System.Windows.Data.BindingInfo.BindingExpressionTokenizer.Tokenize(value);
+                    var len = System.Array.getCount(tokens, Bridge.CustomUIMarkup.Tokenizers.Token);
                     for (var i = { v : 0 }; i.v < len; i.v = (i.v + 1) | 0) {
-                        var token = tokens.getItem(i.v);
+                        var token = System.Array.getItem(tokens, i.v, Bridge.CustomUIMarkup.Tokenizers.Token);
 
                         if (Bridge.referenceEquals(token.Value.toUpperCase(), "BINDING") || Bridge.referenceEquals(token.Value, " ")) {
                             continue;
@@ -5469,15 +5464,31 @@ if(fn)
 
                         if (Bridge.referenceEquals(token.Value.toUpperCase(), "MODE")) {
                             i.v = (i.v + 1) | 0; // skip mode
-                            i.v = (i.v + 1) | 0; // skip assingment
 
-                            System.Enum.tryParse(Bridge.global.System.Windows.Data.BindingMode, tokens.getItem(i.v).Value, bindingMode);
+                            System.Windows.Data.BindingInfo.SkipAssignmentAndSpace(tokens, i);
+
+                            System.Enum.tryParse(Bridge.global.System.Windows.Data.BindingMode, System.Array.getItem(tokens, i.v, Bridge.CustomUIMarkup.Tokenizers.Token).Value, bindingMode);
+                            continue;
+                        }
+
+                        if (Bridge.referenceEquals(token.Value.toUpperCase(), "CONVERTERPARAMETER")) {
+                            i.v = (i.v + 1) | 0; // skip converterparameter
+                            System.Windows.Data.BindingInfo.SkipAssignmentAndSpace(tokens, i);
+
+                            converterParameter = System.Windows.Data.BindingInfo.ReadConverterParameter(tokens, i);
+                            converterParameter = converterParameter.trim();
+
+                            if (System.String.startsWith(converterParameter, "'") && System.String.endsWith(converterParameter, "'")) {
+                                converterParameter = System.Extensions.RemoveFromEnd(System.Extensions.RemoveFromStart(converterParameter, "'"), "'");
+                            }
+
                             continue;
                         }
 
                         if (Bridge.referenceEquals(token.Value.toUpperCase(), "CONVERTER")) {
                             i.v = (i.v + 1) | 0; // skip converter
-                            i.v = (i.v + 1) | 0; // skip assingment
+
+                            System.Windows.Data.BindingInfo.SkipAssignmentAndSpace(tokens, i);
 
                             var converterTypeFullName = System.Windows.Data.BindingInfo.ReadPath(tokens, i);
 
@@ -5490,12 +5501,50 @@ if(fn)
                         }
                     }
 
-                    return ($t = new System.Windows.Data.BindingInfo(), $t.SourcePath = System.Windows.PropertyPath.op_Implicit(sourcePath), $t.BindingMode = bindingMode.v, $t.Converter = valueConverter, $t);
+                    return ($t = new System.Windows.Data.BindingInfo(), $t.SourcePath = System.Windows.PropertyPath.op_Implicit(sourcePath), $t.BindingMode = bindingMode.v, $t.Converter = valueConverter, $t.ConverterParameter = converterParameter, $t);
+                },
+                SkipAssignmentAndSpace: function (tokens, i) {
+                    var len = System.Array.getCount(tokens, Bridge.CustomUIMarkup.Tokenizers.Token);
+
+                    while (i.v < len) {
+                        var token = System.Array.getItem(tokens, i.v, Bridge.CustomUIMarkup.Tokenizers.Token);
+
+                        if (Bridge.referenceEquals(token.Value, "=") || Bridge.referenceEquals(token.Value, " ")) {
+                            i.v = (i.v + 1) | 0;
+                            continue;
+                        }
+                        return;
+
+                    }
+
+                },
+                ReadConverterParameter: function (tokens, i) {
+                    var len = System.Array.getCount(tokens, Bridge.CustomUIMarkup.Tokenizers.Token);
+
+                    var path = "";
+                    while (i.v < len) {
+                        var token = System.Array.getItem(tokens, i.v, Bridge.CustomUIMarkup.Tokenizers.Token);
+
+                        if (token.TokenType === Bridge.CustomUIMarkup.Tokenizers.TokenType.Comma || token.TokenType === Bridge.CustomUIMarkup.Tokenizers.TokenType.RightBracket) {
+                            i.v = (i.v - 1) | 0;
+                            break;
+                        }
+
+                        path = (path || "") + (token.Value || "");
+                        i.v = (i.v + 1) | 0;
+                    }
+
+                    return path;
                 },
                 ReadPath: function (tokens, i) {
                     var path = "";
                     while (true) {
                         var token = System.Array.getItem(tokens, i.v, Bridge.CustomUIMarkup.Tokenizers.Token);
+
+                        if (Bridge.referenceEquals(token.Value, " ")) {
+                            i.v = (i.v + 1) | 0;
+                            continue;
+                        }
 
                         if (token.TokenType === Bridge.CustomUIMarkup.Tokenizers.TokenType["Identifier"] || token.TokenType === Bridge.CustomUIMarkup.Tokenizers.TokenType.Dot) {
                             path = (path || "") + (token.Value || "");
@@ -5513,6 +5562,7 @@ if(fn)
         fields: {
             BindingMode: 0,
             Converter: null,
+            ConverterParameter: null,
             Source: null,
             SourcePath: null,
             Target: null,
@@ -5545,7 +5595,7 @@ if(fn)
                 var value = this.SourcePath.GetPropertyValue();
 
                 if (this.Converter != null) {
-                    value = this.Converter.System$Windows$Data$IValueConverter$Convert(value, null, null, null);
+                    value = this.Converter.System$Windows$Data$IValueConverter$Convert(value, null, this.ConverterParameter, null);
                 }
 
                 this.TargetPath.SetPropertyValue(value);
@@ -5825,6 +5875,10 @@ if(fn)
                 }
             }
         }
+    });
+
+    Bridge.define("System.Windows.Markup.IAddChild", {
+        $kind: "interface"
     });
 
     Bridge.define("System.Windows.PropertyMetadata", {
@@ -6724,6 +6778,58 @@ if(fn)
         }
     }; });
 
+    Bridge.define("System.Windows.Data.Converters.BooleanToCssClassConverter", {
+        inherits: [System.Windows.Data.IValueConverter],
+        statics: {
+            methods: {
+                ParseParameter: function (parameter) {
+                    var parameterAsString = Bridge.as(parameter, System.String);
+
+                    if (parameterAsString == null) {
+                        throw new System.ArgumentNullException(System.String.concat("@InvalidConverterParameter:", parameter));
+                    }
+
+                    var strings = System.Linq.Enumerable.from(System.String.split(parameterAsString, [58].map(function(i) {{ return String.fromCharCode(i); }}))).where(function (p) {
+                            return System.String.isNullOrWhiteSpace(p) === false;
+                        }).select(function (p) {
+                        return p.trim();
+                    }).toList(System.String);
+
+                    if (strings.Count !== 2) {
+                        throw new System.ArgumentNullException(System.String.concat("@InvalidConverterParameter:", parameter) + " (must be seperate bey css)");
+                    }
+
+                    return strings;
+                }
+            }
+        },
+        alias: [
+            "Convert", "System$Windows$Data$IValueConverter$Convert",
+            "ConvertBack", "System$Windows$Data$IValueConverter$ConvertBack"
+        ],
+        methods: {
+            Convert: function (value, targetType, parameter, culture) {
+                var valueAsBoolean = System.Cast.To(System.Boolean, value);
+                var strings = System.Windows.Data.Converters.BooleanToCssClassConverter.ParseParameter(parameter);
+
+                if (valueAsBoolean) {
+                    return strings.getItem(0);
+                }
+
+                return strings.getItem(1);
+            },
+            ConvertBack: function (value, targetType, parameter, culture) {
+                var strings = System.Windows.Data.Converters.BooleanToCssClassConverter.ParseParameter(parameter);
+
+                if (Bridge.referenceEquals(System.String.concat(value, ""), strings.getItem(0))) {
+                    return Bridge.box(true, System.Boolean, System.Boolean.toString);
+                }
+
+                return Bridge.box(false, System.Boolean, System.Boolean.toString);
+            }
+        }
+    });
+
     Bridge.define("System.Windows.Data.Converters.BooleanToVisibilityConverter", {
         inherits: [System.Windows.Data.IValueConverter],
         alias: [
@@ -6742,6 +6848,7 @@ if(fn)
                 if (!(Bridge.is(value, System.Byte))) {
                     return Bridge.box(false, System.Boolean, System.Boolean.toString);
                 }
+
                 return Bridge.box(System.Nullable.getValue(Bridge.cast(Bridge.unbox(value), System.Byte)) === System.Windows.Visibility.Visible, System.Boolean, System.Boolean.toString);
             }
         }
@@ -6758,7 +6865,7 @@ if(fn)
                         return null;
                     }
 
-                    return ($t = new System.Windows.Data.HTMLBindingInfo(), $t.SourcePath = bindingInfo.SourcePath, $t.Converter = bindingInfo.Converter, $t);
+                    return ($t = new System.Windows.Data.HTMLBindingInfo(), $t.SourcePath = bindingInfo.SourcePath, $t.Converter = bindingInfo.Converter, $t.ConverterParameter = bindingInfo.ConverterParameter, $t);
                 },
                 TargetCanUpdateSource: function (element) {
                     if (Bridge.referenceEquals(element.get(0).tagName, "INPUT")) {
@@ -9186,45 +9293,6 @@ $( '<style> '+css+'</style>' ).appendTo( 'head' );
                 if (this.ErrorMessage != null) {
                     this.ErrorMessage = null;
                 }
-            }
-        }
-    });
-
-    Bridge.define("Bridge.CustomUIMarkup.Libraries.SemanticUI.Modal", {
-        inherits: [Bridge.CustomUIMarkup.Libraries.SemanticUI.ElementBase,System.Windows.Markup.IAddChild],
-        fields: {
-            content: null,
-            header: null,
-            _title: null
-        },
-        props: {
-            Title: {
-                get: function () {
-                    return this._title;
-                },
-                set: function (value) {
-                    if (!Bridge.referenceEquals(this._title, value)) {
-                        this._title = value;
-                        this.OnPropertyChanged("Title");
-                    }
-                }
-            }
-        },
-        alias: ["Add", "System$Windows$Markup$IAddChild$Add"],
-        methods: {
-            Add: function (element) {
-                this.content.append(element.Root);
-            },
-            InitDOM: function () {
-                this._root = System.Windows.DOM.div("ui modal");
-
-                this.header = System.Windows.DOM.div("header").appendTo(this._root);
-
-                this.content = System.Windows.DOM.div("content").appendTo(this._root);
-
-                this._root.modal("show");
-
-                // BindPropertyToInnerHTML(nameof(Title), header);
             }
         }
     });

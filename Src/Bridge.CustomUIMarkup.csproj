@@ -111,7 +111,6 @@
     <Compile Include="Libraries\SemanticUI\Combo.cs" />
     <Compile Include="Libraries\SemanticUI\ElementBase.cs" />
     <Compile Include="Libraries\SemanticUI\InputText.cs" />
-    <Compile Include="Libraries\SemanticUI\Modal.cs" />
     <Compile Include="Libraries\SemanticUI\NumberToWord.cs" />
     <Compile Include="Libraries\SemanticUI\TabItem.cs" />
     <Compile Include="Libraries\SemanticUI\ui_top_attached_tabular_menu.cs" />
