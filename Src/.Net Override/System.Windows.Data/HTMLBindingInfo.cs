@@ -24,16 +24,10 @@ namespace System.Windows.Data
 
             return new HTMLBindingInfo
             {
-                SourcePath = bindingInfo.SourcePath,
-                Converter = bindingInfo.Converter,
+                SourcePath         = bindingInfo.SourcePath,
+                Converter          = bindingInfo.Converter,
                 ConverterParameter = bindingInfo.ConverterParameter
             };
-        }
-
-
-        protected override object GetTargetValue()
-        {
-            return Target.Val();
         }
 
         public override void UpdateTarget()
@@ -64,8 +58,16 @@ namespace System.Windows.Data
             if (element.Get(0).TagName == "INPUT")
             {
                 var type = element.Attr("type");
+                if (type == null)
+                {
+                    return false;
+                }
 
-                if (type?.ToUpperCase() == "HIDDEN")
+                type = type.ToUpperCase();
+
+                if (type == "HIDDEN" ||
+                    type == "TEXT" ||
+                    type == "TEXTAREA")
                 {
                     return true;
                 }
@@ -90,6 +92,11 @@ namespace System.Windows.Data
             }
 
             Target.FocusOut(ev => { UpdateSource(); });
+        }
+
+        protected override object GetTargetValue()
+        {
+            return Target.Val();
         }
         #endregion
     }

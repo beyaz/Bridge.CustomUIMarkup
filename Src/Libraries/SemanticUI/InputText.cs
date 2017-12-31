@@ -80,14 +80,15 @@ namespace Bridge.CustomUIMarkup.Libraries.SemanticUI
         void OnFocusOut(jQueryFocusEvent e)
         {
             var val = _inputElement.Val();
-            if ( string.IsNullOrEmpty(val))
+            if ((AllowOnlyDecimalInputs || AllowOnlyNumericInputs ) && string.IsNullOrEmpty(val))
             {
                 return;
             }
 
-            if (val.Trim()==".")
+
+            if (AllowOnlyDecimalInputs)
             {
-                if (AllowOnlyDecimalInputs)
+                if (val?.Trim() == ".")
                 {
                     _inputElement.Val("");
                     return;
@@ -95,6 +96,7 @@ namespace Bridge.CustomUIMarkup.Libraries.SemanticUI
                 
             }
 
+            
             Text = val;
         }
 

@@ -114,6 +114,7 @@ namespace Bridge.CustomUIMarkup.Test
             new Z_Builder2Test().SubElementAsAttribute();
             new Z_Builder2Test().TextNode();
             new Z_Builder2Test().InputTypeHidden();
+            new Z_Builder2Test().Input_Type_text(); 
 
             new Z_Builder2Test().combo_SelectedValueTest();
 
@@ -388,9 +389,35 @@ namespace Bridge.CustomUIMarkup.Test
             ui._root.Val("xyZ").Change();
 
             MustEqual("xyZ", model.LastName);
-
-
         }
+
+
+        void Input_Type_text()
+        {
+            var model = new SimpleClass1
+            {
+                LastName = "Neşet Ertaş"
+            };
+
+            var htmlString = "<input id='A' type='text' value='{LastName,Mode=TwoWay}' />";
+
+            var ui = BuildAndGetFirstLogicalChild(htmlString, model);
+
+            MustEqual("<input id='A' type='text'>", ui._el.AsHtmlString());
+
+            Assert.AreEqual("Neşet Ertaş", ui._el["value"].As<string>());
+
+            model.LastName = "Qwr";
+
+            MustEqual("<input id='A' type='text'>", ui._el.AsHtmlString());
+
+            Assert.AreEqual("Qwr", ui._el["value"].As<string>());
+
+            //ui._root.Val("xyZ").Change();
+
+            //MustEqual("xyZ", model.LastName);
+        }
+
 
         class ComboModel : Bag
         {

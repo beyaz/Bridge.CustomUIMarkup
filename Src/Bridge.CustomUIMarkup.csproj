@@ -51,6 +51,7 @@
     <Compile Include="Bridge.Html5\Extensions.cs" />
     <Compile Include="Common\AsyncAjax.cs" />
     <Compile Include="Libraries\SemanticUI\DataGrid.cs" />
+    <Compile Include="Libraries\SemanticUI\DatePicker.cs" />
     <Compile Include="Libraries\SemanticUI\FieldString.cs" />
     <Compile Include="Libraries\SemanticUI\ItemsControl.cs" />
     <Compile Include="Libraries\SemanticUI\TextBlock.cs" />

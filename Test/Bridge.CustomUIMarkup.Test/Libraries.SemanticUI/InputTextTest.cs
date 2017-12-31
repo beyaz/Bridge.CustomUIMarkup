@@ -422,17 +422,22 @@ namespace Bridge.CustomUIMarkup.Libraries.SemanticUI
         {
             var model = new SimpleClass1
             {
+                
                 Child = new SimpleClass1
                 {
+                    SimpleStringProperty = "k",
+
                     Child = new SimpleClass1
                     {
                         LastName = "A"
                     }
+
+
                 }
             };
 
             var xmlString = "<div>" +
-                            "      <FieldString Value='{Child.Child.LastName}' />" +
+                            "      <FieldString Value='{Child.Child.LastName}' Label='{Child.SimpleStringProperty}' />" +
                             "</div>";
 
             var fe = new FrameworkElement
@@ -446,6 +451,8 @@ namespace Bridge.CustomUIMarkup.Libraries.SemanticUI
             var fieldString = (FieldString)el.GetLogicalChildAt(0);
 
             MustEqual("A", fieldString.Value);
+
+            Assert.AreEqual("k",fieldString.Label);
 
             model.Child = new SimpleClass1
             {

@@ -810,6 +810,7 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
                     Bridge.CustomUIMarkup.UI.Builder.Register("FieldString", function () { return Bridge.CustomUIMarkup.UI.Builder.Create(Bridge.CustomUIMarkup.Libraries.SemanticUI.FieldString); });
                     Bridge.CustomUIMarkup.UI.Builder.Register("FieldInt32", function () { return Bridge.CustomUIMarkup.UI.Builder.Create(Bridge.CustomUIMarkup.Libraries.SemanticUI.FieldInt32); });
                     Bridge.CustomUIMarkup.UI.Builder.Register("FieldDecimal", function () { return Bridge.CustomUIMarkup.UI.Builder.Create(Bridge.CustomUIMarkup.Libraries.SemanticUI.FieldDecimal); });
+                    Bridge.CustomUIMarkup.UI.Builder.Register("FieldDate", function () { return Bridge.CustomUIMarkup.UI.Builder.Create(Bridge.CustomUIMarkup.Libraries.SemanticUI.FieldDate); });
                     Bridge.CustomUIMarkup.UI.Builder.Register("ContentPresenter", function () {
                         return new System.Windows.ContentPresenter();
                     });
@@ -6870,8 +6871,13 @@ if(fn)
                 TargetCanUpdateSource: function (element) {
                     if (Bridge.referenceEquals(element.get(0).tagName, "INPUT")) {
                         var type = element.attr("type");
+                        if (type == null) {
+                            return false;
+                        }
 
-                        if (Bridge.referenceEquals((type != null ? type.toUpperCase() : null), "HIDDEN")) {
+                        type = type.toUpperCase();
+
+                        if (Bridge.referenceEquals(type, "HIDDEN") || Bridge.referenceEquals(type, "TEXT") || Bridge.referenceEquals(type, "TEXTAREA")) {
                             return true;
                         }
                     }
@@ -6891,9 +6897,6 @@ if(fn)
             }
         },
         methods: {
-            GetTargetValue: function () {
-                return this.Target$1.val();
-            },
             UpdateTarget: function () {
                 var value = this.SourcePath.GetPropertyValue();
 
@@ -6926,6 +6929,9 @@ if(fn)
                 this.Target$1.focusout(Bridge.fn.bind(this, function (ev) {
                         this.UpdateSource();
                     }));
+            },
+            GetTargetValue: function () {
+                return this.Target$1.val();
             }
         }
     });
@@ -7927,7 +7933,7 @@ me._editor.display.wrapper.style.height = '95%';
         props: {
             DefaultTemplateAsXml: {
                 get: function () {
-                    return "<div class = 'ui selection dropdown'>    <input type = 'hidden' value='{SelectedValue}'  x.Name = '_hidden' />    <i class = 'dropdown icon' />    <div class = 'default text' >{DefaultText}</div>    <div class = 'menu' x.Name='_menu' /></div>";
+                    return "<div class = 'ui selection dropdown' WidthPercent = '100' >    <input type = 'hidden' value='{SelectedValue}'  x.Name = '_hidden' />    <i class = 'dropdown icon' />    <div class = 'default text' >{DefaultText}</div>    <div class = 'menu' x.Name='_menu' /></div>";
                 }
             },
             DefaultText: {
@@ -8290,13 +8296,11 @@ me._editor.display.wrapper.style.height = '95%';
         inherits: [System.Windows.Controls.Control],
         statics: {
             fields: {
-                ValueProperty: null,
-                DefaultTextProperty: null
+                ValueProperty: null
             },
             ctors: {
                 init: function () {
                     this.ValueProperty = System.Windows.DependencyProperty.Register$1("Value", System.Nullable$1(System.DateTime), Bridge.CustomUIMarkup.Libraries.SemanticUI.DatePicker, new System.Windows.PropertyMetadata.$ctor1(null, Bridge.CustomUIMarkup.Libraries.SemanticUI.DatePicker.OnValueChanged));
-                    this.DefaultTextProperty = System.Windows.DependencyProperty.Register$1("DefaultText", System.String, Bridge.CustomUIMarkup.Libraries.SemanticUI.DatePicker, new System.Windows.PropertyMetadata.ctor(null));
                 }
             },
             methods: {
@@ -8305,16 +8309,20 @@ me._editor.display.wrapper.style.height = '95%';
 
                     var root = datePicker._root;
                     var value = Bridge.as(e.NewValue, System.DateTime, true);
-                    var valueAsString = "";
-                    if (System.Nullable.hasValue(value)) {
-                        valueAsString = System.Nullable.toString(value, function ($t) { return System.DateTime.format($t); });
-                    }
 
-                    root.calendar('set date',valueAsString);
+                    root.calendar('set date',value);
                 }
             }
         },
+        fields: {
+            _inputText: null
+        },
         props: {
+            DefaultTemplateAsXml: {
+                get: function () {
+                    return "<div class='ui calendar'>    <div class='ui input left icon'>        <i class='calendar icon'/>        <input type = 'text' x.Name='_inputText'/>    </div></div>";
+                }
+            },
             Value: {
                 get: function () {
                     return Bridge.cast(Bridge.unbox(this.GetValue$1(Bridge.CustomUIMarkup.Libraries.SemanticUI.DatePicker.ValueProperty)), System.DateTime, true);
@@ -8322,32 +8330,31 @@ me._editor.display.wrapper.style.height = '95%';
                 set: function (value) {
                     this.SetValue$1(Bridge.CustomUIMarkup.Libraries.SemanticUI.DatePicker.ValueProperty, Bridge.box(value, System.DateTime, System.Nullable.toStringFn(System.DateTime.format), System.Nullable.getHashCode));
                 }
-            },
-            DefaultText: {
-                get: function () {
-                    return Bridge.cast(this.GetValue$1(Bridge.CustomUIMarkup.Libraries.SemanticUI.DatePicker.DefaultTextProperty), System.String);
-                },
-                set: function (value) {
-                    this.SetValue$1(Bridge.CustomUIMarkup.Libraries.SemanticUI.DatePicker.DefaultTextProperty, value);
-                }
-            },
-            DefaultTemplateAsXml: {
-                get: function () {
-                    return "<div class='ui calendar'>    <div class='ui input left icon'>        <i class='calendar icon'/>        <input type='text' placeholder='{DefaultText}'/>    </div></div>";
-                }
             }
         },
         ctors: {
             ctor: function () {
                 this.$initialize();
                 System.Windows.Controls.Control.ctor.call(this);
-                var _wrapper;
-
                 this.addBeforeConnectToLogicalParent(Bridge.fn.bind(this, function (parent) {
                     var root = this._root;
-                    root.calendar({type: 'date'});
-                }));
+                    var me = this;
+                    
 
+var settings = 
+{
+    type    : 'date',
+    onChange:function (date, text, mode)
+	{
+		me.Value = date||null;
+	}
+};
+root.calendar(settings);
+
+
+
+
+                }));
             }
         }
     });
@@ -8692,17 +8699,19 @@ me._editor.display.wrapper.style.height = '95%';
             },
             OnFocusOut: function (e) {
                 var val = System.Windows.FrameworkElementExtensions.Val$1(Bridge.global.System.Windows.FrameworkElement, this._inputElement);
-                if (System.String.isNullOrEmpty(val)) {
+                if ((this["AllowOnlyDecimalInputs"] || this["AllowOnlyNumericInputs"]) && System.String.isNullOrEmpty(val)) {
                     return;
                 }
 
-                if (Bridge.referenceEquals(val.trim(), ".")) {
-                    if (this["AllowOnlyDecimalInputs"]) {
+
+                if (this["AllowOnlyDecimalInputs"]) {
+                    if (Bridge.referenceEquals((val != null ? val.trim() : null), ".")) {
                         System.Windows.FrameworkElementExtensions.Val(Bridge.global.System.Windows.FrameworkElement, this._inputElement, "");
                         return;
                     }
 
                 }
+
 
                 this.Text = val;
             },
@@ -9427,6 +9436,35 @@ $( '<style> '+css+'</style>' ).appendTo( 'head' );
 
     Bridge.define("System.Windows.Controls.Primitives.MultiSelector", {
         inherits: [System.Windows.Controls.Primitives.Selector]
+    });
+
+    Bridge.define("Bridge.CustomUIMarkup.Libraries.SemanticUI.FieldDate", {
+        inherits: [Bridge.CustomUIMarkup.Libraries.SemanticUI.Field],
+        statics: {
+            fields: {
+                ValueProperty: null
+            },
+            ctors: {
+                init: function () {
+                    this.ValueProperty = System.Windows.DependencyProperty.Register$1("Value", System.Nullable$1(System.DateTime), Bridge.CustomUIMarkup.Libraries.SemanticUI.FieldDate, new System.Windows.PropertyMetadata.ctor(null));
+                }
+            }
+        },
+        props: {
+            DefaultTemplateAsXml: {
+                get: function () {
+                    return "<div class='field' on.click = 'ClearErrorMessage' >   <label Visibility = '{LabelVisibility}'>{Label}</label>   <ContentPresenter>       <DatePicker Value = '{Value}' />   </ContentPresenter>   <div class = 'ui red pointing label transition' Visibility = '{ErrorMessageVisibility}'> {ErrorMessage} </div></div>";
+                }
+            },
+            Value: {
+                get: function () {
+                    return Bridge.cast(Bridge.unbox(this.GetValue$1(Bridge.CustomUIMarkup.Libraries.SemanticUI.FieldDate.ValueProperty)), System.DateTime, true);
+                },
+                set: function (value) {
+                    this.SetValue$1(Bridge.CustomUIMarkup.Libraries.SemanticUI.FieldDate.ValueProperty, Bridge.box(value, System.DateTime, System.Nullable.toStringFn(System.DateTime.format), System.Nullable.getHashCode));
+                }
+            }
+        }
     });
 
     Bridge.define("Bridge.CustomUIMarkup.Libraries.SemanticUI.FieldDecimal", {
