@@ -483,6 +483,15 @@ namespace Bridge.CustomUIMarkup.Test
             Assert.True(info.SourcePath.Path == "XXX.Y.Z");
 
             Assert.True(info.ConverterParameter == (object)"j4 A5: p o ş");
+
+
+            info = BindingInfo.TryParseExpression("{Binding     XXX.Y.Z,Mode=OneWay,Converter= " + typeof(ATo56Converter).FullName + " , ConverterParameter= 'j4 A5: p o ş'}");
+
+            Assert.True(info.Converter != null);
+            Assert.True(info.BindingMode == BindingMode.OneWay);
+            Assert.True(info.SourcePath.Path == "XXX.Y.Z");
+
+            Assert.True(info.ConverterParameter == (object)"j4 A5: p o ş");
         }
 
 

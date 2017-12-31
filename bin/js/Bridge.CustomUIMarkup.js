@@ -6978,6 +6978,7 @@ if(fn)
                 WidthPercentProperty: null,
                 ColorProperty: null,
                 "InnerHTMLProperty": null,
+                "IsVisibleProperty": null,
                 VisibilityProperty: null,
                 HeightProperty: null,
                 HeightPercentProperty: null,
@@ -7008,6 +7009,7 @@ if(fn)
                     }));
                     this.ColorProperty = System.Windows.DependencyProperty.Register$1("Color", System.String, System.Windows.FrameworkElement, System.Windows.FrameworkElement.CreateJQueryCssUpdater("color"));
                     this["InnerHTMLProperty"] = System.Windows.DependencyProperty.Register$1("InnerHTML", System.String, System.Windows.FrameworkElement, new System.Windows.PropertyMetadata.$ctor2(System.Windows.FrameworkElement.OnInnerHTMLChanged));
+                    this["IsVisibleProperty"] = System.Windows.DependencyProperty.Register$1("IsVisible", System.Boolean, System.Windows.FrameworkElement, new System.Windows.PropertyMetadata.$ctor1(Bridge.box(true, System.Boolean, System.Boolean.toString), System.Windows.FrameworkElement.OnVisibleChanged));
                     this.VisibilityProperty = System.Windows.DependencyProperty.Register$1("Visibility", System.Windows.Visibility, System.Windows.FrameworkElement, new System.Windows.PropertyMetadata.$ctor2(System.Windows.FrameworkElement.OnVisibilityChanged));
                     this.HeightProperty = System.Windows.DependencyProperty.Register$1("Height", System.Double, System.Windows.FrameworkElement, System.Windows.FrameworkElement.CreateJQueryCssUpdater("height"));
                     this.HeightPercentProperty = System.Windows.DependencyProperty.Register$1("HeightPercent", System.Double, System.Windows.FrameworkElement, System.Windows.FrameworkElement.CreateJQueryCssUpdater$1("height", function (v) {
@@ -7078,6 +7080,19 @@ if(fn)
                     var me = Bridge.cast(d, System.Windows.FrameworkElement);
 
                     me._root != null ? me._root.html(Bridge.cast(e.NewValue, System.String)) : null;
+                },
+                OnVisibleChanged: function (d, e) {
+                    var me = Bridge.cast(d, System.Windows.FrameworkElement);
+
+                    var newValue = e.NewValue;
+
+                    var value = System.Nullable.getValue(Bridge.cast(Bridge.unbox(newValue), System.Boolean));
+
+                    if (value) {
+                        me._root.css("visibility", "visible");
+                    } else {
+                        me._root.css("visibility", "hidden");
+                    }
                 },
                 OnVisibilityChanged: function (d, e) {
                     var me = Bridge.cast(d, System.Windows.FrameworkElement);
@@ -7328,6 +7343,14 @@ if(fn)
                 },
                 set: function (value) {
                     this.SetValue$1(System.Windows.FrameworkElement["InnerHTMLProperty"], value);
+                }
+            },
+            "IsVisible": {
+                get: function () {
+                    return System.Nullable.getValue(Bridge.cast(Bridge.unbox(this.GetValue$1(System.Windows.FrameworkElement["IsVisibleProperty"])), System.Boolean));
+                },
+                set: function (value) {
+                    this.SetValue$1(System.Windows.FrameworkElement["IsVisibleProperty"], Bridge.box(value, System.Boolean, System.Boolean.toString));
                 }
             },
             Visibility: {

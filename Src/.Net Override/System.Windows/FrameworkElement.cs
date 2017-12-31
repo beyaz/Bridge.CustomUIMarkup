@@ -1,5 +1,4 @@
 ﻿using System.ComponentModel;
-using System.Diagnostics.Contracts;
 using System.Windows.Controls;
 using Bridge.CustomUIMarkup.Common;
 using Bridge.CustomUIMarkup.Libraries.SemanticUI;
@@ -402,6 +401,39 @@ namespace System.Windows
 
             me._root?.Html((string) e.NewValue);
         }
+        #endregion
+
+
+
+        #region IsVisible
+        public static readonly DependencyProperty IsVisibleProperty = DependencyProperty.Register(
+                                                        nameof(IsVisible), typeof(bool), typeof(FrameworkElement), 
+                                                        new PropertyMetadata(true, OnVisibleChanged));
+
+        public bool IsVisible
+        {
+            get { return (bool) GetValue(IsVisibleProperty); }
+            set { SetValue(IsVisibleProperty, value); }
+        }
+
+        static void OnVisibleChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            var me = (FrameworkElement)d;
+
+            var newValue = e.NewValue;
+
+            var value = (bool)newValue;
+
+            if (value)
+            {
+                me._root.Css("visibility", "visible");
+            }
+            else
+            {
+                me._root.Css("visibility", "hidden");
+            }
+        }
+
         #endregion
 
         #region VisibilityProperty
