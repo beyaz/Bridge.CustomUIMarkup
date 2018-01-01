@@ -185,11 +185,15 @@ setTimeout(function()
                 {
                     var td = new HtmlElement("td");
 
-                    var cellValue = ReflectionHelper.GetPropertyValue(itemData, columnInfo.Name);
+                    
 
                     if (columnInfo.EditorType == DataGridCellEditorType.Text)
                     {
-                         td.InnerHTML = cellValue?.ToString();
+                        var propertyPath = new PropertyPath(columnInfo.Name);
+                        propertyPath.Walk(itemData);
+                        var cellValue  = propertyPath.GetPropertyValue();
+
+                        td.InnerHTML = cellValue?.ToString();
                     }
                     else
                     {

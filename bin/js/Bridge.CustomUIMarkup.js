@@ -9732,9 +9732,13 @@ setTimeout(function()
                             var columnInfo1 = $t2.Current;
                             var td = new System.Windows.HtmlElement("td");
 
-                            var cellValue = System.ComponentModel.ReflectionHelper.GetPropertyValue(itemData.v, columnInfo1.Name);
+
 
                             if (columnInfo1.EditorType === Bridge.CustomUIMarkup.Libraries.SemanticUI.DataGridCellEditorType.Text) {
+                                var propertyPath = new System.Windows.PropertyPath(columnInfo1.Name);
+                                propertyPath.Walk(itemData.v);
+                                var cellValue = propertyPath.GetPropertyValue();
+
                                 td["InnerHTML"] = cellValue != null ? cellValue.toString() : null;
                             } else {
                                 throw new System.NotImplementedException(System.Enum.toString(Bridge.CustomUIMarkup.Libraries.SemanticUI.DataGridCellEditorType, columnInfo1.EditorType));
