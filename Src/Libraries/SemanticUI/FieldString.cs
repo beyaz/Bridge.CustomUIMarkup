@@ -34,12 +34,11 @@ namespace Bridge.CustomUIMarkup.Libraries.SemanticUI
         #endregion
     }
 
-    public class FieldStringTextArea : FieldString
+    public class FieldTextArea : FieldString
     {
 
         #region Rows
-        public static readonly DependencyProperty RowsProperty = DependencyProperty.Register(
-                                                        "Rows", typeof(int?), typeof(FieldStringTextArea), new PropertyMetadata(default(int?)));
+        public static readonly DependencyProperty RowsProperty = DependencyProperty.Register(nameof(Rows), typeof(int?), typeof(FieldTextArea), new PropertyMetadata(default(int?)));
 
         public int? Rows
         {

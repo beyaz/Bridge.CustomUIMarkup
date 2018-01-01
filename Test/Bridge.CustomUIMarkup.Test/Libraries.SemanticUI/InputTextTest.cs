@@ -68,7 +68,8 @@ namespace Bridge.CustomUIMarkup.Libraries.SemanticUI
             new InputTextTest().OnDataContext_Changed_InnerHTML();
             new InputTextTest().Binding_Custom_Attribute();
             new InputTextTest().Binding_Custom_Attribute_Parend_DataContext_Changed();
-            new InputTextTest().FieldStringDataContext(); 
+            new InputTextTest().FieldStringDataContext();
+            new InputTextTest().FieldTextArea_Label_Binding(); 
         }
         #endregion
 
@@ -418,6 +419,60 @@ namespace Bridge.CustomUIMarkup.Libraries.SemanticUI
             MustEqual("yyy", el.Text);
         }
 
+        void FieldTextArea_Label_Binding()
+        {
+            var model = new SimpleClass1
+            {
+
+                Child = new SimpleClass1
+                {
+                    SimpleStringProperty = "k",
+
+                    Child = new SimpleClass1
+                    {
+                        LastName = "A"
+                    }
+
+
+                }
+            };
+
+            
+            var xmlString = "<div>" +
+                            "      <FieldTextArea Value='{Child.Child.LastName}' Label='{Child.SimpleStringProperty}'  />" +
+                            "</div>";
+
+            var div = BuildAndGetFirstLogicalChild(xmlString,model);
+
+            var fieldTextArea = (FieldString)div.GetLogicalChildAt(0);
+
+            MustEqual("A", fieldTextArea.Value);
+
+            Assert.AreEqual("k", fieldTextArea.Label);
+
+
+            div.DataContext = new SimpleClass1
+            {
+
+                Child = new SimpleClass1
+                {
+                    SimpleStringProperty = "k2",
+
+                    Child = new SimpleClass1
+                    {
+                        LastName = "A2"
+                    }
+
+
+                }
+            };
+
+            MustEqual("A2", fieldTextArea.Value);
+
+            Assert.AreEqual("k2", fieldTextArea.Label);
+
+
+        }
         void FieldStringDataContext()
         {
             var model = new SimpleClass1

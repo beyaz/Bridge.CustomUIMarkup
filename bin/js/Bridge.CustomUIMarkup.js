@@ -808,7 +808,8 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
                     Bridge.CustomUIMarkup.UI.Builder.Register("textBox", function () { return Bridge.CustomUIMarkup.UI.Builder.Create(Bridge.CustomUIMarkup.Libraries.SemanticUI.InputText); });
                     Bridge.CustomUIMarkup.UI.Builder.Register("ui-input-textarea", function () { return Bridge.CustomUIMarkup.UI.Builder.Create(Bridge.CustomUIMarkup.Libraries.SemanticUI.TextArea); });
                     Bridge.CustomUIMarkup.UI.Builder.Register("FieldString", function () { return Bridge.CustomUIMarkup.UI.Builder.Create(Bridge.CustomUIMarkup.Libraries.SemanticUI.FieldString); });
-                    Bridge.CustomUIMarkup.UI.Builder.Register("FieldStringTextArea", function () { return Bridge.CustomUIMarkup.UI.Builder.Create(Bridge.CustomUIMarkup.Libraries.SemanticUI.FieldStringTextArea); });
+                    Bridge.CustomUIMarkup.UI.Builder.Register("FieldStringTextArea", function () { return Bridge.CustomUIMarkup.UI.Builder.Create(Bridge.CustomUIMarkup.Libraries.SemanticUI.FieldTextArea); });
+                    Bridge.CustomUIMarkup.UI.Builder.Register("FieldTextArea", function () { return Bridge.CustomUIMarkup.UI.Builder.Create(Bridge.CustomUIMarkup.Libraries.SemanticUI.FieldTextArea); });
                     Bridge.CustomUIMarkup.UI.Builder.Register("FieldInt32", function () { return Bridge.CustomUIMarkup.UI.Builder.Create(Bridge.CustomUIMarkup.Libraries.SemanticUI.FieldInt32); });
                     Bridge.CustomUIMarkup.UI.Builder.Register("FieldDecimal", function () { return Bridge.CustomUIMarkup.UI.Builder.Create(Bridge.CustomUIMarkup.Libraries.SemanticUI.FieldDecimal); });
                     Bridge.CustomUIMarkup.UI.Builder.Register("FieldDate", function () { return Bridge.CustomUIMarkup.UI.Builder.Create(Bridge.CustomUIMarkup.Libraries.SemanticUI.FieldDate); });
@@ -9813,7 +9814,7 @@ setTimeout(function()
         }
     });
 
-    Bridge.define("Bridge.CustomUIMarkup.Libraries.SemanticUI.FieldStringTextArea", {
+    Bridge.define("Bridge.CustomUIMarkup.Libraries.SemanticUI.FieldTextArea", {
         inherits: [Bridge.CustomUIMarkup.Libraries.SemanticUI.FieldString],
         statics: {
             fields: {
@@ -9821,17 +9822,17 @@ setTimeout(function()
             },
             ctors: {
                 init: function () {
-                    this.RowsProperty = System.Windows.DependencyProperty.Register$1("Rows", System.Nullable$1(System.Int32), Bridge.CustomUIMarkup.Libraries.SemanticUI.FieldStringTextArea, new System.Windows.PropertyMetadata.ctor(null));
+                    this.RowsProperty = System.Windows.DependencyProperty.Register$1("Rows", System.Nullable$1(System.Int32), Bridge.CustomUIMarkup.Libraries.SemanticUI.FieldTextArea, new System.Windows.PropertyMetadata.ctor(null));
                 }
             }
         },
         props: {
             Rows: {
                 get: function () {
-                    return Bridge.cast(Bridge.unbox(this.GetValue$1(Bridge.CustomUIMarkup.Libraries.SemanticUI.FieldStringTextArea.RowsProperty)), System.Int32, true);
+                    return Bridge.cast(Bridge.unbox(this.GetValue$1(Bridge.CustomUIMarkup.Libraries.SemanticUI.FieldTextArea.RowsProperty)), System.Int32, true);
                 },
                 set: function (value) {
-                    this.SetValue$1(Bridge.CustomUIMarkup.Libraries.SemanticUI.FieldStringTextArea.RowsProperty, Bridge.box(value, System.Int32, System.Nullable.toString, System.Nullable.getHashCode));
+                    this.SetValue$1(Bridge.CustomUIMarkup.Libraries.SemanticUI.FieldTextArea.RowsProperty, Bridge.box(value, System.Int32, System.Nullable.toString, System.Nullable.getHashCode));
                 }
             },
             DefaultTemplateAsXml: {

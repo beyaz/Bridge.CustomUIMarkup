@@ -46,7 +46,8 @@ namespace Bridge.CustomUIMarkup.Libraries.SemanticUI
             Builder.Register("textBox", Builder.Create<InputText>);
             Builder.Register("ui-input-textarea", Builder.Create<TextArea>);
             Builder.Register("FieldString", Builder.Create<FieldString>);
-            Builder.Register("FieldStringTextArea", Builder.Create<FieldStringTextArea>); 
+            Builder.Register("FieldStringTextArea", Builder.Create<FieldTextArea>);
+            Builder.Register("FieldTextArea", Builder.Create<FieldTextArea>);
             Builder.Register("FieldInt32", Builder.Create<FieldInt32>);
             Builder.Register("FieldDecimal", Builder.Create<FieldDecimal>);
             Builder.Register("FieldDate", Builder.Create<FieldDate>); 
