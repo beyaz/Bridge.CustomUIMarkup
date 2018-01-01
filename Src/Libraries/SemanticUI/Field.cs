@@ -12,12 +12,12 @@ namespace Bridge.CustomUIMarkup.Libraries.SemanticUI
             {
                 if (ErrorMessage == null)
                 {
-                    Class = "field";
+                    Class                  = "field";
                     ErrorMessageVisibility = Visibility.Collapsed;
                     return;
                 }
 
-                Class = "field error";
+                Class                  = "field error";
                 ErrorMessageVisibility = Visibility.Visible;
             });
 
@@ -49,7 +49,25 @@ namespace Bridge.CustomUIMarkup.Libraries.SemanticUI
         }
         #endregion
 
-        
+        #region Methods
+        protected void ClearErrorMessage()
+        {
+            if (ErrorMessage != null)
+            {
+                ErrorMessage = null;
+            }
+        }
+        #endregion
+
+        #region IsDisabled
+        public static readonly DependencyProperty IsDisabledProperty = DependencyProperty.Register(nameof(IsDisabled), typeof(bool), typeof(Field), new PropertyMetadata(default(bool)));
+
+        public bool IsDisabled
+        {
+            get { return (bool) GetValue(IsDisabledProperty); }
+            set { SetValue(IsDisabledProperty, value); }
+        }
+        #endregion
 
         #region Visibility LabelVisbility
         public static readonly DependencyProperty LabelVisibilityProperty = DependencyProperty.Register(nameof(LabelVisibility), typeof(Visibility), typeof(Field), new PropertyMetadata(Visibility.Collapsed));
@@ -90,14 +108,5 @@ namespace Bridge.CustomUIMarkup.Libraries.SemanticUI
             set { SetValue(LabelProperty, value); }
         }
         #endregion
-
-
-        protected void ClearErrorMessage()
-        {
-            if (ErrorMessage != null)
-            {
-                ErrorMessage = null;
-            }
-        }
     }
 }

@@ -10,30 +10,20 @@ namespace Bridge.CustomUIMarkup.Libraries.SemanticUI
             get
             {
                 return
-                    "<div class='ui input'>" +
-                    "   <textarea />" +
+                    "<div>" +
+                    "   <textarea rows='{Rows}' x:Name = '_inputElement' />" +
                     "</div>";
             }
         }
         #endregion
 
         #region RowsProperty
-        public static readonly DependencyProperty RowsProperty = DependencyProperty.Register(nameof(Rows), typeof(int?), typeof(TextArea), new PropertyMetadata(OnRowsChanged));
+        public static readonly DependencyProperty RowsProperty = DependencyProperty.Register(nameof(Rows), typeof(int), typeof(TextArea), new PropertyMetadata(2));
 
-        public int? Rows
+        public int Rows
         {
-            get { return (int?) GetValue(RowsProperty); }
+            get { return (int) GetValue(RowsProperty); }
             set { SetValue(RowsProperty, value); }
-        }
-
-        static void OnRowsChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-        {
-            var me = (TextArea) d;
-            var value = e.NewValue as int?;
-            if (value.HasValue)
-            {
-                me._inputElement._root.Attr("rows", value.Value);
-            }
         }
         #endregion
     }

@@ -806,8 +806,9 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
 
                     Bridge.CustomUIMarkup.UI.Builder.Register("textInput", function () { return Bridge.CustomUIMarkup.UI.Builder.Create(Bridge.CustomUIMarkup.Libraries.SemanticUI.InputText); });
                     Bridge.CustomUIMarkup.UI.Builder.Register("textBox", function () { return Bridge.CustomUIMarkup.UI.Builder.Create(Bridge.CustomUIMarkup.Libraries.SemanticUI.InputText); });
-                    Bridge.CustomUIMarkup.UI.Builder.Register("textArea", function () { return Bridge.CustomUIMarkup.UI.Builder.Create(Bridge.CustomUIMarkup.Libraries.SemanticUI.TextArea); });
+                    Bridge.CustomUIMarkup.UI.Builder.Register("ui-input-textarea", function () { return Bridge.CustomUIMarkup.UI.Builder.Create(Bridge.CustomUIMarkup.Libraries.SemanticUI.TextArea); });
                     Bridge.CustomUIMarkup.UI.Builder.Register("FieldString", function () { return Bridge.CustomUIMarkup.UI.Builder.Create(Bridge.CustomUIMarkup.Libraries.SemanticUI.FieldString); });
+                    Bridge.CustomUIMarkup.UI.Builder.Register("FieldStringTextArea", function () { return Bridge.CustomUIMarkup.UI.Builder.Create(Bridge.CustomUIMarkup.Libraries.SemanticUI.FieldStringTextArea); });
                     Bridge.CustomUIMarkup.UI.Builder.Register("FieldInt32", function () { return Bridge.CustomUIMarkup.UI.Builder.Create(Bridge.CustomUIMarkup.Libraries.SemanticUI.FieldInt32); });
                     Bridge.CustomUIMarkup.UI.Builder.Register("FieldDecimal", function () { return Bridge.CustomUIMarkup.UI.Builder.Create(Bridge.CustomUIMarkup.Libraries.SemanticUI.FieldDecimal); });
                     Bridge.CustomUIMarkup.UI.Builder.Register("FieldDate", function () { return Bridge.CustomUIMarkup.UI.Builder.Create(Bridge.CustomUIMarkup.Libraries.SemanticUI.FieldDate); });
@@ -8610,18 +8611,30 @@ root.calendar(settings);
         inherits: [System.Windows.Controls.Control],
         statics: {
             fields: {
+                "IsDisabledProperty": null,
                 TextProperty: null,
                 PlaceHolderProperty: null,
                 "IsMandatoryProperty": null
             },
             ctors: {
                 init: function () {
+                    this["IsDisabledProperty"] = System.Windows.DependencyProperty.Register$1("IsDisabled", System.Boolean, Bridge.CustomUIMarkup.Libraries.SemanticUI.InputText, new System.Windows.PropertyMetadata.$ctor1(Bridge.box(false, System.Boolean, System.Boolean.toString), Bridge.CustomUIMarkup.Libraries.SemanticUI.InputText.OnIsDisabledChanged));
                     this.TextProperty = System.Windows.DependencyProperty.Register$1("Text", System.String, Bridge.CustomUIMarkup.Libraries.SemanticUI.InputText, new System.Windows.PropertyMetadata.$ctor2(Bridge.CustomUIMarkup.Libraries.SemanticUI.InputText.OnTextChanged));
                     this.PlaceHolderProperty = System.Windows.DependencyProperty.Register$1("PlaceHolder", System.String, Bridge.CustomUIMarkup.Libraries.SemanticUI.InputText, new System.Windows.PropertyMetadata.$ctor2(Bridge.CustomUIMarkup.Libraries.SemanticUI.InputText.OnPlaceHolderChanged));
                     this["IsMandatoryProperty"] = System.Windows.DependencyProperty.Register$1("IsMandatory", System.Boolean, Bridge.CustomUIMarkup.Libraries.SemanticUI.InputText, new System.Windows.PropertyMetadata.$ctor2(Bridge.CustomUIMarkup.Libraries.SemanticUI.InputText.OnIsMandatoryChanged));
                 }
             },
             methods: {
+                OnIsDisabledChanged: function (d, e) {
+                    var me = Bridge.cast(d, Bridge.CustomUIMarkup.Libraries.SemanticUI.InputText);
+
+                    if (System.Extensions.ToBoolean(e.NewValue)) {
+                        me.Class = "ui disabled input";
+                    } else {
+                        me.Class = "ui input";
+                    }
+
+                },
                 OnTextChanged: function (d, e) {
                     var me = Bridge.cast(d, Bridge.CustomUIMarkup.Libraries.SemanticUI.InputText);
 
@@ -8652,9 +8665,18 @@ root.calendar(settings);
             KeyPress: null
         },
         props: {
+            "IsDisabled": {
+                get: function () {
+                    return System.Nullable.getValue(Bridge.cast(Bridge.unbox(this.GetValue$1(Bridge.CustomUIMarkup.Libraries.SemanticUI.InputText["IsDisabledProperty"])), System.Boolean));
+                },
+                set: function (value) {
+                    this.SetValue$1(Bridge.CustomUIMarkup.Libraries.SemanticUI.InputText["IsDisabledProperty"], Bridge.box(value, System.Boolean, System.Boolean.toString));
+                }
+            },
             DefaultTemplateAsXml: {
                 get: function () {
-                    return "<div class='ui input'>   <input type='text'  x:Name = '_inputElement' /></div>";
+                    // System.Windows.Data.Converters.BooleanToCssClassConverter
+                    return "<div>   <input type='text'  x:Name = '_inputElement' /></div>";
                 }
             },
             _value: {
@@ -8693,6 +8715,10 @@ root.calendar(settings);
                 System.Windows.Controls.Control.ctor.call(this);
                 this.addBeforeConnectToLogicalParent(Bridge.fn.bind(this, function (parent) {
                     this.AttachEvents();
+                }));
+
+                this.addAfterTemplateApplied(Bridge.fn.bind(this, function () {
+                    this.Class = "ui input";
                 }));
             }
         },
@@ -9242,6 +9268,7 @@ $( '<style> '+css+'</style>' ).appendTo( 'head' );
         inherits: [System.Windows.ContentControl],
         statics: {
             fields: {
+                "IsDisabledProperty": null,
                 LabelVisibilityProperty: null,
                 ErrorMessageVisibilityProperty: null,
                 ErrorMessageProperty: null,
@@ -9249,6 +9276,7 @@ $( '<style> '+css+'</style>' ).appendTo( 'head' );
             },
             ctors: {
                 init: function () {
+                    this["IsDisabledProperty"] = System.Windows.DependencyProperty.Register$1("IsDisabled", System.Boolean, Bridge.CustomUIMarkup.Libraries.SemanticUI.Field, new System.Windows.PropertyMetadata.ctor(Bridge.getDefaultValue(System.Boolean)));
                     this.LabelVisibilityProperty = System.Windows.DependencyProperty.Register$1("LabelVisibility", System.Windows.Visibility, Bridge.CustomUIMarkup.Libraries.SemanticUI.Field, new System.Windows.PropertyMetadata.ctor(Bridge.box(System.Windows.Visibility.Collapsed, System.Windows.Visibility, System.Enum.toStringFn(System.Windows.Visibility))));
                     this.ErrorMessageVisibilityProperty = System.Windows.DependencyProperty.Register$1("ErrorMessageVisibility", System.Windows.Visibility, Bridge.CustomUIMarkup.Libraries.SemanticUI.Field, new System.Windows.PropertyMetadata.ctor(Bridge.box(System.Windows.Visibility.Collapsed, System.Windows.Visibility, System.Enum.toStringFn(System.Windows.Visibility))));
                     this.ErrorMessageProperty = System.Windows.DependencyProperty.Register("ErrorMessage", System.String, Bridge.CustomUIMarkup.Libraries.SemanticUI.Field);
@@ -9260,6 +9288,14 @@ $( '<style> '+css+'</style>' ).appendTo( 'head' );
             DefaultTemplateAsXml: {
                 get: function () {
                     return "<div class = 'field' on.click = 'ClearErrorMessage' >   <label Visibility = '{LabelVisibility}'>{Label}</label>   <ContentPresenter />   <div class = 'ui red pointing label transition' Visibility = '{ErrorMessageVisibility}'> {ErrorMessage} </div></div>";
+                }
+            },
+            "IsDisabled": {
+                get: function () {
+                    return System.Nullable.getValue(Bridge.cast(Bridge.unbox(this.GetValue$1(Bridge.CustomUIMarkup.Libraries.SemanticUI.Field["IsDisabledProperty"])), System.Boolean));
+                },
+                set: function (value) {
+                    this.SetValue$1(Bridge.CustomUIMarkup.Libraries.SemanticUI.Field["IsDisabledProperty"], Bridge.box(value, System.Boolean, System.Boolean.toString));
                 }
             },
             LabelVisibility: {
@@ -9393,31 +9429,22 @@ $( '<style> '+css+'</style>' ).appendTo( 'head' );
             },
             ctors: {
                 init: function () {
-                    this.RowsProperty = System.Windows.DependencyProperty.Register$1("Rows", System.Nullable$1(System.Int32), Bridge.CustomUIMarkup.Libraries.SemanticUI.TextArea, new System.Windows.PropertyMetadata.$ctor2(Bridge.CustomUIMarkup.Libraries.SemanticUI.TextArea.OnRowsChanged));
-                }
-            },
-            methods: {
-                OnRowsChanged: function (d, e) {
-                    var me = Bridge.cast(d, Bridge.CustomUIMarkup.Libraries.SemanticUI.TextArea);
-                    var value = Bridge.as(e.NewValue, System.Int32, true);
-                    if (System.Nullable.hasValue(value)) {
-                        me._inputElement._root.attr("rows", System.Nullable.getValue(value));
-                    }
+                    this.RowsProperty = System.Windows.DependencyProperty.Register$1("Rows", System.Int32, Bridge.CustomUIMarkup.Libraries.SemanticUI.TextArea, new System.Windows.PropertyMetadata.ctor(Bridge.box(2, System.Int32)));
                 }
             }
         },
         props: {
             DefaultTemplateAsXml: {
                 get: function () {
-                    return "<div class='ui input'>   <textarea /></div>";
+                    return "<div>   <textarea rows='{Rows}' x:Name = '_inputElement' /></div>";
                 }
             },
             Rows: {
                 get: function () {
-                    return Bridge.cast(Bridge.unbox(this.GetValue$1(Bridge.CustomUIMarkup.Libraries.SemanticUI.TextArea.RowsProperty)), System.Int32, true);
+                    return System.Nullable.getValue(Bridge.cast(Bridge.unbox(this.GetValue$1(Bridge.CustomUIMarkup.Libraries.SemanticUI.TextArea.RowsProperty)), System.Int32));
                 },
                 set: function (value) {
-                    this.SetValue$1(Bridge.CustomUIMarkup.Libraries.SemanticUI.TextArea.RowsProperty, Bridge.box(value, System.Int32, System.Nullable.toString, System.Nullable.getHashCode));
+                    this.SetValue$1(Bridge.CustomUIMarkup.Libraries.SemanticUI.TextArea.RowsProperty, Bridge.box(value, System.Int32));
                 }
             }
         }
@@ -9563,7 +9590,7 @@ $( '<style> '+css+'</style>' ).appendTo( 'head' );
         props: {
             DefaultTemplateAsXml: {
                 get: function () {
-                    return "<div class='field' on.click = 'ClearErrorMessage' >   <label Visibility = '{LabelVisibility}'>{Label}</label>   <ContentPresenter>       <textBox Text = '{Value}'/>   </ContentPresenter>   <div class = 'ui red pointing label transition' Visibility = '{ErrorMessageVisibility}'> {ErrorMessage} </div></div>";
+                    return "<div class='field' on.click = 'ClearErrorMessage' >   <label Visibility = '{LabelVisibility}'>{Label}</label>   <ContentPresenter>       <textBox Text = '{Value}' IsDisabled='{IsDisabled}'  />   </ContentPresenter>   <div class = 'ui red pointing label transition' Visibility = '{ErrorMessageVisibility}'> {ErrorMessage} </div></div>";
                 }
             },
             Value: {
@@ -9782,6 +9809,35 @@ setTimeout(function()
                 var me = this;
 
                 Bridge.CustomUIMarkup.Libraries.SemanticUI.DataGrid.Wrap(me, table._root);
+            }
+        }
+    });
+
+    Bridge.define("Bridge.CustomUIMarkup.Libraries.SemanticUI.FieldStringTextArea", {
+        inherits: [Bridge.CustomUIMarkup.Libraries.SemanticUI.FieldString],
+        statics: {
+            fields: {
+                RowsProperty: null
+            },
+            ctors: {
+                init: function () {
+                    this.RowsProperty = System.Windows.DependencyProperty.Register$1("Rows", System.Nullable$1(System.Int32), Bridge.CustomUIMarkup.Libraries.SemanticUI.FieldStringTextArea, new System.Windows.PropertyMetadata.ctor(null));
+                }
+            }
+        },
+        props: {
+            Rows: {
+                get: function () {
+                    return Bridge.cast(Bridge.unbox(this.GetValue$1(Bridge.CustomUIMarkup.Libraries.SemanticUI.FieldStringTextArea.RowsProperty)), System.Int32, true);
+                },
+                set: function (value) {
+                    this.SetValue$1(Bridge.CustomUIMarkup.Libraries.SemanticUI.FieldStringTextArea.RowsProperty, Bridge.box(value, System.Int32, System.Nullable.toString, System.Nullable.getHashCode));
+                }
+            },
+            DefaultTemplateAsXml: {
+                get: function () {
+                    return "<div class='field' on.click = 'ClearErrorMessage' >   <label Visibility = '{LabelVisibility}'>{Label}</label>   <ContentPresenter>       <ui-input-textarea  Text = '{Value}' IsDisabled='{IsDisabled}' Rows='{Rows}' />   </ContentPresenter>   <div class = 'ui red pointing label transition' Visibility = '{ErrorMessageVisibility}'> {ErrorMessage} </div></div>";
+                }
             }
         }
     });

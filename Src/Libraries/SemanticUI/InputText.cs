@@ -8,6 +8,31 @@ namespace Bridge.CustomUIMarkup.Libraries.SemanticUI
 {
     public class InputText : Control
     {
+        #region IsDisabled
+        public static readonly DependencyProperty IsDisabledProperty = DependencyProperty.Register(nameof(IsDisabled), typeof(bool), typeof(InputText),new PropertyMetadata(false, OnIsDisabledChanged));
+        
+        public bool IsDisabled
+        {
+            get { return (bool) GetValue(IsDisabledProperty); }
+            set { SetValue(IsDisabledProperty, value); }
+        }
+        static void OnIsDisabledChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            var me = (InputText)d;
+
+            if (e.NewValue.ToBoolean())
+            {
+                me.Class = "ui disabled input";
+            }
+            else
+            {
+                me.Class = "ui input";
+            }
+
+        }
+        #endregion
+
+
         #region Fields
         // ReSharper disable once UnassignedField.Global
         protected FrameworkElement _inputElement;
@@ -17,6 +42,8 @@ namespace Bridge.CustomUIMarkup.Libraries.SemanticUI
         public InputText()
         {
             BeforeConnectToLogicalParent += parent => { AttachEvents(); };
+
+            AfterTemplateApplied += () => { Class = "ui input"; };
         }
         #endregion
 
@@ -32,8 +59,9 @@ namespace Bridge.CustomUIMarkup.Libraries.SemanticUI
         {
             get
             {
+                // System.Windows.Data.Converters.BooleanToCssClassConverter
                 return
-                    "<div class='ui input'>" +
+                    "<div>" +
                     "   <input type='text'  x:Name = '_inputElement' />" +
                     "</div>";
             }
