@@ -31,10 +31,10 @@ namespace Bridge.CustomUIMarkup.Libraries.SemanticUI
                         SetOptionsFrom((Options + "").Split(','));
                     }
 
-                    if (args.PropertyName == nameof(SelectedValue))
-                    {
-                        _hidden._root.Val(args.NewValue + "");
-                    }
+                    //if (args.PropertyName == nameof(SelectedValue))
+                    //{
+                    //    _hidden._root.Val(args.NewValue + "");
+                    //}
                 };
             };
 

@@ -117,6 +117,7 @@ namespace Bridge.CustomUIMarkup.Test
             new Z_Builder2Test().Input_Type_text(); 
 
             new Z_Builder2Test().combo_SelectedValueTest();
+            new Z_Builder2Test().combo_SelectedValueTest_with_converter(); 
 
 
         }
@@ -439,6 +440,39 @@ namespace Bridge.CustomUIMarkup.Test
             }
             #endregion
 
+            #region string SelectedYearAsString
+            string        _selectedYearAsString;
+            public string SelectedYearAsString
+            {
+                get { return _selectedYearAsString; }
+                set
+                {
+                    if (_selectedYearAsString != value)
+                    {
+                        _selectedYearAsString = value;
+                        OnPropertyChanged("SelectedYearAsString");
+                    }
+                }
+            }
+            #endregion
+
+            #region ComboModel Child
+            ComboModel        _child;
+            public ComboModel Child
+            {
+                get { return _child; }
+                set
+                {
+                    if (_child != value)
+                    {
+                        _child = value;
+                        OnPropertyChanged("Child");
+                    }
+                }
+            }
+            #endregion
+
+
 
         }
 
@@ -479,8 +513,69 @@ namespace Bridge.CustomUIMarkup.Test
             ui.SelectedValue = 7;
 
             MustEqual(7,model.SelectedYear);
+        }
+
+        void combo_SelectedValueTest_with_converter()
+        {
+            var model = new ComboModel
+            {
+                Items = new List<SimpleClass1>
+                {
+                    new SimpleClass1
+                    {
+                        LastName = "Neşet Ertaş",
+                        Year     = 5
+                    },
+                    new SimpleClass1
+                    {
+                        LastName = "Neşet Ertaş2",
+                        Year     = 7
+                    }
+                },
+                Child = new ComboModel
+                {
+                    SelectedYearAsString = "5"
+                }
+            };
 
 
+            var htmlString = @"
+
+<Field>
+
+ <combo ItemsSource ='{Items}' 
+                         DisplayMemberPath='LastName' 
+                         SelectedValuePath='Year'
+                         SelectedValue='{Child.SelectedYearAsString}' />
+</Field>
+
+";
+
+            var fe = new FrameworkElement
+            {
+            };
+
+            fe.LoadComponent(htmlString);
+
+            var field = fe.GetLogicalChildAt(0);
+
+
+            Assert.True(field.DataContext == null);
+
+            fe.DataContext = model;
+
+            Assert.True(field.DataContext == model);
+            
+
+            
+
+            var ui = (Combo) field.GetLogicalChildAt(0);
+
+            MustEqual("5", Cast.To<string>(ui.SelectedValue));
+
+            ui.SelectedValue = 7;
+
+            MustEqual("7", model.Child.SelectedYearAsString);
         }
 
 

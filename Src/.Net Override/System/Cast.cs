@@ -28,6 +28,12 @@ namespace System
             
             if ( targetType.IsGenericType &&  targetType.GetGenericTypeDefinition() == typeof(Nullable<>))
             {
+                var valueAsString = value as string;
+                if (valueAsString == string.Empty)
+                {
+                    return null;
+                }
+
                 return To(value,targetType.GetGenericArguments()[0],provider);
             }
 

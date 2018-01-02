@@ -2730,6 +2730,11 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
 
 
                     if (Bridge.Reflection.isGenericType(targetType) && Bridge.referenceEquals(Bridge.Reflection.getGenericTypeDefinition(targetType), System.Nullable$1)) {
+                        var valueAsString = Bridge.as(value, System.String);
+                        if (Bridge.referenceEquals(valueAsString, "")) {
+                            return null;
+                        }
+
                         return System.Cast.To$2(value, ($t = Bridge.Reflection.getGenericArguments(targetType))[System.Array.index(0, $t)], provider);
                     }
 
@@ -8037,9 +8042,10 @@ me._editor.display.wrapper.style.height = '95%';
                             this.SetOptionsFrom(System.String.split((System.String.concat(this.Options, "")), [44].map(function(i) {{ return String.fromCharCode(i); }})));
                         }
 
-                        if (Bridge.referenceEquals(args.propertyName, "SelectedValue")) {
-                            this._hidden._root.val(System.String.concat(args.newValue, ""));
-                        }
+                        //if (args.PropertyName == nameof(SelectedValue))
+                        //{
+                        //    _hidden._root.Val(args.NewValue + "");
+                        //}
                     }));
                 }));
 
