@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
+using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -21,10 +22,7 @@ namespace Bridge.CustomUIMarkup.UI
             {"DIV", () => new HtmlElement("div")}
         };
 
-        static readonly Tokenizer InvocationExpressionTokenizer = new Tokenizer
-        {
-            TokenDefinitions = InvocationExpressionTokenDefinitions.Value
-        };
+        
         #endregion
 
         #region Fields
@@ -455,19 +453,13 @@ namespace Bridge.CustomUIMarkup.UI
                 // support this format: this.Notify(OnContactClicked)
                 if (value.StartsWith("this."))
                 {
-                    var tokens = InvocationExpressionTokenizer.Tokenize(value);
+                    var viewInvocationExpressionInfo = ViewInvocationExpressionInfo.Parse(value);
 
-                    var i = 0;
-                    i++; // skip this
-                    i++; // skip .
-                    var methodName = tokens[i].Value;
-                    i++; // skip methodName
-                    i++; // skip (
-                    var firstParameter = tokens[i].Value;
+                    var methodName = viewInvocationExpressionInfo.MethodName;
 
-                    var mi = Caller.GetType().GetMethod(methodName);
+                    var mi = Caller.GetType().GetMethod(methodName, BindingFlags.IgnoreCase | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
 
-                    instance.As<FrameworkElement>().On(eventName, () => { mi.Invoke(Caller, firstParameter); });
+                    instance.As<FrameworkElement>().On(eventName, () => { mi.Invoke(Caller, viewInvocationExpressionInfo.Parameters.ToArray()); });
                     return;
                 }
 
@@ -502,6 +494,9 @@ namespace Bridge.CustomUIMarkup.UI
 
             instance.As<FrameworkElement>()._root.Attr(name, value);
         }
+
+       
+
 
         bool TryToInitParentProperty(XmlNode xmlNode)
         {

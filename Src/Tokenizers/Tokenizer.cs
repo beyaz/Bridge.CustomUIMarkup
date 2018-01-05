@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
+using System.Windows.Data;
+using Bridge.Html5;
 
 namespace Bridge.CustomUIMarkup.Tokenizers
 {
@@ -144,29 +146,6 @@ namespace Bridge.CustomUIMarkup.Tokenizers
         #endregion
     }
 
-    class InvocationExpressionTokenDefinitions
-    {
-        #region Public Properties
-        public static IReadOnlyList<TokenDefinition> Value
-        {
-            get
-            {
-                return new List<TokenDefinition>
-                {
-                    new TokenDefinition(TokenType.Binding, "this", 1),
-                    new TokenDefinition(TokenType.OpenParenthesis, "\\(", 1),
-                    new TokenDefinition(TokenType.CloseParenthesis, "\\)", 1),
-
-                    new TokenDefinition(TokenType.Identifier, "[a-zA-Z_$][a-zA-Z0-9_$]*", 1),
-
-                    new TokenDefinition(TokenType.Comma, ",", 1),
-                    new TokenDefinition(TokenType.Dot, ".", 1)
-                };
-            }
-        }
-        #endregion
-    }
-
     class Tokenizer
     {
         #region Public Properties
@@ -215,5 +194,102 @@ namespace Bridge.CustomUIMarkup.Tokenizers
             return items;
         }
         #endregion
+    }
+
+
+
+    static class Extensions
+    {
+        internal static void SkipSpace(this IReadOnlyList<Token> tokens, ref int i)
+        {
+            var len = tokens.Count;
+
+            while (i < len)
+            {
+                var token = tokens[i];
+
+                if (token.Value == " ")
+                {
+                    i++;
+                    continue;
+                }
+                return;
+
+            }
+
+        }
+    }
+
+    internal class ViewInvocationExpressionInfo
+    {
+        static readonly Tokenizer BindingExpressionTokenizer = new Tokenizer
+        {
+            TokenDefinitions = new List<TokenDefinition>
+            {
+                new TokenDefinition(TokenType.Binding, "this", 1),
+                new TokenDefinition(TokenType.OpenParenthesis, "\\(", 1),
+                new TokenDefinition(TokenType.CloseParenthesis, "\\)", 1),
+
+                new TokenDefinition(TokenType.Identifier, "[a-zA-Z_$][a-zA-Z0-9_$]*", 1),
+
+                new TokenDefinition(TokenType.StringValue, "'([^']*)'", 1),
+                new TokenDefinition(TokenType.Comma, ",", 1),
+                new TokenDefinition(TokenType.Dot, ".", 1)
+            }
+    };
+
+        public string        MethodName       { get; set; }
+        public bool          IsStartsWithThis { get; set; }
+        public IReadOnlyList<object> Parameters       { get; set; }
+
+
+
+
+
+       
+
+
+        public static ViewInvocationExpressionInfo Parse(string expression)
+        {
+            var info = new ViewInvocationExpressionInfo();
+
+            var parameters = new List<object>();
+
+         
+
+            var tokens = BindingExpressionTokenizer.Tokenize(expression);
+            var len = tokens.Count;
+            for (int i = 0; i < len; i++)
+            {
+                var token = tokens[i];
+
+                if (token.Value.ToUpperCase() == "THIS" || token.Value == " "|| token.Value == "(" || token.Value == ")" || token.Value == "," || token.Value == ".")
+                {
+                    info.IsStartsWithThis = true;
+                    continue;
+                }
+
+                if (info.MethodName == null && token.TokenType == TokenType.Identifier)
+                {
+                    info.MethodName = token.Value;
+
+                    continue;
+                }
+
+                // in parameters
+
+                if (token.Value.StartsWith("'"))
+                {
+                    var valueLen = token.Value.Length;
+                    parameters.Add(token.Value.Substring(1,valueLen-2));
+                    continue;
+                }
+
+                parameters.Add(decimal.Parse(token.Value));
+            }
+
+            info.Parameters = parameters;
+            return info;
+        }
     }
 }

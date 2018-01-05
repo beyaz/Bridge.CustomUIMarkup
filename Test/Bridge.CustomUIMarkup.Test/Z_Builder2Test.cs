@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Windows;
 using Bridge.CustomUIMarkup.Libraries.SemanticUI;
+using Bridge.CustomUIMarkup.Tokenizers;
 using Bridge.CustomUIMarkup.UI;
 using Bridge.Html5;
 
@@ -117,11 +118,44 @@ namespace Bridge.CustomUIMarkup.Test
             new Z_Builder2Test().Input_Type_text(); 
 
             new Z_Builder2Test().combo_SelectedValueTest();
-            new Z_Builder2Test().combo_SelectedValueTest_with_converter(); 
+            new Z_Builder2Test().combo_SelectedValueTest_with_converter();
+            new Z_Builder2Test().Parse_ViewInvocationExpressionInfo();
 
 
         }
         #endregion
+
+
+        void Parse_ViewInvocationExpressionInfo()
+        {
+
+            var info = ViewInvocationExpressionInfo.Parse("this.AAA(5,'uy kğş',7)");
+            Assert.AreEqual("AAA", info.MethodName);
+            Assert.True(info.IsStartsWithThis);
+            Assert.AreEqual(3M, info.Parameters.Count);
+            Assert.AreEqual(5M, info.Parameters[0].ToInt32());
+            Assert.AreEqual("uy kğş", info.Parameters[1] as string);
+            Assert.AreEqual(7M, info.Parameters[2].ToInt32());
+
+
+             info = ViewInvocationExpressionInfo.Parse("AAA");
+            Assert.AreEqual("AAA",info.MethodName);
+
+            info = ViewInvocationExpressionInfo.Parse("this.AAA()");
+            Assert.AreEqual("AAA", info.MethodName);
+            Assert.True(info.IsStartsWithThis);
+
+            info = ViewInvocationExpressionInfo.Parse("this.AAA(5)");
+            Assert.AreEqual("AAA", info.MethodName);
+            Assert.True(info.IsStartsWithThis);
+            Assert.AreEqual(1M, info.Parameters.Count);
+            Assert.AreEqual(5M, info.Parameters[0].ToInt32());
+
+
+            
+
+
+        }
 
         #region Methods
         void CheckTemplateIsSuccess()

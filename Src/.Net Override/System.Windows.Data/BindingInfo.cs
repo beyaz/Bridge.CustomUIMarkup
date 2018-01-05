@@ -182,7 +182,7 @@ namespace System.Windows.Data
 
 
 
-        static void SkipAssignmentAndSpace(IReadOnlyList<Token> tokens, ref int i)
+        internal  static void SkipAssignmentAndSpace(IReadOnlyList<Token> tokens, ref int i)
         {
             var len = tokens.Count;
 
@@ -226,7 +226,7 @@ namespace System.Windows.Data
             return path;
         }
 
-        static string ReadPath(IReadOnlyList<Token> tokens, ref int i)
+        internal static string ReadPath(IReadOnlyList<Token> tokens, ref int i)
         {
             var path = "";
             while (true)

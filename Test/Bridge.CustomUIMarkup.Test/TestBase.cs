@@ -99,7 +99,13 @@ namespace Bridge.CustomUIMarkup.Test
                     throw new InvalidCastException("@expected: " + expected + " , @actual: " + actual);
                 }
             }
-
+            public static void AreEqual(decimal expected, decimal actual)
+            {
+                if (expected != actual)
+                {
+                    throw new InvalidCastException("@expected: " + expected + " , @actual: " + actual);
+                }
+            }
             #endregion
         }
     }

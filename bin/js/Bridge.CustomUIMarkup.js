@@ -1819,21 +1819,23 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
         }
     });
 
-    Bridge.define("Bridge.CustomUIMarkup.Tokenizers.InvocationExpressionTokenDefinitions", {
+    Bridge.define("Bridge.CustomUIMarkup.Tokenizers.Extensions", {
         statics: {
-            props: {
-                Value: {
-                    get: function () {
-                        return function (_o1) {
-                                _o1.add(new Bridge.CustomUIMarkup.Tokenizers.TokenDefinition(Bridge.CustomUIMarkup.Tokenizers.TokenType.Binding, "this", 1));
-                                _o1.add(new Bridge.CustomUIMarkup.Tokenizers.TokenDefinition(Bridge.CustomUIMarkup.Tokenizers.TokenType.OpenParenthesis, "\\(", 1));
-                                _o1.add(new Bridge.CustomUIMarkup.Tokenizers.TokenDefinition(Bridge.CustomUIMarkup.Tokenizers.TokenType.CloseParenthesis, "\\)", 1));
-                                _o1.add(new Bridge.CustomUIMarkup.Tokenizers.TokenDefinition(Bridge.CustomUIMarkup.Tokenizers.TokenType["Identifier"], "[a-zA-Z_$][a-zA-Z0-9_$]*", 1));
-                                _o1.add(new Bridge.CustomUIMarkup.Tokenizers.TokenDefinition(Bridge.CustomUIMarkup.Tokenizers.TokenType.Comma, ",", 1));
-                                _o1.add(new Bridge.CustomUIMarkup.Tokenizers.TokenDefinition(Bridge.CustomUIMarkup.Tokenizers.TokenType.Dot, ".", 1));
-                                return _o1;
-                            }(new (System.Collections.Generic.List$1(Bridge.CustomUIMarkup.Tokenizers.TokenDefinition)).ctor());
+            methods: {
+                SkipSpace: function (tokens, i) {
+                    var len = System.Array.getCount(tokens, Bridge.CustomUIMarkup.Tokenizers.Token);
+
+                    while (i.v < len) {
+                        var token = System.Array.getItem(tokens, i.v, Bridge.CustomUIMarkup.Tokenizers.Token);
+
+                        if (Bridge.referenceEquals(token.Value, " ")) {
+                            i.v = (i.v + 1) | 0;
+                            continue;
+                        }
+                        return;
+
                     }
+
                 }
             }
         }
@@ -2037,22 +2039,86 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
         }
     });
 
-    Bridge.define("Bridge.CustomUIMarkup.UI.Builder", {
+    Bridge.define("Bridge.CustomUIMarkup.Tokenizers.ViewInvocationExpressionInfo", {
         statics: {
             fields: {
-                _elementCreators: null,
-                "InvocationExpressionTokenizer": null
+                BindingExpressionTokenizer: null
             },
             ctors: {
                 init: function () {
                     var $t;
+                    this.BindingExpressionTokenizer = ($t = new Bridge.CustomUIMarkup.Tokenizers.Tokenizer(), $t.TokenDefinitions = function (_o1) {
+                            _o1.add(new Bridge.CustomUIMarkup.Tokenizers.TokenDefinition(Bridge.CustomUIMarkup.Tokenizers.TokenType.Binding, "this", 1));
+                            _o1.add(new Bridge.CustomUIMarkup.Tokenizers.TokenDefinition(Bridge.CustomUIMarkup.Tokenizers.TokenType.OpenParenthesis, "\\(", 1));
+                            _o1.add(new Bridge.CustomUIMarkup.Tokenizers.TokenDefinition(Bridge.CustomUIMarkup.Tokenizers.TokenType.CloseParenthesis, "\\)", 1));
+                            _o1.add(new Bridge.CustomUIMarkup.Tokenizers.TokenDefinition(Bridge.CustomUIMarkup.Tokenizers.TokenType["Identifier"], "[a-zA-Z_$][a-zA-Z0-9_$]*", 1));
+                            _o1.add(new Bridge.CustomUIMarkup.Tokenizers.TokenDefinition(Bridge.CustomUIMarkup.Tokenizers.TokenType.StringValue, "'([^']*)'", 1));
+                            _o1.add(new Bridge.CustomUIMarkup.Tokenizers.TokenDefinition(Bridge.CustomUIMarkup.Tokenizers.TokenType.Comma, ",", 1));
+                            _o1.add(new Bridge.CustomUIMarkup.Tokenizers.TokenDefinition(Bridge.CustomUIMarkup.Tokenizers.TokenType.Dot, ".", 1));
+                            return _o1;
+                        }(new (System.Collections.Generic.List$1(Bridge.CustomUIMarkup.Tokenizers.TokenDefinition)).ctor()), $t);
+                }
+            },
+            methods: {
+                Parse: function (expression) {
+                    var info = new Bridge.CustomUIMarkup.Tokenizers.ViewInvocationExpressionInfo();
+
+                    var parameters = new (System.Collections.Generic.List$1(System.Object)).ctor();
+
+
+
+                    var tokens = Bridge.CustomUIMarkup.Tokenizers.ViewInvocationExpressionInfo.BindingExpressionTokenizer.Tokenize(expression);
+                    var len = System.Array.getCount(tokens, Bridge.CustomUIMarkup.Tokenizers.Token);
+                    for (var i = 0; i < len; i = (i + 1) | 0) {
+                        var token = System.Array.getItem(tokens, i, Bridge.CustomUIMarkup.Tokenizers.Token);
+
+                        if (Bridge.referenceEquals(token.Value.toUpperCase(), "THIS") || Bridge.referenceEquals(token.Value, " ") || Bridge.referenceEquals(token.Value, "(") || Bridge.referenceEquals(token.Value, ")") || Bridge.referenceEquals(token.Value, ",") || Bridge.referenceEquals(token.Value, ".")) {
+                            info["IsStartsWithThis"] = true;
+                            continue;
+                        }
+
+                        if (info.MethodName == null && token.TokenType === Bridge.CustomUIMarkup.Tokenizers.TokenType["Identifier"]) {
+                            info.MethodName = token.Value;
+
+                            continue;
+                        }
+
+                        // in parameters
+
+                        if (System.String.startsWith(token.Value, "'")) {
+                            var valueLen = token.Value.length;
+                            parameters.add(token.Value.substr(1, ((valueLen - 2) | 0)));
+                            continue;
+                        }
+
+                        parameters.add(System.Decimal(token.Value));
+                    }
+
+                    info.Parameters = parameters;
+                    return info;
+                }
+            }
+        },
+        fields: {
+            MethodName: null,
+            "IsStartsWithThis": false,
+            Parameters: null
+        }
+    });
+
+    Bridge.define("Bridge.CustomUIMarkup.UI.Builder", {
+        statics: {
+            fields: {
+                _elementCreators: null
+            },
+            ctors: {
+                init: function () {
                     this._elementCreators = function (_o1) {
                             _o1.add("DIV", function () {
                                 return new System.Windows.HtmlElement("div");
                             });
                             return _o1;
                         }(new (System.Collections.Generic.Dictionary$2(System.String,Function))());
-                    this["InvocationExpressionTokenizer"] = ($t = new Bridge.CustomUIMarkup.Tokenizers.Tokenizer(), $t.TokenDefinitions = Bridge.CustomUIMarkup.Tokenizers.InvocationExpressionTokenDefinitions.Value, $t);
                 }
             },
             methods: {
@@ -2385,20 +2451,14 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
 
                     // support this format: this.Notify(OnContactClicked)
                     if (System.String.startsWith(value, "this.")) {
-                        var tokens = Bridge.CustomUIMarkup.UI.Builder["InvocationExpressionTokenizer"].Tokenize(value);
+                        var viewInvocationExpressionInfo = Bridge.CustomUIMarkup.Tokenizers.ViewInvocationExpressionInfo.Parse(value);
 
-                        var i = 0;
-                        i = (i + 1) | 0; // skip this
-                        i = (i + 1) | 0; // skip .
-                        var methodName = System.Array.getItem(tokens, i, Bridge.CustomUIMarkup.Tokenizers.Token).Value;
-                        i = (i + 1) | 0; // skip methodName
-                        i = (i + 1) | 0; // skip (
-                        var firstParameter = System.Array.getItem(tokens, i, Bridge.CustomUIMarkup.Tokenizers.Token).Value;
+                        var methodName = viewInvocationExpressionInfo.MethodName;
 
-                        var mi = Bridge.Reflection.getMembers(Bridge.getType(this.Caller), 8, 284, methodName);
+                        var mi = Bridge.Reflection.getMembers(Bridge.getType(this.Caller), 8, 53 | 256, methodName);
 
                         Bridge.unbox(instance).On(eventName, Bridge.fn.bind(this, function () {
-                            Bridge.Reflection.midel(mi, Bridge.unbox(this.Caller))(firstParameter);
+                            Bridge.Reflection.midel(mi, Bridge.unbox(this.Caller)).apply(null, Bridge.unbox(System.Linq.Enumerable.from(viewInvocationExpressionInfo.Parameters).toArray()));
                         }));
                         return;
                     }
