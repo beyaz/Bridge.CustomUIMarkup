@@ -92,7 +92,7 @@ namespace Bridge.CustomUIMarkup.Test
                 }
             }
 
-            public static void AreEqual(int expected, int actual)
+            public static void AreEqual(int? expected, int? actual)
             {
                 if (expected != actual)
                 {

@@ -456,11 +456,27 @@ namespace Bridge.CustomUIMarkup.Test
 
         class ComboModel : Bag
         {
-            public List<SimpleClass1> Items { get; set; }
+            #region List<SimpleClass1> Items
+            List<SimpleClass1>        _items;
+            public List<SimpleClass1> Items
+            {
+                get { return _items; }
+                set
+                {
+                    if (_items != value)
+                    {
+                        _items = value;
+                        OnPropertyChanged("Items");
+                    }
+                }
+            }
+            #endregion
+
+
 
             #region int SelectedYear
-            int _selectedYear;
-            public int SelectedYear
+            int? _selectedYear;
+            public int? SelectedYear
             {
                 get { return _selectedYear; }
                 set
@@ -519,12 +535,22 @@ namespace Bridge.CustomUIMarkup.Test
                     new SimpleClass1
                     {
                         LastName = "Neşet Ertaş",
-                        Year = 5
+                        YearNullable = 5
                     },
                     new SimpleClass1
                     {
                         LastName = "Neşet Ertaş2",
-                        Year = 7
+                        YearNullable = 7
+                    },
+                    new SimpleClass1
+                    {
+                        LastName = "Neşet Ertaş -1",
+                        YearNullable = -1
+                    },
+                    new SimpleClass1
+                    {
+                        LastName     = "Neşet Ertaş null",
+                        YearNullable = null
                     }
                 },
                 SelectedYear = 5
@@ -535,7 +561,7 @@ namespace Bridge.CustomUIMarkup.Test
 
  <combo ItemsSource ='{Items}' 
                          DisplayMemberPath='LastName' 
-                         SelectedValuePath='Year'
+                         SelectedValuePath='YearNullable'
                          SelectedValue='{SelectedYear}' />
 
 ";
@@ -544,9 +570,129 @@ namespace Bridge.CustomUIMarkup.Test
 
            MustEqual(5, Cast.To<int>(ui.SelectedValue));
 
+            MustEqualByReference(model.Items[0], ui.SelectedItem);
+
             ui.SelectedValue = 7;
 
-            MustEqual(7,model.SelectedYear);
+            Assert.AreEqual(7,model.SelectedYear);
+
+            MustEqualByReference(model.Items[1], ui.SelectedItem);
+
+
+            ui.SelectedValue = -1;
+
+            Assert.AreEqual(-1, model.SelectedYear);
+
+            MustEqualByReference(model.Items[2], ui.SelectedItem);
+
+
+            ui.SelectedValue = null;
+
+            Assert.AreEqual(null, model.SelectedYear);
+
+            MustEqualByReference(model.Items[3], ui.SelectedItem);
+
+
+
+            model = new ComboModel
+            {
+                Items = new List<SimpleClass1>
+                {
+                    new SimpleClass1
+                    {
+                        LastName     = "Neşet Ertaş",
+                        YearNullable = 5
+                    },
+                    new SimpleClass1
+                    {
+                        LastName     = "Neşet Ertaş2",
+                        YearNullable = 7
+                    },
+                    new SimpleClass1
+                    {
+                        LastName     = "Neşet Ertaş -1",
+                        YearNullable = -1
+                    },
+                    new SimpleClass1
+                    {
+                        LastName     = "Neşet Ertaş null",
+                        YearNullable = null
+                    }
+                },
+                SelectedYear = 7
+            };
+
+            ui.DataContext = model;
+
+            Assert.True(7 == ui.SelectedValue.ToInt32());
+
+            MustEqualByReference(model.Items[1], ui.SelectedItem);
+
+
+
+            model = new ComboModel
+            {
+                Items = new List<SimpleClass1>
+                {
+                    new SimpleClass1
+                    {
+                        LastName     = "Neşet Ertaş",
+                        YearNullable = 5
+                    },
+                    new SimpleClass1
+                    {
+                        LastName     = "Neşet Ertaş2",
+                        YearNullable = 7
+                    },
+                    new SimpleClass1
+                    {
+                        LastName     = "Neşet Ertaş -1",
+                        YearNullable = -1
+                    },
+                    new SimpleClass1
+                    {
+                        LastName     = "Neşet Ertaş null",
+                        YearNullable = null
+                    }
+                },
+                SelectedYear = null
+            };
+
+            ui.DataContext = model;
+
+            Assert.True(null == ui.SelectedValue);
+
+            MustEqualByReference(model.Items[3], ui.SelectedItem);
+
+
+
+            model.Items = new List<SimpleClass1>
+            {
+                new SimpleClass1
+                {
+                    LastName     = "Neşet Ertaş",
+                    YearNullable = 5
+                },
+                new SimpleClass1
+                {
+                    LastName     = "Neşet Ertaş null",
+                    YearNullable = null
+                },
+                new SimpleClass1
+                {
+                    LastName     = "Neşet Ertaş2",
+                    YearNullable = 7
+                },
+                new SimpleClass1
+                {
+                    LastName     = "Neşet Ertaş -1",
+                    YearNullable = -1
+                },
+                
+            };
+
+            Assert.True(null == ui.SelectedValue);
+            MustEqualByReference(model.Items[1], ui.SelectedItem);
         }
 
         void combo_SelectedValueTest_with_converter()

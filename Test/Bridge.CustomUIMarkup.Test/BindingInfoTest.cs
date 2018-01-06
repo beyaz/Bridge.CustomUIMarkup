@@ -82,6 +82,25 @@ namespace Bridge.CustomUIMarkup.Test
         }
         #endregion
 
+
+        #region int? YearNullable
+        int?        _yearNullable;
+        public int? YearNullable
+        {
+            get { return _yearNullable; }
+            set
+            {
+                if (_yearNullable != value)
+                {
+                    _yearNullable = value;
+                    OnPropertyChanged("YearNullable");
+                }
+            }
+        }
+        #endregion
+
+
+
         #region SimpleClass1 Child
         SimpleClass1 _child;
 

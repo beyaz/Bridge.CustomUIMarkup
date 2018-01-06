@@ -142,11 +142,6 @@ setTimeout(function()
 
             if (ItemsSource == null)
             {
-#if IsTraceEnabled
-                Trace.OperationWasCanceled(nameof(ReRender), nameof(ItemsSource) + "is null.");
-
-#endif
-
                 return;
             }
 

@@ -96,7 +96,14 @@ namespace System.Windows.Data
 
         protected override object GetTargetValue()
         {
-            return Target.Val();
+            var val = Target.Val();
+
+            if (val == string.Empty)
+            {
+                return null;
+            }
+
+            return val;
         }
         #endregion
     }

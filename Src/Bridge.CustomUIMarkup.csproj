@@ -43,8 +43,11 @@
     <Compile Include=".Net Override\System.Collections.Specialized\overides.cs" />
     <Compile Include=".Net Override\System.ComponentModel\TypeConverterAttribute.cs" />
     <Compile Include=".Net Override\System.Reflection\Extensions.cs" />
+    <Compile Include=".Net Override\System.Windows.Controls\ItemsControl.cs" />
     <Compile Include=".Net Override\System.Windows.Controls\Orientation.cs" />
     <Compile Include=".Net Override\System.Windows.Controls\Control.cs" />
+    <Compile Include=".Net Override\System.Windows.Controls\Primitives\MultiSelector.cs" />
+    <Compile Include=".Net Override\System.Windows.Controls\Primitives\Selector.cs" />
     <Compile Include=".Net Override\System\Cast.cs" />
     <Compile Include=".Net Override\System\Exceptions.cs" />
     <Compile Include=".Net Override\System\ThrowHelper.cs" />

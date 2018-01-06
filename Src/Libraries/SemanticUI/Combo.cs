@@ -1,54 +1,40 @@
 ﻿using System;
 using System.Collections;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Windows;
-using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using Retyped;
 
 namespace Bridge.CustomUIMarkup.Libraries.SemanticUI
 {
-    public class Combo : Control
+    public class Combo : Selector
     {
-        #region Fields
-#pragma warning disable 649
-        FrameworkElement _menu, _hidden;
-        object _wrapper;
-#pragma warning restore 649
-        #endregion
-
         #region Constructors
         public Combo()
         {
-            BeforeConnectToLogicalParent += parent =>
+            BeforeConnectToLogicalParent += parent => { _wrapper = _root.As<semantic_ui.JQuery>().dropdown(); };
+
+            this.OnPropertyChanged(nameof(DisplayMemberPath), InitializeItemTemplate);
+            this.OnPropertyChanged(nameof(SelectedValuePath), InitializeItemTemplate);
+
+            this.OnPropertyChanged(nameof(DisplayMemberPath), Render);
+            this.OnPropertyChanged(nameof(SelectedValuePath), Render);
+            this.OnPropertyChanged(nameof(ItemsSource), Render);
+
+            this.OnPropertyChanged(nameof(ItemsSource), ()=>OnPropertyChanged(nameof(SelectedValue)));
+
+            this.OnPropertyChanged(nameof(SelectedValue), InitSelectedItemByUsingSelectedValue);
+            this.OnPropertyChanged(nameof(SelectedValue), () =>
             {
-                _wrapper = _root.As<semantic_ui.JQuery>().dropdown();
+                var el = _root;
+                var selectedValue = SelectedValue;
 
-                PropertyChanged += (e, args) =>
-                {
-                    if (Options is string)
-                    {
-                        SetOptionsFrom((Options + "").Split(','));
-                    }
+                Script.Write("el.dropdown('set selected',selectedValue);");
+                Script.Write("el.dropdown('refresh');");
 
-                    //if (args.PropertyName == nameof(SelectedValue))
-                    //{
-                    //    _hidden._root.Val(args.NewValue + "");
-                    //}
-                };
-            };
 
-            PropertyChanged += (s, e) =>
-            {
-                if (e.PropertyName == nameof(ItemsSource) ||
-                    e.PropertyName == nameof(DisplayMemberPath) ||
-                    e.PropertyName == nameof(SelectedValuePath))
-                {
-                    TryToBind();
-                }
-            };
+            });
 
-            
         }
         #endregion
 
@@ -61,158 +47,91 @@ namespace Bridge.CustomUIMarkup.Libraries.SemanticUI
                                                        "</div>";
         #endregion
 
-        #region Public Methods
-        public void SetOptionsFrom(IEnumerable<string> options)
+
+        void InitSelectedItemByUsingSelectedValue()
         {
-            _menu.ClearVisualChilds();
-
-            foreach (var option in options)
+            var enumerable = ItemsSource as IEnumerable;
+            if (enumerable == null)
             {
-                var optionElement = new HtmlElement("div", "item")
+                return;
+            }
+
+            var selectedValuePath = SelectedValuePath;
+            if (selectedValuePath == null)
+            {
+                return;
+            }
+
+            var selectedValue = SelectedValue;
+
+
+            foreach (var data in enumerable)
+            {
+                if (data == null)
                 {
-                    InnerHTML = option
-                };
+                    continue;
+                }
 
-                optionElement.Attr("data-value", option);
+                var propertyPath = new PropertyPath(selectedValuePath);
 
-                _menu.AddLogicalChild(optionElement);
+                propertyPath.Walk(data);
+
+                var propertyValue = propertyPath.GetPropertyValue();
+
+                if ((selectedValue == null && propertyValue == null) ||   selectedValue?.Equals(propertyValue) == true)
+                {
+                    SelectedItem = data;
+                    return;
+                }
             }
         }
-        #endregion
-
         #region Methods
-        void TryToBind()
+        internal override void ConnectItem(FrameworkElement item)
         {
-            if (ItemsSource == null ||
-                DisplayMemberPath == null ||
+            _menu.AddLogicalChild(item);
+        }
+
+        protected override void ClearItems()
+        {
+            _menu.ClearVisualChilds();
+        }
+
+        protected override void Render()
+        {
+            if (DisplayMemberPath == null ||
                 SelectedValuePath == null)
             {
                 return;
             }
 
-            var enumerableItemSource = ItemsSource as IEnumerable;
-            if (enumerableItemSource == null)
-            {
-                return;
-            }
-
-            _menu.ClearVisualChilds();
-
-            foreach (var record in enumerableItemSource)
-            {
-                var optionElement = new HtmlElement("div", "item");
-
-                var text = ReflectionHelper.GetPropertyValue(record, DisplayMemberPath) + "";
-                var value = ReflectionHelper.GetPropertyValue(record, SelectedValuePath) + "";
-
-                optionElement.InnerHTML = text;
-                optionElement.Attr("data-value", value);
-
-                _menu.AddLogicalChild(optionElement);
-            }
+            base.Render();
         }
 
-        
+        void InitializeItemTemplate()
+        {
+            ItemTemplate = Template.CreateFromXml("<div class='item' data-value='{" + SelectedValuePath + "}' InnerHTML='{" + DisplayMemberPath + "}' />");
+        }
         #endregion
 
+        #pragma warning disable 649
+        #pragma warning disable 169
+        FrameworkElement _menu;
+        FrameworkElement _hidden;
+
+        // ReSharper disable once NotAccessedField.Local
+        object _wrapper;
+
+        #pragma warning restore 169
+        #pragma warning restore 649
+
         #region string DefaultText
-        public static readonly DependencyProperty DefaultTextProperty = DependencyProperty.Register(
-            "DefaultText", typeof(string), typeof(Combo), new PropertyMetadata(default(string)));
+        public static readonly DependencyProperty DefaultTextProperty = DependencyProperty.Register("DefaultText", typeof(string), typeof(Combo), new PropertyMetadata(default(string)));
 
         public string DefaultText
         {
             get { return (string) GetValue(DefaultTextProperty); }
             set { SetValue(DefaultTextProperty, value); }
         }
-        #endregion
-
-        // jQuery _iconElement, _defaultTextElement, _menuElement, _hidden;
-
-        #region object Options
-        object _options;
-
-        public object Options
-        {
-            get { return _options; }
-            set
-            {
-                if (_options != value)
-                {
-                    _options = value;
-                    OnPropertyChanged("Options");
-                }
-            }
-        }
-        #endregion
-
-        #region combo
-        #region object ItemsSource
-        object _itemsSource;
-
-        public object ItemsSource
-        {
-            get { return _itemsSource; }
-            set
-            {
-                if (_itemsSource != value)
-                {
-                    _itemsSource = value;
-                    OnPropertyChanged("ItemsSource");
-                }
-            }
-        }
-        #endregion
-
-        #region string DisplayMemberPath
-        string _displayMemberPath;
-
-        public string DisplayMemberPath
-        {
-            get { return _displayMemberPath; }
-            set
-            {
-                if (_displayMemberPath != value)
-                {
-                    _displayMemberPath = value;
-                    OnPropertyChanged("DisplayMemberPath");
-                }
-            }
-        }
-        #endregion
-
-        #region string SelectedValuePath
-        string _selectedValuePath;
-
-        public string SelectedValuePath
-        {
-            get { return _selectedValuePath; }
-            set
-            {
-                if (_selectedValuePath != value)
-                {
-                    _selectedValuePath = value;
-                    OnPropertyChanged("SelectedValuePath");
-                }
-            }
-        }
-        #endregion
-
-        #region object SelectedValue
-        object _selectedValue;
-
-        public object SelectedValue
-        {
-            get { return _selectedValue; }
-            set
-            {
-                if (_selectedValue != value)
-                {
-                    _selectedValue = value;
-                    OnPropertyChanged("SelectedValue");
-                }
-            }
-        }
-        #endregion
         #endregion
     }
 }
