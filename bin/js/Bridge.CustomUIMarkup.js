@@ -10,7 +10,7 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
         inherits: [Bridge.IPromise],
         statics: {
             methods: {
-                Post: function (url, data, onError) {
+                PostJson: function (url, json, onError) {
                     var $step = 0,
                         $task1, 
                         $taskResult1, 
@@ -30,7 +30,7 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
                                     switch ($step) {
                                         case 0: {
                                             if (onError === void 0) { onError = null; }
-                                            promise = ($t = new Bridge.CustomUIMarkup.Common.AsyncAjax(), $t.Url = url, $t.Data = data, $t);
+                                            promise = ($t = new Bridge.CustomUIMarkup.Common.AsyncAjax(), $t.Url = url, $t.Data = json, $t);
                                             resultHandler = function (request) {
                                                 return request.ResponseText;
                                             };
@@ -78,7 +78,7 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
         methods: {
             then: function (fulfilledHandler, errorHandler, progressHandler) {
                 if (progressHandler === void 0) { progressHandler = null; }
-                $.ajax({ type: "POST", url: this.Url, data: this.Data, async: true, success: Bridge.fn.bind(this, function (o, s, arg3) {
+                $.ajax({ type: "POST", url: this.Url, data: this.Data, async: true, contentType: "JSON", success: Bridge.fn.bind(this, function (o, s, arg3) {
                     this.ResponseText = arg3.responseText;
                     fulfilledHandler.call(null, this);
                 }), error: Bridge.fn.bind(this, function (jqXhr, status, errror) {
@@ -8232,14 +8232,21 @@ me._editor.display.wrapper.style.height = '95%';
         inherits: [System.Windows.Controls.Control],
         statics: {
             fields: {
+                "IsDisabledProperty": null,
                 ValueProperty: null
             },
             ctors: {
                 init: function () {
+                    this["IsDisabledProperty"] = System.Windows.DependencyProperty.Register$1("IsDisabled", System.Boolean, Bridge.CustomUIMarkup.Libraries.SemanticUI.DatePicker, new System.Windows.PropertyMetadata.$ctor1(Bridge.box(false, System.Boolean, System.Boolean.toString), Bridge.CustomUIMarkup.Libraries.SemanticUI.DatePicker.OnIsDisabledChanged));
                     this.ValueProperty = System.Windows.DependencyProperty.Register$1("Value", System.Nullable$1(System.DateTime), Bridge.CustomUIMarkup.Libraries.SemanticUI.DatePicker, new System.Windows.PropertyMetadata.$ctor1(null, Bridge.CustomUIMarkup.Libraries.SemanticUI.DatePicker.OnValueChanged));
                 }
             },
             methods: {
+                OnIsDisabledChanged: function (d, e) {
+                    var me = Bridge.cast(d, Bridge.CustomUIMarkup.Libraries.SemanticUI.DatePicker);
+
+                    me._ui_input.Class = System.Extensions.ToBoolean(e.NewValue) ? "ui disabled input left icon" : "ui input left icon";
+                },
                 OnValueChanged: function (d, e) {
                     var datePicker = Bridge.cast(d, Bridge.CustomUIMarkup.Libraries.SemanticUI.DatePicker);
 
@@ -8251,12 +8258,21 @@ me._editor.display.wrapper.style.height = '95%';
             }
         },
         fields: {
-            _inputText: null
+            _inputText: null,
+            _ui_input: null
         },
         props: {
+            "IsDisabled": {
+                get: function () {
+                    return System.Nullable.getValue(Bridge.cast(Bridge.unbox(this.GetValue$1(Bridge.CustomUIMarkup.Libraries.SemanticUI.DatePicker["IsDisabledProperty"])), System.Boolean));
+                },
+                set: function (value) {
+                    this.SetValue$1(Bridge.CustomUIMarkup.Libraries.SemanticUI.DatePicker["IsDisabledProperty"], Bridge.box(value, System.Boolean, System.Boolean.toString));
+                }
+            },
             DefaultTemplateAsXml: {
                 get: function () {
-                    return "<div class='ui calendar'>    <div class='ui input left icon'>        <i class='calendar icon'/>        <input type = 'text' x.Name='_inputText'/>    </div></div>";
+                    return "<div class='ui calendar'>    <div x.Name='_ui_input'  class='ui input left icon'>        <i class='calendar icon'/>        <input type = 'text' x.Name='_inputText'/>    </div></div>";
                 }
             },
             Value: {
@@ -8283,7 +8299,8 @@ var settings =
     onChange:function (date, text, mode)
 	{
 		me.Value = date||null;
-	}
+	},
+    text:semantic_ui_calendar_text
 };
 root.calendar(settings);
 
@@ -9532,7 +9549,7 @@ $( '<style> '+css+'</style>' ).appendTo( 'head' );
         props: {
             DefaultTemplateAsXml: {
                 get: function () {
-                    return "<div class='field' on.click = 'ClearErrorMessage' >   <label Visibility = '{LabelVisibility}'>{Label}</label>   <ContentPresenter>       <DatePicker Value = '{Value}' />   </ContentPresenter>   <div class = 'ui red pointing label transition' Visibility = '{ErrorMessageVisibility}'> {ErrorMessage} </div></div>";
+                    return "<div class='field' on.click = 'ClearErrorMessage' >   <label Visibility = '{LabelVisibility}'>{Label}</label>   <ContentPresenter>       <DatePicker Value = '{Value}' IsDisabled='{IsDisabled}' />   </ContentPresenter>   <div class = 'ui red pointing label transition' Visibility = '{ErrorMessageVisibility}'> {ErrorMessage} </div></div>";
                 }
             },
             Value: {

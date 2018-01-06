@@ -17,12 +17,12 @@ namespace Bridge.CustomUIMarkup.Common
         #endregion
 
         #region Public Methods
-        public static async Task<string> Post(string url, string data, Action<string> onError = null)
+        public static async Task<string> PostJson(string url, string json, Action<string> onError = null)
         {
             var promise = new AsyncAjax
             {
                 Url = url,
-                Data = data
+                Data = json
             };
             var resultHandler = (Func<AsyncAjax, string>) (request => request.ResponseText);
 
@@ -43,6 +43,7 @@ namespace Bridge.CustomUIMarkup.Common
                 Url = Url,
                 Data = Data,
                 Async = true,
+                ContentType = "JSON",
                 Success = (o, s, arg3) =>
                 {
                     ResponseText = arg3.ResponseText;

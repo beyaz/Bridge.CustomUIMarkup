@@ -129,6 +129,7 @@
   <ItemGroup>
     <Content Include="Lib\semantic-ui-calendar\calendar.css" />
     <Content Include="Lib\semantic-ui-calendar\calendar.js" />
+    <Content Include="Lib\semantic-ui-calendar\calendar.TR.js" />
     <Content Include="Lib\semantic-ui-DataTable\dataTables.semanticui.min.css" />
     <Content Include="Lib\semantic-ui-DataTable\dataTables.semanticui.js" />
     <Content Include="Lib\semantic-ui-DataTable\dataTables.TR.js" />
