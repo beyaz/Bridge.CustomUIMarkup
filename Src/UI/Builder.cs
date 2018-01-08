@@ -235,15 +235,19 @@ namespace Bridge.CustomUIMarkup.UI
             }
 
             // maybe <div> {LastName} </div>
-            var bindingInfo = BindingInfo.TryParseExpression(html);
+            var bindingInfo = HTMLBindingInfo.TryParseExpression(html);
             if (bindingInfo != null)
             {
+                var textNode = new Bridge.jQuery2.jQuery(Document.CreateTextNode(""));
+                parentInstance._root.Append(textNode);
+
+
                 bindingInfo.BindingMode = BindingMode.OneWay;
 
                 bindingInfo.Source = parentInstance;
                 bindingInfo.SourcePath = "DataContext." + bindingInfo.SourcePath.Path;
 
-                bindingInfo.Target = parentInstance;
+                bindingInfo.Target = textNode;
                 bindingInfo.TargetPath = nameof(parentInstance.InnerHTML);
 
                 bindingInfo.Connect();
@@ -532,7 +536,13 @@ namespace Bridge.CustomUIMarkup.UI
                 return true;
             }
 
-            if (propertyType.IsNumeric() || propertyType == typeof(string))
+            var processAsAttribute = propertyType.IsNumeric() || propertyType == typeof(string);
+            if (!processAsAttribute)
+            {
+                processAsAttribute = Nullable.GetUnderlyingType(propertyType)?.IsNumeric() == true;
+            }
+
+            if (processAsAttribute)
             {
                 var innerHTML = (xmlNode.GetInnerText() + "").Trim();
 

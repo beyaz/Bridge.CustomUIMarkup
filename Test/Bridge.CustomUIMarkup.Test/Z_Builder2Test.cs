@@ -120,6 +120,7 @@ namespace Bridge.CustomUIMarkup.Test
             new Z_Builder2Test().combo_SelectedValueTest();
             new Z_Builder2Test().combo_SelectedValueTest_with_converter();
             new Z_Builder2Test().Parse_ViewInvocationExpressionInfo();
+            new Z_Builder2Test().TextNode_must_be_support_binding_expression();
 
 
         }
@@ -403,6 +404,20 @@ namespace Bridge.CustomUIMarkup.Test
 
             MustEqual(htmlString, ui._el.AsHtmlString());
         }
+
+
+        void TextNode_must_be_support_binding_expression()
+        {
+            var model = new SimpleClass1
+            {
+                LastName = "Neşet Ertaş"
+            };
+            var htmlString = "<div id='A'><i id='B'></i>{LastName}</div>";
+            var ui         = BuildAndGetFirstLogicalChild(htmlString, model);
+
+            MustEqual("<div id='A'><i id='B'></i>Neşet Ertaş</div>", ui._el.AsHtmlString());
+        }
+
 
         void InputTypeHidden()
         {
@@ -798,7 +813,7 @@ namespace Bridge.CustomUIMarkup.Test
 
             var ui = fe.GetLogicalChildAt(0);
 
-            MustEqual("Şaziye", ui.InnerHTML);
+            MustEqual("<div>Şaziye</div>", ui._el.AsHtmlString());
             MustEqual("Şaziye", ui.html());
         }
 

@@ -1,6 +1,7 @@
 ﻿using System.Windows;
 using Bridge.CustomUIMarkup.Test;
 using Bridge.CustomUIMarkup.UI;
+using Extensions = Bridge.Html5.Extensions;
 
 namespace Bridge.CustomUIMarkup.Libraries.SemanticUI
 {
@@ -372,11 +373,11 @@ namespace Bridge.CustomUIMarkup.Libraries.SemanticUI
 
 
 
-            MustEqual("a", el.InnerHTML);
+            MustEqual("<div>a</div>", Extensions.AsHtmlString(el._el));
 
             model.Child.Child.Child.LastName = "b";
 
-            MustEqual("b", el.InnerHTML);
+            MustEqual("<div>b</div>", Extensions.AsHtmlString(el._el));
 
             model = new SimpleClass1
             {
@@ -394,7 +395,7 @@ namespace Bridge.CustomUIMarkup.Libraries.SemanticUI
 
             el.DataContext = model;
 
-            MustEqual("x", el.InnerHTML);
+            MustEqual("<div>x</div>", Extensions.AsHtmlString(el._el));
         }
 
         void SimpleBind_OnDataContext_Changed()

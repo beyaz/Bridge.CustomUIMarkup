@@ -350,13 +350,13 @@ namespace System.Windows
 
         #region WidthProperty
         public static readonly DependencyProperty WidthProperty = DependencyProperty.Register(nameof(Width),
-                                                                                              typeof(double),
+                                                                                              typeof(double?),
                                                                                               typeof(FrameworkElement),
                                                                                               CreateJQueryCssUpdater("width"));
 
-        public double Width
+        public double? Width
         {
-            get { return (double) GetValue(WidthProperty); }
+            get { return (double?) GetValue(WidthProperty); }
             set { SetValue(WidthProperty, value); }
         }
         #endregion
@@ -466,12 +466,12 @@ namespace System.Windows
 
         #region HeightProperty
         public static readonly DependencyProperty HeightProperty = DependencyProperty.Register(nameof(Height),
-                                                                                               typeof(double), typeof(FrameworkElement),
+                                                                                               typeof(double?), typeof(FrameworkElement),
                                                                                                CreateJQueryCssUpdater("height"));
 
-        public double Height
+        public double? Height
         {
-            get { return (double) GetValue(HeightProperty); }
+            get { return (double?) GetValue(HeightProperty); }
             set { SetValue(HeightProperty, value); }
         }
         #endregion

@@ -38,6 +38,12 @@ namespace System.Windows.Data
 
             if (path == "INNERHTML")
             {
+                if (Target.Get(0).NodeType == NodeType.Text)
+                {
+                    Target.Get(0).NodeValue = value + "";
+                    return;
+                }
+
                 Target.Html(value + "");
                 return;
             }

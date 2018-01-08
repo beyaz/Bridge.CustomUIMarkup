@@ -2282,14 +2282,18 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
                 }
 
                 // maybe <div> {LastName} </div>
-                var bindingInfo = System.Windows.Data.BindingInfo.TryParseExpression(html);
+                var bindingInfo = System.Windows.Data.HTMLBindingInfo.TryParseExpression(html);
                 if (bindingInfo != null) {
+                    var textNode = $(document.createTextNode(""));
+                    parentInstance._root.append(textNode);
+
+
                     bindingInfo.BindingMode = System.Windows.Data.BindingMode.OneWay;
 
                     bindingInfo.Source = parentInstance;
                     bindingInfo.SourcePath = System.Windows.PropertyPath.op_Implicit("DataContext." + (bindingInfo.SourcePath.Path || ""));
 
-                    bindingInfo.Target = parentInstance;
+                    bindingInfo.Target$1 = textNode;
                     bindingInfo.TargetPath = System.Windows.PropertyPath.op_Implicit("InnerHTML");
 
                     bindingInfo.Connect();
@@ -2494,6 +2498,7 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
                 Bridge.unbox(instance)._root.attr(name, value);
             },
             TryToInitParentProperty: function (xmlNode) {
+                var $t;
                 var parentNodeName = xmlNode.parentNode.nodeName;
                 var nodeName = xmlNode.nodeName;
 
@@ -2522,7 +2527,12 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
                     return true;
                 }
 
-                if (System.Extensions.IsNumeric$1(propertyType) || Bridge.referenceEquals(propertyType, System.String)) {
+                var processAsAttribute = System.Extensions.IsNumeric$1(propertyType) || Bridge.referenceEquals(propertyType, System.String);
+                if (!processAsAttribute) {
+                    processAsAttribute = System.Nullable.eq((($t = System.Nullable.getUnderlyingType(propertyType)) != null ? System.Extensions.IsNumeric$1($t) : null), true);
+                }
+
+                if (processAsAttribute) {
                     var innerHTML = ((Bridge.CustomUIMarkup.UI.Extensions.GetInnerText(xmlNode) || "") + "").trim();
 
                     this.ProcessAttribute(this["_currentInstance"], propertyName, innerHTML);
@@ -6970,6 +6980,11 @@ if(fn)
                 var path = this.TargetPath.Path.toUpperCase();
 
                 if (Bridge.referenceEquals(path, "INNERHTML")) {
+                    if (this.Target$1.get(0).nodeType === 3) {
+                        this.Target$1.get(0).nodeValue = System.String.concat(value, "");
+                        return;
+                    }
+
                     this.Target$1.html(System.String.concat(value, ""));
                     return;
                 }
@@ -7076,7 +7091,7 @@ if(fn)
                     this.TextWrappingProperty = System.Windows.DependencyProperty.Register$1("TextWrapping", System.Windows.TextWrapping, System.Windows.FrameworkElement, new System.Windows.PropertyMetadata.$ctor2(System.Windows.FrameworkElement.OnTextWrappingChanged));
                     this.FontWeightProperty = System.Windows.DependencyProperty.Register$1("FontWeight", System.Double, System.Windows.FrameworkElement, System.Windows.FrameworkElement.CreateJQueryCssUpdater("fontWeight"));
                     this.FontSizeProperty = System.Windows.DependencyProperty.Register$1("FontSize", System.Double, System.Windows.FrameworkElement, System.Windows.FrameworkElement.CreateJQueryCssUpdater("fontSize"));
-                    this.WidthProperty = System.Windows.DependencyProperty.Register$1("Width", System.Double, System.Windows.FrameworkElement, System.Windows.FrameworkElement.CreateJQueryCssUpdater("width"));
+                    this.WidthProperty = System.Windows.DependencyProperty.Register$1("Width", System.Nullable$1(System.Double), System.Windows.FrameworkElement, System.Windows.FrameworkElement.CreateJQueryCssUpdater("width"));
                     this.WidthPercentProperty = System.Windows.DependencyProperty.Register$1("WidthPercent", System.Double, System.Windows.FrameworkElement, System.Windows.FrameworkElement.CreateJQueryCssUpdater$1("width", function (v) {
                         return System.String.concat(v, "%");
                     }));
@@ -7084,7 +7099,7 @@ if(fn)
                     this["InnerHTMLProperty"] = System.Windows.DependencyProperty.Register$1("InnerHTML", System.String, System.Windows.FrameworkElement, new System.Windows.PropertyMetadata.$ctor2(System.Windows.FrameworkElement.OnInnerHTMLChanged));
                     this["IsVisibleProperty"] = System.Windows.DependencyProperty.Register$1("IsVisible", System.Boolean, System.Windows.FrameworkElement, new System.Windows.PropertyMetadata.$ctor1(Bridge.box(true, System.Boolean, System.Boolean.toString), System.Windows.FrameworkElement.OnVisibleChanged));
                     this.VisibilityProperty = System.Windows.DependencyProperty.Register$1("Visibility", System.Windows.Visibility, System.Windows.FrameworkElement, new System.Windows.PropertyMetadata.$ctor2(System.Windows.FrameworkElement.OnVisibilityChanged));
-                    this.HeightProperty = System.Windows.DependencyProperty.Register$1("Height", System.Double, System.Windows.FrameworkElement, System.Windows.FrameworkElement.CreateJQueryCssUpdater("height"));
+                    this.HeightProperty = System.Windows.DependencyProperty.Register$1("Height", System.Nullable$1(System.Double), System.Windows.FrameworkElement, System.Windows.FrameworkElement.CreateJQueryCssUpdater("height"));
                     this.HeightPercentProperty = System.Windows.DependencyProperty.Register$1("HeightPercent", System.Double, System.Windows.FrameworkElement, System.Windows.FrameworkElement.CreateJQueryCssUpdater$1("height", function (v) {
                         return System.String.concat(v, "%");
                     }));
@@ -7388,10 +7403,10 @@ if(fn)
             },
             Width: {
                 get: function () {
-                    return System.Nullable.getValue(Bridge.cast(Bridge.unbox(this.GetValue$1(System.Windows.FrameworkElement.WidthProperty)), System.Double));
+                    return Bridge.cast(Bridge.unbox(this.GetValue$1(System.Windows.FrameworkElement.WidthProperty)), System.Double, true);
                 },
                 set: function (value) {
-                    this.SetValue$1(System.Windows.FrameworkElement.WidthProperty, Bridge.box(value, System.Double, System.Double.format, System.Double.getHashCode));
+                    this.SetValue$1(System.Windows.FrameworkElement.WidthProperty, Bridge.box(value, System.Double, System.Nullable.toStringFn(System.Double.format), System.Nullable.getHashCodeFn(System.Double.getHashCode)));
                 }
             },
             WidthPercent: {
@@ -7436,10 +7451,10 @@ if(fn)
             },
             Height: {
                 get: function () {
-                    return System.Nullable.getValue(Bridge.cast(Bridge.unbox(this.GetValue$1(System.Windows.FrameworkElement.HeightProperty)), System.Double));
+                    return Bridge.cast(Bridge.unbox(this.GetValue$1(System.Windows.FrameworkElement.HeightProperty)), System.Double, true);
                 },
                 set: function (value) {
-                    this.SetValue$1(System.Windows.FrameworkElement.HeightProperty, Bridge.box(value, System.Double, System.Double.format, System.Double.getHashCode));
+                    this.SetValue$1(System.Windows.FrameworkElement.HeightProperty, Bridge.box(value, System.Double, System.Nullable.toStringFn(System.Double.format), System.Nullable.getHashCodeFn(System.Double.getHashCode)));
                 }
             },
             HeightPercent: {
