@@ -37,6 +37,8 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
 
                                             errorHandler = function (me) {
                                                 !Bridge.staticEquals(onError, null) ? onError(me._error) : null;
+
+                                                return new System.IO.IOException.$ctor1(me._error);
                                             };
 
                                             task = System.Threading.Tasks.Task.fromPromise(promise, resultHandler, errorHandler);
@@ -86,7 +88,7 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
 
                     Bridge.CustomUIMarkup.Common.Trace.Log(jqXhr);
 
-                    this._error = "@status:" + (status || "") + " @errror:" + (errror || "");
+                    this._error = " Ajax Error Occured." + ("\n" || "") + " @status   :" + (status || "") + ("\n" || "") + " @errror   :" + (errror || "") + ("\n" || "") + " @POST Data:" + (this.Data || "") + ("\n" || "") + " @Url      :" + (this.Url || "");
 
                     Bridge.CustomUIMarkup.Common.Trace.Log(this._error);
 

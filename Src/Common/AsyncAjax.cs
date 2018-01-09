@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Threading.Tasks;
 using Bridge.jQuery2;
 
@@ -13,7 +14,7 @@ namespace Bridge.CustomUIMarkup.Common
 
         #region Properties
         string Data { get; set; }
-        string Url { get; set; }
+        string Url  { get; set; }
         #endregion
 
         #region Public Methods
@@ -21,12 +22,17 @@ namespace Bridge.CustomUIMarkup.Common
         {
             var promise = new AsyncAjax
             {
-                Url = url,
+                Url  = url,
                 Data = json
             };
             var resultHandler = (Func<AsyncAjax, string>) (request => request.ResponseText);
 
-            var errorHandler = (Action<AsyncAjax>) (me => { onError?.Invoke(me._error); });
+            var errorHandler = (Func<AsyncAjax, Exception>) (me =>
+            {
+                onError?.Invoke(me._error);
+
+                return new IOException(me._error);
+            });
 
             var task = Task.FromPromise<string>(promise, resultHandler, errorHandler);
 
@@ -39,12 +45,12 @@ namespace Bridge.CustomUIMarkup.Common
         {
             jQuery.Ajax(new AjaxOptions
             {
-                Type = "POST",
-                Url = Url,
-                Data = Data,
-                Async = true,
+                Type        = "POST",
+                Url         = Url,
+                Data        = Data,
+                Async       = true,
                 ContentType = "JSON",
-                Success = (o, s, arg3) =>
+                Success     = (o, s, arg3) =>
                 {
                     ResponseText = arg3.ResponseText;
                     fulfilledHandler.Call(null, this);
@@ -56,7 +62,11 @@ namespace Bridge.CustomUIMarkup.Common
 
                     Trace.Log(jqXhr);
 
-                    _error = "@status:" + status + " @errror:" + errror;
+                    _error = " Ajax Error Occured." + Environment.NewLine +
+                             " @status   :" + status + Environment.NewLine +
+                             " @errror   :" + errror + Environment.NewLine +
+                             " @POST Data:" + Data + Environment.NewLine +
+                             " @Url      :" + Url;
 
                     Trace.Log(_error);
 
