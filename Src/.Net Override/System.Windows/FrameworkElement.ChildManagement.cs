@@ -74,6 +74,7 @@ namespace System.Windows
         protected event Action AfterConnectToLogicalParent;
         protected event Action AfterConnectToVisualParent;
         protected event Action<FrameworkElement> AfterLogicalChildAdd;
+        protected event Action<FrameworkElement> AfterLogicalChildRemove;
         protected event Action<FrameworkElement> BeforeLogicalChildAdd;
         protected event Action<FrameworkElement> AfterVisualChildAdd;
         protected event Action<FrameworkElement> BeforeConnectToLogicalParent;
@@ -104,6 +105,8 @@ namespace System.Windows
         public void RemoveLogicalChild(FrameworkElement child)
         {
              _logicalChilderen?.Remove(child);
+
+            AfterLogicalChildRemove?.Invoke(child);
         }
 
         public void RemoveVisualChild(FrameworkElement child)

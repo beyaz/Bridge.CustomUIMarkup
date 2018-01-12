@@ -7227,6 +7227,7 @@ if(fn)
             AfterConnectToLogicalParent: null,
             AfterConnectToVisualParent: null,
             AfterLogicalChildAdd: null,
+            AfterLogicalChildRemove: null,
             BeforeLogicalChildAdd: null,
             AfterVisualChildAdd: null,
             BeforeConnectToLogicalParent: null,
@@ -7526,6 +7527,8 @@ if(fn)
             },
             RemoveLogicalChild: function (child) {
                 this._logicalChilderen != null ? this._logicalChilderen.remove(child) : null;
+
+                !Bridge.staticEquals(this.AfterLogicalChildRemove, null) ? this.AfterLogicalChildRemove(child) : null;
             },
             RemoveVisualChild: function (child) {
                 this._visualChilderen != null ? this._visualChilderen.remove(child) : null;
@@ -7658,6 +7661,8 @@ if(fn)
                 this.$initialize();
                 System.Windows.FrameworkElement.ctor.call(this, tag, className);
                 this.addAfterLogicalChildAdd(Bridge.fn.cacheBind(this, this.AddVisualChild));
+                this.addAfterLogicalChildRemove(Bridge.fn.cacheBind(this, this.RemoveVisualChild));
+
             }
         }
     });

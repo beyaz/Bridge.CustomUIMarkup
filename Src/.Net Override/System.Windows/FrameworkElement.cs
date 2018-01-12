@@ -14,6 +14,8 @@ namespace System.Windows
         public HtmlElement(string tag = null, string className = null) : base(tag, className)
         {
             AfterLogicalChildAdd += AddVisualChild;
+            AfterLogicalChildRemove += RemoveVisualChild;
+
         }
         #endregion
     }
