@@ -90,7 +90,7 @@
     <Compile Include="Libraries\viewerjs\Elements.cs" />
     <Compile Include="Libraries\viewerjs\Viewer.cs" />
     <Compile Include="Resources.cs" />
-    <Compile Include="Tokenizers\Tokenizer.cs" />
+    <Compile Include=".Net Override\System.Text.Tokenizers\Tokenizer.cs" />
     <Compile Include="Libraries\SemanticUI\Align.cs" />
     <Compile Include="Libraries\SemanticUI\Field.cs" />
     <Compile Include="Libraries\SemanticUI\IconType.cs" />
