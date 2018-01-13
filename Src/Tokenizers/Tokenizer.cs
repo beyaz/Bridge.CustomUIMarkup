@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
-using System.Windows.Data;
 using Bridge.Html5;
 
 namespace Bridge.CustomUIMarkup.Tokenizers
@@ -31,16 +30,16 @@ namespace Bridge.CustomUIMarkup.Tokenizers
     class TokenDefinition
     {
         #region Fields
-        readonly int _precedence;
-        readonly Regex _regex;
+        readonly int       _precedence;
+        readonly Regex     _regex;
         readonly TokenType _tokenType;
         #endregion
 
         #region Constructors
         public TokenDefinition(TokenType tokenType, string regexPattern, int precedence)
         {
-            _regex = new Regex(regexPattern, RegexOptions.IgnoreCase /*| RegexOptions.Compiled*/);
-            _tokenType = tokenType;
+            _regex      = new Regex(regexPattern, RegexOptions.IgnoreCase /*| RegexOptions.Compiled*/);
+            _tokenType  = tokenType;
             _precedence = precedence;
         }
         #endregion
@@ -49,7 +48,7 @@ namespace Bridge.CustomUIMarkup.Tokenizers
         public IEnumerable<TokenMatch> FindMatches(string inputString)
         {
             var matches = _regex.Matches(inputString);
-            var len = matches.Count;
+            var len     = matches.Count;
             for (var i = 0; i < len; i++)
             {
                 var match = matches[i];
@@ -57,9 +56,9 @@ namespace Bridge.CustomUIMarkup.Tokenizers
                 yield return new TokenMatch
                 {
                     StartIndex = match.Index,
-                    EndIndex = match.Index + match.Length,
-                    TokenType = _tokenType,
-                    Value = match.Value,
+                    EndIndex   = match.Index + match.Length,
+                    TokenType  = _tokenType,
+                    Value      = match.Value,
                     Precedence = _precedence
                 };
             }
@@ -70,11 +69,11 @@ namespace Bridge.CustomUIMarkup.Tokenizers
     class TokenMatch
     {
         #region Public Properties
-        public int EndIndex { get; set; }
-        public int Precedence { get; set; }
-        public int StartIndex { get; set; }
-        public TokenType TokenType { get; set; }
-        public string Value { get; set; }
+        public int       EndIndex   { get; set; }
+        public int       Precedence { get; set; }
+        public int       StartIndex { get; set; }
+        public TokenType TokenType  { get; set; }
+        public string    Value      { get; set; }
         #endregion
     }
 
@@ -84,31 +83,19 @@ namespace Bridge.CustomUIMarkup.Tokenizers
         public Token(TokenType tokenType)
         {
             TokenType = tokenType;
-            Value = string.Empty;
+            Value     = string.Empty;
         }
 
         public Token(TokenType tokenType, string value)
         {
             TokenType = tokenType;
-            Value = value;
+            Value     = value;
         }
         #endregion
 
         #region Public Properties
         public TokenType TokenType { get; set; }
-        public string Value { get; set; }
-        #endregion
-
-        #region Public Methods
-        public Token Clone()
-        {
-            return new Token(TokenType, Value);
-        }
-
-        public override string ToString()
-        {
-            return "{" + TokenType + ":" + Value + "}";
-        }
+        public string    Value     { get; set; }
         #endregion
     }
 
@@ -196,10 +183,9 @@ namespace Bridge.CustomUIMarkup.Tokenizers
         #endregion
     }
 
-
-
     static class Extensions
     {
+        #region Methods
         internal static void SkipSpace(this IReadOnlyList<Token> tokens, ref int i)
         {
             var len = tokens.Count;
@@ -213,15 +199,16 @@ namespace Bridge.CustomUIMarkup.Tokenizers
                     i++;
                     continue;
                 }
+
                 return;
-
             }
-
         }
+        #endregion
     }
 
     internal class ViewInvocationExpressionInfo
     {
+        #region Static Fields
         static readonly Tokenizer BindingExpressionTokenizer = new Tokenizer
         {
             TokenDefinitions = new List<TokenDefinition>
@@ -236,34 +223,29 @@ namespace Bridge.CustomUIMarkup.Tokenizers
                 new TokenDefinition(TokenType.Comma, ",", 1),
                 new TokenDefinition(TokenType.Dot, ".", 1)
             }
-    };
+        };
+        #endregion
 
-        public string        MethodName       { get; set; }
-        public bool          IsStartsWithThis { get; set; }
+        #region Public Properties
+        public bool                  IsStartsWithThis { get; set; }
+        public string                MethodName       { get; set; }
         public IReadOnlyList<object> Parameters       { get; set; }
+        #endregion
 
-
-
-
-
-       
-
-
+        #region Public Methods
         public static ViewInvocationExpressionInfo Parse(string expression)
         {
             var info = new ViewInvocationExpressionInfo();
 
             var parameters = new List<object>();
 
-         
-
             var tokens = BindingExpressionTokenizer.Tokenize(expression);
-            var len = tokens.Count;
-            for (int i = 0; i < len; i++)
+            var len    = tokens.Count;
+            for (var i = 0; i < len; i++)
             {
                 var token = tokens[i];
 
-                if (token.Value.ToUpperCase() == "THIS" || token.Value == " "|| token.Value == "(" || token.Value == ")" || token.Value == "," || token.Value == ".")
+                if (token.Value.ToUpperCase() == "THIS" || token.Value == " " || token.Value == "(" || token.Value == ")" || token.Value == "," || token.Value == ".")
                 {
                     info.IsStartsWithThis = true;
                     continue;
@@ -281,7 +263,7 @@ namespace Bridge.CustomUIMarkup.Tokenizers
                 if (token.Value.StartsWith("'"))
                 {
                     var valueLen = token.Value.Length;
-                    parameters.Add(token.Value.Substring(1,valueLen-2));
+                    parameters.Add(token.Value.Substring(1, valueLen - 2));
                     continue;
                 }
 
@@ -291,5 +273,6 @@ namespace Bridge.CustomUIMarkup.Tokenizers
             info.Parameters = parameters;
             return info;
         }
+        #endregion
     }
 }

@@ -84,13 +84,11 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
                     this.ResponseText = arg3.responseText;
                     fulfilledHandler.call(null, this);
                 }), error: Bridge.fn.bind(this, function (jqXhr, status, errror) {
-                    Bridge.CustomUIMarkup.Common.Trace.OperationWasCanceled("@POST:" + (this.Url || ""), "Ajax Error Occured.");
+                    this._error = "Ajax Error Occured. For this reason 'POST' operation was canceled." + ("\n" || "") + "@status   :" + (status || "") + ("\n" || "") + "@errror   :" + (errror || "") + ("\n" || "") + "@POST Data:" + (this.Data || "") + ("\n" || "") + "@Url      :" + (this.Url || "");
 
-                    Bridge.CustomUIMarkup.Common.Trace.Log(jqXhr);
+                    Bridge.Console.log(this._error);
 
-                    this._error = " Ajax Error Occured." + ("\n" || "") + " @status   :" + (status || "") + ("\n" || "") + " @errror   :" + (errror || "") + ("\n" || "") + " @POST Data:" + (this.Data || "") + ("\n" || "") + " @Url      :" + (this.Url || "");
-
-                    Bridge.CustomUIMarkup.Common.Trace.Log(this._error);
+                    Bridge.Console.log(jqXhr);
 
                     errorHandler.call(null, this);
                 }) });
@@ -356,41 +354,6 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
                     this.index = (this.index + 1) | 0;
                     this.Load();
                 }));
-            }
-        }
-    });
-
-    Bridge.define("Bridge.CustomUIMarkup.Common.Trace", {
-        statics: {
-            fields: {
-                DisabledTypesForTrace: null
-            },
-            ctors: {
-                init: function () {
-                    this.DisabledTypesForTrace = new (System.Collections.Generic.Dictionary$2(Function,System.Boolean))();
-                }
-            },
-            methods: {
-                Log$1: function (caller, Value) {
-                    if (caller != null) {
-                        var isDisabled = System.Collections.Generic.Extensions.TryGetValue(Bridge.global.Function, System.Boolean, Bridge.CustomUIMarkup.Common.Trace.DisabledTypesForTrace, Bridge.getType(caller), false);
-                        if (isDisabled) {
-                            return;
-                        }
-                    }
-
-                    console.log(Bridge.unbox(Value));
-                },
-                Log: function (Value) {
-                    console.log(Bridge.unbox(Value));
-                },
-                Log$2: function (message, element) {
-                    console.log(message);
-                    console.log(element != null && element._root != null ? element._root.get(0) : null);
-                },
-                OperationWasCanceled: function (operationName, reason) {
-                    console.log((reason || "") + " For this reason operation was canceled.@operationName:" + (operationName || ""));
-                }
             }
         }
     });
@@ -1834,10 +1797,9 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
                             i.v = (i.v + 1) | 0;
                             continue;
                         }
+
                         return;
-
                     }
-
                 }
             }
         }
@@ -1858,14 +1820,6 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
                 this.$initialize();
                 this.TokenType = tokenType;
                 this.Value = value;
-            }
-        },
-        methods: {
-            Clone: function () {
-                return new Bridge.CustomUIMarkup.Tokenizers.Token.$ctor1(this.TokenType, this.Value);
-            },
-            toString: function () {
-                return "{" + System.Enum.toString(Bridge.CustomUIMarkup.Tokenizers.TokenType, this.TokenType) + ":" + (this.Value || "") + "}";
             }
         }
     });
@@ -2067,8 +2021,6 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
 
                     var parameters = new (System.Collections.Generic.List$1(System.Object)).ctor();
 
-
-
                     var tokens = Bridge.CustomUIMarkup.Tokenizers.ViewInvocationExpressionInfo.BindingExpressionTokenizer.Tokenize(expression);
                     var len = System.Array.getCount(tokens, Bridge.CustomUIMarkup.Tokenizers.Token);
                     for (var i = 0; i < len; i = (i + 1) | 0) {
@@ -2102,8 +2054,8 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
             }
         },
         fields: {
-            MethodName: null,
             "IsStartsWithThis": false,
+            MethodName: null,
             Parameters: null
         }
     });
@@ -7880,9 +7832,6 @@ if(fn)
                 System.ComponentModel.Extensions.OnPropertyChanged(this, "FontSize", Bridge.fn.cacheBind(this, this.FontSizeChanged));
 
 
-                window.setTimeout(Bridge.fn.bind(this, function () {
-                    Bridge.CustomUIMarkup.Common.Trace.Log$1(this, this.DataContext);
-                }), 1003);
             }
         },
         methods: {
@@ -8496,9 +8445,6 @@ root.calendar(settings);
             },
             CanOnlyBeOneChild: function (child) {
                 if (this.LogicalChilderenCount === 2) {
-                    Bridge.CustomUIMarkup.Common.Trace.Log$2("GetLogicalChildAt(0)", this.GetLogicalChildAt(0));
-                    Bridge.CustomUIMarkup.Common.Trace.Log$2("GetLogicalChildAt(1)", this.GetLogicalChildAt(1));
-
                     throw new System.InvalidOperationException("Content cannot be set more than once.");
                 }
             },

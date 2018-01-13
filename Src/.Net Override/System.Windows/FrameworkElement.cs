@@ -622,9 +622,6 @@ namespace System.Windows
         {
             if (LogicalChilderenCount == 2)
             {
-                Trace.Log("GetLogicalChildAt(0)", GetLogicalChildAt(0));
-                Trace.Log("GetLogicalChildAt(1)", GetLogicalChildAt(1));
-
                 throw new InvalidOperationException("Content cannot be set more than once.");
             }
         }

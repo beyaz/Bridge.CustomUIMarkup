@@ -2,6 +2,7 @@
 using System.IO;
 using System.Threading.Tasks;
 using Bridge.jQuery2;
+using Console = Bridge.Utils.Console;
 
 namespace Bridge.CustomUIMarkup.Common
 {
@@ -58,17 +59,15 @@ namespace Bridge.CustomUIMarkup.Common
 
                 Error = (jqXhr, status, errror) =>
                 {
-                    Trace.OperationWasCanceled("@POST:" + Url, "Ajax Error Occured.");
+                    _error = "Ajax Error Occured. For this reason 'POST' operation was canceled." + Environment.NewLine +
+                             "@status   :" + status + Environment.NewLine +
+                             "@errror   :" + errror + Environment.NewLine +
+                             "@POST Data:" + Data + Environment.NewLine +
+                             "@Url      :" + Url;
 
-                    Trace.Log(jqXhr);
+                    Console.Log(_error);
 
-                    _error = " Ajax Error Occured." + Environment.NewLine +
-                             " @status   :" + status + Environment.NewLine +
-                             " @errror   :" + errror + Environment.NewLine +
-                             " @POST Data:" + Data + Environment.NewLine +
-                             " @Url      :" + Url;
-
-                    Trace.Log(_error);
+                    Console.Log(jqXhr);
 
                     errorHandler.Call(null, this);
                 }

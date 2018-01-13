@@ -2,7 +2,6 @@
 using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
-using Bridge.CustomUIMarkup.Common;
 using Bridge.Html5;
 using Bridge.jQuery2;
 
@@ -15,7 +14,6 @@ namespace Bridge.CustomUIMarkup.Libraries.CodeMirror
             this.OnPropertyChanged(nameof(FontSize), FontSizeChanged);
 
 
-            Window.SetTimeout(() => { Trace.Log(this, DataContext); }, 1003);
         }
         #region FontSizeProperty
        
