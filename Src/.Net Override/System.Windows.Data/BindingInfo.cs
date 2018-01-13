@@ -1,5 +1,5 @@
 using System.Collections.Generic;
-using Bridge.CustomUIMarkup.Tokenizers;
+using System.Text.Tokenizers;
 using Bridge.Html5;
 
 namespace System.Windows.Data

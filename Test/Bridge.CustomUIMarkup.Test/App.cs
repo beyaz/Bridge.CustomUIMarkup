@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Windows;
 using Bridge.CustomUIMarkup.Libraries.SemanticUI;
-using Bridge.CustomUIMarkup.Tokenizers;
+using System.Text.Tokenizers;
 
 namespace Bridge.CustomUIMarkup.Test
 {

@@ -9,7 +9,7 @@ using System.Windows.Controls;
 using System.Windows.Data;
 using System.Xml;
 using Bridge.CustomUIMarkup.Common;
-using Bridge.CustomUIMarkup.Tokenizers;
+using System.Text.Tokenizers;
 using Bridge.Html5;
 
 namespace Bridge.CustomUIMarkup.UI

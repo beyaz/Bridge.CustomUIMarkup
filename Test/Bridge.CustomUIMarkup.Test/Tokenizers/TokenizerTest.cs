@@ -1,7 +1,7 @@
 ﻿using System.Linq;
 using Bridge.CustomUIMarkup.Test;
 
-namespace Bridge.CustomUIMarkup.Tokenizers
+namespace System.Text.Tokenizers
 {
     class TokenizerTest : TestBase
     {

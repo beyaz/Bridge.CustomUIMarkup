@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Windows;
 using Bridge.CustomUIMarkup.Libraries.SemanticUI;
-using Bridge.CustomUIMarkup.Tokenizers;
+using System.Text.Tokenizers;
 using Bridge.CustomUIMarkup.UI;
 using Bridge.Html5;
 

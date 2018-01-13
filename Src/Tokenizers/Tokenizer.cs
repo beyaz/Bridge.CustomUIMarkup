@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using Bridge.Html5;
 
-namespace Bridge.CustomUIMarkup.Tokenizers
+namespace System.Text.Tokenizers
 {
     internal enum TokenType
     {
