@@ -8,6 +8,7 @@ namespace Bridge.CustomUIMarkup.Test
         public static void RunAll()
         {
             new CastTest().Int32ToNullableInt32();
+            new CastTest().Nullabe_Types_Default_Values_Mustbe_Null();
         }
         #endregion
 
@@ -19,6 +20,12 @@ namespace Bridge.CustomUIMarkup.Test
 
             MustTrue(result != null);
             MustEqual(i, result.GetValueOrDefault());
+        }
+
+
+        void Nullabe_Types_Default_Values_Mustbe_Null()
+        {
+            Assert.IsNull(typeof(int?).GetDefaultValue());
         }
         #endregion
     }

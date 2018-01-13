@@ -202,37 +202,6 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
     Bridge.define("Bridge.CustomUIMarkup.Common.Extensions", {
         statics: {
             methods: {
-                GetOriginalLineNumber: function (element, xmlRootNode, sContent) {
-                    // https://jsfiddle.net/g113c350/3/
-
-                    
-
-    var sTagName = element.tagName;
-    var aNodeListByTag = xmlRootNode.getElementsByTagName(sTagName);
-    var iMaxIndex = 0;
-    for (var j = 0; j < aNodeListByTag.length; j++) {
-        if (aNodeListByTag.item(j) === element) {
-            iMaxIndex = j;
-            break;
-        }
-    }
-    var regex = new RegExp('<' + sTagName, 'g');
-    var offset = 0;
-    for (var i = 0; i <= iMaxIndex; i++) {
-        offset = regex.exec(sContent).index;
-    }
-    var line = 0;
-    for (var i = 0; i < sContent.substring(0, offset).length; i++) {
-        if (sContent[i] === '\n') {
-            line++;
-        }
-    }
-    return line + 1;
-
-
-
-                    return 0;
-                },
                 GetElementsByTagNameIsNotSupporting: function (element) {
                     return element.getElementsByTagName === undefined;
                 },
@@ -1892,7 +1861,7 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
                 this["_currentInstance"] = instance;
 
                 if (this["IsDesignMode"]) {
-                    var lineNumber = Bridge.CustomUIMarkup.Common.Extensions.GetOriginalLineNumber(xmlNode, this._rootNode, this.XmlString);
+                    var lineNumber = System.Xml.WhiteStoneExtensions.GetOriginalLineNumber(xmlNode, this._rootNode, this.XmlString);
 
                     !Bridge.staticEquals(this.ElementCreatedAtLine, null) ? this.ElementCreatedAtLine(lineNumber, instance) : null;
                 }
@@ -2464,14 +2433,55 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
 
                     var valueType = Bridge.getType(value);
 
-                    if (Bridge.referenceEquals(valueType, targetType)) {
+                    if (Bridge.referenceEquals(valueType, targetType) || Bridge.referenceEquals(targetType, System.Object) || Bridge.Reflection.isInstanceOfType(value, targetType)) {
                         return value;
                     }
 
-                    if (Bridge.referenceEquals(targetType, System.Object)) {
-                        return value;
+                    if (Bridge.referenceEquals(targetType, System.Boolean)) {
+                        return Bridge.box(System.Convert.toBoolean(value, provider), System.Boolean, System.Boolean.toString);
                     }
-
+                    if (Bridge.referenceEquals(targetType, System.Char)) {
+                        return Bridge.box(System.Convert.toChar(value, provider, 1), System.Char, String.fromCharCode, System.Char.getHashCode);
+                    }
+                    if (Bridge.referenceEquals(targetType, System.SByte)) {
+                        return Bridge.box(System.Convert.toSByte(value, provider), System.SByte);
+                    }
+                    if (Bridge.referenceEquals(targetType, System.Byte)) {
+                        return Bridge.box(System.Convert.toByte(value, provider), System.Byte);
+                    }
+                    if (Bridge.referenceEquals(targetType, System.Int16)) {
+                        return Bridge.box(System.Convert.toInt16(value, provider), System.Int16);
+                    }
+                    if (Bridge.referenceEquals(targetType, System.UInt16)) {
+                        return Bridge.box(System.Convert.toUInt16(value, provider), System.UInt16);
+                    }
+                    if (Bridge.referenceEquals(targetType, System.Int32)) {
+                        return Bridge.box(System.Convert.toInt32(value, provider), System.Int32);
+                    }
+                    if (Bridge.referenceEquals(targetType, System.UInt32)) {
+                        return Bridge.box(System.Convert.toUInt32(value, provider), System.UInt32);
+                    }
+                    if (Bridge.referenceEquals(targetType, System.Int64)) {
+                        return System.Convert.toInt64(value, provider);
+                    }
+                    if (Bridge.referenceEquals(targetType, System.UInt64)) {
+                        return System.Convert.toUInt64(value, provider);
+                    }
+                    if (Bridge.referenceEquals(targetType, System.Single)) {
+                        return Bridge.box(System.Convert.toSingle(value, provider), System.Single, System.Single.format, System.Single.getHashCode);
+                    }
+                    if (Bridge.referenceEquals(targetType, System.Double)) {
+                        return Bridge.box(System.Convert.toDouble(value, provider), System.Double, System.Double.format, System.Double.getHashCode);
+                    }
+                    if (Bridge.referenceEquals(targetType, System.Decimal)) {
+                        return System.Convert.toDecimal(value, provider);
+                    }
+                    if (Bridge.referenceEquals(targetType, System.DateTime)) {
+                        return Bridge.box(System.Convert.toDateTime(value, provider), System.DateTime, System.DateTime.format);
+                    }
+                    if (Bridge.referenceEquals(targetType, System.String)) {
+                        return System.Convert.toString(value, provider);
+                    }
 
                     // ReSharper disable once UnusedVariable
                     var targetTypeName = Bridge.Reflection.getTypeName(targetType);
@@ -2487,9 +2497,7 @@ if(fn)
 
 
 
-                    if (Bridge.Reflection.isAssignableFrom(valueType, targetType)) {
-                        return value;
-                    }
+
 
                     throw new System.InvalidCastException(System.String.concat("@value:", value) + "not convertible to " + (Bridge.Reflection.getTypeFullName(targetType) || ""));
                 },
@@ -6228,6 +6236,44 @@ if(fn)
             }
         },
         $utype: System.Byte
+    });
+
+    Bridge.define("System.Xml.WhiteStoneExtensions", {
+        statics: {
+            methods: {
+                GetOriginalLineNumber: function (element, xmlRootNode, sContent) {
+                    // https://jsfiddle.net/g113c350/3/
+
+                    
+
+    var sTagName = element.tagName;
+    var aNodeListByTag = xmlRootNode.getElementsByTagName(sTagName);
+    var iMaxIndex = 0;
+    for (var j = 0; j < aNodeListByTag.length; j++) {
+        if (aNodeListByTag.item(j) === element) {
+            iMaxIndex = j;
+            break;
+        }
+    }
+    var regex = new RegExp('<' + sTagName, 'g');
+    var offset = 0;
+    for (var i = 0; i <= iMaxIndex; i++) {
+        offset = regex.exec(sContent).index;
+    }
+    var line = 0;
+    for (var i = 0; i < sContent.substring(0, offset).length; i++) {
+        if (sContent[i] === '\n') {
+            line++;
+        }
+    }
+    return line + 1;
+
+
+
+                    return 0;
+                }
+            }
+        }
     });
 
     Bridge.define("System.Xml.XmlException", {

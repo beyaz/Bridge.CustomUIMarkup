@@ -1,5 +1,4 @@
 using System;
-using System.Xml;
 using Bridge.Html5;
 using Bridge.jQuery2;
 
@@ -10,39 +9,7 @@ namespace Bridge.CustomUIMarkup.Common
        
 
 
-        internal static int GetOriginalLineNumber(this XmlNode element, XmlNode xmlRootNode, string sContent)
-        {
-            // https://jsfiddle.net/g113c350/3/
-
-            Script.Write<int>(
-                @"
-
-    var sTagName = element.tagName;
-    var aNodeListByTag = xmlRootNode.getElementsByTagName(sTagName);
-    var iMaxIndex = 0;
-    for (var j = 0; j < aNodeListByTag.length; j++) {
-        if (aNodeListByTag.item(j) === element) {
-            iMaxIndex = j;
-            break;
-        }
-    }
-    var regex = new RegExp('<' + sTagName, 'g');
-    var offset = 0;
-    for (var i = 0; i <= iMaxIndex; i++) {
-        offset = regex.exec(sContent).index;
-    }
-    var line = 0;
-    for (var i = 0; i < sContent.substring(0, offset).length; i++) {
-        if (sContent[i] === '\n') {
-            line++;
-        }
-    }
-    return line + 1;
-
-");
-
-            return 0;
-        }
+        
         #region Public Methods
         // ReSharper disable once UnusedParameter.Global
         public static bool GetElementsByTagNameIsNotSupporting(this Element element)

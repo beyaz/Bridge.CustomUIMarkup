@@ -66,6 +66,17 @@ namespace Bridge.CustomUIMarkup.Test
         protected static class Assert
         {
             #region Public Methods
+            public static void IsNull(object value)
+            {
+                if (value == null)
+                {
+                    return;
+                }
+
+                throw new InvalidOperationException("Test Failed.Expects null.");
+            }
+            
+
             public static void False(bool condition)
             {
                 if (condition)
