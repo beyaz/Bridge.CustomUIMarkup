@@ -238,7 +238,7 @@ namespace Bridge.CustomUIMarkup.UI
             var bindingInfo = HTMLBindingInfo.TryParseExpression(html);
             if (bindingInfo != null)
             {
-                var textNode = new Bridge.jQuery2.jQuery(Document.CreateTextNode(""));
+                var textNode = new jQuery2.jQuery(Document.CreateTextNode(""));
                 parentInstance._root.Append(textNode);
 
 
