@@ -7574,6 +7574,40 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
             OnCursorLineNumberChanged: function (lineNumber) {
                 this.FocusToLine(lineNumber);
             },
+            OnTextChanged: function () {
+                var $t;
+                this.ClearOutput();
+
+                if (System.String.isNullOrWhiteSpace(this.SourceText)) {
+                    return;
+                }
+
+                try {
+                    var fe = ($t = new System.Windows.FrameworkElement(), $t.DataContext = this.SourceDataContext, $t);
+
+                    System.Windows.Controls.UIBuilder.LoadComponent$1(fe, System.Xml.XmlHelper.GetRootNode(this.SourceText), true, Bridge.fn.bind(this, function (line, element) {
+                        this._lineNumberToControlMap.set(line, element);
+                    }), this.SourceText);
+
+                    var component = fe.GetLogicalChildAt(0);
+
+                    this.SetOutput(component);
+                }
+                catch ($e1) {
+                    $e1 = System.Exception.create($e1);
+                    var e;
+                    if (Bridge.is($e1, System.Xml.XmlException)) {
+                        e = $e1;
+                        this.SetErrorMessage(e.toString());
+                    } else {
+                        e = $e1;
+                        this.SetErrorMessage(e.toString());
+                    }
+                }
+            },
+            ClearOutput: function () {
+                this.Container.ClearVisualChilds();
+            },
             FocusToLine: function (lineNumber) {
                 lineNumber = (lineNumber + 1) | 0;
                 var component = { v : null };
@@ -7585,53 +7619,6 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
                 var query = component.v._root;
 
                 Bridge.CustomUIMarkup.Common.Extensions.highlight(query);
-            },
-            OnTextChanged: function () {
-                var $t;
-                this.ClearOutput();
-
-                if (System.String.isNullOrWhiteSpace(this.SourceText)) {
-                    return;
-                }
-
-
-
-
-
-                try {
-
-
-                    var fe = ($t = new System.Windows.FrameworkElement(), $t.DataContext = this.SourceDataContext, $t);
-
-
-                    System.Windows.Controls.UIBuilder.LoadComponent$1(fe, System.Xml.XmlHelper.GetRootNode(this.SourceText), true, Bridge.fn.bind(this, function (line, element) {
-                        this._lineNumberToControlMap.set(line, element);
-                    }), this.SourceText);
-
-
-
-                    var component = fe.GetLogicalChildAt(0);
-
-                    this.SetOutput(component);
-                }
-                catch ($e1) {
-                    $e1 = System.Exception.create($e1);
-                    var e;
-                    if (Bridge.is($e1, System.Xml.XmlException)) {
-                        e = $e1;
-                        Bridge.Console.clear();
-                        Bridge.Console.log(e);
-                        this.SetErrorMessage(e.toString());
-                    } else {
-                        e = $e1;
-                        Bridge.Console.clear();
-                        Bridge.Console.log(e);
-                        this.SetErrorMessage(e.toString());
-                    }
-                }
-            },
-            ClearOutput: function () {
-                this.Container.ClearVisualChilds();
             },
             SetErrorMessage: function (message) {
                 this.ClearOutput();

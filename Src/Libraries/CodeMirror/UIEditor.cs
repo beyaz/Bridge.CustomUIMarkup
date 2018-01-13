@@ -4,15 +4,14 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Xml;
 using Bridge.CustomUIMarkup.Common;
-using Bridge.CustomUIMarkup.Libraries.SemanticUI;
-using Bridge.CustomUIMarkup.UI;
-using Console = Bridge.Utils.Console;
 
 namespace Bridge.CustomUIMarkup.Libraries.CodeMirror
 {
     class UIEditor : Control
     {
-     
+        #region Fields
+        readonly Dictionary<int, FrameworkElement> _lineNumberToControlMap = new Dictionary<int, FrameworkElement>();
+        #endregion
 
         #region Public Properties
         public override string DefaultTemplateAsXml
@@ -33,7 +32,7 @@ namespace Bridge.CustomUIMarkup.Libraries.CodeMirror
         #endregion
 
         #region Properties
-        FrameworkElement Container => GetVisualChildAt(0,0).GetLogicalChildAt(1);
+        FrameworkElement Container => GetVisualChildAt(0, 0).GetLogicalChildAt(1);
         #endregion
 
         #region Public Methods
@@ -41,24 +40,6 @@ namespace Bridge.CustomUIMarkup.Libraries.CodeMirror
         {
             FocusToLine(lineNumber);
         }
-
-
-         void FocusToLine(int lineNumber)
-        {
-            lineNumber = lineNumber + 1;
-            FrameworkElement component = null;
-            _lineNumberToControlMap?.TryGetValue(lineNumber, out component);
-            if (component == null)
-            {
-                return;
-            }
-
-            var query = component._root;
-
-            query.highlight();
-        }
-
-        readonly Dictionary<int,FrameworkElement> _lineNumberToControlMap = new Dictionary<int, FrameworkElement>();
 
         public void OnTextChanged()
         {
@@ -69,24 +50,14 @@ namespace Bridge.CustomUIMarkup.Libraries.CodeMirror
                 return;
             }
 
-
-
-           
-
             try
             {
-
-
                 var fe = new FrameworkElement
                 {
-                    DataContext = SourceDataContext,
-
+                    DataContext = SourceDataContext
                 };
 
-                
-                UIBuilder.LoadComponent(fe, XmlHelper.GetRootNode(SourceText),true, (line, element) => { _lineNumberToControlMap[line] = element; }, SourceText);
-
-
+                UIBuilder.LoadComponent(fe, XmlHelper.GetRootNode(SourceText), true, (line, element) => { _lineNumberToControlMap[line] = element; }, SourceText);
 
                 var component = fe.GetLogicalChildAt(0);
 
@@ -94,14 +65,10 @@ namespace Bridge.CustomUIMarkup.Libraries.CodeMirror
             }
             catch (XmlException e)
             {
-                Console.Clear();
-                Console.Log(e);
                 SetErrorMessage(e.ToString());
             }
             catch (Exception e)
             {
-                Console.Clear();
-                Console.Log(e);
                 SetErrorMessage(e.ToString());
             }
         }
@@ -111,6 +78,21 @@ namespace Bridge.CustomUIMarkup.Libraries.CodeMirror
         void ClearOutput()
         {
             Container.ClearVisualChilds();
+        }
+
+        void FocusToLine(int lineNumber)
+        {
+            lineNumber                 = lineNumber + 1;
+            FrameworkElement component = null;
+            _lineNumberToControlMap?.TryGetValue(lineNumber, out component);
+            if (component == null)
+            {
+                return;
+            }
+
+            var query = component._root;
+
+            query.highlight();
         }
 
         void SetErrorMessage(string message)

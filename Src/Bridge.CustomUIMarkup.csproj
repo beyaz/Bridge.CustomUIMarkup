@@ -110,7 +110,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include=".Net Override\System\ComponentModel\ReflectionHelper.cs" />
     <Compile Include="Common\ScriptLoader.cs" />
-    <Compile Include="UI\UIBuilder.cs" />
+    <Compile Include=".Net Override\System.Windows.Controls\UIBuilder.cs" />
     <Compile Include="Libraries\SemanticUI\Combo.cs" />
     <Compile Include="Libraries\SemanticUI\ElementBase.cs" />
     <Compile Include="Libraries\SemanticUI\InputText.cs" />
