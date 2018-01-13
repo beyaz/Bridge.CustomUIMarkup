@@ -1,3 +1,6 @@
+using System.Linq;
+using Bridge.CustomUIMarkup.Common;
+
 namespace Bridge.CustomUIMarkup.UI
 {
     class XmlEditor : Libraries.CodeMirror.XmlEditor
@@ -7,7 +10,7 @@ namespace Bridge.CustomUIMarkup.UI
         {
             get
             {
-                var xmlIntellisenseInfos =  TypeFinder.Tags;
+                var xmlIntellisenseInfos =  Builder._elementCreators.Keys.ToList().ConvertAll(x=>new XmlIntellisenseInfo(x,null));
                 return Libraries.CodeMirror.SchemaInfo.CreateFrom(xmlIntellisenseInfos).ToJson();
             }
         }

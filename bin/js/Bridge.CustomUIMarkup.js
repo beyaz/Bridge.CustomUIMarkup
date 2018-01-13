@@ -1725,16 +1725,10 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
             _isBuildingTemplate: false,
             Caller: null,
             DataContext: null,
-            "IsDesignMode": false,
-            TypeFinder: null
+            "IsDesignMode": false
         },
         events: {
             ElementCreatedAtLine: null
-        },
-        ctors: {
-            init: function () {
-                this.TypeFinder = new Bridge.CustomUIMarkup.UI.TypeFinder();
-            }
         },
         methods: {
             BuildNode: function (xmlNode, parentInstance) {
@@ -1842,7 +1836,6 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
                 Bridge.unbox(parent).AddLogicalChild(subItemAsFrameworkElement);
             },
             CreateInstanceInternal: function (xmlNode) {
-                var $t;
 
                 var tag = xmlNode.nodeName.toUpperCase();
 
@@ -1852,17 +1845,12 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
                     return creatorFunc.v();
                 }
 
-                var controlType = ($t = this.TypeFinder) != null ? $t.FindType(tag) : null;
 
-                if (controlType == null) {
-                    if (Bridge.CustomUIMarkup.UI.Builder.IsUserDefinedTag(xmlNode.nodeName) === false) {
-                        return new System.Windows.HtmlElement(xmlNode.nodeName);
-                    }
-
-                    throw new System.ArgumentException("NotRecognizedTag:" + (tag || ""));
+                if (Bridge.CustomUIMarkup.UI.Builder.IsUserDefinedTag(xmlNode.nodeName) === false) {
+                    return new System.Windows.HtmlElement(xmlNode.nodeName);
                 }
 
-                return Bridge.cast(Bridge.createInstance(controlType), System.Windows.FrameworkElement);
+                throw new System.ArgumentException("NotRecognizedTag:" + (tag || ""));
             },
             CreateInstance: function (xmlNode) {
                 var instance = this.CreateInstanceInternal(xmlNode);
@@ -2116,61 +2104,6 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
 
                     return element;
                 }
-            }
-        }
-    });
-
-    Bridge.define("Bridge.CustomUIMarkup.UI.TypeFinder", {
-        statics: {
-            fields: {
-                _tags: null,
-                _tagTypeMap: null
-            },
-            props: {
-                Tags: {
-                    get: function () {
-                        return Bridge.CustomUIMarkup.UI.TypeFinder._tags;
-                    }
-                },
-                TagTypeMap: {
-                    get: function () {
-                        var $t;
-                        if (Bridge.CustomUIMarkup.UI.TypeFinder._tagTypeMap == null) {
-                            Bridge.CustomUIMarkup.UI.TypeFinder._tagTypeMap = new (System.Collections.Generic.Dictionary$2(System.String,Function))();
-                            $t = Bridge.getEnumerator(Bridge.CustomUIMarkup.UI.TypeFinder._tags);
-                            try {
-                                while ($t.moveNext()) {
-                                    var intellisenseInfo = $t.Current;
-                                    Bridge.CustomUIMarkup.UI.TypeFinder._tagTypeMap.set(intellisenseInfo.TagName.toUpperCase(), intellisenseInfo.Type);
-                                }
-                            } finally {
-                                if (Bridge.is($t, System.IDisposable)) {
-                                    $t.System$IDisposable$dispose();
-                                }
-                            }}
-
-                        return Bridge.CustomUIMarkup.UI.TypeFinder._tagTypeMap;
-                    }
-                }
-            },
-            ctors: {
-                init: function () {
-                    this._tags = new (System.Collections.Generic.List$1(Bridge.CustomUIMarkup.Common.XmlIntellisenseInfo)).ctor();
-                }
-            },
-            methods: {
-                RegisterTag: function (tagName, type) {
-                    Bridge.CustomUIMarkup.UI.TypeFinder._tags.add(new Bridge.CustomUIMarkup.Common.XmlIntellisenseInfo(tagName, type));
-                }
-            }
-        },
-        methods: {
-            FindType: function (tag) {
-                if (Bridge.CustomUIMarkup.UI.TypeFinder.TagTypeMap.containsKey(tag)) {
-                    return Bridge.CustomUIMarkup.UI.TypeFinder.TagTypeMap.get(tag);
-                }
-
-                return null;
             }
         }
     });
@@ -9297,7 +9230,9 @@ $( '<style> '+css+'</style>' ).appendTo( 'head' );
         props: {
             "SchemaInfo": {
                 get: function () {
-                    var xmlIntellisenseInfos = Bridge.CustomUIMarkup.UI.TypeFinder.Tags;
+                    var xmlIntellisenseInfos = System.Linq.Enumerable.from(Bridge.CustomUIMarkup.UI.Builder._elementCreators.getKeys()).toList(System.String).convertAll(Bridge.CustomUIMarkup.Common.XmlIntellisenseInfo, function (x) {
+                        return new Bridge.CustomUIMarkup.Common.XmlIntellisenseInfo(x, null);
+                    });
                     return Bridge.CustomUIMarkup.Libraries.CodeMirror.SchemaInfo.CreateFrom(xmlIntellisenseInfos).ToJson();
                 }
             }

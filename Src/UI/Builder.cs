@@ -16,7 +16,7 @@ namespace Bridge.CustomUIMarkup.UI
     public class Builder
     {
         #region Static Fields
-        static readonly Dictionary<string, Func<FrameworkElement>> _elementCreators = new Dictionary<string, Func<FrameworkElement>>
+        internal static readonly Dictionary<string, Func<FrameworkElement>> _elementCreators = new Dictionary<string, Func<FrameworkElement>>
         {
             {"DIV", () => new HtmlElement("div")}
         };
@@ -44,7 +44,6 @@ namespace Bridge.CustomUIMarkup.UI
 
         public bool IsDesignMode { get; set; }
 
-        public TypeFinder TypeFinder { get; set; } = new TypeFinder();
         #endregion
 
         #region Public Methods
@@ -293,19 +292,13 @@ namespace Bridge.CustomUIMarkup.UI
                 return creatorFunc();
             }
 
-            var controlType = TypeFinder?.FindType(tag);
 
-            if (controlType == null)
+            if (IsUserDefinedTag(xmlNode.Name) == false)
             {
-                if (IsUserDefinedTag(xmlNode.Name) == false)
-                {
-                    return new HtmlElement(xmlNode.Name);
-                }
-
-                throw new ArgumentException("NotRecognizedTag:" + tag);
+                return new HtmlElement(xmlNode.Name);
             }
 
-            return (FrameworkElement)Activator.CreateInstance(controlType);
+            throw new ArgumentException("NotRecognizedTag:" + tag);
         }
 
         FrameworkElement CreateInstance(XmlNode xmlNode)
