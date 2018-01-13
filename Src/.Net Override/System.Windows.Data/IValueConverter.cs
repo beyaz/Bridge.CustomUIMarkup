@@ -39,6 +39,26 @@ namespace System.Windows.Data
             #endregion
         }
 
+        public class NullToBooleanConverter : IValueConverter
+        {
+            #region Public Methods
+            public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+            {
+                if (value == null)
+                {
+                    return false;
+                }
+
+                return true;
+            }
+
+            public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+            {
+                return value;
+            }
+            #endregion
+        }
+
         public sealed class BooleanToCssClassConverter : IValueConverter
         {
             #region Public Methods

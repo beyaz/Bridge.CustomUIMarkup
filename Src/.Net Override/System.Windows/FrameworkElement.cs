@@ -1,12 +1,8 @@
 ﻿using System.ComponentModel;
-using Bridge.CustomUIMarkup.Libraries.SemanticUI;
-using Bridge.CustomUIMarkup.UI;
 using Bridge.Html5;
 using Bridge.jQuery2;
 
-namespace System.Windows.Controls
-{
-}
+
 
 namespace System.Windows
 {
@@ -408,6 +404,35 @@ namespace System.Windows
         #endregion
 
 
+        #region IsVisible
+        public static readonly DependencyProperty IsDisplayNoneProperty = DependencyProperty.Register(nameof(IsDisplayNone), typeof(bool), typeof(FrameworkElement),
+                                                                                                  new PropertyMetadata(false, OnIsDisplayNoneChanged));
+
+        public bool IsDisplayNone
+        {
+            get { return (bool)GetValue(IsDisplayNoneProperty); }
+            set { SetValue(IsDisplayNoneProperty, value); }
+        }
+
+        static void OnIsDisplayNoneChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            var me = (FrameworkElement)d;
+
+            var newValue = e.NewValue;
+
+            var value = (bool)newValue;
+
+            if (value)
+            {
+                me._root.Css("display", "none");
+            }
+            else
+            {
+                me._root.Css("display", "");
+            }
+        }
+
+        #endregion
 
         #region IsVisible
         public static readonly DependencyProperty IsVisibleProperty = DependencyProperty.Register(
@@ -430,15 +455,49 @@ namespace System.Windows
 
             if (value)
             {
-                me._root.Css("visibility", "visible");
+                me.Visibility = Visibility.Visible;
             }
             else
             {
-                me._root.Css("visibility", "hidden");
+                me.Visibility = Visibility.Hidden;
             }
         }
 
         #endregion
+
+        #region VisibilityIsHidden
+        public static readonly DependencyProperty VisibilityIsHiddenProperty = DependencyProperty.Register(
+                                                                                                  nameof(VisibilityIsHidden), typeof(bool), 
+                                                                                                  typeof(FrameworkElement),
+                                                                                                  new PropertyMetadata(false, OnVisibilityIsHiddenChanged));
+
+        public bool VisibilityIsHidden
+        {
+            get { return (bool)GetValue(VisibilityIsHiddenProperty); }
+            set { SetValue(VisibilityIsHiddenProperty, value); }
+        }
+
+        static void OnVisibilityIsHiddenChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            var me = (FrameworkElement)d;
+
+            var newValue = e.NewValue;
+
+            var value = (bool)newValue;
+
+            if (value)
+            {
+                me.Visibility = Visibility.Hidden;
+            }
+            else
+            {
+                me.Visibility = Visibility.Visible;
+            }
+        }
+
+        #endregion
+
+
 
         #region VisibilityProperty
         public static readonly DependencyProperty VisibilityProperty = DependencyProperty.Register(nameof(Visibility), typeof(Visibility), typeof(FrameworkElement), new PropertyMetadata(OnVisibilityChanged));

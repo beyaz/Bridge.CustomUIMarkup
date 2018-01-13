@@ -6759,6 +6759,26 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
         }
     });
 
+    Bridge.define("System.Windows.Data.Converters.NullToBooleanConverter", {
+        inherits: [System.Windows.Data.IValueConverter],
+        alias: [
+            "Convert", "System$Windows$Data$IValueConverter$Convert",
+            "ConvertBack", "System$Windows$Data$IValueConverter$ConvertBack"
+        ],
+        methods: {
+            Convert: function (value, targetType, parameter, culture) {
+                if (value == null) {
+                    return Bridge.box(false, System.Boolean, System.Boolean.toString);
+                }
+
+                return Bridge.box(true, System.Boolean, System.Boolean.toString);
+            },
+            ConvertBack: function (value, targetType, parameter, culture) {
+                return value;
+            }
+        }
+    });
+
     Bridge.define("System.Windows.Data.HTMLBindingInfo", {
         inherits: [System.Windows.Data.BindingInfo],
         statics: {
@@ -6893,7 +6913,9 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
                 WidthPercentProperty: null,
                 ColorProperty: null,
                 "InnerHTMLProperty": null,
+                "IsDisplayNoneProperty": null,
                 "IsVisibleProperty": null,
+                "VisibilityIsHiddenProperty": null,
                 VisibilityProperty: null,
                 HeightProperty: null,
                 HeightPercentProperty: null,
@@ -6924,7 +6946,9 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
                     }));
                     this.ColorProperty = System.Windows.DependencyProperty.Register$1("Color", System.String, System.Windows.FrameworkElement, System.Windows.FrameworkElement.CreateJQueryCssUpdater("color"));
                     this["InnerHTMLProperty"] = System.Windows.DependencyProperty.Register$1("InnerHTML", System.String, System.Windows.FrameworkElement, new System.Windows.PropertyMetadata.$ctor2(System.Windows.FrameworkElement.OnInnerHTMLChanged));
+                    this["IsDisplayNoneProperty"] = System.Windows.DependencyProperty.Register$1("IsDisplayNone", System.Boolean, System.Windows.FrameworkElement, new System.Windows.PropertyMetadata.$ctor1(Bridge.box(false, System.Boolean, System.Boolean.toString), System.Windows.FrameworkElement.OnIsDisplayNoneChanged));
                     this["IsVisibleProperty"] = System.Windows.DependencyProperty.Register$1("IsVisible", System.Boolean, System.Windows.FrameworkElement, new System.Windows.PropertyMetadata.$ctor1(Bridge.box(true, System.Boolean, System.Boolean.toString), System.Windows.FrameworkElement.OnVisibleChanged));
+                    this["VisibilityIsHiddenProperty"] = System.Windows.DependencyProperty.Register$1("VisibilityIsHidden", System.Boolean, System.Windows.FrameworkElement, new System.Windows.PropertyMetadata.$ctor1(Bridge.box(false, System.Boolean, System.Boolean.toString), System.Windows.FrameworkElement.OnVisibilityIsHiddenChanged));
                     this.VisibilityProperty = System.Windows.DependencyProperty.Register$1("Visibility", System.Windows.Visibility, System.Windows.FrameworkElement, new System.Windows.PropertyMetadata.$ctor2(System.Windows.FrameworkElement.OnVisibilityChanged));
                     this.HeightProperty = System.Windows.DependencyProperty.Register$1("Height", System.Nullable$1(System.Double), System.Windows.FrameworkElement, System.Windows.FrameworkElement.CreateJQueryCssUpdater("height"));
                     this.HeightPercentProperty = System.Windows.DependencyProperty.Register$1("HeightPercent", System.Double, System.Windows.FrameworkElement, System.Windows.FrameworkElement.CreateJQueryCssUpdater$1("height", function (v) {
@@ -6996,6 +7020,19 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
 
                     me._root != null ? me._root.html(Bridge.cast(e.NewValue, System.String)) : null;
                 },
+                OnIsDisplayNoneChanged: function (d, e) {
+                    var me = Bridge.cast(d, System.Windows.FrameworkElement);
+
+                    var newValue = e.NewValue;
+
+                    var value = System.Nullable.getValue(Bridge.cast(Bridge.unbox(newValue), System.Boolean));
+
+                    if (value) {
+                        me._root.css("display", "none");
+                    } else {
+                        me._root.css("display", "");
+                    }
+                },
                 OnVisibleChanged: function (d, e) {
                     var me = Bridge.cast(d, System.Windows.FrameworkElement);
 
@@ -7004,9 +7041,22 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
                     var value = System.Nullable.getValue(Bridge.cast(Bridge.unbox(newValue), System.Boolean));
 
                     if (value) {
-                        me._root.css("visibility", "visible");
+                        me.Visibility = System.Windows.Visibility.Visible;
                     } else {
-                        me._root.css("visibility", "hidden");
+                        me.Visibility = System.Windows.Visibility.Hidden;
+                    }
+                },
+                OnVisibilityIsHiddenChanged: function (d, e) {
+                    var me = Bridge.cast(d, System.Windows.FrameworkElement);
+
+                    var newValue = e.NewValue;
+
+                    var value = System.Nullable.getValue(Bridge.cast(Bridge.unbox(newValue), System.Boolean));
+
+                    if (value) {
+                        me.Visibility = System.Windows.Visibility.Hidden;
+                    } else {
+                        me.Visibility = System.Windows.Visibility.Visible;
                     }
                 },
                 OnVisibilityChanged: function (d, e) {
@@ -7261,12 +7311,28 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
                     this.SetValue$1(System.Windows.FrameworkElement["InnerHTMLProperty"], value);
                 }
             },
+            "IsDisplayNone": {
+                get: function () {
+                    return System.Nullable.getValue(Bridge.cast(Bridge.unbox(this.GetValue$1(System.Windows.FrameworkElement["IsDisplayNoneProperty"])), System.Boolean));
+                },
+                set: function (value) {
+                    this.SetValue$1(System.Windows.FrameworkElement["IsDisplayNoneProperty"], Bridge.box(value, System.Boolean, System.Boolean.toString));
+                }
+            },
             "IsVisible": {
                 get: function () {
                     return System.Nullable.getValue(Bridge.cast(Bridge.unbox(this.GetValue$1(System.Windows.FrameworkElement["IsVisibleProperty"])), System.Boolean));
                 },
                 set: function (value) {
                     this.SetValue$1(System.Windows.FrameworkElement["IsVisibleProperty"], Bridge.box(value, System.Boolean, System.Boolean.toString));
+                }
+            },
+            "VisibilityIsHidden": {
+                get: function () {
+                    return System.Nullable.getValue(Bridge.cast(Bridge.unbox(this.GetValue$1(System.Windows.FrameworkElement["VisibilityIsHiddenProperty"])), System.Boolean));
+                },
+                set: function (value) {
+                    this.SetValue$1(System.Windows.FrameworkElement["VisibilityIsHiddenProperty"], Bridge.box(value, System.Boolean, System.Boolean.toString));
                 }
             },
             Visibility: {
