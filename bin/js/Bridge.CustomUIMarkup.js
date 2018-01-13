@@ -2068,7 +2068,8 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
                         return;
                     }
 
-                    System.ComponentModel.ReflectionHelper.SetPropertyValue(instance, name, Bridge.CustomUIMarkup.Common.ConvertHelper.ChangeType(value, targetProperty.rt));
+                    var propertyValue = System.Cast.To$2(value, targetProperty.rt, System.Globalization.CultureInfo.getCurrentCulture());
+                    System.ComponentModel.ReflectionHelper.SetPropertyValue(instance, name, propertyValue);
                     return;
                 }
 
@@ -2420,7 +2421,6 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
                         return System.Extensions.GetDefaultValue(targetType);
                     }
 
-
                     if (Bridge.Reflection.isGenericType(targetType) && Bridge.referenceEquals(Bridge.Reflection.getGenericTypeDefinition(targetType), System.Nullable$1)) {
                         var valueAsString = Bridge.as(value, System.String);
                         if (Bridge.referenceEquals(valueAsString, "")) {
@@ -2429,7 +2429,6 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
 
                         return System.Cast.To$2(value, ($t = Bridge.Reflection.getGenericArguments(targetType))[System.Array.index(0, $t)], provider);
                     }
-
 
                     var valueType = Bridge.getType(value);
 
@@ -2440,64 +2439,62 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
                     if (Bridge.referenceEquals(targetType, System.Boolean)) {
                         return Bridge.box(System.Convert.toBoolean(value, provider), System.Boolean, System.Boolean.toString);
                     }
+
                     if (Bridge.referenceEquals(targetType, System.Char)) {
                         return Bridge.box(System.Convert.toChar(value, provider, 1), System.Char, String.fromCharCode, System.Char.getHashCode);
                     }
+
                     if (Bridge.referenceEquals(targetType, System.SByte)) {
                         return Bridge.box(System.Convert.toSByte(value, provider), System.SByte);
                     }
+
                     if (Bridge.referenceEquals(targetType, System.Byte)) {
                         return Bridge.box(System.Convert.toByte(value, provider), System.Byte);
                     }
+
                     if (Bridge.referenceEquals(targetType, System.Int16)) {
                         return Bridge.box(System.Convert.toInt16(value, provider), System.Int16);
                     }
+
                     if (Bridge.referenceEquals(targetType, System.UInt16)) {
                         return Bridge.box(System.Convert.toUInt16(value, provider), System.UInt16);
                     }
+
                     if (Bridge.referenceEquals(targetType, System.Int32)) {
                         return Bridge.box(System.Convert.toInt32(value, provider), System.Int32);
                     }
+
                     if (Bridge.referenceEquals(targetType, System.UInt32)) {
                         return Bridge.box(System.Convert.toUInt32(value, provider), System.UInt32);
                     }
+
                     if (Bridge.referenceEquals(targetType, System.Int64)) {
                         return System.Convert.toInt64(value, provider);
                     }
+
                     if (Bridge.referenceEquals(targetType, System.UInt64)) {
                         return System.Convert.toUInt64(value, provider);
                     }
+
                     if (Bridge.referenceEquals(targetType, System.Single)) {
                         return Bridge.box(System.Convert.toSingle(value, provider), System.Single, System.Single.format, System.Single.getHashCode);
                     }
+
                     if (Bridge.referenceEquals(targetType, System.Double)) {
                         return Bridge.box(System.Convert.toDouble(value, provider), System.Double, System.Double.format, System.Double.getHashCode);
                     }
+
                     if (Bridge.referenceEquals(targetType, System.Decimal)) {
                         return System.Convert.toDecimal(value, provider);
                     }
+
                     if (Bridge.referenceEquals(targetType, System.DateTime)) {
                         return Bridge.box(System.Convert.toDateTime(value, provider), System.DateTime, System.DateTime.format);
                     }
+
                     if (Bridge.referenceEquals(targetType, System.String)) {
                         return System.Convert.toString(value, provider);
                     }
-
-                    // ReSharper disable once UnusedVariable
-                    var targetTypeName = Bridge.Reflection.getTypeName(targetType);
-
-                    // try to convert from predefined convert functions
-                    var fn = System.Convert['to'+targetTypeName]; 
-if(fn)
-{
-    return fn(value,provider);    
-}
-;
-
-
-
-
-
 
                     throw new System.InvalidCastException(System.String.concat("@value:", value) + "not convertible to " + (Bridge.Reflection.getTypeFullName(targetType) || ""));
                 },

@@ -8,7 +8,6 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Xml;
-using Bridge.CustomUIMarkup.Common;
 using System.Text.Tokenizers;
 using Bridge.Html5;
 
@@ -446,7 +445,8 @@ namespace Bridge.CustomUIMarkup.UI
                     return;
                 }
 
-                ReflectionHelper.SetPropertyValue(instance, name, value.ChangeType(targetProperty.PropertyType));
+                var propertyValue = Cast.To(value, targetProperty.PropertyType, CultureInfo.CurrentCulture);
+                ReflectionHelper.SetPropertyValue(instance, name, propertyValue);
                 return;
             }
 
