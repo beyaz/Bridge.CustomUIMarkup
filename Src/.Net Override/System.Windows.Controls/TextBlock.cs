@@ -1,7 +1,4 @@
-﻿using System.Windows;
-using System.Windows.Controls;
-
-namespace Bridge.CustomUIMarkup.Libraries.SemanticUI
+﻿namespace System.Windows.Controls
 {
     public class TextBlock : Control
     {

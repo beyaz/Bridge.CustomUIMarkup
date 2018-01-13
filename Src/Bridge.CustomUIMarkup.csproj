@@ -58,7 +58,7 @@
     <Compile Include="Libraries\SemanticUI\DatePicker.cs" />
     <Compile Include="Libraries\SemanticUI\FieldString.cs" />
     <Compile Include="Libraries\SemanticUI\ItemsControl.cs" />
-    <Compile Include="Libraries\SemanticUI\TextBlock.cs" />
+    <Compile Include=".Net Override\System.Windows.Controls\TextBlock.cs" />
     <Compile Include=".Net Override\System.Windows.Data\BindingInfo.cs" />
     <Compile Include=".Net Override\System.Windows.Data\IValueConverter.cs" />
     <Compile Include=".Net Override\System.Windows\DependencyObject.cs" />

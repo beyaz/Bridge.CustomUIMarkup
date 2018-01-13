@@ -96,109 +96,6 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
         }
     });
 
-    /** @namespace Bridge.CustomUIMarkup.Common */
-
-    /**
-     * Utility methods for casting operations
-     *
-     * @static
-     * @abstract
-     * @public
-     * @class Bridge.CustomUIMarkup.Common.ConvertHelper
-     */
-    Bridge.define("Bridge.CustomUIMarkup.Common.ConvertHelper", {
-        statics: {
-            props: {
-                FormatProvider: {
-                    get: function () {
-                        return System.Globalization.CultureInfo.getCurrentCulture();
-                    }
-                }
-            },
-            methods: {
-                ChangeType: function (value, targetType) {
-                    return Bridge.CustomUIMarkup.Common.ConvertHelper.ChangeType$1(value, targetType, Bridge.CustomUIMarkup.Common.ConvertHelper.FormatProvider);
-                },
-                ChangeType$1: function (value, targetType, provider) {
-                    if (targetType == null) {
-                        throw new System.ArgumentNullException("targetType");
-                    }
-
-                    if (value == null) {
-                        if (Bridge.Reflection.isClass(targetType) || System.Nullable.getUnderlyingType(targetType) != null) {
-                            return null;
-                        }
-
-                        throw new System.InvalidOperationException(System.String.concat("@value:null can not converted to @targetType:", Bridge.getTypeName(targetType)));
-                    }
-
-                    if (Bridge.referenceEquals(Bridge.getType(value), targetType) || Bridge.Reflection.isInstanceOfType(value, targetType)) {
-                        return value;
-                    }
-
-                    var underlyingType = System.Nullable.getUnderlyingType(targetType);
-                    if (underlyingType != null) {
-                        targetType = underlyingType;
-                    }
-
-                    if (Bridge.referenceEquals(targetType, System.Boolean)) {
-                        return Bridge.box(System.Convert.toBoolean(value, provider), System.Boolean, System.Boolean.toString);
-                    }
-                    if (Bridge.referenceEquals(targetType, System.Char)) {
-                        return Bridge.box(System.Convert.toChar(value, provider, 1), System.Char, String.fromCharCode, System.Char.getHashCode);
-                    }
-                    if (Bridge.referenceEquals(targetType, System.SByte)) {
-                        return Bridge.box(System.Convert.toSByte(value, provider), System.SByte);
-                    }
-                    if (Bridge.referenceEquals(targetType, System.Byte)) {
-                        return Bridge.box(System.Convert.toByte(value, provider), System.Byte);
-                    }
-                    if (Bridge.referenceEquals(targetType, System.Int16)) {
-                        return Bridge.box(System.Convert.toInt16(value, provider), System.Int16);
-                    }
-                    if (Bridge.referenceEquals(targetType, System.UInt16)) {
-                        return Bridge.box(System.Convert.toUInt16(value, provider), System.UInt16);
-                    }
-                    if (Bridge.referenceEquals(targetType, System.Int32)) {
-                        return Bridge.box(System.Convert.toInt32(value, provider), System.Int32);
-                    }
-                    if (Bridge.referenceEquals(targetType, System.UInt32)) {
-                        return Bridge.box(System.Convert.toUInt32(value, provider), System.UInt32);
-                    }
-                    if (Bridge.referenceEquals(targetType, System.Int64)) {
-                        return System.Convert.toInt64(value, provider);
-                    }
-                    if (Bridge.referenceEquals(targetType, System.UInt64)) {
-                        return System.Convert.toUInt64(value, provider);
-                    }
-                    if (Bridge.referenceEquals(targetType, System.Single)) {
-                        return Bridge.box(System.Convert.toSingle(value, provider), System.Single, System.Single.format, System.Single.getHashCode);
-                    }
-                    if (Bridge.referenceEquals(targetType, System.Double)) {
-                        return Bridge.box(System.Convert.toDouble(value, provider), System.Double, System.Double.format, System.Double.getHashCode);
-                    }
-                    if (Bridge.referenceEquals(targetType, System.Decimal)) {
-                        return System.Convert.toDecimal(value, provider);
-                    }
-                    if (Bridge.referenceEquals(targetType, System.DateTime)) {
-                        return Bridge.box(System.Convert.toDateTime(value, provider), System.DateTime, System.DateTime.format);
-                    }
-                    if (Bridge.referenceEquals(targetType, System.String)) {
-                        return System.Convert.toString(value, provider);
-                    }
-                    if (Bridge.referenceEquals(targetType, System.Object)) {
-                        return value;
-                    }
-
-                    throw new System.InvalidOperationException(System.String.concat(System.String.concat("@value:", value) + " can not converted to @targetType:", Bridge.getTypeName(targetType)));
-                },
-                To: function (TTargetType, value) {
-                    return Bridge.cast(Bridge.unbox(Bridge.CustomUIMarkup.Common.ConvertHelper.ChangeType(value, TTargetType)), TTargetType);
-                }
-            }
-        }
-    });
-
     Bridge.define("Bridge.CustomUIMarkup.Common.Extensions", {
         statics: {
             methods: {
@@ -734,7 +631,7 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
 
 
                     // TextBlock
-                    Bridge.CustomUIMarkup.UI.Builder.Register("TextBlock", function () { return Bridge.CustomUIMarkup.UI.Builder.Create(Bridge.CustomUIMarkup.Libraries.SemanticUI.TextBlock); });
+                    Bridge.CustomUIMarkup.UI.Builder.Register("TextBlock", function () { return Bridge.CustomUIMarkup.UI.Builder.Create(System.Windows.Controls.TextBlock); });
 
                     Bridge.CustomUIMarkup.UI.Builder.Register("Field", function () { return Bridge.CustomUIMarkup.UI.Builder.Create(Bridge.CustomUIMarkup.Libraries.SemanticUI.Field); });
 
@@ -7806,7 +7703,7 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
             SetErrorMessage: function (message) {
                 this.ClearOutput();
 
-                var textBlock = Bridge.CustomUIMarkup.UI.Builder.Create(Bridge.CustomUIMarkup.Libraries.SemanticUI.TextBlock);
+                var textBlock = Bridge.CustomUIMarkup.UI.Builder.Create(System.Windows.Controls.TextBlock);
 
                 textBlock.Text = message;
 
@@ -8113,7 +8010,7 @@ me._editor.display.wrapper.style.height = '95%';
 
                         item = fe.GetLogicalChildAt(0);
                     } else {
-                        var textBlock = Bridge.CustomUIMarkup.UI.Builder.Create(Bridge.CustomUIMarkup.Libraries.SemanticUI.TextBlock);
+                        var textBlock = Bridge.CustomUIMarkup.UI.Builder.Create(System.Windows.Controls.TextBlock);
                         textBlock["InnerHTML"] = itemData.v != null ? itemData.v.toString() : null;
 
                         item = textBlock;
@@ -8532,7 +8429,7 @@ root.calendar(settings);
 
                 var contentAsString = content.toString();
 
-                var textBlock = Bridge.CustomUIMarkup.UI.Builder.Create(Bridge.CustomUIMarkup.Libraries.SemanticUI.TextBlock);
+                var textBlock = Bridge.CustomUIMarkup.UI.Builder.Create(System.Windows.Controls.TextBlock);
                 textBlock.Text = contentAsString;
                 this._contentPresenter.AddLogicalChild(textBlock);
 
@@ -8732,35 +8629,6 @@ root.calendar(settings);
                 this._cornerLabelDiv = null;
 
                 this._root.removeClass("labeled");
-            }
-        }
-    });
-
-    Bridge.define("Bridge.CustomUIMarkup.Libraries.SemanticUI.TextBlock", {
-        inherits: [System.Windows.Controls.Control],
-        statics: {
-            fields: {
-                TextProperty: null
-            },
-            ctors: {
-                init: function () {
-                    this.TextProperty = System.Windows.DependencyProperty.Register$1("Text", System.String, Bridge.CustomUIMarkup.Libraries.SemanticUI.TextBlock, new System.Windows.PropertyMetadata.ctor(null));
-                }
-            }
-        },
-        props: {
-            DefaultTemplateAsXml: {
-                get: function () {
-                    return "<div InnerHTML = '{Text}' css.display = 'inline-block' />";
-                }
-            },
-            Text: {
-                get: function () {
-                    return Bridge.cast(this.GetValue$1(Bridge.CustomUIMarkup.Libraries.SemanticUI.TextBlock.TextProperty), System.String);
-                },
-                set: function (value) {
-                    this.SetValue$1(Bridge.CustomUIMarkup.Libraries.SemanticUI.TextBlock.TextProperty, value);
-                }
             }
         }
     });
@@ -9140,6 +9008,35 @@ $( '<style> '+css+'</style>' ).appendTo( 'head' );
 
     Bridge.define("System.Windows.ContentPresenter", {
         inherits: [System.Windows.HtmlElement]
+    });
+
+    Bridge.define("System.Windows.Controls.TextBlock", {
+        inherits: [System.Windows.Controls.Control],
+        statics: {
+            fields: {
+                TextProperty: null
+            },
+            ctors: {
+                init: function () {
+                    this.TextProperty = System.Windows.DependencyProperty.Register$1("Text", System.String, System.Windows.Controls.TextBlock, new System.Windows.PropertyMetadata.ctor(null));
+                }
+            }
+        },
+        props: {
+            DefaultTemplateAsXml: {
+                get: function () {
+                    return "<div InnerHTML = '{Text}' css.display = 'inline-block' />";
+                }
+            },
+            Text: {
+                get: function () {
+                    return Bridge.cast(this.GetValue$1(System.Windows.Controls.TextBlock.TextProperty), System.String);
+                },
+                set: function (value) {
+                    this.SetValue$1(System.Windows.Controls.TextBlock.TextProperty, value);
+                }
+            }
+        }
     });
 
     Bridge.define("System.Windows.Controls.Primitives.Selector", {
