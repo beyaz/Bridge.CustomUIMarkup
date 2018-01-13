@@ -1,4 +1,5 @@
-﻿using Bridge.CustomUIMarkup.UI;
+﻿using System.Windows.Controls;
+using Bridge.CustomUIMarkup.UI;
 
 namespace Bridge.CustomUIMarkup.Libraries.viewerjs
 {
@@ -7,7 +8,7 @@ namespace Bridge.CustomUIMarkup.Libraries.viewerjs
         #region Public Methods
         public static void RegisterToBuilder()
         {
-            Builder.Register("ImageGalery", Builder.Create<Viewer>);
+            UIBuilder.Register("ImageGalery", UIBuilder.Create<Viewer>);
         }
         #endregion
     }

@@ -79,13 +79,13 @@ namespace System.Windows.Controls
                         DataContext = itemData
                     };
 
-                    Builder.LoadComponent(fe, ItemTemplate.Root);
+                    UIBuilder.LoadComponent(fe, ItemTemplate.Root);
 
                     item = fe.GetLogicalChildAt(0);
                 }
                 else
                 {
-                    var textBlock       = Builder.Create<TextBlock>();
+                    var textBlock       = UIBuilder.Create<TextBlock>();
                     textBlock.InnerHTML = itemData?.ToString();
 
                     item = textBlock;

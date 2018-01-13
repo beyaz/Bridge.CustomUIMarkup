@@ -1,4 +1,5 @@
 ﻿using System.Windows;
+using System.Windows.Controls;
 using Bridge.CustomUIMarkup.Test;
 using Bridge.CustomUIMarkup.UI;
 using Extensions = Bridge.Html5.Extensions;
@@ -156,7 +157,7 @@ namespace Bridge.CustomUIMarkup.Libraries.SemanticUI
 
             var template = Template.CreateFromXml(@"<div class='{Class}' />");
 
-            Builder.BuildControlTemplate(template, fe);
+            UIBuilder.BuildControlTemplate(template, fe);
 
             MustEqual(null, fe.Attr("class"));
 
@@ -184,7 +185,7 @@ namespace Bridge.CustomUIMarkup.Libraries.SemanticUI
                            "	</field>" +
                            "</div>";
 
-            Builder.LoadComponent(fe,template);
+            UIBuilder.LoadComponent(fe,template);
 
             var ui = fe.GetLogicalChildAt(0);
 
@@ -219,7 +220,7 @@ namespace Bridge.CustomUIMarkup.Libraries.SemanticUI
                            "<textBox  />" +
                            "</field>";
 
-            Builder.LoadComponent(fe,template);
+            UIBuilder.LoadComponent(fe,template);
 
             var ui = fe.GetLogicalChildAt(0);
 
@@ -241,7 +242,7 @@ namespace Bridge.CustomUIMarkup.Libraries.SemanticUI
                 DataContext = model
             };
 
-            Builder.LoadComponent(fe,"<div><textBox Text='{LastName}' /></div>");
+            UIBuilder.LoadComponent(fe,"<div><textBox Text='{LastName}' /></div>");
 
             var div = fe.GetLogicalChildAt(0);
 
@@ -592,7 +593,7 @@ namespace Bridge.CustomUIMarkup.Libraries.SemanticUI
                                                   "     </div> " +
                                                   "</div>");
 
-            Builder.BuildControlTemplate(template, fe);
+            UIBuilder.BuildControlTemplate(template, fe);
 
             AssertNotNull(fe._root);
 

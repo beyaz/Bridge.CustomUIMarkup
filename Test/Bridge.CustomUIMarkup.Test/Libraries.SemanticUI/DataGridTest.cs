@@ -2,6 +2,7 @@
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Windows;
+using System.Windows.Controls;
 using Bridge.CustomUIMarkup.Common;
 using Bridge.CustomUIMarkup.Test;
 using Bridge.CustomUIMarkup.UI;
@@ -19,12 +20,12 @@ namespace Bridge.CustomUIMarkup.Libraries.SemanticUI
 
         void Simple()
         {
-            var dataGridColumn = Builder.Create<DataGridColumn>();
+            var dataGridColumn = UIBuilder.Create<DataGridColumn>();
             dataGridColumn.Label = "Label_A";
             dataGridColumn.Name = "LastName";
 
 
-            var dataGridColumn2 = Builder.Create<DataGridColumn>();
+            var dataGridColumn2 = UIBuilder.Create<DataGridColumn>();
             dataGridColumn2.Label = "Label_Year";
             dataGridColumn2.Name = "Year";
 
@@ -44,7 +45,7 @@ namespace Bridge.CustomUIMarkup.Libraries.SemanticUI
                 }
             };
 
-            var dataGrid = Builder.Create<DataGrid>();
+            var dataGrid = UIBuilder.Create<DataGrid>();
             dataGrid.Columns.Add(dataGridColumn);
             dataGrid.Columns.Add(dataGridColumn2);
 

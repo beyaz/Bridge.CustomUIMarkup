@@ -1,4 +1,5 @@
 using System.Linq;
+using System.Windows.Controls;
 using Bridge.CustomUIMarkup.Common;
 
 namespace Bridge.CustomUIMarkup.UI
@@ -10,7 +11,7 @@ namespace Bridge.CustomUIMarkup.UI
         {
             get
             {
-                var xmlIntellisenseInfos =  Builder._elementCreators.Keys.ToList().ConvertAll(x=>new XmlIntellisenseInfo(x,null));
+                var xmlIntellisenseInfos =  UIBuilder._elementCreators.Keys.ToList().ConvertAll(x=>new XmlIntellisenseInfo(x,null));
                 return Libraries.CodeMirror.SchemaInfo.CreateFrom(xmlIntellisenseInfos).ToJson();
             }
         }

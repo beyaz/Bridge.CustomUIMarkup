@@ -1,4 +1,5 @@
-﻿using Bridge.CustomUIMarkup.UI;
+﻿using System.Windows.Controls;
+using Bridge.CustomUIMarkup.UI;
 
 namespace Bridge.CustomUIMarkup.Libraries.CodeMirror
 {
@@ -7,9 +8,9 @@ namespace Bridge.CustomUIMarkup.Libraries.CodeMirror
         #region Public Methods
         public static void RegisterToBuilder()
         {
-            Builder.Register("UIEditor", Builder.Create<UIEditor>);
+            UIBuilder.Register("UIEditor", UIBuilder.Create<UIEditor>);
 
-            Builder.Register("XmlEditor", Builder.Create<XmlEditor>);
+            UIBuilder.Register("XmlEditor", UIBuilder.Create<XmlEditor>);
         }
         #endregion
     }

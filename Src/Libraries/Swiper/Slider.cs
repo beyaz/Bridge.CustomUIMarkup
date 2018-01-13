@@ -23,7 +23,7 @@ namespace Bridge.CustomUIMarkup.Libraries.Swiper
         #region Methods
         void CreateSlide(FrameworkElement element)
         {
-            var item = Builder.Create<SwiperItemControl>();
+            var item = UIBuilder.Create<SwiperItemControl>();
             item.Content = element;
 
             GetVisualChildAt(0).AddVisualChild(item);

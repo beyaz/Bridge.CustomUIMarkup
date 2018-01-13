@@ -1,4 +1,5 @@
-﻿using Bridge.CustomUIMarkup.UI;
+﻿using System.Windows.Controls;
+using Bridge.CustomUIMarkup.UI;
 
 namespace Bridge.CustomUIMarkup.Libraries.split_js
 {
@@ -7,7 +8,7 @@ namespace Bridge.CustomUIMarkup.Libraries.split_js
         #region Public Methods
         public static void RegisterToBuilder()
         {
-            Builder.Register("SplitPanel", Builder.Create<SplitPanel>);
+            UIBuilder.Register("SplitPanel", UIBuilder.Create<SplitPanel>);
         }
         #endregion
     }

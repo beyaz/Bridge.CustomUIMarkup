@@ -1,4 +1,5 @@
-﻿using Bridge.CustomUIMarkup.Test;
+﻿using System.Windows.Controls;
+using Bridge.CustomUIMarkup.Test;
 
 namespace System.Windows
 {

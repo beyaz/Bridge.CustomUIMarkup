@@ -254,9 +254,9 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
         statics: {
             methods: {
                 RegisterToBuilder: function () {
-                    Bridge.CustomUIMarkup.UI.Builder.Register("UIEditor", function () { return Bridge.CustomUIMarkup.UI.Builder.Create(Bridge.CustomUIMarkup.Libraries.CodeMirror.UIEditor); });
+                    System.Windows.Controls.UIBuilder.Register("UIEditor", function () { return System.Windows.Controls.UIBuilder.Create(Bridge.CustomUIMarkup.Libraries.CodeMirror.UIEditor); });
 
-                    Bridge.CustomUIMarkup.UI.Builder.Register("XmlEditor", function () { return Bridge.CustomUIMarkup.UI.Builder.Create(Bridge.CustomUIMarkup.Libraries.CodeMirror.XmlEditor); });
+                    System.Windows.Controls.UIBuilder.Register("XmlEditor", function () { return System.Windows.Controls.UIBuilder.Create(Bridge.CustomUIMarkup.Libraries.CodeMirror.XmlEditor); });
                 }
             }
         }
@@ -598,14 +598,14 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
                 RegisterToBuilder: function () {
                     var $t, $t1;
                     // row
-                    Bridge.CustomUIMarkup.UI.Builder.Register("row", function () {
+                    System.Windows.Controls.UIBuilder.Register("row", function () {
                         return Bridge.CustomUIMarkup.Libraries.SemanticUI.Elements.CreateElement("div", "row");
                     });
 
                     for (var i = 2; i <= 16; i = (i + 1) | 0) {
                         var className = { v : (Bridge.CustomUIMarkup.Libraries.SemanticUI.NumberToWord.ToWord(i) || "") + " column row" };
 
-                        Bridge.CustomUIMarkup.UI.Builder.Register(System.String.replaceAll(className.v, " ", "_"), (function ($me, className) {
+                        System.Windows.Controls.UIBuilder.Register(System.String.replaceAll(className.v, " ", "_"), (function ($me, className) {
                             return function () {
                                 return Bridge.CustomUIMarkup.Libraries.SemanticUI.Elements.CreateElement("div", className.v);
                             };
@@ -614,14 +614,14 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
 
 
                     // column
-                    Bridge.CustomUIMarkup.UI.Builder.Register("column", function () {
+                    System.Windows.Controls.UIBuilder.Register("column", function () {
                         return Bridge.CustomUIMarkup.Libraries.SemanticUI.Elements.CreateElement("div", "column");
                     });
 
                     for (var i1 = 2; i1 <= 16; i1 = (i1 + 1) | 0) {
                         var className1 = { v : (Bridge.CustomUIMarkup.Libraries.SemanticUI.NumberToWord.ToWord(i1) || "") + " wide column" };
 
-                        Bridge.CustomUIMarkup.UI.Builder.Register(System.String.replaceAll(className1.v, " ", "_"), (function ($me, className1) {
+                        System.Windows.Controls.UIBuilder.Register(System.String.replaceAll(className1.v, " ", "_"), (function ($me, className1) {
                             return function () {
                                 return Bridge.CustomUIMarkup.Libraries.SemanticUI.Elements.CreateElement("div", className1.v);
                             };
@@ -631,46 +631,46 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
 
 
                     // TextBlock
-                    Bridge.CustomUIMarkup.UI.Builder.Register("TextBlock", function () { return Bridge.CustomUIMarkup.UI.Builder.Create(System.Windows.Controls.TextBlock); });
+                    System.Windows.Controls.UIBuilder.Register("TextBlock", function () { return System.Windows.Controls.UIBuilder.Create(System.Windows.Controls.TextBlock); });
 
-                    Bridge.CustomUIMarkup.UI.Builder.Register("Field", function () { return Bridge.CustomUIMarkup.UI.Builder.Create(Bridge.CustomUIMarkup.Libraries.SemanticUI.Field); });
+                    System.Windows.Controls.UIBuilder.Register("Field", function () { return System.Windows.Controls.UIBuilder.Create(Bridge.CustomUIMarkup.Libraries.SemanticUI.Field); });
 
-                    Bridge.CustomUIMarkup.UI.Builder.Register("textInput", function () { return Bridge.CustomUIMarkup.UI.Builder.Create(Bridge.CustomUIMarkup.Libraries.SemanticUI.InputText); });
-                    Bridge.CustomUIMarkup.UI.Builder.Register("textBox", function () { return Bridge.CustomUIMarkup.UI.Builder.Create(Bridge.CustomUIMarkup.Libraries.SemanticUI.InputText); });
-                    Bridge.CustomUIMarkup.UI.Builder.Register("ui-input-textarea", function () { return Bridge.CustomUIMarkup.UI.Builder.Create(Bridge.CustomUIMarkup.Libraries.SemanticUI.TextArea); });
-                    Bridge.CustomUIMarkup.UI.Builder.Register("FieldString", function () { return Bridge.CustomUIMarkup.UI.Builder.Create(Bridge.CustomUIMarkup.Libraries.SemanticUI.FieldString); });
-                    Bridge.CustomUIMarkup.UI.Builder.Register("FieldStringTextArea", function () { return Bridge.CustomUIMarkup.UI.Builder.Create(Bridge.CustomUIMarkup.Libraries.SemanticUI.FieldTextArea); });
-                    Bridge.CustomUIMarkup.UI.Builder.Register("FieldTextArea", function () { return Bridge.CustomUIMarkup.UI.Builder.Create(Bridge.CustomUIMarkup.Libraries.SemanticUI.FieldTextArea); });
-                    Bridge.CustomUIMarkup.UI.Builder.Register("FieldInt32", function () { return Bridge.CustomUIMarkup.UI.Builder.Create(Bridge.CustomUIMarkup.Libraries.SemanticUI.FieldInt32); });
-                    Bridge.CustomUIMarkup.UI.Builder.Register("FieldDecimal", function () { return Bridge.CustomUIMarkup.UI.Builder.Create(Bridge.CustomUIMarkup.Libraries.SemanticUI.FieldDecimal); });
-                    Bridge.CustomUIMarkup.UI.Builder.Register("FieldDate", function () { return Bridge.CustomUIMarkup.UI.Builder.Create(Bridge.CustomUIMarkup.Libraries.SemanticUI.FieldDate); });
-                    Bridge.CustomUIMarkup.UI.Builder.Register("ContentPresenter", function () {
+                    System.Windows.Controls.UIBuilder.Register("textInput", function () { return System.Windows.Controls.UIBuilder.Create(Bridge.CustomUIMarkup.Libraries.SemanticUI.InputText); });
+                    System.Windows.Controls.UIBuilder.Register("textBox", function () { return System.Windows.Controls.UIBuilder.Create(Bridge.CustomUIMarkup.Libraries.SemanticUI.InputText); });
+                    System.Windows.Controls.UIBuilder.Register("ui-input-textarea", function () { return System.Windows.Controls.UIBuilder.Create(Bridge.CustomUIMarkup.Libraries.SemanticUI.TextArea); });
+                    System.Windows.Controls.UIBuilder.Register("FieldString", function () { return System.Windows.Controls.UIBuilder.Create(Bridge.CustomUIMarkup.Libraries.SemanticUI.FieldString); });
+                    System.Windows.Controls.UIBuilder.Register("FieldStringTextArea", function () { return System.Windows.Controls.UIBuilder.Create(Bridge.CustomUIMarkup.Libraries.SemanticUI.FieldTextArea); });
+                    System.Windows.Controls.UIBuilder.Register("FieldTextArea", function () { return System.Windows.Controls.UIBuilder.Create(Bridge.CustomUIMarkup.Libraries.SemanticUI.FieldTextArea); });
+                    System.Windows.Controls.UIBuilder.Register("FieldInt32", function () { return System.Windows.Controls.UIBuilder.Create(Bridge.CustomUIMarkup.Libraries.SemanticUI.FieldInt32); });
+                    System.Windows.Controls.UIBuilder.Register("FieldDecimal", function () { return System.Windows.Controls.UIBuilder.Create(Bridge.CustomUIMarkup.Libraries.SemanticUI.FieldDecimal); });
+                    System.Windows.Controls.UIBuilder.Register("FieldDate", function () { return System.Windows.Controls.UIBuilder.Create(Bridge.CustomUIMarkup.Libraries.SemanticUI.FieldDate); });
+                    System.Windows.Controls.UIBuilder.Register("ContentPresenter", function () {
                         return new System.Windows.ContentPresenter();
                     });
-                    Bridge.CustomUIMarkup.UI.Builder.Register("ui_rating", function () { return Bridge.CustomUIMarkup.UI.Builder.Create(Bridge.CustomUIMarkup.Libraries.SemanticUI.ui_rating); });
-                    Bridge.CustomUIMarkup.UI.Builder.Register("ui-rating", function () { return Bridge.CustomUIMarkup.UI.Builder.Create(Bridge.CustomUIMarkup.Libraries.SemanticUI.ui_rating); });
+                    System.Windows.Controls.UIBuilder.Register("ui_rating", function () { return System.Windows.Controls.UIBuilder.Create(Bridge.CustomUIMarkup.Libraries.SemanticUI.ui_rating); });
+                    System.Windows.Controls.UIBuilder.Register("ui-rating", function () { return System.Windows.Controls.UIBuilder.Create(Bridge.CustomUIMarkup.Libraries.SemanticUI.ui_rating); });
 
-                    Bridge.CustomUIMarkup.UI.Builder.Register("comment", function () { return Bridge.CustomUIMarkup.UI.Builder.Create(Bridge.CustomUIMarkup.Libraries.SemanticUI.comment); });
-                    Bridge.CustomUIMarkup.UI.Builder.Register("ui_comments", function () {
+                    System.Windows.Controls.UIBuilder.Register("comment", function () { return System.Windows.Controls.UIBuilder.Create(Bridge.CustomUIMarkup.Libraries.SemanticUI.comment); });
+                    System.Windows.Controls.UIBuilder.Register("ui_comments", function () {
                         return new System.Windows.HtmlElement("div", "ui comments");
                     });
-                    Bridge.CustomUIMarkup.UI.Builder.Register("ui-comments", function () {
+                    System.Windows.Controls.UIBuilder.Register("ui-comments", function () {
                         return new System.Windows.HtmlElement("div", "ui comments");
                     });
 
 
-                    Bridge.CustomUIMarkup.UI.Builder.Register("comment", function () { return Bridge.CustomUIMarkup.UI.Builder.Create(Bridge.CustomUIMarkup.Libraries.SemanticUI.comment); });
+                    System.Windows.Controls.UIBuilder.Register("comment", function () { return System.Windows.Controls.UIBuilder.Create(Bridge.CustomUIMarkup.Libraries.SemanticUI.comment); });
 
-                    Bridge.CustomUIMarkup.UI.Builder.Register("ui_top_attached_tabular_menu", function () { return Bridge.CustomUIMarkup.UI.Builder.Create(Bridge.CustomUIMarkup.Libraries.SemanticUI.ui_top_attached_tabular_menu); });
-                    Bridge.CustomUIMarkup.UI.Builder.Register("Tab", function () { return Bridge.CustomUIMarkup.UI.Builder.Create(Bridge.CustomUIMarkup.Libraries.SemanticUI.TabItem); });
-                    Bridge.CustomUIMarkup.UI.Builder.Register("TabItem", function () { return Bridge.CustomUIMarkup.UI.Builder.Create(Bridge.CustomUIMarkup.Libraries.SemanticUI.TabItem); });
+                    System.Windows.Controls.UIBuilder.Register("ui_top_attached_tabular_menu", function () { return System.Windows.Controls.UIBuilder.Create(Bridge.CustomUIMarkup.Libraries.SemanticUI.ui_top_attached_tabular_menu); });
+                    System.Windows.Controls.UIBuilder.Register("Tab", function () { return System.Windows.Controls.UIBuilder.Create(Bridge.CustomUIMarkup.Libraries.SemanticUI.TabItem); });
+                    System.Windows.Controls.UIBuilder.Register("TabItem", function () { return System.Windows.Controls.UIBuilder.Create(Bridge.CustomUIMarkup.Libraries.SemanticUI.TabItem); });
 
 
-                    Bridge.CustomUIMarkup.UI.Builder.Register("combo", function () { return Bridge.CustomUIMarkup.UI.Builder.Create(Bridge.CustomUIMarkup.Libraries.SemanticUI.Combo); });
-                    Bridge.CustomUIMarkup.UI.Builder.Register("comboBox", function () { return Bridge.CustomUIMarkup.UI.Builder.Create(Bridge.CustomUIMarkup.Libraries.SemanticUI.Combo); });
-                    Bridge.CustomUIMarkup.UI.Builder.Register("ui.selection.dropdown", function () { return Bridge.CustomUIMarkup.UI.Builder.Create(Bridge.CustomUIMarkup.Libraries.SemanticUI.Combo); });
+                    System.Windows.Controls.UIBuilder.Register("combo", function () { return System.Windows.Controls.UIBuilder.Create(Bridge.CustomUIMarkup.Libraries.SemanticUI.Combo); });
+                    System.Windows.Controls.UIBuilder.Register("comboBox", function () { return System.Windows.Controls.UIBuilder.Create(Bridge.CustomUIMarkup.Libraries.SemanticUI.Combo); });
+                    System.Windows.Controls.UIBuilder.Register("ui.selection.dropdown", function () { return System.Windows.Controls.UIBuilder.Create(Bridge.CustomUIMarkup.Libraries.SemanticUI.Combo); });
 
-                    Bridge.CustomUIMarkup.UI.Builder.Register("DatePicker", function () { return Bridge.CustomUIMarkup.UI.Builder.Create(Bridge.CustomUIMarkup.Libraries.SemanticUI.DatePicker); });
+                    System.Windows.Controls.UIBuilder.Register("DatePicker", function () { return System.Windows.Controls.UIBuilder.Create(Bridge.CustomUIMarkup.Libraries.SemanticUI.DatePicker); });
 
 
 
@@ -680,17 +680,17 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
                     try {
                         while ($t.moveNext()) {
                             var className2 = { v : $t.Current };
-                            Bridge.CustomUIMarkup.UI.Builder.Register(System.String.replaceAll(className2.v, " ", "_"), (function ($me, className2) {
+                            System.Windows.Controls.UIBuilder.Register(System.String.replaceAll(className2.v, " ", "_"), (function ($me, className2) {
                                 return function () {
                                     return Bridge.CustomUIMarkup.Libraries.SemanticUI.Elements.CreateElement("div", className2.v);
                                 };
                             })(this, className2));
-                            Bridge.CustomUIMarkup.UI.Builder.Register(System.String.replaceAll(className2.v, " ", "."), (function ($me, className2) {
+                            System.Windows.Controls.UIBuilder.Register(System.String.replaceAll(className2.v, " ", "."), (function ($me, className2) {
                                 return function () {
                                     return Bridge.CustomUIMarkup.Libraries.SemanticUI.Elements.CreateElement("div", className2.v);
                                 };
                             })(this, className2));
-                            Bridge.CustomUIMarkup.UI.Builder.Register(System.String.replaceAll(className2.v, " ", "-"), (function ($me, className2) {
+                            System.Windows.Controls.UIBuilder.Register(System.String.replaceAll(className2.v, " ", "-"), (function ($me, className2) {
                                 return function () {
                                     return Bridge.CustomUIMarkup.Libraries.SemanticUI.Elements.CreateElement("div", className2.v);
                                 };
@@ -701,29 +701,29 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
                             $t.System$IDisposable$dispose();
                         }
                     }
-                    Bridge.CustomUIMarkup.UI.Builder.Register("ui-image", function () {
+                    System.Windows.Controls.UIBuilder.Register("ui-image", function () {
                         return Bridge.CustomUIMarkup.Libraries.SemanticUI.Elements.CreateElement("img", "ui image");
                     });
-                    Bridge.CustomUIMarkup.UI.Builder.Register("ui.image", function () {
+                    System.Windows.Controls.UIBuilder.Register("ui.image", function () {
                         return Bridge.CustomUIMarkup.Libraries.SemanticUI.Elements.CreateElement("img", "ui image");
                     });
 
 
-                    Bridge.CustomUIMarkup.UI.Builder.Register("header", function () {
+                    System.Windows.Controls.UIBuilder.Register("header", function () {
                         return Bridge.CustomUIMarkup.Libraries.SemanticUI.Elements.CreateElement("div", "header");
                     });
-                    Bridge.CustomUIMarkup.UI.Builder.Register("ui.header.1", function () {
+                    System.Windows.Controls.UIBuilder.Register("ui.header.1", function () {
                         return Bridge.CustomUIMarkup.Libraries.SemanticUI.Elements.CreateElement("h1", "ui header");
                     });
-                    Bridge.CustomUIMarkup.UI.Builder.Register("ui.header.2", function () {
+                    System.Windows.Controls.UIBuilder.Register("ui.header.2", function () {
                         return Bridge.CustomUIMarkup.Libraries.SemanticUI.Elements.CreateElement("h2", "ui header");
                     });
-                    Bridge.CustomUIMarkup.UI.Builder.Register("ui.header.3", function () {
+                    System.Windows.Controls.UIBuilder.Register("ui.header.3", function () {
                         return Bridge.CustomUIMarkup.Libraries.SemanticUI.Elements.CreateElement("h3", "ui header");
                     });
 
 
-                    Bridge.CustomUIMarkup.UI.Builder.Register("ui.header.3", function () {
+                    System.Windows.Controls.UIBuilder.Register("ui.header.3", function () {
                         return Bridge.CustomUIMarkup.Libraries.SemanticUI.Elements.CreateElement("i", "ui header");
                     });
 
@@ -731,7 +731,7 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
                     try {
                         while ($t1.moveNext()) {
                             var iconType = { v : $t1.Current };
-                            Bridge.CustomUIMarkup.UI.Builder.Register("icon-" + (iconType.v || ""), (function ($me, iconType) {
+                            System.Windows.Controls.UIBuilder.Register("icon-" + (iconType.v || ""), (function ($me, iconType) {
                                 return function () {
                                     return Bridge.CustomUIMarkup.Libraries.SemanticUI.Elements.CreateElement("i", (iconType.v || "") + " icon");
                                 };
@@ -742,30 +742,30 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
                             $t1.System$IDisposable$dispose();
                         }
                     }
-                    Bridge.CustomUIMarkup.UI.Builder.Register("ui-celled-table", function () {
+                    System.Windows.Controls.UIBuilder.Register("ui-celled-table", function () {
                         return Bridge.CustomUIMarkup.Libraries.SemanticUI.Elements.CreateElement("table", "ui celled table");
                     });
-                    Bridge.CustomUIMarkup.UI.Builder.Register("thead", function () {
+                    System.Windows.Controls.UIBuilder.Register("thead", function () {
                         return Bridge.CustomUIMarkup.Libraries.SemanticUI.Elements.CreateElement("thead");
                     });
-                    Bridge.CustomUIMarkup.UI.Builder.Register("tr", function () {
+                    System.Windows.Controls.UIBuilder.Register("tr", function () {
                         return Bridge.CustomUIMarkup.Libraries.SemanticUI.Elements.CreateElement("tr");
                     });
-                    Bridge.CustomUIMarkup.UI.Builder.Register("th", function () {
+                    System.Windows.Controls.UIBuilder.Register("th", function () {
                         return Bridge.CustomUIMarkup.Libraries.SemanticUI.Elements.CreateElement("th");
                     });
-                    Bridge.CustomUIMarkup.UI.Builder.Register("tbody", function () {
+                    System.Windows.Controls.UIBuilder.Register("tbody", function () {
                         return Bridge.CustomUIMarkup.Libraries.SemanticUI.Elements.CreateElement("tbody");
                     });
-                    Bridge.CustomUIMarkup.UI.Builder.Register("td", function () {
+                    System.Windows.Controls.UIBuilder.Register("td", function () {
                         return Bridge.CustomUIMarkup.Libraries.SemanticUI.Elements.CreateElement("td");
                     });
 
 
-                    Bridge.CustomUIMarkup.UI.Builder.Register("ItemsControl", function () { return Bridge.CustomUIMarkup.UI.Builder.Create(System.Windows.Controls.ItemsControl); });
-                    Bridge.CustomUIMarkup.UI.Builder.Register("DataGrid", function () { return Bridge.CustomUIMarkup.UI.Builder.Create(Bridge.CustomUIMarkup.Libraries.SemanticUI.DataGrid); });
-                    Bridge.CustomUIMarkup.UI.Builder.Register("DataGridColumn", function () { return Bridge.CustomUIMarkup.UI.Builder.Create(Bridge.CustomUIMarkup.Libraries.SemanticUI.DataGridColumn); });
-                    Bridge.CustomUIMarkup.UI.Builder.Register("ListBox", function () { return Bridge.CustomUIMarkup.UI.Builder.Create(System.Windows.Controls.ListBox); });
+                    System.Windows.Controls.UIBuilder.Register("ItemsControl", function () { return System.Windows.Controls.UIBuilder.Create(System.Windows.Controls.ItemsControl); });
+                    System.Windows.Controls.UIBuilder.Register("DataGrid", function () { return System.Windows.Controls.UIBuilder.Create(Bridge.CustomUIMarkup.Libraries.SemanticUI.DataGrid); });
+                    System.Windows.Controls.UIBuilder.Register("DataGridColumn", function () { return System.Windows.Controls.UIBuilder.Create(Bridge.CustomUIMarkup.Libraries.SemanticUI.DataGridColumn); });
+                    System.Windows.Controls.UIBuilder.Register("ListBox", function () { return System.Windows.Controls.UIBuilder.Create(System.Windows.Controls.ListBox); });
 
 
 
@@ -1589,7 +1589,7 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
         statics: {
             methods: {
                 RegisterToBuilder: function () {
-                    Bridge.CustomUIMarkup.UI.Builder.Register("SplitPanel", function () { return Bridge.CustomUIMarkup.UI.Builder.Create(Bridge.CustomUIMarkup.Libraries.split_js.SplitPanel); });
+                    System.Windows.Controls.UIBuilder.Register("SplitPanel", function () { return System.Windows.Controls.UIBuilder.Create(Bridge.CustomUIMarkup.Libraries.split_js.SplitPanel); });
                 }
             }
         }
@@ -1599,7 +1599,7 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
         statics: {
             methods: {
                 RegisterToBuilder: function () {
-                    Bridge.CustomUIMarkup.UI.Builder.Register("swiper.slider", function () { return Bridge.CustomUIMarkup.UI.Builder.Create(Bridge.CustomUIMarkup.Libraries.Swiper.Slider); });
+                    System.Windows.Controls.UIBuilder.Register("swiper.slider", function () { return System.Windows.Controls.UIBuilder.Create(Bridge.CustomUIMarkup.Libraries.Swiper.Slider); });
                 }
             }
         }
@@ -1609,7 +1609,7 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
         statics: {
             methods: {
                 RegisterToBuilder: function () {
-                    Bridge.CustomUIMarkup.UI.Builder.Register("ImageGalery", function () { return Bridge.CustomUIMarkup.UI.Builder.Create(Bridge.CustomUIMarkup.Libraries.viewerjs.Viewer); });
+                    System.Windows.Controls.UIBuilder.Register("ImageGalery", function () { return System.Windows.Controls.UIBuilder.Create(Bridge.CustomUIMarkup.Libraries.viewerjs.Viewer); });
                 }
             }
         }
@@ -1625,470 +1625,6 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
         }
     });
 
-    Bridge.define("Bridge.CustomUIMarkup.UI.Builder", {
-        statics: {
-            fields: {
-                _elementCreators: null
-            },
-            ctors: {
-                init: function () {
-                    this._elementCreators = function (_o1) {
-                            _o1.add("DIV", function () {
-                                return new System.Windows.HtmlElement("div");
-                            });
-                            return _o1;
-                        }(new (System.Collections.Generic.Dictionary$2(System.String,Function))());
-                }
-            },
-            methods: {
-                Create: function (T) {
-                    var control = Bridge.createInstance(T);
-
-                    return Bridge.CustomUIMarkup.UI.Builder.ApplyTemplate(T, control);
-                },
-                Register: function (tag, func) {
-                    Bridge.CustomUIMarkup.UI.Builder._elementCreators.set(tag.toUpperCase(), func);
-                },
-                ApplyTemplate: function (T, control) {
-                    control != null ? control.ApplyTemplate() : null;
-
-                    return control;
-                },
-                BuildControlTemplate: function (xmlTemplate, control) {
-                    var $t;
-                    var builder = ($t = new Bridge.CustomUIMarkup.UI.Builder(), $t._rootNode = xmlTemplate.Root, $t.DataContext = control, $t.Caller = control, $t._isBuildingTemplate = true, $t);
-
-                    var subControl = builder.BuildNode(builder._rootNode, control);
-
-                    var subControlAsFrameworkElement = Bridge.as(subControl, System.Windows.FrameworkElement);
-                    if (subControlAsFrameworkElement == null) {
-                        throw new System.InvalidOperationException("TemplateControlFirstItemMustBeHTMLElement");
-                    }
-
-                    control._root = subControlAsFrameworkElement._root;
-                    control.AddVisualChild(subControlAsFrameworkElement);
-                },
-                LoadComponent: function (control, xml) {
-                    Bridge.CustomUIMarkup.UI.Builder.LoadComponent$1(control, System.Xml.XmlHelper.GetRootNode(xml));
-                },
-                LoadComponent$1: function (control, node, IsDesignMode, ElementCreatedAtLine, xml) {
-                    var $t;
-                    if (IsDesignMode === void 0) { IsDesignMode = false; }
-                    if (ElementCreatedAtLine === void 0) { ElementCreatedAtLine = null; }
-                    if (xml === void 0) { xml = null; }
-                    var builder = ($t = new Bridge.CustomUIMarkup.UI.Builder(), $t._rootNode = node, $t.DataContext = control, $t.Caller = control, $t["IsDesignMode"] = IsDesignMode, $t.XmlString = xml, $t);
-
-                    if (!Bridge.staticEquals(ElementCreatedAtLine, null)) {
-                        builder.addElementCreatedAtLine(ElementCreatedAtLine);
-                    }
-
-                    var subControl = builder.BuildNode(builder._rootNode, control);
-
-                    var subControlAsFrameworkElement = Bridge.as(subControl, System.Windows.FrameworkElement);
-                    if (subControlAsFrameworkElement == null) {
-                        throw new System.InvalidOperationException("ControlFirstItemMustBeHTMLElement");
-                    }
-
-                    Bridge.CustomUIMarkup.UI.Builder.InitDOM(control);
-                    control.AddLogicalChild(subControlAsFrameworkElement);
-                },
-                GetFirstNodeSkipCommentAndText: function (xmlNodeList) {
-                    var len = xmlNodeList.length;
-
-                    for (var i = 0; i < len; i = (i + 1) | 0) {
-                        var node = xmlNodeList[i];
-                        var nodeType = node.nodeType;
-
-                        if (nodeType === 8 || nodeType === 3) {
-                            continue;
-                        }
-
-                        return node;
-                    }
-
-                    throw new System.InvalidOperationException("NodeCannotBeEmpty.");
-                },
-                InitDOM: function (instance) {
-                    if (instance._root == null) {
-                        instance.InitDOM();
-                    }
-                },
-                IsUserDefinedTag: function (tag) {
-                    return System.Linq.Enumerable.from(tag).contains(46) || System.Linq.Enumerable.from(tag).contains(45) || System.Linq.Enumerable.from(tag).contains(58);
-                }
-            }
-        },
-        fields: {
-            XmlString: null,
-            _rootNode: null,
-            "_currentInstance": null,
-            _isBuildingTemplate: false,
-            Caller: null,
-            DataContext: null,
-            "IsDesignMode": false
-        },
-        events: {
-            ElementCreatedAtLine: null
-        },
-        methods: {
-            BuildNode: function (xmlNode, parentInstance) {
-                if (xmlNode.nodeType === 8) {
-                    return null;
-                }
-
-                if (xmlNode.nodeType === 3) {
-                    return this.BuildTextNode(xmlNode, parentInstance);
-                }
-
-                //
-                if (this.TryToInitParentProperty(xmlNode)) {
-                    return null;
-                }
-
-                var instance = this.CreateInstance(xmlNode);
-
-
-
-                this["_currentInstance"] = instance;
-
-                if (this["IsDesignMode"]) {
-                    var lineNumber = System.Xml.WhiteStoneExtensions.GetOriginalLineNumber(xmlNode, this._rootNode, this.XmlString);
-
-                    !Bridge.staticEquals(this.ElementCreatedAtLine, null) ? this.ElementCreatedAtLine(lineNumber, instance) : null;
-                }
-
-                this.InitializeDataContext(xmlNode, instance, parentInstance);
-
-
-
-                this.ProcessAttributes(xmlNode, instance);
-
-                var childNodes = xmlNode.childNodes;
-
-                var len = childNodes.length;
-
-                for (var i = 0; i < len; i = (i + 1) | 0) {
-                    var childNode = childNodes[i];
-
-                    var subItem = this.BuildNode(childNode, instance);
-
-                    this.Connect(instance, subItem);
-                }
-
-                return instance;
-            },
-            ProcessAttributes: function (xmlNode, instance) {
-                var attributes = xmlNode.attributes;
-
-                var len = attributes.length;
-                for (var i = 0; i < len; i = (i + 1) | 0) {
-                    var nodeAttribute = attributes[i];
-
-                    this.ProcessAttribute(instance, nodeAttribute.nodeName, nodeAttribute.nodeValue);
-                }
-            },
-            BuildTextNode: function (xmlNode, parentInstance) {
-                // skip empty spaces
-                var html = Bridge.CustomUIMarkup.UI.Extensions.GetInnerText(xmlNode);
-                if (System.String.isNullOrWhiteSpace(html)) {
-                    return null;
-                }
-
-                // maybe <div> {LastName} </div>
-                var bindingInfo = System.Windows.Data.HTMLBindingInfo.TryParseExpression(html);
-                if (bindingInfo != null) {
-                    var textNode = $(document.createTextNode(""));
-                    parentInstance._root.append(textNode);
-
-
-                    bindingInfo.BindingMode = System.Windows.Data.BindingMode.OneWay;
-
-                    bindingInfo.Source = parentInstance;
-                    bindingInfo.SourcePath = System.Windows.PropertyPath.op_Implicit("DataContext." + (bindingInfo.SourcePath.Path || ""));
-
-                    bindingInfo.Target$1 = textNode;
-                    bindingInfo.TargetPath = System.Windows.PropertyPath.op_Implicit("InnerHTML");
-
-                    bindingInfo.Connect();
-                    return null;
-                }
-
-                var instanceAsContentControl = Bridge.as(parentInstance, System.Windows.ContentControl);
-                if (instanceAsContentControl != null) {
-                    instanceAsContentControl.Content = html;
-                    return null;
-                }
-
-                parentInstance._root.append(html);
-
-                return null;
-            },
-            Connect: function (parent, subItem) {
-                if (subItem == null) {
-                    return;
-                }
-
-                var subItemAsFrameworkElement = Bridge.as(subItem, System.Windows.FrameworkElement);
-                if (subItemAsFrameworkElement == null) {
-                    return;
-                }
-
-                Bridge.unbox(parent).AddLogicalChild(subItemAsFrameworkElement);
-            },
-            CreateInstanceInternal: function (xmlNode) {
-
-                var tag = xmlNode.nodeName.toUpperCase();
-
-                var creatorFunc = { v : null };
-                Bridge.CustomUIMarkup.UI.Builder._elementCreators.tryGetValue(tag.toUpperCase(), creatorFunc);
-                if (!Bridge.staticEquals(creatorFunc.v, null)) {
-                    return creatorFunc.v();
-                }
-
-
-                if (Bridge.CustomUIMarkup.UI.Builder.IsUserDefinedTag(xmlNode.nodeName) === false) {
-                    return new System.Windows.HtmlElement(xmlNode.nodeName);
-                }
-
-                throw new System.ArgumentException("NotRecognizedTag:" + (tag || ""));
-            },
-            CreateInstance: function (xmlNode) {
-                var instance = this.CreateInstanceInternal(xmlNode);
-                Bridge.CustomUIMarkup.UI.Builder.InitDOM(instance);
-
-                return instance;
-            },
-            InitializeDataContext: function (xmlNode, instance, parentInstance) {
-                var $t;
-                if (this._isBuildingTemplate) {
-                    instance.DataContext = this.DataContext;
-                } else {
-                    var subControlDataContextAttribute = xmlNode.attributes.DataContext;
-                    if (subControlDataContextAttribute == null) {
-                        var bindingInfo = ($t = new System.Windows.Data.BindingInfo(), $t.BindingMode = System.Windows.Data.BindingMode.OneWay, $t.Source = parentInstance, $t.SourcePath = System.Windows.PropertyPath.op_Implicit("DataContext"), $t.Target = instance, $t.TargetPath = System.Windows.PropertyPath.op_Implicit("DataContext"), $t);
-                        bindingInfo.Connect();
-                    } else {
-                        var bi = System.Windows.Data.BindingInfo.TryParseExpression(subControlDataContextAttribute.nodeValue);
-                        if (bi == null) {
-                            throw new System.InvalidOperationException("InvalidBindingExpression:" + (subControlDataContextAttribute.nodeValue || ""));
-                        }
-
-                        bi.BindingMode = System.Windows.Data.BindingMode.OneWay;
-                        bi.Source = parentInstance;
-                        bi.SourcePath = System.Windows.PropertyPath.op_Implicit("DataContext." + (bi.SourcePath.Path || ""));
-                        bi.Target = instance;
-                        bi.TargetPath = System.Windows.PropertyPath.op_Implicit("DataContext");
-                        bi.Connect();
-                    }
-                }
-            },
-            ProcessAttribute: function (instance, name, value) {
-                var $t;
-                if (Bridge.referenceEquals(name, "DataContext")) {
-                    return;
-                }
-
-                var nameUpperCase = name.toUpperCase();
-
-                if (Bridge.referenceEquals(name, "class")) {
-                    name = "Class";
-                }
-
-                var targetProperty = System.ComponentModel.ReflectionHelper.FindProperty(instance, name);
-
-                var bi = System.Windows.Data.BindingInfo.TryParseExpression(value);
-                if (bi != null) {
-                    var eventInfo = System.ComponentModel.ReflectionHelper.FindEvent(instance, name);
-                    if (eventInfo != null) {
-                        var methodInfo = System.ComponentModel.ReflectionHelper.GetMethodInfo(this.DataContext, bi.SourcePath.Path);
-
-                        var handler = Bridge.Reflection.createDelegate(methodInfo, this.DataContext);
-
-                        Bridge.Reflection.midel(eventInfo.ad, instance)(handler);
-
-                        return;
-                    }
-
-                    if (System.String.contains(name,".") === false) {
-                        if (targetProperty == null) {
-                            var htmlBindingInfo = ($t = new System.Windows.Data.HTMLBindingInfo(), $t.Source = instance, $t.SourcePath = new System.Windows.PropertyPath("DataContext." + (bi.SourcePath.Path || "")), $t.Target$1 = Bridge.unbox(instance)._root, $t.TargetPath = System.Windows.PropertyPath.op_Implicit(name), $t.BindingMode = System.Windows.Data.BindingMode.OneWay, $t);
-
-                            if (System.Windows.Data.HTMLBindingInfo.TargetCanUpdateSource(htmlBindingInfo.Target$1)) {
-                                htmlBindingInfo.BindingMode = System.Windows.Data.BindingMode.TwoWay;
-                            }
-
-
-                            htmlBindingInfo.Connect();
-
-                            return;
-                        }
-                    }
-
-                    bi.SourcePath = new System.Windows.PropertyPath("DataContext." + (bi.SourcePath.Path || ""));
-                    bi.Source = instance;
-
-                    // bi.Source = DataContext;
-                    bi.Target = instance;
-                    bi.TargetPath = System.Windows.PropertyPath.op_Implicit(name);
-
-                    bi.Connect();
-
-                    return;
-                }
-
-                if (targetProperty != null) {
-                    if (Bridge.Reflection.isEnum(targetProperty.rt)) {
-                        System.ComponentModel.ReflectionHelper.SetPropertyValue(instance, name, System.Enum.parse(targetProperty.rt, value, true));
-                        return;
-                    }
-
-                    var converterAttributes = System.Attribute.getCustomAttributes(targetProperty, System.ComponentModel.TypeConverterAttribute);
-                    var firstConverterAtribute = converterAttributes != null ? System.Linq.Enumerable.from(converterAttributes).firstOrDefault(null, null) : null;
-                    if (firstConverterAtribute != null) {
-                        var converter = Bridge.cast(firstConverterAtribute, System.ComponentModel.TypeConverterAttribute);
-                        var valueConverter = Bridge.cast(Bridge.createInstance(converter._type), System.Windows.Data.IValueConverter);
-                        var convertedValue = valueConverter.System$Windows$Data$IValueConverter$Convert(value, Bridge.Reflection.getMembers(Bridge.getType(instance), 16, 284, name).rt, null, System.Globalization.CultureInfo.getCurrentCulture());
-
-                        System.ComponentModel.ReflectionHelper.SetPropertyValue(instance, name, convertedValue);
-                        return;
-                    }
-
-                    var propertyValue = System.Cast.To$2(value, targetProperty.rt, System.Globalization.CultureInfo.getCurrentCulture());
-                    System.ComponentModel.ReflectionHelper.SetPropertyValue(instance, name, propertyValue);
-                    return;
-                }
-
-                if (System.String.startsWith(name, "on.")) {
-                    var eventName = System.Extensions.RemoveFromStart(name, "on.");
-
-                    // support this format: this.Notify(OnContactClicked)
-                    if (System.String.startsWith(value, "this.")) {
-                        var viewInvocationExpressionInfo = System.Text.Tokenizers.ViewInvocationExpressionInfo.Parse(value);
-
-                        var methodName = viewInvocationExpressionInfo.MethodName;
-
-                        var mi = Bridge.Reflection.getMembers(Bridge.getType(this.Caller), 8, 53 | 256, methodName);
-
-                        Bridge.unbox(instance).On(eventName, Bridge.fn.bind(this, function () {
-                            Bridge.Reflection.midel(mi, Bridge.unbox(this.Caller)).apply(null, Bridge.unbox(System.Linq.Enumerable.from(viewInvocationExpressionInfo.Parameters).toArray()));
-                        }));
-                        return;
-                    }
-
-                    var methodInfo1 = Bridge.Reflection.getMembers(Bridge.getType(this.Caller), 8, System.ComponentModel.ReflectionHelper.AllBindings | 256, value);
-
-                    Bridge.unbox(instance).On(eventName, Bridge.fn.bind(this, function () {
-                        Bridge.Reflection.midel(methodInfo1, Bridge.unbox(this.Caller))(null);
-                    }));
-                    return;
-                }
-
-                if (System.String.startsWith(nameUpperCase, "CSS.")) {
-                    var styleAttributeName = name.substr(4);
-                    Bridge.unbox(instance)._root.css(styleAttributeName, value);
-                    return;
-                }
-
-                // css.Pseudo.backgroundImage
-                if (System.String.startsWith(nameUpperCase, "CSS.PSEUDO.")) {
-                    throw new System.ArgumentException();
-                    // var pseudoAttributeName = name.Substring(11);
-                    // DOM.head.Append("<style>#" + instance.Id + "::" + pseudoAttributeName + "{ content:'bar' }</style>");
-                    // return;
-                }
-
-                if (Bridge.referenceEquals(name, "x.Name")) {
-                    System.ComponentModel.ReflectionHelper.SetNonStaticField(this.Caller, value, instance);
-
-                    return;
-                }
-
-                Bridge.unbox(instance)._root.attr(name, value);
-            },
-            TryToInitParentProperty: function (xmlNode) {
-                var $t;
-                var parentNodeName = xmlNode.parentNode.nodeName;
-                var nodeName = xmlNode.nodeName;
-
-
-                // <ItemsControl.ItemTemplate>
-
-                if (!System.String.startsWith(nodeName, (parentNodeName || "") + ".")) {
-                    return false;
-                }
-
-                var propertyName = System.Extensions.RemoveFromStart(nodeName, (parentNodeName || "") + ".");
-                if (propertyName == null) {
-                    return false;
-                }
-
-                var propertyInfo = Bridge.Reflection.getMembers(Bridge.getType(this["_currentInstance"]), 16, 284, propertyName);
-                if (propertyInfo == null) {
-                    return false;
-                }
-
-
-                var propertyType = propertyInfo.rt;
-                if (Bridge.referenceEquals(propertyType, System.Windows.Template)) {
-                    var propertyValue = System.Windows.Template.CreateFrom(Bridge.CustomUIMarkup.UI.Builder.GetFirstNodeSkipCommentAndText(xmlNode.childNodes));
-                    System.ComponentModel.ReflectionHelper.SetPropertyValue(this["_currentInstance"], propertyName, propertyValue);
-                    return true;
-                }
-
-                var processAsAttribute = System.Extensions.IsNumeric$1(propertyType) || Bridge.referenceEquals(propertyType, System.String);
-                if (!processAsAttribute) {
-                    processAsAttribute = System.Nullable.eq((($t = System.Nullable.getUnderlyingType(propertyType)) != null ? System.Extensions.IsNumeric$1($t) : null), true);
-                }
-
-                if (processAsAttribute) {
-                    var innerHTML = ((Bridge.CustomUIMarkup.UI.Extensions.GetInnerText(xmlNode) || "") + "").trim();
-
-                    this.ProcessAttribute(this["_currentInstance"], propertyName, innerHTML);
-                    return true;
-                }
-
-                /* 
-                                   <DataGrid.Columns>
-                                       <DataGridColumn Name='FullName' Label='Adı SoyAdı' />
-                                   </DataGrid.Columns>
-                */
-                if (propertyInfo.s == null) {
-                    var collection = Bridge.Reflection.midel(propertyInfo.g, Bridge.unbox(this["_currentInstance"]))();
-
-                    var addMethod = Bridge.Reflection.getMembers(Bridge.getType(collection), 8, 284, "Add");
-
-
-                    var childNodes = xmlNode.childNodes;
-
-                    var len = childNodes.length;
-
-                    for (var i = 0; i < len; i = (i + 1) | 0) {
-                        var childNode = childNodes[i];
-
-                        if (childNode.nodeType !== 1) {
-                            continue;
-                        }
-
-                        var subItem = this.CreateInstance(childNode);
-
-
-                        this.InitializeDataContext(childNode, subItem, Bridge.unbox(this["_currentInstance"]));
-
-                        this.ProcessAttributes(childNode, subItem);
-
-                        Bridge.Reflection.midel(addMethod, Bridge.unbox(collection))(subItem);
-                    }
-
-                    return true;
-
-                }
-
-                throw new System.NotImplementedException(nodeName);
-
-            }
-        }
-    });
-
     Bridge.define("Bridge.CustomUIMarkup.UI.Extensions", {
         statics: {
             methods: {
@@ -2100,7 +1636,7 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
                     return Bridge.unbox(xmlNode.innerHTML);
                 },
                 LoadComponent: function (T, element, xml) {
-                    Bridge.CustomUIMarkup.UI.Builder.LoadComponent(element, xml);
+                    System.Windows.Controls.UIBuilder.LoadComponent(element, xml);
 
                     return element;
                 }
@@ -5281,6 +4817,470 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
         }
     });
 
+    Bridge.define("System.Windows.Controls.UIBuilder", {
+        statics: {
+            fields: {
+                _elementCreators: null
+            },
+            ctors: {
+                init: function () {
+                    this._elementCreators = function (_o1) {
+                            _o1.add("DIV", function () {
+                                return new System.Windows.HtmlElement("div");
+                            });
+                            return _o1;
+                        }(new (System.Collections.Generic.Dictionary$2(System.String,Function))());
+                }
+            },
+            methods: {
+                Create: function (T) {
+                    var control = Bridge.createInstance(T);
+
+                    return System.Windows.Controls.UIBuilder.ApplyTemplate(T, control);
+                },
+                Register: function (tag, func) {
+                    System.Windows.Controls.UIBuilder._elementCreators.set(tag.toUpperCase(), func);
+                },
+                ApplyTemplate: function (T, control) {
+                    control != null ? control.ApplyTemplate() : null;
+
+                    return control;
+                },
+                BuildControlTemplate: function (xmlTemplate, control) {
+                    var $t;
+                    var builder = ($t = new System.Windows.Controls.UIBuilder(), $t._rootNode = xmlTemplate.Root, $t.DataContext = control, $t.Caller = control, $t._isBuildingTemplate = true, $t);
+
+                    var subControl = builder.BuildNode(builder._rootNode, control);
+
+                    var subControlAsFrameworkElement = Bridge.as(subControl, System.Windows.FrameworkElement);
+                    if (subControlAsFrameworkElement == null) {
+                        throw new System.InvalidOperationException("TemplateControlFirstItemMustBeHTMLElement");
+                    }
+
+                    control._root = subControlAsFrameworkElement._root;
+                    control.AddVisualChild(subControlAsFrameworkElement);
+                },
+                LoadComponent: function (control, xml) {
+                    System.Windows.Controls.UIBuilder.LoadComponent$1(control, System.Xml.XmlHelper.GetRootNode(xml));
+                },
+                LoadComponent$1: function (control, node, IsDesignMode, ElementCreatedAtLine, xml) {
+                    var $t;
+                    if (IsDesignMode === void 0) { IsDesignMode = false; }
+                    if (ElementCreatedAtLine === void 0) { ElementCreatedAtLine = null; }
+                    if (xml === void 0) { xml = null; }
+                    var builder = ($t = new System.Windows.Controls.UIBuilder(), $t._rootNode = node, $t.DataContext = control, $t.Caller = control, $t["IsDesignMode"] = IsDesignMode, $t.XmlString = xml, $t);
+
+                    if (!Bridge.staticEquals(ElementCreatedAtLine, null)) {
+                        builder.addElementCreatedAtLine(ElementCreatedAtLine);
+                    }
+
+                    var subControl = builder.BuildNode(builder._rootNode, control);
+
+                    var subControlAsFrameworkElement = Bridge.as(subControl, System.Windows.FrameworkElement);
+                    if (subControlAsFrameworkElement == null) {
+                        throw new System.InvalidOperationException("ControlFirstItemMustBeHTMLElement");
+                    }
+
+                    System.Windows.Controls.UIBuilder.InitDOM(control);
+                    control.AddLogicalChild(subControlAsFrameworkElement);
+                },
+                GetFirstNodeSkipCommentAndText: function (xmlNodeList) {
+                    var len = xmlNodeList.length;
+
+                    for (var i = 0; i < len; i = (i + 1) | 0) {
+                        var node = xmlNodeList[i];
+                        var nodeType = node.nodeType;
+
+                        if (nodeType === 8 || nodeType === 3) {
+                            continue;
+                        }
+
+                        return node;
+                    }
+
+                    throw new System.InvalidOperationException("NodeCannotBeEmpty.");
+                },
+                InitDOM: function (instance) {
+                    if (instance._root == null) {
+                        instance.InitDOM();
+                    }
+                },
+                IsUserDefinedTag: function (tag) {
+                    return System.Linq.Enumerable.from(tag).contains(46) || System.Linq.Enumerable.from(tag).contains(45) || System.Linq.Enumerable.from(tag).contains(58);
+                }
+            }
+        },
+        fields: {
+            XmlString: null,
+            _rootNode: null,
+            "_currentInstance": null,
+            _isBuildingTemplate: false,
+            Caller: null,
+            DataContext: null,
+            "IsDesignMode": false
+        },
+        events: {
+            ElementCreatedAtLine: null
+        },
+        methods: {
+            BuildNode: function (xmlNode, parentInstance) {
+                if (xmlNode.nodeType === 8) {
+                    return null;
+                }
+
+                if (xmlNode.nodeType === 3) {
+                    return this.BuildTextNode(xmlNode, parentInstance);
+                }
+
+                //
+                if (this.TryToInitParentProperty(xmlNode)) {
+                    return null;
+                }
+
+                var instance = this.CreateInstance(xmlNode);
+
+
+
+                this["_currentInstance"] = instance;
+
+                if (this["IsDesignMode"]) {
+                    var lineNumber = System.Xml.WhiteStoneExtensions.GetOriginalLineNumber(xmlNode, this._rootNode, this.XmlString);
+
+                    !Bridge.staticEquals(this.ElementCreatedAtLine, null) ? this.ElementCreatedAtLine(lineNumber, instance) : null;
+                }
+
+                this.InitializeDataContext(xmlNode, instance, parentInstance);
+
+
+
+                this.ProcessAttributes(xmlNode, instance);
+
+                var childNodes = xmlNode.childNodes;
+
+                var len = childNodes.length;
+
+                for (var i = 0; i < len; i = (i + 1) | 0) {
+                    var childNode = childNodes[i];
+
+                    var subItem = this.BuildNode(childNode, instance);
+
+                    this.Connect(instance, subItem);
+                }
+
+                return instance;
+            },
+            ProcessAttributes: function (xmlNode, instance) {
+                var attributes = xmlNode.attributes;
+
+                var len = attributes.length;
+                for (var i = 0; i < len; i = (i + 1) | 0) {
+                    var nodeAttribute = attributes[i];
+
+                    this.ProcessAttribute(instance, nodeAttribute.nodeName, nodeAttribute.nodeValue);
+                }
+            },
+            BuildTextNode: function (xmlNode, parentInstance) {
+                // skip empty spaces
+                var html = Bridge.CustomUIMarkup.UI.Extensions.GetInnerText(xmlNode);
+                if (System.String.isNullOrWhiteSpace(html)) {
+                    return null;
+                }
+
+                // maybe <div> {LastName} </div>
+                var bindingInfo = System.Windows.Data.HTMLBindingInfo.TryParseExpression(html);
+                if (bindingInfo != null) {
+                    var textNode = $(document.createTextNode(""));
+                    parentInstance._root.append(textNode);
+
+
+                    bindingInfo.BindingMode = System.Windows.Data.BindingMode.OneWay;
+
+                    bindingInfo.Source = parentInstance;
+                    bindingInfo.SourcePath = System.Windows.PropertyPath.op_Implicit("DataContext." + (bindingInfo.SourcePath.Path || ""));
+
+                    bindingInfo.Target$1 = textNode;
+                    bindingInfo.TargetPath = System.Windows.PropertyPath.op_Implicit("InnerHTML");
+
+                    bindingInfo.Connect();
+                    return null;
+                }
+
+                var instanceAsContentControl = Bridge.as(parentInstance, System.Windows.Controls.ContentControl);
+                if (instanceAsContentControl != null) {
+                    instanceAsContentControl.Content = html;
+                    return null;
+                }
+
+                parentInstance._root.append(html);
+
+                return null;
+            },
+            Connect: function (parent, subItem) {
+                if (subItem == null) {
+                    return;
+                }
+
+                var subItemAsFrameworkElement = Bridge.as(subItem, System.Windows.FrameworkElement);
+                if (subItemAsFrameworkElement == null) {
+                    return;
+                }
+
+                Bridge.unbox(parent).AddLogicalChild(subItemAsFrameworkElement);
+            },
+            CreateInstanceInternal: function (xmlNode) {
+
+                var tag = xmlNode.nodeName.toUpperCase();
+
+                var creatorFunc = { v : null };
+                System.Windows.Controls.UIBuilder._elementCreators.tryGetValue(tag.toUpperCase(), creatorFunc);
+                if (!Bridge.staticEquals(creatorFunc.v, null)) {
+                    return creatorFunc.v();
+                }
+
+
+                if (System.Windows.Controls.UIBuilder.IsUserDefinedTag(xmlNode.nodeName) === false) {
+                    return new System.Windows.HtmlElement(xmlNode.nodeName);
+                }
+
+                throw new System.ArgumentException("NotRecognizedTag:" + (tag || ""));
+            },
+            CreateInstance: function (xmlNode) {
+                var instance = this.CreateInstanceInternal(xmlNode);
+                System.Windows.Controls.UIBuilder.InitDOM(instance);
+
+                return instance;
+            },
+            InitializeDataContext: function (xmlNode, instance, parentInstance) {
+                var $t;
+                if (this._isBuildingTemplate) {
+                    instance.DataContext = this.DataContext;
+                } else {
+                    var subControlDataContextAttribute = xmlNode.attributes.DataContext;
+                    if (subControlDataContextAttribute == null) {
+                        var bindingInfo = ($t = new System.Windows.Data.BindingInfo(), $t.BindingMode = System.Windows.Data.BindingMode.OneWay, $t.Source = parentInstance, $t.SourcePath = System.Windows.PropertyPath.op_Implicit("DataContext"), $t.Target = instance, $t.TargetPath = System.Windows.PropertyPath.op_Implicit("DataContext"), $t);
+                        bindingInfo.Connect();
+                    } else {
+                        var bi = System.Windows.Data.BindingInfo.TryParseExpression(subControlDataContextAttribute.nodeValue);
+                        if (bi == null) {
+                            throw new System.InvalidOperationException("InvalidBindingExpression:" + (subControlDataContextAttribute.nodeValue || ""));
+                        }
+
+                        bi.BindingMode = System.Windows.Data.BindingMode.OneWay;
+                        bi.Source = parentInstance;
+                        bi.SourcePath = System.Windows.PropertyPath.op_Implicit("DataContext." + (bi.SourcePath.Path || ""));
+                        bi.Target = instance;
+                        bi.TargetPath = System.Windows.PropertyPath.op_Implicit("DataContext");
+                        bi.Connect();
+                    }
+                }
+            },
+            ProcessAttribute: function (instance, name, value) {
+                var $t;
+                if (Bridge.referenceEquals(name, "DataContext")) {
+                    return;
+                }
+
+                var nameUpperCase = name.toUpperCase();
+
+                if (Bridge.referenceEquals(name, "class")) {
+                    name = "Class";
+                }
+
+                var targetProperty = System.ComponentModel.ReflectionHelper.FindProperty(instance, name);
+
+                var bi = System.Windows.Data.BindingInfo.TryParseExpression(value);
+                if (bi != null) {
+                    var eventInfo = System.ComponentModel.ReflectionHelper.FindEvent(instance, name);
+                    if (eventInfo != null) {
+                        var methodInfo = System.ComponentModel.ReflectionHelper.GetMethodInfo(this.DataContext, bi.SourcePath.Path);
+
+                        var handler = Bridge.Reflection.createDelegate(methodInfo, this.DataContext);
+
+                        Bridge.Reflection.midel(eventInfo.ad, instance)(handler);
+
+                        return;
+                    }
+
+                    if (System.String.contains(name,".") === false) {
+                        if (targetProperty == null) {
+                            var htmlBindingInfo = ($t = new System.Windows.Data.HTMLBindingInfo(), $t.Source = instance, $t.SourcePath = new System.Windows.PropertyPath("DataContext." + (bi.SourcePath.Path || "")), $t.Target$1 = Bridge.unbox(instance)._root, $t.TargetPath = System.Windows.PropertyPath.op_Implicit(name), $t.BindingMode = System.Windows.Data.BindingMode.OneWay, $t);
+
+                            if (System.Windows.Data.HTMLBindingInfo.TargetCanUpdateSource(htmlBindingInfo.Target$1)) {
+                                htmlBindingInfo.BindingMode = System.Windows.Data.BindingMode.TwoWay;
+                            }
+
+
+                            htmlBindingInfo.Connect();
+
+                            return;
+                        }
+                    }
+
+                    bi.SourcePath = new System.Windows.PropertyPath("DataContext." + (bi.SourcePath.Path || ""));
+                    bi.Source = instance;
+
+                    // bi.Source = DataContext;
+                    bi.Target = instance;
+                    bi.TargetPath = System.Windows.PropertyPath.op_Implicit(name);
+
+                    bi.Connect();
+
+                    return;
+                }
+
+                if (targetProperty != null) {
+                    if (Bridge.Reflection.isEnum(targetProperty.rt)) {
+                        System.ComponentModel.ReflectionHelper.SetPropertyValue(instance, name, System.Enum.parse(targetProperty.rt, value, true));
+                        return;
+                    }
+
+                    var converterAttributes = System.Attribute.getCustomAttributes(targetProperty, System.ComponentModel.TypeConverterAttribute);
+                    var firstConverterAtribute = converterAttributes != null ? System.Linq.Enumerable.from(converterAttributes).firstOrDefault(null, null) : null;
+                    if (firstConverterAtribute != null) {
+                        var converter = Bridge.cast(firstConverterAtribute, System.ComponentModel.TypeConverterAttribute);
+                        var valueConverter = Bridge.cast(Bridge.createInstance(converter._type), System.Windows.Data.IValueConverter);
+                        var convertedValue = valueConverter.System$Windows$Data$IValueConverter$Convert(value, Bridge.Reflection.getMembers(Bridge.getType(instance), 16, 284, name).rt, null, System.Globalization.CultureInfo.getCurrentCulture());
+
+                        System.ComponentModel.ReflectionHelper.SetPropertyValue(instance, name, convertedValue);
+                        return;
+                    }
+
+                    var propertyValue = System.Cast.To$2(value, targetProperty.rt, System.Globalization.CultureInfo.getCurrentCulture());
+                    System.ComponentModel.ReflectionHelper.SetPropertyValue(instance, name, propertyValue);
+                    return;
+                }
+
+                if (System.String.startsWith(name, "on.")) {
+                    var eventName = System.Extensions.RemoveFromStart(name, "on.");
+
+                    // support this format: this.Notify(OnContactClicked)
+                    if (System.String.startsWith(value, "this.")) {
+                        var viewInvocationExpressionInfo = System.Text.Tokenizers.ViewInvocationExpressionInfo.Parse(value);
+
+                        var methodName = viewInvocationExpressionInfo.MethodName;
+
+                        var mi = Bridge.Reflection.getMembers(Bridge.getType(this.Caller), 8, 53 | 256, methodName);
+
+                        Bridge.unbox(instance).On(eventName, Bridge.fn.bind(this, function () {
+                            Bridge.Reflection.midel(mi, Bridge.unbox(this.Caller)).apply(null, Bridge.unbox(System.Linq.Enumerable.from(viewInvocationExpressionInfo.Parameters).toArray()));
+                        }));
+                        return;
+                    }
+
+                    var methodInfo1 = Bridge.Reflection.getMembers(Bridge.getType(this.Caller), 8, System.ComponentModel.ReflectionHelper.AllBindings | 256, value);
+
+                    Bridge.unbox(instance).On(eventName, Bridge.fn.bind(this, function () {
+                        Bridge.Reflection.midel(methodInfo1, Bridge.unbox(this.Caller))(null);
+                    }));
+                    return;
+                }
+
+                if (System.String.startsWith(nameUpperCase, "CSS.")) {
+                    var styleAttributeName = name.substr(4);
+                    Bridge.unbox(instance)._root.css(styleAttributeName, value);
+                    return;
+                }
+
+                // css.Pseudo.backgroundImage
+                if (System.String.startsWith(nameUpperCase, "CSS.PSEUDO.")) {
+                    throw new System.ArgumentException();
+                    // var pseudoAttributeName = name.Substring(11);
+                    // DOM.head.Append("<style>#" + instance.Id + "::" + pseudoAttributeName + "{ content:'bar' }</style>");
+                    // return;
+                }
+
+                if (Bridge.referenceEquals(name, "x.Name")) {
+                    System.ComponentModel.ReflectionHelper.SetNonStaticField(this.Caller, value, instance);
+
+                    return;
+                }
+
+                Bridge.unbox(instance)._root.attr(name, value);
+            },
+            TryToInitParentProperty: function (xmlNode) {
+                var $t;
+                var parentNodeName = xmlNode.parentNode.nodeName;
+                var nodeName = xmlNode.nodeName;
+
+
+                // <ItemsControl.ItemTemplate>
+
+                if (!System.String.startsWith(nodeName, (parentNodeName || "") + ".")) {
+                    return false;
+                }
+
+                var propertyName = System.Extensions.RemoveFromStart(nodeName, (parentNodeName || "") + ".");
+                if (propertyName == null) {
+                    return false;
+                }
+
+                var propertyInfo = Bridge.Reflection.getMembers(Bridge.getType(this["_currentInstance"]), 16, 284, propertyName);
+                if (propertyInfo == null) {
+                    return false;
+                }
+
+
+                var propertyType = propertyInfo.rt;
+                if (Bridge.referenceEquals(propertyType, System.Windows.Template)) {
+                    var propertyValue = System.Windows.Template.CreateFrom(System.Windows.Controls.UIBuilder.GetFirstNodeSkipCommentAndText(xmlNode.childNodes));
+                    System.ComponentModel.ReflectionHelper.SetPropertyValue(this["_currentInstance"], propertyName, propertyValue);
+                    return true;
+                }
+
+                var processAsAttribute = System.Extensions.IsNumeric$1(propertyType) || Bridge.referenceEquals(propertyType, System.String);
+                if (!processAsAttribute) {
+                    processAsAttribute = System.Nullable.eq((($t = System.Nullable.getUnderlyingType(propertyType)) != null ? System.Extensions.IsNumeric$1($t) : null), true);
+                }
+
+                if (processAsAttribute) {
+                    var innerHTML = ((Bridge.CustomUIMarkup.UI.Extensions.GetInnerText(xmlNode) || "") + "").trim();
+
+                    this.ProcessAttribute(this["_currentInstance"], propertyName, innerHTML);
+                    return true;
+                }
+
+                /* 
+                                   <DataGrid.Columns>
+                                       <DataGridColumn Name='FullName' Label='Adı SoyAdı' />
+                                   </DataGrid.Columns>
+                */
+                if (propertyInfo.s == null) {
+                    var collection = Bridge.Reflection.midel(propertyInfo.g, Bridge.unbox(this["_currentInstance"]))();
+
+                    var addMethod = Bridge.Reflection.getMembers(Bridge.getType(collection), 8, 284, "Add");
+
+
+                    var childNodes = xmlNode.childNodes;
+
+                    var len = childNodes.length;
+
+                    for (var i = 0; i < len; i = (i + 1) | 0) {
+                        var childNode = childNodes[i];
+
+                        if (childNode.nodeType !== 1) {
+                            continue;
+                        }
+
+                        var subItem = this.CreateInstance(childNode);
+
+
+                        this.InitializeDataContext(childNode, subItem, Bridge.unbox(this["_currentInstance"]));
+
+                        this.ProcessAttributes(childNode, subItem);
+
+                        Bridge.Reflection.midel(addMethod, Bridge.unbox(collection))(subItem);
+                    }
+
+                    return true;
+
+                }
+
+                throw new System.NotImplementedException(nodeName);
+
+            }
+        }
+    });
+
     Bridge.define("System.Windows.Data.BindingInfo", {
         statics: {
             fields: {
@@ -7469,7 +7469,7 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
                     return;
                 }
 
-                Bridge.CustomUIMarkup.UI.Builder.BuildControlTemplate(template, this);
+                System.Windows.Controls.UIBuilder.BuildControlTemplate(template, this);
 
                 !Bridge.staticEquals(this.AfterTemplateApplied, null) ? this.AfterTemplateApplied() : null;
             }
@@ -7604,7 +7604,7 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
                     var fe = ($t = new System.Windows.FrameworkElement(), $t.DataContext = this.SourceDataContext, $t);
 
 
-                    Bridge.CustomUIMarkup.UI.Builder.LoadComponent$1(fe, System.Xml.XmlHelper.GetRootNode(this.SourceText), true, Bridge.fn.bind(this, function (line, element) {
+                    System.Windows.Controls.UIBuilder.LoadComponent$1(fe, System.Xml.XmlHelper.GetRootNode(this.SourceText), true, Bridge.fn.bind(this, function (line, element) {
                         this._lineNumberToControlMap.set(line, element);
                     }), this.SourceText);
 
@@ -7636,7 +7636,7 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
             SetErrorMessage: function (message) {
                 this.ClearOutput();
 
-                var textBlock = Bridge.CustomUIMarkup.UI.Builder.Create(System.Windows.Controls.TextBlock);
+                var textBlock = System.Windows.Controls.UIBuilder.Create(System.Windows.Controls.TextBlock);
 
                 textBlock.Text = message;
 
@@ -7939,11 +7939,11 @@ me._editor.display.wrapper.style.height = '95%';
                     if (itemTemplate != null) {
                         var fe = ($t = new System.Windows.FrameworkElement(), $t.DataContext = itemData.v, $t);
 
-                        Bridge.CustomUIMarkup.UI.Builder.LoadComponent$1(fe, this["ItemTemplate"].Root);
+                        System.Windows.Controls.UIBuilder.LoadComponent$1(fe, this["ItemTemplate"].Root);
 
                         item = fe.GetLogicalChildAt(0);
                     } else {
-                        var textBlock = Bridge.CustomUIMarkup.UI.Builder.Create(System.Windows.Controls.TextBlock);
+                        var textBlock = System.Windows.Controls.UIBuilder.Create(System.Windows.Controls.TextBlock);
                         textBlock["InnerHTML"] = itemData.v != null ? itemData.v.toString() : null;
 
                         item = textBlock;
@@ -8242,7 +8242,7 @@ root.calendar(settings);
         }
     });
 
-    Bridge.define("System.Windows.ContentControl", {
+    Bridge.define("System.Windows.Controls.ContentControl", {
         inherits: [System.Windows.Controls.Control],
         statics: {
             fields: {
@@ -8250,7 +8250,7 @@ root.calendar(settings);
             },
             ctors: {
                 init: function () {
-                    this.ContentProperty = System.Windows.FrameworkElement.RegisterDependencyProperty("Content", System.Object, System.Windows.ContentControl, System.Windows.ContentControl.OnContentChanged);
+                    this.ContentProperty = System.Windows.FrameworkElement.RegisterDependencyProperty("Content", System.Object, System.Windows.Controls.ContentControl, System.Windows.Controls.ContentControl.OnContentChanged);
                 }
             },
             methods: {
@@ -8264,7 +8264,7 @@ root.calendar(settings);
                     var len = element.VisualChilderenCount;
 
                     for (var i = 0; i < len; i = (i + 1) | 0) {
-                        elementAsContentPresenter = System.Windows.ContentControl.Find(element.GetVisualChildAt(i));
+                        elementAsContentPresenter = System.Windows.Controls.ContentControl.Find(element.GetVisualChildAt(i));
                         if (elementAsContentPresenter != null) {
                             return elementAsContentPresenter;
                         }
@@ -8273,7 +8273,7 @@ root.calendar(settings);
                     return null;
                 },
                 OnContentChanged: function (d, e) {
-                    Bridge.cast(d, System.Windows.ContentControl).OnContentChanged();
+                    Bridge.cast(d, System.Windows.Controls.ContentControl).OnContentChanged();
                 }
             }
         },
@@ -8284,10 +8284,10 @@ root.calendar(settings);
         props: {
             Content: {
                 get: function () {
-                    return this.GetValue$1(System.Windows.ContentControl.ContentProperty);
+                    return this.GetValue$1(System.Windows.Controls.ContentControl.ContentProperty);
                 },
                 set: function (value) {
-                    this.SetValue$1(System.Windows.ContentControl.ContentProperty, value);
+                    this.SetValue$1(System.Windows.Controls.ContentControl.ContentProperty, value);
                 }
             }
         },
@@ -8303,7 +8303,7 @@ root.calendar(settings);
         },
         methods: {
             InitializeContentPresenter: function () {
-                this._contentPresenter = System.Windows.ContentControl.Find(this);
+                this._contentPresenter = System.Windows.Controls.ContentControl.Find(this);
                 if (this._contentPresenter == null) {
                     throw new System.InvalidOperationException("ContentPresenter must be defined in template.");
                 }
@@ -8362,7 +8362,7 @@ root.calendar(settings);
 
                 var contentAsString = content.toString();
 
-                var textBlock = Bridge.CustomUIMarkup.UI.Builder.Create(System.Windows.Controls.TextBlock);
+                var textBlock = System.Windows.Controls.UIBuilder.Create(System.Windows.Controls.TextBlock);
                 textBlock.Text = contentAsString;
                 this._contentPresenter.AddLogicalChild(textBlock);
 
@@ -8824,7 +8824,7 @@ root.calendar(settings);
         },
         methods: {
             CreateSlide: function (element) {
-                var item = Bridge.CustomUIMarkup.UI.Builder.Create(Bridge.CustomUIMarkup.Libraries.Swiper.Slider.SwiperItemControl);
+                var item = System.Windows.Controls.UIBuilder.Create(Bridge.CustomUIMarkup.Libraries.Swiper.Slider.SwiperItemControl);
                 item.Content = element;
 
                 this.GetVisualChildAt(0).AddVisualChild(item);
@@ -8933,7 +8933,7 @@ $( '<style> '+css+'</style>' ).appendTo( 'head' );
                 this.$initialize();
                 System.Windows.HtmlElement.ctor.call(this);
 
-                Bridge.CustomUIMarkup.UI.Builder.LoadComponent(this, Bridge.CustomUIMarkup_DesignerSamples.AppContainer["TestUI"]);
+                System.Windows.Controls.UIBuilder.LoadComponent(this, Bridge.CustomUIMarkup_DesignerSamples.AppContainer["TestUI"]);
                 this.HeightPercent = 100;
             }
         }
@@ -9029,7 +9029,7 @@ $( '<style> '+css+'</style>' ).appendTo( 'head' );
     });
 
     Bridge.define("Bridge.CustomUIMarkup.Libraries.SemanticUI.Field", {
-        inherits: [System.Windows.ContentControl],
+        inherits: [System.Windows.Controls.ContentControl],
         statics: {
             fields: {
                 "IsDisabledProperty": null,
@@ -9098,7 +9098,7 @@ $( '<style> '+css+'</style>' ).appendTo( 'head' );
         ctors: {
             ctor: function () {
                 this.$initialize();
-                System.Windows.ContentControl.ctor.call(this);
+                System.Windows.Controls.ContentControl.ctor.call(this);
                 System.ComponentModel.Extensions.OnPropertyChanged(this, "ErrorMessage", Bridge.fn.bind(this, function () {
                     if (this.ErrorMessage == null) {
                         this.Class = "field";
@@ -9130,7 +9130,7 @@ $( '<style> '+css+'</style>' ).appendTo( 'head' );
     });
 
     Bridge.define("Bridge.CustomUIMarkup.Libraries.SemanticUI.TabItem", {
-        inherits: [System.Windows.ContentControl],
+        inherits: [System.Windows.Controls.ContentControl],
         statics: {
             fields: {
                 HeaderProperty: null,
@@ -9215,7 +9215,7 @@ $( '<style> '+css+'</style>' ).appendTo( 'head' );
     });
 
     Bridge.define("Bridge.CustomUIMarkup.Libraries.Swiper.Slider.SwiperItemControl", {
-        inherits: [System.Windows.ContentControl],
+        inherits: [System.Windows.Controls.ContentControl],
         props: {
             DefaultTemplateAsXml: {
                 get: function () {
@@ -9230,7 +9230,7 @@ $( '<style> '+css+'</style>' ).appendTo( 'head' );
         props: {
             "SchemaInfo": {
                 get: function () {
-                    var xmlIntellisenseInfos = System.Linq.Enumerable.from(Bridge.CustomUIMarkup.UI.Builder._elementCreators.getKeys()).toList(System.String).convertAll(Bridge.CustomUIMarkup.Common.XmlIntellisenseInfo, function (x) {
+                    var xmlIntellisenseInfos = System.Linq.Enumerable.from(System.Windows.Controls.UIBuilder._elementCreators.getKeys()).toList(System.String).convertAll(Bridge.CustomUIMarkup.Common.XmlIntellisenseInfo, function (x) {
                         return new Bridge.CustomUIMarkup.Common.XmlIntellisenseInfo(x, null);
                     });
                     return Bridge.CustomUIMarkup.Libraries.CodeMirror.SchemaInfo.CreateFrom(xmlIntellisenseInfos).ToJson();
@@ -9240,7 +9240,7 @@ $( '<style> '+css+'</style>' ).appendTo( 'head' );
     });
 
     Bridge.define("System.Windows.Controls.UserControl", {
-        inherits: [System.Windows.ContentControl],
+        inherits: [System.Windows.Controls.ContentControl],
         props: {
             DefaultTemplateAsXml: {
                 get: function () {

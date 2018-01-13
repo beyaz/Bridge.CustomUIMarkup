@@ -1,4 +1,5 @@
 ﻿using System.Windows;
+using System.Windows.Controls;
 using Bridge.CustomUIMarkup.UI;
 using Bridge.jQuery2;
 
@@ -32,7 +33,7 @@ namespace Bridge.CustomUIMarkup_DesignerSamples
         public  AppContainer()
         {
             
-            Builder.LoadComponent(this,TestUI);
+            UIBuilder.LoadComponent(this,TestUI);
             HeightPercent = 100;
         }
     }

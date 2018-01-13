@@ -1,4 +1,5 @@
 ﻿using System.Windows;
+using System.Windows.Controls;
 using Bridge.CustomUIMarkup.Test;
 using Bridge.CustomUIMarkup.UI;
 
@@ -26,7 +27,7 @@ namespace Bridge.CustomUIMarkup.Libraries.SemanticUI
 
         void TabItem_Content()
         {
-            var tabItem = Builder.Create<TabItem>();
+            var tabItem = UIBuilder.Create<TabItem>();
             tabItem.Header = "my";
             var fe = tabItem.Content = new FrameworkElement("y");
 
@@ -39,7 +40,7 @@ namespace Bridge.CustomUIMarkup.Libraries.SemanticUI
             MustEqual("B", GetHeaderTextFromDOM(tabItem));
             MustEqualByReference(fe, GetContentFromDOM(tabItem));
 
-            var tabControl = Builder.Create<ui_top_attached_tabular_menu>();
+            var tabControl = UIBuilder.Create<ui_top_attached_tabular_menu>();
 
             tabControl.AddTab(tabItem);
 

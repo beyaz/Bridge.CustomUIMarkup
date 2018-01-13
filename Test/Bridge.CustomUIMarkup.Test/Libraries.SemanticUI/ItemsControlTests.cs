@@ -21,7 +21,7 @@ namespace Bridge.CustomUIMarkup.Libraries.SemanticUI
         }
         void TestVisualChilderenCounts()
         {
-            var itemsControl = Builder.Create<ItemsControl>();
+            var itemsControl = UIBuilder.Create<ItemsControl>();
 
             
                 itemsControl.ItemTemplate = Template.CreateFromXml("<div>" +
@@ -105,7 +105,7 @@ namespace Bridge.CustomUIMarkup.Libraries.SemanticUI
                       "</ItemsControl>";
 
 
-            Builder.LoadComponent(fe,xml);
+            UIBuilder.LoadComponent(fe,xml);
 
             var itemsControl = fe.GetLogicalChildAt(0);
 

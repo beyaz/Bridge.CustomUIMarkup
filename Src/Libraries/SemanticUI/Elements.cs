@@ -15,63 +15,63 @@ namespace Bridge.CustomUIMarkup.Libraries.SemanticUI
         public static void RegisterToBuilder()
         {
             // row
-            Builder.Register("row", () => CreateElement("div", "row"));
+            UIBuilder.Register("row", () => CreateElement("div", "row"));
 
             for (var i = 2; i <= 16; i++)
             {
                 var className = i.ToWord() + " column row";
 
-                Builder.Register(className.Replace(" ", "_"), () => CreateElement("div", className));
+                UIBuilder.Register(className.Replace(" ", "_"), () => CreateElement("div", className));
             }
 
 
             // column
-            Builder.Register("column", () => CreateElement("div", "column"));
+            UIBuilder.Register("column", () => CreateElement("div", "column"));
 
             for (var i = 2; i <= 16; i++)
             {
                 var className = i.ToWord() + " wide column";
 
-                Builder.Register(className.Replace(" ", "_"), () => CreateElement("div", className));
+                UIBuilder.Register(className.Replace(" ", "_"), () => CreateElement("div", className));
             }
 
             
 
             // TextBlock
-            Builder.Register("TextBlock", Builder.Create<TextBlock>);
+            UIBuilder.Register("TextBlock", UIBuilder.Create<TextBlock>);
 
-            Builder.Register("Field",  Builder.Create<Field>);
+            UIBuilder.Register("Field",  UIBuilder.Create<Field>);
 
-            Builder.Register("textInput", Builder.Create<InputText>);
-            Builder.Register("textBox", Builder.Create<InputText>);
-            Builder.Register("ui-input-textarea", Builder.Create<TextArea>);
-            Builder.Register("FieldString", Builder.Create<FieldString>);
-            Builder.Register("FieldStringTextArea", Builder.Create<FieldTextArea>);
-            Builder.Register("FieldTextArea", Builder.Create<FieldTextArea>);
-            Builder.Register("FieldInt32", Builder.Create<FieldInt32>);
-            Builder.Register("FieldDecimal", Builder.Create<FieldDecimal>);
-            Builder.Register("FieldDate", Builder.Create<FieldDate>); 
-            Builder.Register("ContentPresenter", () => new ContentPresenter());
-            Builder.Register("ui_rating", Builder.Create<ui_rating>);
-            Builder.Register("ui-rating", Builder.Create<ui_rating>);
+            UIBuilder.Register("textInput", UIBuilder.Create<InputText>);
+            UIBuilder.Register("textBox", UIBuilder.Create<InputText>);
+            UIBuilder.Register("ui-input-textarea", UIBuilder.Create<TextArea>);
+            UIBuilder.Register("FieldString", UIBuilder.Create<FieldString>);
+            UIBuilder.Register("FieldStringTextArea", UIBuilder.Create<FieldTextArea>);
+            UIBuilder.Register("FieldTextArea", UIBuilder.Create<FieldTextArea>);
+            UIBuilder.Register("FieldInt32", UIBuilder.Create<FieldInt32>);
+            UIBuilder.Register("FieldDecimal", UIBuilder.Create<FieldDecimal>);
+            UIBuilder.Register("FieldDate", UIBuilder.Create<FieldDate>); 
+            UIBuilder.Register("ContentPresenter", () => new ContentPresenter());
+            UIBuilder.Register("ui_rating", UIBuilder.Create<ui_rating>);
+            UIBuilder.Register("ui-rating", UIBuilder.Create<ui_rating>);
 
-            Builder.Register("comment", Builder.Create<comment>);
-            Builder.Register("ui_comments", () => new HtmlElement("div", "ui comments"));
-            Builder.Register("ui-comments", () => new HtmlElement("div", "ui comments"));
-
-
-            Builder.Register("comment", Builder.Create<comment>);
-
-            Builder.Register("ui_top_attached_tabular_menu", Builder.Create<ui_top_attached_tabular_menu>);
-            Builder.Register("Tab", Builder.Create<TabItem>);
-            Builder.Register("TabItem", Builder.Create<TabItem>);
+            UIBuilder.Register("comment", UIBuilder.Create<comment>);
+            UIBuilder.Register("ui_comments", () => new HtmlElement("div", "ui comments"));
+            UIBuilder.Register("ui-comments", () => new HtmlElement("div", "ui comments"));
 
 
-            Builder.Register("combo", Builder.Create<Combo>);
-            Builder.Register("comboBox", Builder.Create<Combo>);
-            Builder.Register("ui.selection.dropdown", Builder.Create<Combo>);
+            UIBuilder.Register("comment", UIBuilder.Create<comment>);
 
-            Builder.Register("DatePicker", Builder.Create<DatePicker>);
+            UIBuilder.Register("ui_top_attached_tabular_menu", UIBuilder.Create<ui_top_attached_tabular_menu>);
+            UIBuilder.Register("Tab", UIBuilder.Create<TabItem>);
+            UIBuilder.Register("TabItem", UIBuilder.Create<TabItem>);
+
+
+            UIBuilder.Register("combo", UIBuilder.Create<Combo>);
+            UIBuilder.Register("comboBox", UIBuilder.Create<Combo>);
+            UIBuilder.Register("ui.selection.dropdown", UIBuilder.Create<Combo>);
+
+            UIBuilder.Register("DatePicker", UIBuilder.Create<DatePicker>);
             
 
 
@@ -111,40 +111,40 @@ namespace Bridge.CustomUIMarkup.Libraries.SemanticUI
 
             foreach (var className in classNames)
             {
-                Builder.Register(className.Replace(" ", "_"), () => CreateElement("div", className));
-                Builder.Register(className.Replace(" ", "."), () => CreateElement("div", className));
-                Builder.Register(className.Replace(" ", "-"), () => CreateElement("div", className));
+                UIBuilder.Register(className.Replace(" ", "_"), () => CreateElement("div", className));
+                UIBuilder.Register(className.Replace(" ", "."), () => CreateElement("div", className));
+                UIBuilder.Register(className.Replace(" ", "-"), () => CreateElement("div", className));
             }
 
-            Builder.Register("ui-image", () => CreateElement("img", "ui image"));
-            Builder.Register("ui.image", () => CreateElement("img", "ui image"));
+            UIBuilder.Register("ui-image", () => CreateElement("img", "ui image"));
+            UIBuilder.Register("ui.image", () => CreateElement("img", "ui image"));
 
 
-            Builder.Register("header", () => CreateElement("div", "header"));
-            Builder.Register("ui.header.1", () => CreateElement("h1", "ui header"));
-            Builder.Register("ui.header.2", () => CreateElement("h2", "ui header"));
-            Builder.Register("ui.header.3", () => CreateElement("h3", "ui header"));
+            UIBuilder.Register("header", () => CreateElement("div", "header"));
+            UIBuilder.Register("ui.header.1", () => CreateElement("h1", "ui header"));
+            UIBuilder.Register("ui.header.2", () => CreateElement("h2", "ui header"));
+            UIBuilder.Register("ui.header.3", () => CreateElement("h3", "ui header"));
 
 
-            Builder.Register("ui.header.3", () => CreateElement("i", "ui header"));
+            UIBuilder.Register("ui.header.3", () => CreateElement("i", "ui header"));
 
             foreach (var iconType in IconTypes)
             {
-                Builder.Register("icon-"+ iconType, () => CreateElement("i", iconType + " icon"));
+                UIBuilder.Register("icon-"+ iconType, () => CreateElement("i", iconType + " icon"));
             }
 
-            Builder.Register("ui-celled-table", () => CreateElement("table", "ui celled table"));
-            Builder.Register("thead", () => CreateElement("thead"));
-            Builder.Register("tr", () => CreateElement("tr"));
-            Builder.Register("th", () => CreateElement("th"));
-            Builder.Register("tbody", () => CreateElement("tbody"));
-            Builder.Register("td", () => CreateElement("td"));
+            UIBuilder.Register("ui-celled-table", () => CreateElement("table", "ui celled table"));
+            UIBuilder.Register("thead", () => CreateElement("thead"));
+            UIBuilder.Register("tr", () => CreateElement("tr"));
+            UIBuilder.Register("th", () => CreateElement("th"));
+            UIBuilder.Register("tbody", () => CreateElement("tbody"));
+            UIBuilder.Register("td", () => CreateElement("td"));
 
 
-            Builder.Register("ItemsControl", Builder.Create<ItemsControl>);
-            Builder.Register("DataGrid", Builder.Create <DataGrid>);
-            Builder.Register("DataGridColumn", Builder.Create<DataGridColumn>); 
-            Builder.Register("ListBox", Builder.Create <ListBox>);
+            UIBuilder.Register("ItemsControl", UIBuilder.Create<ItemsControl>);
+            UIBuilder.Register("DataGrid", UIBuilder.Create <DataGrid>);
+            UIBuilder.Register("DataGridColumn", UIBuilder.Create<DataGridColumn>); 
+            UIBuilder.Register("ListBox", UIBuilder.Create <ListBox>);
 
             
             

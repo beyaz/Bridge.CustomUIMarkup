@@ -1,19 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
 using System.Reflection;
-using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Data;
 using System.Xml;
 using System.Text.Tokenizers;
+using Bridge.CustomUIMarkup.UI;
 using Bridge.Html5;
 
-namespace Bridge.CustomUIMarkup.UI
+namespace System.Windows.Controls
 {
-    public class Builder
+    public class UIBuilder
     {
         #region Static Fields
         internal static readonly Dictionary<string, Func<FrameworkElement>> _elementCreators = new Dictionary<string, Func<FrameworkElement>>
@@ -70,7 +68,7 @@ namespace Bridge.CustomUIMarkup.UI
 
         internal static void BuildControlTemplate(Template xmlTemplate, FrameworkElement control)
         {
-            var builder = new Builder
+            var builder = new UIBuilder
             {
                 _rootNode = xmlTemplate.Root,
                 DataContext = control,
@@ -97,7 +95,7 @@ namespace Bridge.CustomUIMarkup.UI
 
         internal static void LoadComponent(FrameworkElement control, XmlNode node, bool IsDesignMode = false, Action<int, FrameworkElement> ElementCreatedAtLine = null, string xml = null)
         {
-            var builder = new Builder
+            var builder = new UIBuilder
             {
                 _rootNode = node,
                 DataContext = control,
@@ -236,7 +234,7 @@ namespace Bridge.CustomUIMarkup.UI
             var bindingInfo = HTMLBindingInfo.TryParseExpression(html);
             if (bindingInfo != null)
             {
-                var textNode = new jQuery2.jQuery(Document.CreateTextNode(""));
+                var textNode = new Bridge.jQuery2.jQuery(Document.CreateTextNode(""));
                 parentInstance._root.Append(textNode);
 
 

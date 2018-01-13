@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Windows;
+using System.Windows.Controls;
 using System.Xml;
 using Bridge.Html5;
 
@@ -20,7 +21,7 @@ namespace Bridge.CustomUIMarkup.UI
 
         public static T LoadComponent<T>(this T element, string xml) where T : FrameworkElement
         {
-            Builder.LoadComponent(element, xml);
+            UIBuilder.LoadComponent(element, xml);
 
             return element;
         }

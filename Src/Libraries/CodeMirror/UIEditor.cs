@@ -84,7 +84,7 @@ namespace Bridge.CustomUIMarkup.Libraries.CodeMirror
                 };
 
                 
-                Builder.LoadComponent(fe, XmlHelper.GetRootNode(SourceText),true, (line, element) => { _lineNumberToControlMap[line] = element; }, SourceText);
+                UIBuilder.LoadComponent(fe, XmlHelper.GetRootNode(SourceText),true, (line, element) => { _lineNumberToControlMap[line] = element; }, SourceText);
 
 
 
@@ -117,7 +117,7 @@ namespace Bridge.CustomUIMarkup.Libraries.CodeMirror
         {
             ClearOutput();
 
-            var textBlock = Builder.Create<TextBlock>();
+            var textBlock = UIBuilder.Create<TextBlock>();
 
             textBlock.Text = message;
 

@@ -1,4 +1,5 @@
-﻿using Bridge.CustomUIMarkup.UI;
+﻿using System.Windows.Controls;
+using Bridge.CustomUIMarkup.UI;
 
 namespace Bridge.CustomUIMarkup.Libraries.Swiper
 {
@@ -7,7 +8,7 @@ namespace Bridge.CustomUIMarkup.Libraries.Swiper
         #region Public Methods
         public static void RegisterToBuilder()
         {
-            Builder.Register("swiper.slider", Builder.Create<Slider>);
+            UIBuilder.Register("swiper.slider", UIBuilder.Create<Slider>);
         }
         #endregion
     }

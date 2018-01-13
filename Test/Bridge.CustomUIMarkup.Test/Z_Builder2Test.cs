@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Windows;
 using Bridge.CustomUIMarkup.Libraries.SemanticUI;
 using System.Text.Tokenizers;
+using System.Windows.Controls;
 using Bridge.CustomUIMarkup.UI;
 using Bridge.Html5;
 
@@ -25,11 +26,11 @@ namespace Bridge.CustomUIMarkup.Test
                                                   "    <div class='{StringProperty1}' />" +
                                                   "</div>");
 
-            Builder.Register("Component123", () =>
+            UIBuilder.Register("Component123", () =>
             {
                 var fe = new Component123();
 
-                Builder.BuildControlTemplate(template, fe);
+                UIBuilder.BuildControlTemplate(template, fe);
 
                 if (fe._propValue2 == null)
                 {
@@ -161,7 +162,7 @@ namespace Bridge.CustomUIMarkup.Test
         #region Methods
         void CheckTemplateIsSuccess()
         {
-            var control = Builder.Create<UserControl2>();
+            var control = UIBuilder.Create<UserControl2>();
 
             MustEqual(1, control.VisualChilderenCount);
             MustEqual(3, control.GetVisualChildAt(0).VisualChilderenCount);
@@ -173,7 +174,7 @@ namespace Bridge.CustomUIMarkup.Test
 
             AssertNotNull(control._contentPresenter);
 
-            Builder.LoadComponent(control, "<div id='x'>" +
+            UIBuilder.LoadComponent(control, "<div id='x'>" +
                                            "     <div id='y'/>" +
                                            "     <div id='z' >qqq</div>" +
                                            "</div>");
@@ -209,7 +210,7 @@ namespace Bridge.CustomUIMarkup.Test
                 DataContext = model
             };
 
-            Builder.LoadComponent(fe, "<div class = '{LastName}' />");
+            UIBuilder.LoadComponent(fe, "<div class = '{LastName}' />");
 
             var ui = fe.GetLogicalChildAt(0);
 
@@ -243,7 +244,7 @@ namespace Bridge.CustomUIMarkup.Test
                 DataContext = model
             };
 
-            Builder.LoadComponent(fe, "<Component123  StringProperty0 = '{LastName}' StringProperty1 = '{Child.LastName}' StringProperty2 = '{Child.Child.LastName}' />");
+            UIBuilder.LoadComponent(fe, "<Component123  StringProperty0 = '{LastName}' StringProperty1 = '{Child.LastName}' StringProperty2 = '{Child.Child.LastName}' />");
 
             var ui = (Component123) fe.GetLogicalChildAt(0);
 
@@ -285,7 +286,7 @@ namespace Bridge.CustomUIMarkup.Test
                 DataContext = model
             };
 
-            Builder.LoadComponent(fe, "<Component123  StringProperty0 = '{LastName}' StringProperty1 = '{Child.LastName}' StringProperty2 = '{Child.Child.LastName}'>" +
+            UIBuilder.LoadComponent(fe, "<Component123  StringProperty0 = '{LastName}' StringProperty1 = '{Child.LastName}' StringProperty2 = '{Child.Child.LastName}'>" +
                                       " <div>" +
                                       "     <div class = '{Child.Child.LastName}' />" +
                                       " </div>" +
@@ -346,7 +347,7 @@ namespace Bridge.CustomUIMarkup.Test
                 DataContext = model
             };
 
-            Builder.LoadComponent(fe, stringXml);
+            UIBuilder.LoadComponent(fe, stringXml);
 
             var root = fe.GetLogicalChildAt(0);
 
@@ -376,7 +377,7 @@ namespace Bridge.CustomUIMarkup.Test
         {
             var fe = new FrameworkElement();
 
-            Builder.LoadComponent(fe, "<img src='" + SampleImageUrl_350_150 + "' />");
+            UIBuilder.LoadComponent(fe, "<img src='" + SampleImageUrl_350_150 + "' />");
 
             var ui = fe.GetLogicalChildAt(0);
 
@@ -786,7 +787,7 @@ namespace Bridge.CustomUIMarkup.Test
                 DataContext = model
             };
 
-            Builder.LoadComponent(fe, "<img src='{LastName}' />");
+            UIBuilder.LoadComponent(fe, "<img src='{LastName}' />");
 
             var ui = fe.GetLogicalChildAt(0);
 
@@ -809,7 +810,7 @@ namespace Bridge.CustomUIMarkup.Test
                 DataContext = model
             };
 
-            Builder.LoadComponent(fe, "<div> {LastName} </div>");
+            UIBuilder.LoadComponent(fe, "<div> {LastName} </div>");
 
             var ui = fe.GetLogicalChildAt(0);
 
@@ -838,7 +839,7 @@ namespace Bridge.CustomUIMarkup.Test
                 DataContext = model
             };
 
-            Builder.LoadComponent(fe, "<div class='{LastName}'> " +
+            UIBuilder.LoadComponent(fe, "<div class='{LastName}'> " +
                                       "    <div class='{Child.LastName}'> " +
                                       "        <div class='{Child.Child.LastName}' />" +
                                       "    </div>" +
@@ -873,10 +874,10 @@ namespace Bridge.CustomUIMarkup.Test
                 }
             };
 
-            var userControl = Builder.Create<UserControl2>();
+            var userControl = UIBuilder.Create<UserControl2>();
             userControl.DataContext = model;
 
-            Builder.LoadComponent(userControl,
+            UIBuilder.LoadComponent(userControl,
                                   "<div id='0' class='{LastName}'> " +
                                   "    <div id='1' class='{Child.LastName}'> " +
                                   "        <div id='2' class='{Child.Child.LastName}' />" +
@@ -919,7 +920,7 @@ namespace Bridge.CustomUIMarkup.Test
                 DataContext = model
             };
 
-            Builder.LoadComponent(fe, @"<div class='{LastName}' > <div class='{Child.LastName}'> <div class='{Child.Child.LastName}'></div> </div> </div>");
+            UIBuilder.LoadComponent(fe, @"<div class='{LastName}' > <div class='{Child.LastName}'> <div class='{Child.Child.LastName}'></div> </div> </div>");
 
             MustEqualByReference(null, fe.VisaulParent);
 
@@ -961,7 +962,7 @@ namespace Bridge.CustomUIMarkup.Test
             {
                 DataContext = model
             };
-            Builder.LoadComponent(fe, template);
+            UIBuilder.LoadComponent(fe, template);
 
             var ui = fe.GetLogicalChildAt(0);
 
@@ -1005,11 +1006,11 @@ namespace Bridge.CustomUIMarkup.Test
                       "</div>";
             var template = Template.CreateFromXml(xml);
 
-            Builder.Register("x_r_t_t_6", () =>
+            UIBuilder.Register("x_r_t_t_6", () =>
             {
                 var fe = new HtmlElement();
 
-                Builder.BuildControlTemplate(template, fe);
+                UIBuilder.BuildControlTemplate(template, fe);
 
                 MustEqual(1, fe.VisualChilderenCount);
                 MustEqual(3, fe.GetVisualChildAt(0).VisualChilderenCount);
@@ -1025,7 +1026,7 @@ namespace Bridge.CustomUIMarkup.Test
             {
                 DataContext = model
             };
-            Builder.LoadComponent(containerElement, "<x_r_t_t_6> " +
+            UIBuilder.LoadComponent(containerElement, "<x_r_t_t_6> " +
                                                     "   <s class='sf'/>" +
                                                     "</x_r_t_t_6>");
 
@@ -1047,7 +1048,7 @@ namespace Bridge.CustomUIMarkup.Test
                 DataContext = model
             };
 
-            Builder.LoadComponent(containerElement, "<div>" +
+            UIBuilder.LoadComponent(containerElement, "<div>" +
                                                     "   <div> " +
                                                     "       <x_r_t_t_6>  " +
                                                     "           <s class='sf'/>  " +
