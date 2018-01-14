@@ -6955,7 +6955,6 @@ else if (document.queryCommandSupported && document.queryCommandSupported('copy'
                 WidthPercentProperty: null,
                 ColorProperty: null,
                 "InnerHTMLProperty": null,
-                "IsDisplayNoneProperty": null,
                 "IsVisibleProperty": null,
                 "VisibilityIsHiddenProperty": null,
                 VisibilityProperty: null,
@@ -6988,7 +6987,6 @@ else if (document.queryCommandSupported && document.queryCommandSupported('copy'
                     }));
                     this.ColorProperty = System.Windows.DependencyProperty.Register$1("Color", System.String, System.Windows.FrameworkElement, System.Windows.FrameworkElement.CreateJQueryCssUpdater("color"));
                     this["InnerHTMLProperty"] = System.Windows.DependencyProperty.Register$1("InnerHTML", System.String, System.Windows.FrameworkElement, new System.Windows.PropertyMetadata.$ctor2(System.Windows.FrameworkElement.OnInnerHTMLChanged));
-                    this["IsDisplayNoneProperty"] = System.Windows.DependencyProperty.Register$1("IsDisplayNone", System.Boolean, System.Windows.FrameworkElement, new System.Windows.PropertyMetadata.$ctor1(Bridge.box(false, System.Boolean, System.Boolean.toString), System.Windows.FrameworkElement.OnIsDisplayNoneChanged));
                     this["IsVisibleProperty"] = System.Windows.DependencyProperty.Register$1("IsVisible", System.Boolean, System.Windows.FrameworkElement, new System.Windows.PropertyMetadata.$ctor1(Bridge.box(true, System.Boolean, System.Boolean.toString), System.Windows.FrameworkElement.OnVisibleChanged));
                     this["VisibilityIsHiddenProperty"] = System.Windows.DependencyProperty.Register$1("VisibilityIsHidden", System.Boolean, System.Windows.FrameworkElement, new System.Windows.PropertyMetadata.$ctor1(Bridge.box(false, System.Boolean, System.Boolean.toString), System.Windows.FrameworkElement.OnVisibilityIsHiddenChanged));
                     this.VisibilityProperty = System.Windows.DependencyProperty.Register$1("Visibility", System.Windows.Visibility, System.Windows.FrameworkElement, new System.Windows.PropertyMetadata.$ctor2(System.Windows.FrameworkElement.OnVisibilityChanged));
@@ -7062,19 +7060,6 @@ else if (document.queryCommandSupported && document.queryCommandSupported('copy'
 
                     me._root != null ? me._root.html(Bridge.cast(e.NewValue, System.String)) : null;
                 },
-                OnIsDisplayNoneChanged: function (d, e) {
-                    var me = Bridge.cast(d, System.Windows.FrameworkElement);
-
-                    var newValue = e.NewValue;
-
-                    var value = System.Nullable.getValue(Bridge.cast(Bridge.unbox(newValue), System.Boolean));
-
-                    if (value) {
-                        me._root.css("display", "none");
-                    } else {
-                        me._root.css("display", "");
-                    }
-                },
                 OnVisibleChanged: function (d, e) {
                     var me = Bridge.cast(d, System.Windows.FrameworkElement);
 
@@ -7084,8 +7069,10 @@ else if (document.queryCommandSupported && document.queryCommandSupported('copy'
 
                     if (value) {
                         me.Visibility = System.Windows.Visibility.Visible;
+                        me._root.css("display", "");
                     } else {
                         me.Visibility = System.Windows.Visibility.Hidden;
+                        me._root.css("display", "none");
                     }
                 },
                 OnVisibilityIsHiddenChanged: function (d, e) {
@@ -7351,14 +7338,6 @@ else if (document.queryCommandSupported && document.queryCommandSupported('copy'
                 },
                 set: function (value) {
                     this.SetValue$1(System.Windows.FrameworkElement["InnerHTMLProperty"], value);
-                }
-            },
-            "IsDisplayNone": {
-                get: function () {
-                    return System.Nullable.getValue(Bridge.cast(Bridge.unbox(this.GetValue$1(System.Windows.FrameworkElement["IsDisplayNoneProperty"])), System.Boolean));
-                },
-                set: function (value) {
-                    this.SetValue$1(System.Windows.FrameworkElement["IsDisplayNoneProperty"], Bridge.box(value, System.Boolean, System.Boolean.toString));
                 }
             },
             "IsVisible": {
@@ -9365,7 +9344,7 @@ $( '<style> '+css+'</style>' ).appendTo( 'head' );
         props: {
             DefaultTemplateAsXml: {
                 get: function () {
-                    return "<div class = 'ui selection dropdown' WidthPercent = '100' >    <input type = 'hidden' value='{SelectedValue}'  x.Name = '_hidden' />    <i class = 'dropdown icon' />    <div class = 'default text' >{DefaultText}</div>    <div class = 'menu' x.Name='_menu' /></div>";
+                    return "<div class = 'ui fluid search selection dropdown' WidthPercent = '100' >    <input type = 'hidden' value='{SelectedValue}'  x.Name = '_hidden' />    <i class = 'dropdown icon' />    <div class = 'default text' >{DefaultText}</div>    <div class = 'menu' x.Name='_menu' /></div>";
                 }
             },
             DefaultText: {
@@ -9398,7 +9377,9 @@ $( '<style> '+css+'</style>' ).appendTo( 'head' );
 
                 System.ComponentModel.Extensions.OnPropertyChanged(this, "SelectedValue", Bridge.fn.cacheBind(this, this.InitSelectedItemByUsingSelectedValue));
                 System.ComponentModel.Extensions.OnPropertyChanged(this, "SelectedValue", Bridge.fn.bind(this, function () {
+                    // ReSharper disable once UnusedVariable
                     var el = this._root;
+                    // ReSharper disable once UnusedVariable
                     var selectedValue = this.SelectedValue;
 
                     el.dropdown('set selected',selectedValue);

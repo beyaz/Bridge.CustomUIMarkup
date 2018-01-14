@@ -404,35 +404,7 @@ namespace System.Windows
         #endregion
 
 
-        #region IsVisible
-        public static readonly DependencyProperty IsDisplayNoneProperty = DependencyProperty.Register(nameof(IsDisplayNone), typeof(bool), typeof(FrameworkElement),
-                                                                                                  new PropertyMetadata(false, OnIsDisplayNoneChanged));
-
-        public bool IsDisplayNone
-        {
-            get { return (bool)GetValue(IsDisplayNoneProperty); }
-            set { SetValue(IsDisplayNoneProperty, value); }
-        }
-
-        static void OnIsDisplayNoneChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-        {
-            var me = (FrameworkElement)d;
-
-            var newValue = e.NewValue;
-
-            var value = (bool)newValue;
-
-            if (value)
-            {
-                me._root.Css("display", "none");
-            }
-            else
-            {
-                me._root.Css("display", "");
-            }
-        }
-
-        #endregion
+        
 
         #region IsVisible
         public static readonly DependencyProperty IsVisibleProperty = DependencyProperty.Register(
@@ -456,10 +428,12 @@ namespace System.Windows
             if (value)
             {
                 me.Visibility = Visibility.Visible;
+                me._root.Css("display", "");
             }
             else
             {
                 me.Visibility = Visibility.Hidden;
+                me._root.Css("display", "none");
             }
         }
 

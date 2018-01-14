@@ -26,7 +26,9 @@ namespace Bridge.CustomUIMarkup.Libraries.SemanticUI
             this.OnPropertyChanged(nameof(SelectedValue), InitSelectedItemByUsingSelectedValue);
             this.OnPropertyChanged(nameof(SelectedValue), () =>
             {
+                // ReSharper disable once UnusedVariable
                 var el = _root;
+                // ReSharper disable once UnusedVariable
                 var selectedValue = SelectedValue;
 
                 Script.Write("el.dropdown('set selected',selectedValue);");
@@ -39,7 +41,7 @@ namespace Bridge.CustomUIMarkup.Libraries.SemanticUI
         #endregion
 
         #region Public Properties
-        public override string DefaultTemplateAsXml => "<div class = 'ui selection dropdown' WidthPercent = '100' >" +
+        public override string DefaultTemplateAsXml => "<div class = 'ui fluid search selection dropdown' WidthPercent = '100' >" +
                                                        "    <input type = 'hidden' value='{SelectedValue}'  x.Name = '_hidden' />" +
                                                        "    <i class = 'dropdown icon' />" +
                                                        "    <div class = 'default text' >{DefaultText}</div>" +
