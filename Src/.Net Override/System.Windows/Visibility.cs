@@ -1,5 +1,4 @@
-﻿
-namespace System.Windows
+﻿namespace System.Windows
 {
     public enum Visibility : byte
     {

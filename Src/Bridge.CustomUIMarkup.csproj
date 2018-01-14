@@ -49,6 +49,7 @@
     <Compile Include=".Net Override\System.Windows.Controls\Primitives\MultiSelector.cs" />
     <Compile Include=".Net Override\System.Windows.Controls\Primitives\Selector.cs" />
     <Compile Include=".Net Override\System.Windows.Controls\ContentControl.cs" />
+    <Compile Include=".Net Override\System.Windows\Clipboard.cs" />
     <Compile Include=".Net Override\System.Xml\WhiteStoneExtensions.cs" />
     <Compile Include=".Net Override\System\Cast.cs" />
     <Compile Include=".Net Override\System\Exceptions.cs" />
