@@ -7,15 +7,18 @@ namespace System.Xml
         #region Public Methods
         public static XmlNode GetRootNode(string xmlString)
         {
-            return Parse(xmlString)?.FirstChild;
-        }
+            if (xmlString == null)
+            {
+                throw new ArgumentNullException(nameof(xmlString));
+            }
 
-         static XmlDocument Parse(string xmlString)
-        {
             try
             {
                 xmlString = xmlString.Replace("x:Name=", "x.Name = ").Replace("x:Name =", "x.Name = ");
-                return jQuery.ParseXML(xmlString).As<XmlDocument>();
+
+                var document = jQuery.ParseXML(xmlString).As<XmlDocument>();
+
+                return document.FirstChild;
             }
             catch (Exception e)
             {

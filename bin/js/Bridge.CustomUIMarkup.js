@@ -6164,13 +6164,16 @@ else if (document.queryCommandSupported && document.queryCommandSupported('copy'
         statics: {
             methods: {
                 GetRootNode: function (xmlString) {
-                    var $t;
-                    return ($t = System.Xml.XmlHelper.Parse(xmlString)) != null ? $t.firstChild : null;
-                },
-                Parse: function (xmlString) {
+                    if (xmlString == null) {
+                        throw new System.ArgumentNullException("xmlString");
+                    }
+
                     try {
                         xmlString = System.String.replaceAll(System.String.replaceAll(xmlString, "x:Name=", "x.Name = "), "x:Name =", "x.Name = ");
-                        return $.parseXML(xmlString);
+
+                        var document = $.parseXML(xmlString);
+
+                        return document.firstChild;
                     }
                     catch (e) {
                         e = System.Exception.create(e);
