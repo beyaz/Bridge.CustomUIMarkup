@@ -2,11 +2,8 @@
 using Bridge.Html5;
 using Bridge.jQuery2;
 
-
-
 namespace System.Windows
 {
-
     public partial class FrameworkElement : DependencyObject
     {
         #region Constructors
@@ -28,19 +25,11 @@ namespace System.Windows
         }
         #endregion
 
-       
-
-   
-
         #region Public Properties
         public jQuery Root => _root;
         #endregion
 
         #region Public Methods
-      
-
-       
-
         public virtual void InitDOM()
         {
             if (_root == null) // TODO: remove next version
@@ -53,13 +42,9 @@ namespace System.Windows
         {
             _root.On(eventName, handler);
         }
-
-        
         #endregion
 
         #region Methods
-       
-
         protected static PropertyMetadata AddCssClassOnTrueElseRemove(string cssClass)
         {
             return new PropertyMetadata((d, e) =>
@@ -110,8 +95,6 @@ namespace System.Windows
         {
             return DependencyProperty.Register(name, propertyType, ownerType, new PropertyMetadata(propertyChangedCallback));
         }
-
-       
         #endregion
 
         #region BorderProperty
@@ -301,6 +284,7 @@ namespace System.Windows
                 me._root.Css("white-space", "nowrap");
                 return;
             }
+
             if (value == TextWrapping.Wrap)
             {
                 me._root.Css("white-space", "normal");
@@ -392,13 +376,10 @@ namespace System.Windows
         }
         #endregion
 
-
-        
-
         #region IsVisible
         public static readonly DependencyProperty IsVisibleProperty = DependencyProperty.Register(
-                                                        nameof(IsVisible), typeof(bool), typeof(FrameworkElement), 
-                                                        new PropertyMetadata(true, OnVisibleChanged));
+                                                                                                  nameof(IsVisible), typeof(bool), typeof(FrameworkElement),
+                                                                                                  new PropertyMetadata(true, OnVisibleChanged));
 
         public bool IsVisible
         {
@@ -408,11 +389,11 @@ namespace System.Windows
 
         static void OnVisibleChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            var me = (FrameworkElement)d;
+            var me = (FrameworkElement) d;
 
             var newValue = e.NewValue;
 
-            var value = (bool)newValue;
+            var value = (bool) newValue;
 
             if (value)
             {
@@ -425,28 +406,27 @@ namespace System.Windows
                 me._root.Css("display", "none");
             }
         }
-
         #endregion
 
         #region VisibilityIsHidden
         public static readonly DependencyProperty VisibilityIsHiddenProperty = DependencyProperty.Register(
-                                                                                                  nameof(VisibilityIsHidden), typeof(bool), 
-                                                                                                  typeof(FrameworkElement),
-                                                                                                  new PropertyMetadata(false, OnVisibilityIsHiddenChanged));
+                                                                                                           nameof(VisibilityIsHidden), typeof(bool),
+                                                                                                           typeof(FrameworkElement),
+                                                                                                           new PropertyMetadata(false, OnVisibilityIsHiddenChanged));
 
         public bool VisibilityIsHidden
         {
-            get { return (bool)GetValue(VisibilityIsHiddenProperty); }
+            get { return (bool) GetValue(VisibilityIsHiddenProperty); }
             set { SetValue(VisibilityIsHiddenProperty, value); }
         }
 
         static void OnVisibilityIsHiddenChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            var me = (FrameworkElement)d;
+            var me = (FrameworkElement) d;
 
             var newValue = e.NewValue;
 
-            var value = (bool)newValue;
+            var value = (bool) newValue;
 
             if (value)
             {
@@ -457,10 +437,7 @@ namespace System.Windows
                 me.Visibility = Visibility.Visible;
             }
         }
-
         #endregion
-
-
 
         #region VisibilityProperty
         public static readonly DependencyProperty VisibilityProperty = DependencyProperty.Register(nameof(Visibility), typeof(Visibility), typeof(FrameworkElement), new PropertyMetadata(OnVisibilityChanged));
@@ -520,7 +497,7 @@ namespace System.Windows
 
         static void OnBackgroundChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            var fe = (FrameworkElement) d;
+            var fe       = (FrameworkElement) d;
             var newValue = e.NewValue;
 
             if (newValue.IsNull())
@@ -528,6 +505,7 @@ namespace System.Windows
                 fe._root.Css("background", "");
                 return;
             }
+
             if (newValue is string)
             {
                 fe._root.Css("background", newValue as string);
@@ -540,7 +518,7 @@ namespace System.Windows
 
         #region string Id
         static int ID;
-        string _id;
+        string     _id;
 
         public string Id
         {
@@ -550,6 +528,7 @@ namespace System.Windows
                 {
                     _id = "WS-" + ID++;
                 }
+
                 return _id;
             }
         }

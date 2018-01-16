@@ -5761,6 +5761,11 @@ else if (document.queryCommandSupported && document.queryCommandSupported('copy'
                     element._root.val(value);
 
                     return element;
+                },
+                Css: function (T, element, propertyName, value) {
+                    element._root.css(propertyName, Bridge.unbox(value));
+
+                    return element;
                 }
             }
         }
@@ -7048,6 +7053,7 @@ else if (document.queryCommandSupported && document.queryCommandSupported('copy'
                         me._root.css("white-space", "nowrap");
                         return;
                     }
+
                     if (value === System.Windows.TextWrapping.Wrap) {
                         me._root.css("white-space", "normal");
                         return;
@@ -7109,6 +7115,7 @@ else if (document.queryCommandSupported && document.queryCommandSupported('copy'
                         fe._root.css("background", "");
                         return;
                     }
+
                     if (Bridge.is(newValue, System.String)) {
                         fe._root.css("background", Bridge.as(newValue, System.String));
                         return;
@@ -7132,17 +7139,12 @@ else if (document.queryCommandSupported && document.queryCommandSupported('copy'
             AfterConnectToVisualParent: null,
             AfterLogicalChildAdd: null,
             AfterLogicalChildRemove: null,
-            BeforeLogicalChildAdd: null,
             AfterVisualChildAdd: null,
             BeforeConnectToLogicalParent: null,
-            BeforeConnectToVisualParent: null
+            BeforeConnectToVisualParent: null,
+            BeforeLogicalChildAdd: null
         },
         props: {
-            _el: {
-                get: function () {
-                    return this._root.get(0);
-                }
-            },
             LogicalParent: {
                 get: function () {
                     return this._logicalParent;
@@ -7151,6 +7153,11 @@ else if (document.queryCommandSupported && document.queryCommandSupported('copy'
             VisaulParent: {
                 get: function () {
                     return this._visaulParent;
+                }
+            },
+            _el: {
+                get: function () {
+                    return this._root.get(0);
                 }
             },
             VisualChilderen: {
@@ -7386,6 +7393,7 @@ else if (document.queryCommandSupported && document.queryCommandSupported('copy'
                     if (this._id == null) {
                         this._id = "WS-" + Bridge.identity(System.Windows.FrameworkElement["ID"], ($t = (System.Windows.FrameworkElement["ID"] + 1) | 0, System.Windows.FrameworkElement["ID"] = $t, $t));
                     }
+
                     return this._id;
                 }
             },
@@ -7421,9 +7429,6 @@ else if (document.queryCommandSupported && document.queryCommandSupported('copy'
             }
         },
         methods: {
-            RenderInBody: function () {
-                System.Windows.HtmlBodyElement.Value.AddLogicalChild(this);
-            },
             AddLogicalChild: function (child) {
                 !Bridge.staticEquals(this.BeforeLogicalChildAdd, null) ? this.BeforeLogicalChildAdd(child) : null;
 
@@ -7436,16 +7441,6 @@ else if (document.queryCommandSupported && document.queryCommandSupported('copy'
                 !Bridge.staticEquals(this.AfterLogicalChildAdd, null) ? this.AfterLogicalChildAdd(child) : null;
 
                 !Bridge.staticEquals(child.AfterConnectToLogicalParent, null) ? child.AfterConnectToLogicalParent() : null;
-            },
-            RemoveLogicalChild: function (child) {
-                this._logicalChilderen != null ? this._logicalChilderen.remove(child) : null;
-
-                !Bridge.staticEquals(this.AfterLogicalChildRemove, null) ? this.AfterLogicalChildRemove(child) : null;
-            },
-            RemoveVisualChild: function (child) {
-                this._visualChilderen != null ? this._visualChilderen.remove(child) : null;
-
-                Bridge.CustomUIMarkup.Common.Extensions.RemoveFromParent(child._root);
             },
             AddVisualChild: function (child) {
                 !Bridge.staticEquals(child.BeforeConnectToVisualParent, null) ? child.BeforeConnectToVisualParent(this) : null;
@@ -7460,12 +7455,25 @@ else if (document.queryCommandSupported && document.queryCommandSupported('copy'
 
                 this.GetVisualChilderen().add(child);
             },
+            ClearLogicalChilds: function () {
+                this._logicalChilderen != null ? this._logicalChilderen.clear() : null;
+            },
             ClearVisualChilds: function () {
                 this._root.empty();
                 this._visualChilderen != null ? this._visualChilderen.clear() : null;
             },
-            ClearLogicalChilds: function () {
-                this._logicalChilderen != null ? this._logicalChilderen.clear() : null;
+            RemoveLogicalChild: function (child) {
+                this._logicalChilderen != null ? this._logicalChilderen.remove(child) : null;
+
+                !Bridge.staticEquals(this.AfterLogicalChildRemove, null) ? this.AfterLogicalChildRemove(child) : null;
+            },
+            RemoveVisualChild: function (child) {
+                this._visualChilderen != null ? this._visualChilderen.remove(child) : null;
+
+                Bridge.CustomUIMarkup.Common.Extensions.RemoveFromParent(child._root);
+            },
+            RenderInBody: function () {
+                System.Windows.HtmlBodyElement.Value.AddLogicalChild(this);
             },
             GetVisualChildAt: function (index) {
                 return System.Array.getItem(this.VisualChilderen, index, System.Windows.FrameworkElement);
@@ -7574,7 +7582,6 @@ else if (document.queryCommandSupported && document.queryCommandSupported('copy'
                 System.Windows.FrameworkElement.ctor.call(this, tag, className);
                 this.addAfterLogicalChildAdd(Bridge.fn.cacheBind(this, this.AddVisualChild));
                 this.addAfterLogicalChildRemove(Bridge.fn.cacheBind(this, this.RemoveVisualChild));
-
             }
         }
     });
