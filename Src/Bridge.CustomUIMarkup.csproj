@@ -50,6 +50,7 @@
     <Compile Include=".Net Override\System.Windows.Controls\Primitives\Selector.cs" />
     <Compile Include=".Net Override\System.Windows.Controls\ContentControl.cs" />
     <Compile Include=".Net Override\System.Windows\Clipboard.cs" />
+    <Compile Include=".Net Override\System.Windows\ContentPresenter.cs" />
     <Compile Include=".Net Override\System.Xml\WhiteStoneExtensions.cs" />
     <Compile Include=".Net Override\System\Cast.cs" />
     <Compile Include=".Net Override\System\Exceptions.cs" />
@@ -66,8 +67,6 @@
     <Compile Include=".Net Override\System.Windows\DependencyObject.cs" />
     <Compile Include=".Net Override\System.Windows\DependencyProperty.cs" />
     <Compile Include=".Net Override\System.Windows\FrameworkElement.ChildManagement.cs" />
-    <Compile Include=".Net Override\System.Windows\FrameworkElement_a.cs" />
-    <Compile Include=".Net Override\System.Windows\FrameworkElement_img.cs" />
     <Compile Include=".Net Override\System.Windows\PropertyMetadata.cs" />
     <Compile Include=".Net Override\System.Windows\PropertyPath.cs" />
     <Compile Include=".Net Override\System.Windows\TextWrapping.cs" />

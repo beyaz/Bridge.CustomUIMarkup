@@ -6,17 +6,6 @@ using Bridge.jQuery2;
 
 namespace System.Windows
 {
-    public class HtmlElement : FrameworkElement
-    {
-        #region Constructors
-        public HtmlElement(string tag = null, string className = null) : base(tag, className)
-        {
-            AfterLogicalChildAdd += AddVisualChild;
-            AfterLogicalChildRemove += RemoveVisualChild;
-
-        }
-        #endregion
-    }
 
     public partial class FrameworkElement : DependencyObject
     {
@@ -582,9 +571,5 @@ namespace System.Windows
             }
         }
         #endregion
-    }
-
-    public class ContentPresenter : HtmlElement
-    {
     }
 }
