@@ -38,6 +38,7 @@ namespace System.Windows.Controls
 
         #region Public Properties
         public object Caller { get; set; }
+
         public object DataContext { get; set; }
 
         public bool IsDesignMode { get; set; }
