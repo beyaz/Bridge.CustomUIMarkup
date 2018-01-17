@@ -26,7 +26,7 @@ namespace System.Xml
     {
         #region Public Properties
         [Name("length")]
-        public int Count { get; }
+        public int Length { get; }
 
         [Name("firstChild")]
         public string FirstChild { get; }
@@ -85,7 +85,7 @@ namespace System.Xml
     {
         #region Public Properties
         [Name("length")]
-        public int Count { get; }
+        public int Length { get; }
         #endregion
 
         #region Public Indexers
@@ -127,7 +127,7 @@ namespace System.Xml
     {
         #region Public Properties
         [Name("nodeValue")]
-        public string Value { get; set; }
+        public string NodeValue { get; set; }
         #endregion
     }
 }

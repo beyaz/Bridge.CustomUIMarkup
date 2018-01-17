@@ -127,7 +127,7 @@ namespace System.Windows.Controls
 
         static XmlNode GetFirstNodeSkipCommentAndText(XmlNodeList xmlNodeList)
         {
-            var len = xmlNodeList.Count;
+            var len = xmlNodeList.Length;
 
             for (var i = 0; i < len; i++)
             {
@@ -198,7 +198,7 @@ namespace System.Windows.Controls
 
             var childNodes = xmlNode.ChildNodes;
 
-            var len = childNodes.Count;
+            var len = childNodes.Length;
 
             for (var i = 0; i < len; i++)
             {
@@ -216,12 +216,12 @@ namespace System.Windows.Controls
         {
             var attributes = xmlNode.Attributes;
 
-            var len = attributes.Count;
+            var len = attributes.Length;
             for (var i = 0; i < len; i++)
             {
                 var nodeAttribute = attributes[i];
 
-                ProcessAttribute(instance, nodeAttribute.NodeName, nodeAttribute.Value);
+                ProcessAttribute(instance, nodeAttribute.NodeName, nodeAttribute.NodeValue);
             }
         }
 
@@ -334,10 +334,10 @@ namespace System.Windows.Controls
                 }
                 else
                 {
-                    var bi = BindingInfo.TryParseExpression(subControlDataContextAttribute.Value);
+                    var bi = BindingInfo.TryParseExpression(subControlDataContextAttribute.NodeValue);
                     if (bi == null)
                     {
-                        throw new InvalidOperationException("InvalidBindingExpression:" + subControlDataContextAttribute.Value);
+                        throw new InvalidOperationException("InvalidBindingExpression:" + subControlDataContextAttribute.NodeValue);
                     }
 
                     bi.BindingMode = BindingMode.OneWay;
@@ -564,7 +564,7 @@ namespace System.Windows.Controls
 
                 var childNodes = xmlNode.ChildNodes;
 
-                var len = childNodes.Count;
+                var len = childNodes.Length;
 
                 for (var i = 0; i < len; i++)
                 {
