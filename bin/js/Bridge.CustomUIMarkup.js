@@ -2966,6 +2966,22 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
 
                     return Bridge.Reflection.getMembers(type, 16, 284, propertyName);
                 },
+                FindProperty$1: function (instance, propertyName, flags) {
+                    if (instance == null) {
+                        throw new System.ArgumentNullException("instance");
+                    }
+
+                    if (propertyName == null) {
+                        throw new System.ArgumentNullException("propertyName");
+                    }
+
+                    var type = Bridge.getType(instance);
+                    if (type == null) {
+                        throw new System.ArgumentNullException("type");
+                    }
+
+                    return Bridge.Reflection.getMembers(type, 16, flags | 256, propertyName);
+                },
                 GetMethodInfo: function (instance, methodName) {
                     var methodInfo = System.ComponentModel.ReflectionHelper.FindMethodInfo(instance, methodName);
                     if (methodInfo == null) {
@@ -4862,7 +4878,8 @@ else if (document.queryCommandSupported && document.queryCommandSupported('copy'
     Bridge.define("System.Windows.Controls.UIBuilder", {
         statics: {
             fields: {
-                _elementCreators: null
+                _elementCreators: null,
+                FindPropertyFlag: 0
             },
             ctors: {
                 init: function () {
@@ -4872,6 +4889,7 @@ else if (document.queryCommandSupported && document.queryCommandSupported('copy'
                             });
                             return _o1;
                         }(new (System.Collections.Generic.Dictionary$2(System.String,Function))());
+                    this.FindPropertyFlag = 21;
                 }
             },
             methods: {
@@ -5097,7 +5115,7 @@ else if (document.queryCommandSupported && document.queryCommandSupported('copy'
                 if (this._isBuildingTemplate) {
                     instance.DataContext = this.DataContext;
                 } else {
-                    var subControlDataContextAttribute = xmlNode.attributes.DataContext;
+                    var subControlDataContextAttribute = xmlNode.attributes.DataContext || xmlNode.attributes.datacontext;
                     if (subControlDataContextAttribute == null) {
                         var bindingInfo = ($t = new System.Windows.Data.BindingInfo(), $t.BindingMode = System.Windows.Data.BindingMode.OneWay, $t.Source = parentInstance, $t.SourcePath = System.Windows.PropertyPath.op_Implicit("DataContext"), $t.Target = instance, $t.TargetPath = System.Windows.PropertyPath.op_Implicit("DataContext"), $t);
                         bindingInfo.Connect();
@@ -5118,7 +5136,7 @@ else if (document.queryCommandSupported && document.queryCommandSupported('copy'
             },
             ProcessAttribute: function (instance, name, value) {
                 var $t;
-                if (Bridge.referenceEquals(name, "DataContext")) {
+                if (Bridge.referenceEquals(name, "DataContext") || Bridge.referenceEquals(name, "datacontext")) {
                     return;
                 }
 
@@ -5128,7 +5146,11 @@ else if (document.queryCommandSupported && document.queryCommandSupported('copy'
                     name = "Class";
                 }
 
-                var targetProperty = System.ComponentModel.ReflectionHelper.FindProperty(instance, name);
+                var targetProperty = System.ComponentModel.ReflectionHelper.FindProperty$1(instance, name, System.Windows.Controls.UIBuilder.FindPropertyFlag);
+
+                if (targetProperty != null && !Bridge.referenceEquals(name, targetProperty.n)) {
+                    name = targetProperty.n;
+                }
 
                 var bi = System.Windows.Data.BindingInfo.TryParseExpression(value);
                 if (bi != null) {
@@ -5181,14 +5203,14 @@ else if (document.queryCommandSupported && document.queryCommandSupported('copy'
                     if (firstConverterAtribute != null) {
                         var converter = Bridge.cast(firstConverterAtribute, System.ComponentModel.TypeConverterAttribute);
                         var valueConverter = Bridge.cast(Bridge.createInstance(converter._type), System.Windows.Data.IValueConverter);
-                        var convertedValue = valueConverter.System$Windows$Data$IValueConverter$Convert(value, Bridge.Reflection.getMembers(Bridge.getType(instance), 16, 284, name).rt, null, System.Globalization.CultureInfo.getCurrentCulture());
+                        var convertedValue = valueConverter.System$Windows$Data$IValueConverter$Convert(value, targetProperty.rt, null, System.Globalization.CultureInfo.getCurrentCulture());
 
-                        System.ComponentModel.ReflectionHelper.SetPropertyValue(instance, name, convertedValue);
+                        System.ComponentModel.ReflectionHelper.SetPropertyValue(instance, targetProperty.n, convertedValue);
                         return;
                     }
 
                     var propertyValue = System.Cast.To$2(value, targetProperty.rt, System.Globalization.CultureInfo.getCurrentCulture());
-                    System.ComponentModel.ReflectionHelper.SetPropertyValue(instance, name, propertyValue);
+                    System.ComponentModel.ReflectionHelper.SetPropertyValue(instance, targetProperty.n, propertyValue);
                     return;
                 }
 
@@ -5231,7 +5253,7 @@ else if (document.queryCommandSupported && document.queryCommandSupported('copy'
                     // return;
                 }
 
-                if (Bridge.referenceEquals(name, "x.Name")) {
+                if (Bridge.referenceEquals(nameUpperCase, "X.NAME")) {
                     System.ComponentModel.ReflectionHelper.SetNonStaticField(this.Caller, value, instance);
 
                     return;
@@ -5240,8 +5262,8 @@ else if (document.queryCommandSupported && document.queryCommandSupported('copy'
                 Bridge.unbox(instance)._root.attr(name, value);
             },
             TryToInitParentProperty: function (xmlNode) {
-                var $t;
-                var parentNodeName = xmlNode.parentNode.nodeName;
+                var $t, $t1;
+                var parentNodeName = ($t = xmlNode.parentNode) != null ? $t.nodeName : null;
                 var nodeName = xmlNode.nodeName;
 
 
@@ -5256,7 +5278,7 @@ else if (document.queryCommandSupported && document.queryCommandSupported('copy'
                     return false;
                 }
 
-                var propertyInfo = Bridge.Reflection.getMembers(Bridge.getType(this["_currentInstance"]), 16, 284, propertyName);
+                var propertyInfo = System.ComponentModel.ReflectionHelper.FindProperty$1(this["_currentInstance"], propertyName, System.Windows.Controls.UIBuilder.FindPropertyFlag);
                 if (propertyInfo == null) {
                     return false;
                 }
@@ -5265,19 +5287,19 @@ else if (document.queryCommandSupported && document.queryCommandSupported('copy'
                 var propertyType = propertyInfo.rt;
                 if (Bridge.referenceEquals(propertyType, System.Windows.Template)) {
                     var propertyValue = System.Windows.Template.CreateFrom(System.Windows.Controls.UIBuilder.GetFirstNodeSkipCommentAndText(xmlNode.childNodes));
-                    System.ComponentModel.ReflectionHelper.SetPropertyValue(this["_currentInstance"], propertyName, propertyValue);
+                    System.ComponentModel.ReflectionHelper.SetPropertyValue(this["_currentInstance"], propertyInfo.n, propertyValue);
                     return true;
                 }
 
                 var processAsAttribute = System.Extensions.IsNumeric$1(propertyType) || Bridge.referenceEquals(propertyType, System.String);
                 if (!processAsAttribute) {
-                    processAsAttribute = System.Nullable.eq((($t = System.Nullable.getUnderlyingType(propertyType)) != null ? System.Extensions.IsNumeric$1($t) : null), true);
+                    processAsAttribute = System.Nullable.eq((($t1 = System.Nullable.getUnderlyingType(propertyType)) != null ? System.Extensions.IsNumeric$1($t1) : null), true);
                 }
 
                 if (processAsAttribute) {
                     var innerHTML = ((Bridge.CustomUIMarkup.UI.Extensions.GetInnerText(xmlNode) || "") + "").trim();
 
-                    this.ProcessAttribute(this["_currentInstance"], propertyName, innerHTML);
+                    this.ProcessAttribute(this["_currentInstance"], propertyInfo.n, innerHTML);
                     return true;
                 }
 
@@ -6171,6 +6193,9 @@ else if (document.queryCommandSupported && document.queryCommandSupported('copy'
                     try {
                         xmlString = System.String.replaceAll(System.String.replaceAll(xmlString, "x:Name=", "x.Name = "), "x:Name =", "x.Name = ");
 
+
+                        // return jQuery.ParseHTML(xmlString.Trim())[0].As<XmlNode>();
+
                         var document = $.parseXML(xmlString);
 
                         return document.firstChild;
@@ -6968,8 +6993,7 @@ else if (document.queryCommandSupported && document.queryCommandSupported('copy'
                 VisibilityProperty: null,
                 HeightProperty: null,
                 HeightPercentProperty: null,
-                BackgroundProperty: null,
-                "ID": 0
+                BackgroundProperty: null
             },
             ctors: {
                 init: function () {
@@ -7134,7 +7158,6 @@ else if (document.queryCommandSupported && document.queryCommandSupported('copy'
             _visaulParent: null,
             _visualChilderen: null,
             _logicalChilderen: null,
-            _id: null,
             _dataContext: null
         },
         events: {
@@ -7388,16 +7411,6 @@ else if (document.queryCommandSupported && document.queryCommandSupported('copy'
                 },
                 set: function (value) {
                     this.SetValue$1(System.Windows.FrameworkElement.HeightPercentProperty, Bridge.box(value, System.Double, System.Double.format, System.Double.getHashCode));
-                }
-            },
-            "Id": {
-                get: function () {
-                    var $t;
-                    if (this._id == null) {
-                        this._id = "WS-" + Bridge.identity(System.Windows.FrameworkElement["ID"], ($t = (System.Windows.FrameworkElement["ID"] + 1) | 0, System.Windows.FrameworkElement["ID"] = $t, $t));
-                    }
-
-                    return this._id;
                 }
             },
             DataContext: {
@@ -8970,7 +8983,6 @@ setTimeout(function(){
                 var root = this._root.get(0);
                 // ReSharper disable once UnusedVariable
                 var me = this;
-                var id = this["Id"];
 
 
                 var css = "\r\n.pictures {\r\n      margin: 0;\r\n      padding: 0;\r\n      list-style: none;\r\n      max-width: 30rem;\r\n      display:table-cell;\r\n    }\r\n\r\n    .pictures > li {\r\n      float: left;\r\n      width: 33.3%;\r\n      height: 33.3%;\r\n      margin: 0 -1px -1px 0;\r\n      border: 1px solid transparent;\r\n      overflow: hidden;\r\n    }\r\n\r\n    .pictures > li > img {\r\n      width: 100%;\r\n      cursor: -webkit-zoom-in;\r\n      cursor: zoom-in;\r\n    }\r\n";

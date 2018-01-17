@@ -516,23 +516,7 @@ namespace System.Windows
         }
         #endregion
 
-        #region string Id
-        static int ID;
-        string     _id;
-
-        public string Id
-        {
-            get
-            {
-                if (_id == null)
-                {
-                    _id = "WS-" + ID++;
-                }
-
-                return _id;
-            }
-        }
-        #endregion
+       
 
         #region object DataContext
         object _dataContext;

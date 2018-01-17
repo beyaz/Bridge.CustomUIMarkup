@@ -94,6 +94,28 @@ namespace System.ComponentModel
             return type.GetProperty(propertyName);
         }
 
+        public static PropertyInfo FindProperty(object instance, string propertyName,BindingFlags flags)
+        {
+            if (instance == null)
+            {
+                throw new ArgumentNullException(nameof(instance));
+            }
+
+            if (propertyName == null)
+            {
+                throw new ArgumentNullException(nameof(propertyName));
+            }
+
+            var type = instance.GetType();
+            if (type == null)
+            {
+                throw new ArgumentNullException(nameof(type));
+            }
+
+            return type.GetProperty(propertyName, flags);
+        }
+
+
         public static MethodInfo GetMethodInfo(object instance, string methodName)
         {
             var methodInfo = FindMethodInfo(instance, methodName);

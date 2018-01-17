@@ -16,6 +16,9 @@ namespace System.Xml
             {
                 xmlString = xmlString.Replace("x:Name=", "x.Name = ").Replace("x:Name =", "x.Name = ");
 
+
+                // return jQuery.ParseHTML(xmlString.Trim())[0].As<XmlNode>();
+
                 var document = jQuery.ParseXML(xmlString).As<XmlDocument>();
 
                 return document.FirstChild;

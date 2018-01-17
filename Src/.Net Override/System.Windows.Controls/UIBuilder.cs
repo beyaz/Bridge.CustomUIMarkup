@@ -4,10 +4,13 @@ using System.Globalization;
 using System.Linq;
 using System.Reflection;
 using System.Windows.Data;
-using System.Xml;
+ using System.Xml;
 using System.Text.Tokenizers;
 using Bridge.CustomUIMarkup.UI;
 using Bridge.Html5;
+
+using  XmlNode = System.Xml.XmlNode;
+using XmlNodeList = System.Xml.XmlNodeList;
 
 namespace System.Windows.Controls
 {
@@ -316,7 +319,7 @@ namespace System.Windows.Controls
             }
             else
             {
-                var subControlDataContextAttribute = xmlNode.Attributes["DataContext"];
+                var subControlDataContextAttribute = xmlNode.Attributes["DataContext"] ?? xmlNode.Attributes["datacontext"];
                 if (subControlDataContextAttribute == null)
                 {
                     var bindingInfo = new BindingInfo
@@ -347,11 +350,11 @@ namespace System.Windows.Controls
             }
         }
 
-        
+        static readonly BindingFlags FindPropertyFlag = BindingFlags.Public | BindingFlags.Instance | BindingFlags.IgnoreCase;
 
         void ProcessAttribute(object instance, string name, string value)
         {
-            if (name == "DataContext")
+            if (name == "DataContext"|| name == "datacontext")
             {
                 return;
             }
@@ -363,7 +366,12 @@ namespace System.Windows.Controls
                 name = "Class";
             }
 
-            var targetProperty = ReflectionHelper.FindProperty(instance, name);
+            var targetProperty = ReflectionHelper.FindProperty(instance, name, FindPropertyFlag);
+            
+            if (targetProperty != null && name != targetProperty.Name)
+            {
+                name = targetProperty.Name;
+            }
 
             var bi = BindingInfo.TryParseExpression(value);
             if (bi != null)
@@ -431,14 +439,14 @@ namespace System.Windows.Controls
                 {
                     var converter = (TypeConverterAttribute) firstConverterAtribute;
                     var valueConverter = (IValueConverter) Activator.CreateInstance(converter._type);
-                    var convertedValue = valueConverter.Convert(value, instance.GetType().GetProperty(name).PropertyType, null, CultureInfo.CurrentCulture);
+                    var convertedValue = valueConverter.Convert(value, targetProperty.PropertyType, null, CultureInfo.CurrentCulture);
 
-                    ReflectionHelper.SetPropertyValue(instance, name, convertedValue);
+                    ReflectionHelper.SetPropertyValue(instance, targetProperty.Name, convertedValue);
                     return;
                 }
 
                 var propertyValue = Cast.To(value, targetProperty.PropertyType, CultureInfo.CurrentCulture);
-                ReflectionHelper.SetPropertyValue(instance, name, propertyValue);
+                ReflectionHelper.SetPropertyValue(instance, targetProperty.Name, propertyValue);
                 return;
             }
 
@@ -481,7 +489,7 @@ namespace System.Windows.Controls
                 // return;
             }
 
-            if (name == "x.Name")
+            if (nameUpperCase == "X.NAME")
             {
                 ReflectionHelper.SetNonStaticField(Caller, value, instance);
 
@@ -496,7 +504,7 @@ namespace System.Windows.Controls
 
         bool TryToInitParentProperty(XmlNode xmlNode)
         {
-            var parentNodeName = xmlNode.ParentNode.Name;
+            var parentNodeName = xmlNode.ParentNode?.Name;
             var nodeName = xmlNode.Name;
 
 
@@ -513,7 +521,7 @@ namespace System.Windows.Controls
                 return false;
             }
 
-            var propertyInfo = _currentInstance.GetType().GetProperty(propertyName);
+            var propertyInfo =  ReflectionHelper.FindProperty(_currentInstance,propertyName, FindPropertyFlag);
             if (propertyInfo == null)
             {
                 return false;
@@ -524,7 +532,7 @@ namespace System.Windows.Controls
             if (propertyType == typeof(Template))
             {
                 var propertyValue = Template.CreateFrom(GetFirstNodeSkipCommentAndText(xmlNode.ChildNodes));
-                ReflectionHelper.SetPropertyValue(_currentInstance, propertyName, propertyValue);
+                ReflectionHelper.SetPropertyValue(_currentInstance, propertyInfo.Name, propertyValue);
                 return true;
             }
 
@@ -538,7 +546,7 @@ namespace System.Windows.Controls
             {
                 var innerHTML = (xmlNode.GetInnerText() + "").Trim();
 
-                ProcessAttribute( _currentInstance, propertyName, innerHTML);
+                ProcessAttribute( _currentInstance, propertyInfo.Name, innerHTML);
                 return true;
             }
 

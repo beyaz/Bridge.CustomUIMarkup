@@ -42,7 +42,6 @@ namespace Bridge.CustomUIMarkup.Libraries.viewerjs
             var root = _root.Get(0);
             // ReSharper disable once UnusedVariable
             var me = this;
-            var id = base.Id;
 
 
             var css = @"
