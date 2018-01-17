@@ -24,7 +24,7 @@ namespace System.Xml
             break;
         }
     }
-    var regex = new RegExp('<' + sTagName, 'g');
+    var regex = new RegExp('<' + sTagName, 'gi');
     var offset = 0;
     for (var i = 0; i <= iMaxIndex; i++) 
     {
