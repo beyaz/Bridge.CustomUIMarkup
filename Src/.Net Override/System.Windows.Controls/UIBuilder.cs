@@ -221,7 +221,7 @@ namespace System.Windows.Controls
             {
                 var nodeAttribute = attributes[i];
 
-                ProcessAttribute(instance, nodeAttribute.Name, nodeAttribute.Value);
+                ProcessAttribute(instance, nodeAttribute.NodeName, nodeAttribute.Value);
             }
         }
 
@@ -285,7 +285,7 @@ namespace System.Windows.Controls
         FrameworkElement CreateInstanceInternal(XmlNode xmlNode)
         {
 
-            var tag = xmlNode.Name.ToUpper();
+            var tag = xmlNode.NodeName.ToUpper();
 
             Func<FrameworkElement> creatorFunc = null;
             _elementCreators.TryGetValue(tag.ToUpper(), out creatorFunc);
@@ -295,9 +295,9 @@ namespace System.Windows.Controls
             }
 
 
-            if (IsUserDefinedTag(xmlNode.Name) == false)
+            if (IsUserDefinedTag(xmlNode.NodeName) == false)
             {
-                return new HtmlElement(xmlNode.Name);
+                return new HtmlElement(xmlNode.NodeName);
             }
 
             throw new ArgumentException("NotRecognizedTag:" + tag);
@@ -504,8 +504,8 @@ namespace System.Windows.Controls
 
         bool TryToInitParentProperty(XmlNode xmlNode)
         {
-            var parentNodeName = xmlNode.ParentNode?.Name;
-            var nodeName = xmlNode.Name;
+            var parentNodeName = xmlNode.ParentNode?.NodeName;
+            var nodeName = xmlNode.NodeName;
 
 
             // <ItemsControl.ItemTemplate>

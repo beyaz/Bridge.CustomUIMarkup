@@ -67,7 +67,7 @@ namespace System.Xml
         public XmlNodeList ChildNodes { get; set; }
 
         [Name("nodeName")]
-        public string Name { get; set; }
+        public string NodeName { get; set; }
 
     
 
