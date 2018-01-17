@@ -243,128 +243,6 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
         }
     });
 
-    Bridge.define("Bridge.CustomUIMarkup.Libraries.CodeMirror.AttributeInfo", {
-        fields: {
-            Name: null,
-            Values: null
-        }
-    });
-
-    Bridge.define("Bridge.CustomUIMarkup.Libraries.CodeMirror.Elements", {
-        statics: {
-            methods: {
-                RegisterToBuilder: function () {
-                    System.Windows.Controls.UIBuilder.Register("UIEditor", function () { return System.Windows.Controls.UIBuilder.Create(Bridge.CustomUIMarkup.Libraries.CodeMirror.UIEditor); });
-
-                    System.Windows.Controls.UIBuilder.Register("XmlEditor", function () { return System.Windows.Controls.UIBuilder.Create(Bridge.CustomUIMarkup.Libraries.CodeMirror.XmlEditor); });
-                }
-            }
-        }
-    });
-
-    Bridge.define("Bridge.CustomUIMarkup.Libraries.CodeMirror.SchemaInfo", {
-        statics: {
-            methods: {
-                ForceToLoadDependencyProperties: function (type) {
-                    Bridge.createInstance(type);
-                },
-                CreateFrom: function (intellisenseInfos) {
-                    var $t, $t1, $t2;
-                    var schemaInfo = ($t = new Bridge.CustomUIMarkup.Libraries.CodeMirror.SchemaInfo(), $t.Tags = new (System.Collections.Generic.List$1(Bridge.CustomUIMarkup.Libraries.CodeMirror.TagInfo)).ctor(), $t);
-
-                    $t = Bridge.getEnumerator(intellisenseInfos, Bridge.CustomUIMarkup.Common.XmlIntellisenseInfo);
-                    try {
-                        while ($t.moveNext()) {
-                            var pair = $t.Current;
-                            var name = pair.TagName;
-                            var type = pair.Type;
-
-                            Bridge.CustomUIMarkup.Libraries.CodeMirror.SchemaInfo.ForceToLoadDependencyProperties(type);
-
-                            var tag = ($t1 = new Bridge.CustomUIMarkup.Libraries.CodeMirror.TagInfo(), $t1.Name = name, $t1.Attributes = new (System.Collections.Generic.List$1(Bridge.CustomUIMarkup.Libraries.CodeMirror.AttributeInfo)).ctor(), $t1);
-                            var dependencyProperties = System.Windows.DependencyProperty.GetAllProperties(type);
-                            $t1 = Bridge.getEnumerator(dependencyProperties, System.Windows.DependencyProperty);
-                            try {
-                                while ($t1.moveNext()) {
-                                    var dp = $t1.Current;
-                                    var attributeInfo = ($t2 = new Bridge.CustomUIMarkup.Libraries.CodeMirror.AttributeInfo(), $t2.Name = dp.Name, $t2);
-                                    if (Bridge.referenceEquals(dp.PropertyType, System.Boolean)) {
-                                        attributeInfo.Values = System.Array.init(["true", "false"], System.String);
-                                    }
-
-                                    if (Bridge.Reflection.isEnum(dp.PropertyType)) {
-                                        attributeInfo.Values = System.Enum.getNames(dp.PropertyType);
-                                    }
-
-                                    System.Array.add(tag.Attributes, attributeInfo, Bridge.CustomUIMarkup.Libraries.CodeMirror.AttributeInfo);
-                                }
-                            } finally {
-                                if (Bridge.is($t1, System.IDisposable)) {
-                                    $t1.System$IDisposable$dispose();
-                                }
-                            }if (pair.ChildrenTags != null) {
-                                tag.ChildrenTags = pair.ChildrenTags;
-                            }
-                            System.Array.add(schemaInfo.Tags, tag, Bridge.CustomUIMarkup.Libraries.CodeMirror.TagInfo);
-                        }
-                    } finally {
-                        if (Bridge.is($t, System.IDisposable)) {
-                            $t.System$IDisposable$dispose();
-                        }
-                    }
-                    return schemaInfo;
-                }
-            }
-        },
-        fields: {
-            Tags: null
-        },
-        methods: {
-            ToJson: function () {
-                var $t, $t1;
-                var instance = { };
-
-                $t = Bridge.getEnumerator(this.Tags, Bridge.CustomUIMarkup.Libraries.CodeMirror.TagInfo);
-                try {
-                    while ($t.moveNext()) {
-                        var tag = $t.Current;
-                        var attributes = { };
-
-                        $t1 = Bridge.getEnumerator(tag.Attributes, Bridge.CustomUIMarkup.Libraries.CodeMirror.AttributeInfo);
-                        try {
-                            while ($t1.moveNext()) {
-                                var attributeInfo = $t1.Current;
-                                attributes[attributeInfo.Name] = attributeInfo.Values;
-                            }
-                        } finally {
-                            if (Bridge.is($t1, System.IDisposable)) {
-                                $t1.System$IDisposable$dispose();
-                            }
-                        }
-                        var tagObj = { };
-                        tagObj.attrs = attributes;
-                        tagObj.children = tag.ChildrenTags;
-
-                        instance[tag.Name] = tagObj;
-                    }
-                } finally {
-                    if (Bridge.is($t, System.IDisposable)) {
-                        $t.System$IDisposable$dispose();
-                    }
-                }
-                return instance;
-            }
-        }
-    });
-
-    Bridge.define("Bridge.CustomUIMarkup.Libraries.CodeMirror.TagInfo", {
-        fields: {
-            Attributes: null,
-            ChildrenTags: null,
-            Name: null
-        }
-    });
-
     /**
      * @memberof System.ComponentModel
      * @callback System.ComponentModel.PropertyChangedEventHandler
@@ -554,6 +432,128 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
             OnPropertyChanged: function (prop) {
                 !Bridge.staticEquals(this.PropertyChanged, null) ? this.PropertyChanged(this, new System.ComponentModel.BagChangedEventArgs.ctor(prop)) : null;
             }
+        }
+    });
+
+    Bridge.define("Bridge.CustomUIMarkup.Libraries.CodeMirror.AttributeInfo", {
+        fields: {
+            Name: null,
+            Values: null
+        }
+    });
+
+    Bridge.define("Bridge.CustomUIMarkup.Libraries.CodeMirror.Elements", {
+        statics: {
+            methods: {
+                RegisterToBuilder: function () {
+                    System.Windows.Controls.UIBuilder.Register("UIEditor", function () { return System.Windows.Controls.UIBuilder.Create(Bridge.CustomUIMarkup.Libraries.CodeMirror.UIEditor); });
+
+                    System.Windows.Controls.UIBuilder.Register("XmlEditor", function () { return System.Windows.Controls.UIBuilder.Create(Bridge.CustomUIMarkup.Libraries.CodeMirror.XmlEditor); });
+                }
+            }
+        }
+    });
+
+    Bridge.define("Bridge.CustomUIMarkup.Libraries.CodeMirror.SchemaInfo", {
+        statics: {
+            methods: {
+                ForceToLoadDependencyProperties: function (type) {
+                    Bridge.createInstance(type);
+                },
+                CreateFrom: function (intellisenseInfos) {
+                    var $t, $t1, $t2;
+                    var schemaInfo = ($t = new Bridge.CustomUIMarkup.Libraries.CodeMirror.SchemaInfo(), $t.Tags = new (System.Collections.Generic.List$1(Bridge.CustomUIMarkup.Libraries.CodeMirror.TagInfo)).ctor(), $t);
+
+                    $t = Bridge.getEnumerator(intellisenseInfos, Bridge.CustomUIMarkup.Common.XmlIntellisenseInfo);
+                    try {
+                        while ($t.moveNext()) {
+                            var pair = $t.Current;
+                            var name = pair.TagName;
+                            var type = pair.Type;
+
+                            Bridge.CustomUIMarkup.Libraries.CodeMirror.SchemaInfo.ForceToLoadDependencyProperties(type);
+
+                            var tag = ($t1 = new Bridge.CustomUIMarkup.Libraries.CodeMirror.TagInfo(), $t1.Name = name, $t1.Attributes = new (System.Collections.Generic.List$1(Bridge.CustomUIMarkup.Libraries.CodeMirror.AttributeInfo)).ctor(), $t1);
+                            var dependencyProperties = System.Windows.DependencyProperty.GetAllProperties(type);
+                            $t1 = Bridge.getEnumerator(dependencyProperties, System.Windows.DependencyProperty);
+                            try {
+                                while ($t1.moveNext()) {
+                                    var dp = $t1.Current;
+                                    var attributeInfo = ($t2 = new Bridge.CustomUIMarkup.Libraries.CodeMirror.AttributeInfo(), $t2.Name = dp.Name, $t2);
+                                    if (Bridge.referenceEquals(dp.PropertyType, System.Boolean)) {
+                                        attributeInfo.Values = System.Array.init(["true", "false"], System.String);
+                                    }
+
+                                    if (Bridge.Reflection.isEnum(dp.PropertyType)) {
+                                        attributeInfo.Values = System.Enum.getNames(dp.PropertyType);
+                                    }
+
+                                    System.Array.add(tag.Attributes, attributeInfo, Bridge.CustomUIMarkup.Libraries.CodeMirror.AttributeInfo);
+                                }
+                            } finally {
+                                if (Bridge.is($t1, System.IDisposable)) {
+                                    $t1.System$IDisposable$dispose();
+                                }
+                            }if (pair.ChildrenTags != null) {
+                                tag.ChildrenTags = pair.ChildrenTags;
+                            }
+                            System.Array.add(schemaInfo.Tags, tag, Bridge.CustomUIMarkup.Libraries.CodeMirror.TagInfo);
+                        }
+                    } finally {
+                        if (Bridge.is($t, System.IDisposable)) {
+                            $t.System$IDisposable$dispose();
+                        }
+                    }
+                    return schemaInfo;
+                }
+            }
+        },
+        fields: {
+            Tags: null
+        },
+        methods: {
+            ToJson: function () {
+                var $t, $t1;
+                var instance = { };
+
+                $t = Bridge.getEnumerator(this.Tags, Bridge.CustomUIMarkup.Libraries.CodeMirror.TagInfo);
+                try {
+                    while ($t.moveNext()) {
+                        var tag = $t.Current;
+                        var attributes = { };
+
+                        $t1 = Bridge.getEnumerator(tag.Attributes, Bridge.CustomUIMarkup.Libraries.CodeMirror.AttributeInfo);
+                        try {
+                            while ($t1.moveNext()) {
+                                var attributeInfo = $t1.Current;
+                                attributes[attributeInfo.Name] = attributeInfo.Values;
+                            }
+                        } finally {
+                            if (Bridge.is($t1, System.IDisposable)) {
+                                $t1.System$IDisposable$dispose();
+                            }
+                        }
+                        var tagObj = { };
+                        tagObj.attrs = attributes;
+                        tagObj.children = tag.ChildrenTags;
+
+                        instance[tag.Name] = tagObj;
+                    }
+                } finally {
+                    if (Bridge.is($t, System.IDisposable)) {
+                        $t.System$IDisposable$dispose();
+                    }
+                }
+                return instance;
+            }
+        }
+    });
+
+    Bridge.define("Bridge.CustomUIMarkup.Libraries.CodeMirror.TagInfo", {
+        fields: {
+            Attributes: null,
+            ChildrenTags: null,
+            Name: null
         }
     });
 
@@ -6207,6 +6207,26 @@ else if (document.queryCommandSupported && document.queryCommandSupported('copy'
         }
     });
 
+    Bridge.define("Bridge.CustomUIMarkup.Libraries.CodeMirror.AA_yt", {
+        inherits: [System.ComponentModel.Bag],
+        fields: {
+            _aAAA: null
+        },
+        props: {
+            AAAA: {
+                get: function () {
+                    return this._aAAA;
+                },
+                set: function (value) {
+                    if (!Bridge.referenceEquals(this._aAAA, value)) {
+                        this._aAAA = value;
+                        this.OnPropertyChanged("AAAA");
+                    }
+                }
+            }
+        }
+    });
+
     Bridge.define("System.Windows.DependencyObject", {
         inherits: [System.ComponentModel.Bag],
         methods: {
@@ -7683,7 +7703,6 @@ else if (document.queryCommandSupported && document.queryCommandSupported('copy'
                 this.FocusToLine(lineNumber);
             },
             OnTextChanged: function () {
-                var $t;
                 this.ClearOutput();
 
                 if (System.String.isNullOrWhiteSpace(this.SourceText)) {
@@ -7691,7 +7710,28 @@ else if (document.queryCommandSupported && document.queryCommandSupported('copy'
                 }
 
                 try {
-                    var fe = ($t = new System.Windows.FrameworkElement(), $t.DataContext = this.SourceDataContext, $t);
+                    var rootNode = System.Xml.XmlHelper.GetRootNode(this.SourceText);
+                    var typeName = rootNode.getAttribute("d:designerdataContext");
+                    if (typeName != null) {
+                        var type = Bridge.Reflection.getType(typeName);
+                        var instance = Bridge.createInstance(type);
+                        this.RenderComponent(instance);
+                        return;
+                    }
+
+
+                    this.RenderComponent(this.SourceDataContext);
+
+                }
+                catch (e) {
+                    e = System.Exception.create(e);
+                    this.SetErrorMessage(e.toString());
+                }
+            },
+            RenderComponent: function (dataContext) {
+                var $t;
+                try {
+                    var fe = ($t = new System.Windows.FrameworkElement(), $t.DataContext = dataContext, $t);
 
                     System.Windows.Controls.UIBuilder.LoadComponent$1(fe, System.Xml.XmlHelper.GetRootNode(this.SourceText), true, Bridge.fn.bind(this, function (line, element) {
                         this._lineNumberToControlMap.set(line, element);

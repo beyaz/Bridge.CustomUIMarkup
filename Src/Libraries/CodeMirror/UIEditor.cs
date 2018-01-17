@@ -7,6 +7,7 @@ using Bridge.CustomUIMarkup.Common;
 
 namespace Bridge.CustomUIMarkup.Libraries.CodeMirror
 {
+
     class UIEditor : Control
     {
         #region Fields
@@ -52,9 +53,40 @@ namespace Bridge.CustomUIMarkup.Libraries.CodeMirror
 
             try
             {
+                var rootNode = XmlHelper.GetRootNode(SourceText);
+                var typeName = rootNode.GetAttribute("d:designerdataContext");
+                if (typeName != null)
+                {
+                    var type     = Type.GetType(typeName);
+                    if (type==null)
+                    {
+                        throw new MissingMemberException(typeName);
+                    }
+
+                    var instance = Activator.CreateInstance(type);
+
+                    RenderComponent(instance);
+
+                    return;
+                }
+
+
+                RenderComponent(SourceDataContext); //TODO gerenk var mý ? 
+                
+            }
+            catch (Exception e)
+            {
+                SetErrorMessage(e.ToString());
+            }
+        }
+
+        void RenderComponent(object dataContext)
+        {
+            try
+            {
                 var fe = new FrameworkElement
                 {
-                    DataContext = SourceDataContext
+                    DataContext = dataContext
                 };
 
                 UIBuilder.LoadComponent(fe, XmlHelper.GetRootNode(SourceText), true, (line, element) => { _lineNumberToControlMap[line] = element; }, SourceText);
