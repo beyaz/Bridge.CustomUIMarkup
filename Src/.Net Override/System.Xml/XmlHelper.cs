@@ -15,11 +15,13 @@ namespace System.Xml
 
             try
             {
-                xmlString = xmlString.Replace("x:Name=", "x.Name = ").Replace("x:Name =", "x.Name = ");
+                
 
-                // return jQuery.ParseHTML(xmlString.Trim())[0].As<Bridge.Html5.Element>();
+                return jQuery.ParseHTML(xmlString.Trim())[0].As<Bridge.Html5.Element>();
 
-                return jQuery.ParseXML(xmlString).FirstChild.As<Element>();
+                // xmlString = xmlString.Replace("x:Name=", "x.Name = ").Replace("x:Name =", "x.Name = ");
+
+                // return jQuery.ParseXML(xmlString).FirstChild.As<Element>();
             }
             catch (Exception e)
             {

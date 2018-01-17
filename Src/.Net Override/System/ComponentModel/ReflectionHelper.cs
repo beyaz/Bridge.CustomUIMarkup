@@ -31,6 +31,28 @@ namespace System.ComponentModel
             return type.GetEvent(eventName);
         }
 
+        public static EventInfo FindEvent(object instance, string eventName,BindingFlags bindingFlags)
+        {
+            if (instance == null)
+            {
+                throw new ArgumentNullException(nameof(instance));
+            }
+
+            if (eventName == null)
+            {
+                throw new ArgumentNullException(nameof(eventName));
+            }
+
+            var type = instance.GetType();
+            if (type == null)
+            {
+                throw new ArgumentNullException(nameof(type));
+            }
+
+            return type.GetEvent(eventName, bindingFlags);
+        }
+
+
         public static MethodInfo FindMethodInfo(object instance, string methodName)
         {
             if (instance == null)

@@ -26,8 +26,14 @@ namespace System.Xml
     }
     var regex = new RegExp('<' + sTagName, 'g');
     var offset = 0;
-    for (var i = 0; i <= iMaxIndex; i++) {
-        offset = regex.exec(sContent).index;
+    for (var i = 0; i <= iMaxIndex; i++) 
+    {
+        var x = regex.exec(sContent);
+        if( x === null )
+        {
+            continue;
+        }
+        offset = x.index;
     }
     var line = 0;
     for (var i = 0; i < sContent.substring(0, offset).length; i++) {

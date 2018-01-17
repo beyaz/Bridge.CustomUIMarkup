@@ -2917,6 +2917,22 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
 
                     return Bridge.Reflection.getMembers(type, 2, 284, eventName);
                 },
+                FindEvent$1: function (instance, eventName, bindingFlags) {
+                    if (instance == null) {
+                        throw new System.ArgumentNullException("instance");
+                    }
+
+                    if (eventName == null) {
+                        throw new System.ArgumentNullException("eventName");
+                    }
+
+                    var type = Bridge.getType(instance);
+                    if (type == null) {
+                        throw new System.ArgumentNullException("type");
+                    }
+
+                    return Bridge.Reflection.getMembers(type, 2, bindingFlags | 256, eventName);
+                },
                 FindMethodInfo: function (instance, methodName) {
                     if (instance == null) {
                         throw new System.ArgumentNullException("instance");
@@ -5137,7 +5153,7 @@ else if (document.queryCommandSupported && document.queryCommandSupported('copy'
 
                 var bi = System.Windows.Data.BindingInfo.TryParseExpression(value);
                 if (bi != null) {
-                    var eventInfo = System.ComponentModel.ReflectionHelper.FindEvent(instance, name);
+                    var eventInfo = System.ComponentModel.ReflectionHelper.FindEvent$1(instance, name, System.Windows.Controls.UIBuilder.FindPropertyFlag);
                     if (eventInfo != null) {
                         var methodInfo = System.ComponentModel.ReflectionHelper.GetMethodInfo(this.DataContext, bi.SourcePath.Path);
 
@@ -5206,6 +5222,9 @@ else if (document.queryCommandSupported && document.queryCommandSupported('copy'
                         var methodName = viewInvocationExpressionInfo.MethodName;
 
                         var mi = Bridge.Reflection.getMembers(Bridge.getType(this.Caller), 8, 53 | 256, methodName);
+                        if (mi == null) {
+                            throw new System.MissingMemberException((Bridge.Reflection.getTypeFullName(Bridge.getType(this.Caller)) || "") + "->" + (methodName || ""));
+                        }
 
                         Bridge.unbox(instance).On(eventName, Bridge.fn.bind(this, function () {
                             Bridge.Reflection.midel(mi, Bridge.unbox(this.Caller)).apply(null, Bridge.unbox(System.Linq.Enumerable.from(viewInvocationExpressionInfo.Parameters).toArray()));
@@ -5235,7 +5254,7 @@ else if (document.queryCommandSupported && document.queryCommandSupported('copy'
                     // return;
                 }
 
-                if (Bridge.referenceEquals(nameUpperCase, "X.NAME")) {
+                if (Bridge.referenceEquals(nameUpperCase, "X.NAME") || Bridge.referenceEquals(nameUpperCase, "X:NAME")) {
                     System.ComponentModel.ReflectionHelper.SetNonStaticField(this.Caller, value, instance);
 
                     return;
@@ -6136,8 +6155,14 @@ else if (document.queryCommandSupported && document.queryCommandSupported('copy'
     }
     var regex = new RegExp('<' + sTagName, 'g');
     var offset = 0;
-    for (var i = 0; i <= iMaxIndex; i++) {
-        offset = regex.exec(sContent).index;
+    for (var i = 0; i <= iMaxIndex; i++) 
+    {
+        var x = regex.exec(sContent);
+        if( x === null )
+        {
+            continue;
+        }
+        offset = x.index;
     }
     var line = 0;
     for (var i = 0; i < sContent.substring(0, offset).length; i++) {
@@ -6159,16 +6184,19 @@ else if (document.queryCommandSupported && document.queryCommandSupported('copy'
         statics: {
             methods: {
                 GetRootNode: function (xmlString) {
+                    var $t;
                     if (xmlString == null) {
                         throw new System.ArgumentNullException("xmlString");
                     }
 
                     try {
-                        xmlString = System.String.replaceAll(System.String.replaceAll(xmlString, "x:Name=", "x.Name = "), "x:Name =", "x.Name = ");
 
-                        // return jQuery.ParseHTML(xmlString.Trim())[0].As<Bridge.Html5.Element>();
 
-                        return $.parseXML(xmlString).firstChild;
+                        return ($t = $.parseHTML(xmlString.trim()))[System.Array.index(0, $t)];
+
+                        // xmlString = xmlString.Replace("x:Name=", "x.Name = ").Replace("x:Name =", "x.Name = ");
+
+                        // return jQuery.ParseXML(xmlString).FirstChild.As<Element>();
                     }
                     catch (e) {
                         e = System.Exception.create(e);
