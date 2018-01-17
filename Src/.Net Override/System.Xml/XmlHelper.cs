@@ -1,11 +1,12 @@
-﻿using Bridge.jQuery2;
+﻿using Bridge.Html5;
+using Bridge.jQuery2;
 
 namespace System.Xml
 {
     static class XmlHelper
     {
         #region Public Methods
-        public static XmlNode GetRootNode(string xmlString)
+        public static Element GetRootNode(string xmlString)
         {
             if (xmlString == null)
             {
@@ -16,16 +17,13 @@ namespace System.Xml
             {
                 xmlString = xmlString.Replace("x:Name=", "x.Name = ").Replace("x:Name =", "x.Name = ");
 
+                // return jQuery.ParseHTML(xmlString.Trim())[0].As<Bridge.Html5.Element>();
 
-                // return jQuery.ParseHTML(xmlString.Trim())[0].As<XmlNode>();
-
-                var document = jQuery.ParseXML(xmlString).As<XmlDocument>();
-
-                return document.FirstChild;
+                return jQuery.ParseXML(xmlString).FirstChild.As<Element>();
             }
             catch (Exception e)
             {
-                throw new XmlException("XmlParseErrorOccured.", e);
+                throw new SystemException("XmlParseErrorOccured.", e);
             }
         }
         #endregion

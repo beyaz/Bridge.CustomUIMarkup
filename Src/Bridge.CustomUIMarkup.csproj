@@ -122,7 +122,6 @@
     <Compile Include="Libraries\SemanticUI\TextArea.cs" />
     <Compile Include=".Net Override\System.cs" />
     <Compile Include=".Net Override\System.Windows\FrameworkElement.cs" />
-    <Compile Include=".Net Override\System.Xml\System.Xml.cs" />
     <Compile Include="Libraries\CodeMirror\XmlEditor.cs" />
     <Compile Include=".Net Override\System.Windows.Markup\IAddChild.cs" />
     <Compile Include="Common\XmlIntellisenseInfo.cs" />

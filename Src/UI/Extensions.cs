@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Windows;
 using System.Windows.Controls;
-using System.Xml;
 using Bridge.Html5;
 
 namespace Bridge.CustomUIMarkup.UI
@@ -9,14 +8,14 @@ namespace Bridge.CustomUIMarkup.UI
     static class Extensions
     {
         #region Public Methods
-        public static string GetInnerText(this XmlNode xmlNode)
+        public static string GetInnerText(this Element node)
         {
-            if (xmlNode.NodeType == NodeType.Text)
+            if (node.NodeType == NodeType.Text)
             {
-                return xmlNode["textContent"].As<string>();
+                return node["textContent"].As<string>();
             }
 
-            return xmlNode["innerHTML"].As<string>();
+            return node["innerHTML"].As<string>();
         }
 
         public static T LoadComponent<T>(this T element, string xml) where T : FrameworkElement

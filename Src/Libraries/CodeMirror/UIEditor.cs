@@ -63,10 +63,6 @@ namespace Bridge.CustomUIMarkup.Libraries.CodeMirror
 
                 SetOutput(component);
             }
-            catch (XmlException e)
-            {
-                SetErrorMessage(e.ToString());
-            }
             catch (Exception e)
             {
                 SetErrorMessage(e.ToString());

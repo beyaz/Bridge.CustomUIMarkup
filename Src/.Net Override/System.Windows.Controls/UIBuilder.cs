@@ -3,14 +3,12 @@ using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
 using System.Reflection;
-using System.Windows.Data;
- using System.Xml;
 using System.Text.Tokenizers;
+using System.Windows.Data;
+using System.Xml;
 using Bridge.CustomUIMarkup.UI;
 using Bridge.Html5;
-
-using  XmlNode = System.Xml.XmlNode;
-using XmlNodeList = System.Xml.XmlNodeList;
+using Bridge.jQuery2;
 
 namespace System.Windows.Controls
 {
@@ -22,13 +20,13 @@ namespace System.Windows.Controls
             {"DIV", () => new HtmlElement("div")}
         };
 
-        
+        static readonly BindingFlags FindPropertyFlag = BindingFlags.Public | BindingFlags.Instance | BindingFlags.IgnoreCase;
         #endregion
 
         #region Fields
         public string XmlString;
 
-        internal XmlNode _rootNode;
+        internal Element _rootNode;
 
         object _currentInstance;
 
@@ -45,15 +43,26 @@ namespace System.Windows.Controls
         public object DataContext { get; set; }
 
         public bool IsDesignMode { get; set; }
-
         #endregion
 
         #region Public Methods
+        public static T ApplyTemplate<T>(T control) where T : Control
+        {
+            control?.ApplyTemplate();
+
+            return control;
+        }
+
         public static T Create<T>() where T : Control, new()
         {
             var control = new T();
 
             return ApplyTemplate(control);
+        }
+
+        public static void LoadComponent(FrameworkElement control, string xml)
+        {
+            LoadComponent(control, XmlHelper.GetRootNode(xml));
         }
 
         public static void Register(string tag, Func<FrameworkElement> func)
@@ -63,20 +72,13 @@ namespace System.Windows.Controls
         #endregion
 
         #region Methods
-        public static T ApplyTemplate<T>(T control) where T : Control
-        {
-            control?.ApplyTemplate();
-
-            return control;
-        }
-
         internal static void BuildControlTemplate(Template xmlTemplate, FrameworkElement control)
         {
             var builder = new UIBuilder
             {
-                _rootNode = xmlTemplate.Root,
-                DataContext = control,
-                Caller = control,
+                _rootNode           = xmlTemplate.Root,
+                DataContext         = control,
+                Caller              = control,
                 _isBuildingTemplate = true
             };
 
@@ -92,20 +94,15 @@ namespace System.Windows.Controls
             control.AddVisualChild(subControlAsFrameworkElement);
         }
 
-        public static void LoadComponent(FrameworkElement control, string xml)
-        {
-            LoadComponent(control, XmlHelper.GetRootNode(xml));
-        }
-
-        internal static void LoadComponent(FrameworkElement control, XmlNode node, bool IsDesignMode = false, Action<int, FrameworkElement> ElementCreatedAtLine = null, string xml = null)
+        internal static void LoadComponent(FrameworkElement control, Element node, bool IsDesignMode = false, Action<int, FrameworkElement> ElementCreatedAtLine = null, string xml = null)
         {
             var builder = new UIBuilder
             {
-                _rootNode = node,
-                DataContext = control,
-                Caller = control,
+                _rootNode    = node,
+                DataContext  = control,
+                Caller       = control,
                 IsDesignMode = IsDesignMode,
-                XmlString = xml
+                XmlString    = xml
             };
 
             if (ElementCreatedAtLine != null)
@@ -125,13 +122,13 @@ namespace System.Windows.Controls
             control.AddLogicalChild(subControlAsFrameworkElement);
         }
 
-        static XmlNode GetFirstNodeSkipCommentAndText(XmlNodeList xmlNodeList)
+        static Element GetFirstNodeSkipCommentAndText(ElementList nodes)
         {
-            var len = xmlNodeList.Length;
+            var len = nodes.Length;
 
             for (var i = 0; i < len; i++)
             {
-                var node = xmlNodeList[i];
+                var node     = nodes[i];
                 var nodeType = node.NodeType;
 
                 if (nodeType == NodeType.Comment ||
@@ -159,7 +156,7 @@ namespace System.Windows.Controls
             return tag.Contains('.') || tag.Contains('-') || tag.Contains(':');
         }
 
-        object BuildNode(XmlNode xmlNode, FrameworkElement parentInstance)
+        object BuildNode(Element xmlNode, FrameworkElement parentInstance)
         {
             if (xmlNode.NodeType == NodeType.Comment)
             {
@@ -179,8 +176,6 @@ namespace System.Windows.Controls
 
             var instance = CreateInstance(xmlNode);
 
-            
-
             _currentInstance = instance;
 
             if (IsDesignMode)
@@ -192,8 +187,6 @@ namespace System.Windows.Controls
 
             InitializeDataContext(xmlNode, instance, parentInstance);
 
-            
-
             ProcessAttributes(xmlNode, instance);
 
             var childNodes = xmlNode.ChildNodes;
@@ -204,7 +197,7 @@ namespace System.Windows.Controls
             {
                 var childNode = childNodes[i];
 
-                var subItem = BuildNode(childNode, instance);
+                var subItem = BuildNode(childNode.As<Element>(), instance);
 
                 Connect(instance, subItem);
             }
@@ -212,20 +205,7 @@ namespace System.Windows.Controls
             return instance;
         }
 
-        void ProcessAttributes(XmlNode xmlNode, FrameworkElement instance)
-        {
-            var attributes = xmlNode.Attributes;
-
-            var len = attributes.Length;
-            for (var i = 0; i < len; i++)
-            {
-                var nodeAttribute = attributes[i];
-
-                ProcessAttribute(instance, nodeAttribute.NodeName, nodeAttribute.NodeValue);
-            }
-        }
-
-        object BuildTextNode(XmlNode xmlNode, FrameworkElement parentInstance)
+        object BuildTextNode(Element xmlNode, FrameworkElement parentInstance)
         {
             // skip empty spaces
             var html = xmlNode.GetInnerText();
@@ -238,16 +218,15 @@ namespace System.Windows.Controls
             var bindingInfo = HTMLBindingInfo.TryParseExpression(html);
             if (bindingInfo != null)
             {
-                var textNode = new Bridge.jQuery2.jQuery(Document.CreateTextNode(""));
+                var textNode = new jQuery(Document.CreateTextNode(""));
                 parentInstance._root.Append(textNode);
-
 
                 bindingInfo.BindingMode = BindingMode.OneWay;
 
-                bindingInfo.Source = parentInstance;
+                bindingInfo.Source     = parentInstance;
                 bindingInfo.SourcePath = "DataContext." + bindingInfo.SourcePath.Path;
 
-                bindingInfo.Target = textNode;
+                bindingInfo.Target     = textNode;
                 bindingInfo.TargetPath = nameof(parentInstance.InnerHTML);
 
                 bindingInfo.Connect();
@@ -260,9 +239,9 @@ namespace System.Windows.Controls
                 instanceAsContentControl.Content = html;
                 return null;
             }
-            
+
             parentInstance._root.Append(html);
-            
+
             return null;
         }
 
@@ -282,9 +261,16 @@ namespace System.Windows.Controls
             parent.As<FrameworkElement>().AddLogicalChild(subItemAsFrameworkElement);
         }
 
-        FrameworkElement CreateInstanceInternal(XmlNode xmlNode)
+        FrameworkElement CreateInstance(Element xmlNode)
         {
+            var instance = CreateInstanceInternal(xmlNode);
+            InitDOM(instance);
 
+            return instance;
+        }
+
+        FrameworkElement CreateInstanceInternal(Element xmlNode)
+        {
             var tag = xmlNode.NodeName.ToUpper();
 
             Func<FrameworkElement> creatorFunc = null;
@@ -294,7 +280,6 @@ namespace System.Windows.Controls
                 return creatorFunc();
             }
 
-
             if (IsUserDefinedTag(xmlNode.NodeName) == false)
             {
                 return new HtmlElement(xmlNode.NodeName);
@@ -303,15 +288,7 @@ namespace System.Windows.Controls
             throw new ArgumentException("NotRecognizedTag:" + tag);
         }
 
-        FrameworkElement CreateInstance(XmlNode xmlNode)
-        {
-            var instance = CreateInstanceInternal(xmlNode);
-            InitDOM(instance);
-
-            return instance;
-        }
-
-        void InitializeDataContext(XmlNode xmlNode, FrameworkElement instance, FrameworkElement parentInstance)
+        void InitializeDataContext(Element xmlNode, FrameworkElement instance, FrameworkElement parentInstance)
         {
             if (_isBuildingTemplate)
             {
@@ -325,10 +302,10 @@ namespace System.Windows.Controls
                     var bindingInfo = new BindingInfo
                     {
                         BindingMode = BindingMode.OneWay,
-                        Source = parentInstance,
-                        SourcePath = "DataContext",
-                        Target = instance,
-                        TargetPath = "DataContext"
+                        Source      = parentInstance,
+                        SourcePath  = "DataContext",
+                        Target      = instance,
+                        TargetPath  = "DataContext"
                     };
                     bindingInfo.Connect();
                 }
@@ -341,20 +318,18 @@ namespace System.Windows.Controls
                     }
 
                     bi.BindingMode = BindingMode.OneWay;
-                    bi.Source = parentInstance;
-                    bi.SourcePath = "DataContext." + bi.SourcePath.Path;
-                    bi.Target = instance;
-                    bi.TargetPath = "DataContext";
+                    bi.Source      = parentInstance;
+                    bi.SourcePath  = "DataContext." + bi.SourcePath.Path;
+                    bi.Target      = instance;
+                    bi.TargetPath  = "DataContext";
                     bi.Connect();
                 }
             }
         }
 
-        static readonly BindingFlags FindPropertyFlag = BindingFlags.Public | BindingFlags.Instance | BindingFlags.IgnoreCase;
-
         void ProcessAttribute(object instance, string name, string value)
         {
-            if (name == "DataContext"|| name == "datacontext")
+            if (name == "DataContext" || name == "datacontext")
             {
                 return;
             }
@@ -367,7 +342,7 @@ namespace System.Windows.Controls
             }
 
             var targetProperty = ReflectionHelper.FindProperty(instance, name, FindPropertyFlag);
-            
+
             if (targetProperty != null && name != targetProperty.Name)
             {
                 name = targetProperty.Name;
@@ -394,10 +369,10 @@ namespace System.Windows.Controls
                     {
                         var htmlBindingInfo = new HTMLBindingInfo
                         {
-                            Source = instance,
-                            SourcePath = new PropertyPath("DataContext." + bi.SourcePath.Path),
-                            Target = instance.As<FrameworkElement>()._root,
-                            TargetPath = name,
+                            Source      = instance,
+                            SourcePath  = new PropertyPath("DataContext." + bi.SourcePath.Path),
+                            Target      = instance.As<FrameworkElement>()._root,
+                            TargetPath  = name,
                             BindingMode = BindingMode.OneWay
                         };
 
@@ -406,7 +381,6 @@ namespace System.Windows.Controls
                             htmlBindingInfo.BindingMode = BindingMode.TwoWay;
                         }
 
-
                         htmlBindingInfo.Connect();
 
                         return;
@@ -414,10 +388,10 @@ namespace System.Windows.Controls
                 }
 
                 bi.SourcePath = new PropertyPath("DataContext." + bi.SourcePath.Path);
-                bi.Source = instance;
+                bi.Source     = instance;
 
                 // bi.Source = DataContext;
-                bi.Target = instance;
+                bi.Target     = instance;
                 bi.TargetPath = name;
 
                 bi.Connect();
@@ -433,11 +407,11 @@ namespace System.Windows.Controls
                     return;
                 }
 
-                var converterAttributes = targetProperty.GetCustomAttributes(typeof(TypeConverterAttribute));
+                var converterAttributes    = targetProperty.GetCustomAttributes(typeof(TypeConverterAttribute));
                 var firstConverterAtribute = converterAttributes?.FirstOrDefault();
                 if (firstConverterAtribute != null)
                 {
-                    var converter = (TypeConverterAttribute) firstConverterAtribute;
+                    var converter      = (TypeConverterAttribute) firstConverterAtribute;
                     var valueConverter = (IValueConverter) Activator.CreateInstance(converter._type);
                     var convertedValue = valueConverter.Convert(value, targetProperty.PropertyType, null, CultureInfo.CurrentCulture);
 
@@ -499,14 +473,23 @@ namespace System.Windows.Controls
             instance.As<FrameworkElement>()._root.Attr(name, value);
         }
 
-       
+        void ProcessAttributes(Element xmlNode, FrameworkElement instance)
+        {
+            var attributes = xmlNode.Attributes;
 
+            var len = attributes.Length;
+            for (var i = 0; i < len; i++)
+            {
+                var nodeAttribute = attributes[i];
 
-        bool TryToInitParentProperty(XmlNode xmlNode)
+                ProcessAttribute(instance, nodeAttribute.NodeName, nodeAttribute.NodeValue);
+            }
+        }
+
+        bool TryToInitParentProperty(Element xmlNode)
         {
             var parentNodeName = xmlNode.ParentNode?.NodeName;
-            var nodeName = xmlNode.NodeName;
-
+            var nodeName       = xmlNode.NodeName;
 
             // <ItemsControl.ItemTemplate>
 
@@ -521,17 +504,16 @@ namespace System.Windows.Controls
                 return false;
             }
 
-            var propertyInfo =  ReflectionHelper.FindProperty(_currentInstance,propertyName, FindPropertyFlag);
+            var propertyInfo = ReflectionHelper.FindProperty(_currentInstance, propertyName, FindPropertyFlag);
             if (propertyInfo == null)
             {
                 return false;
             }
 
-
             var propertyType = propertyInfo.PropertyType;
             if (propertyType == typeof(Template))
             {
-                var propertyValue = Template.CreateFrom(GetFirstNodeSkipCommentAndText(xmlNode.ChildNodes));
+                var propertyValue = Template.CreateFrom(GetFirstNodeSkipCommentAndText(xmlNode.ChildNodes.As<ElementList>()));
                 ReflectionHelper.SetPropertyValue(_currentInstance, propertyInfo.Name, propertyValue);
                 return true;
             }
@@ -546,7 +528,7 @@ namespace System.Windows.Controls
             {
                 var innerHTML = (xmlNode.GetInnerText() + "").Trim();
 
-                ProcessAttribute( _currentInstance, propertyInfo.Name, innerHTML);
+                ProcessAttribute(_currentInstance, propertyInfo.Name, innerHTML);
                 return true;
             }
 
@@ -561,7 +543,6 @@ namespace System.Windows.Controls
 
                 var addMethod = collection.GetType().GetMethod("Add");
 
-
                 var childNodes = xmlNode.ChildNodes;
 
                 var len = childNodes.Length;
@@ -575,22 +556,19 @@ namespace System.Windows.Controls
                         continue;
                     }
 
-                    var subItem = CreateInstance(childNode);
+                    var subItem = CreateInstance(childNode.As<Element>());
 
+                    InitializeDataContext(childNode.As<Element>(), subItem, _currentInstance.As<FrameworkElement>());
 
-                    InitializeDataContext(childNode, subItem, _currentInstance.As<FrameworkElement>());
-
-                    ProcessAttributes(childNode,subItem);
+                    ProcessAttributes(childNode.As<Element>(), subItem);
 
                     addMethod.Invoke(collection, subItem);
                 }
 
                 return true;
-
             }
 
             throw new NotImplementedException(nodeName);
-
         }
         #endregion
     }

@@ -1628,12 +1628,12 @@ Bridge.assembly("Bridge.CustomUIMarkup", function ($asm, globals) {
     Bridge.define("Bridge.CustomUIMarkup.UI.Extensions", {
         statics: {
             methods: {
-                GetInnerText: function (xmlNode) {
-                    if (xmlNode.nodeType === 3) {
-                        return Bridge.unbox(xmlNode.textContent);
+                GetInnerText: function (node) {
+                    if (node.nodeType === 3) {
+                        return Bridge.unbox(node.textContent);
                     }
 
-                    return Bridge.unbox(xmlNode.innerHTML);
+                    return Bridge.unbox(node.innerHTML);
                 },
                 LoadComponent: function (T, element, xml) {
                     System.Windows.Controls.UIBuilder.LoadComponent(element, xml);
@@ -4893,32 +4893,15 @@ else if (document.queryCommandSupported && document.queryCommandSupported('copy'
                 }
             },
             methods: {
-                Create: function (T) {
-                    var control = Bridge.createInstance(T);
-
-                    return System.Windows.Controls.UIBuilder.ApplyTemplate(T, control);
-                },
-                Register: function (tag, func) {
-                    System.Windows.Controls.UIBuilder._elementCreators.set(tag.toUpperCase(), func);
-                },
                 ApplyTemplate: function (T, control) {
                     control != null ? control.ApplyTemplate() : null;
 
                     return control;
                 },
-                BuildControlTemplate: function (xmlTemplate, control) {
-                    var $t;
-                    var builder = ($t = new System.Windows.Controls.UIBuilder(), $t._rootNode = xmlTemplate.Root, $t.DataContext = control, $t.Caller = control, $t._isBuildingTemplate = true, $t);
+                Create: function (T) {
+                    var control = Bridge.createInstance(T);
 
-                    var subControl = builder.BuildNode(builder._rootNode, control);
-
-                    var subControlAsFrameworkElement = Bridge.as(subControl, System.Windows.FrameworkElement);
-                    if (subControlAsFrameworkElement == null) {
-                        throw new System.InvalidOperationException("TemplateControlFirstItemMustBeHTMLElement");
-                    }
-
-                    control._root = subControlAsFrameworkElement._root;
-                    control.AddVisualChild(subControlAsFrameworkElement);
+                    return System.Windows.Controls.UIBuilder.ApplyTemplate(T, control);
                 },
                 LoadComponent: function (control, xml) {
                     System.Windows.Controls.UIBuilder.LoadComponent$1(control, System.Xml.XmlHelper.GetRootNode(xml));
@@ -4944,11 +4927,28 @@ else if (document.queryCommandSupported && document.queryCommandSupported('copy'
                     System.Windows.Controls.UIBuilder.InitDOM(control);
                     control.AddLogicalChild(subControlAsFrameworkElement);
                 },
-                GetFirstNodeSkipCommentAndText: function (xmlNodeList) {
-                    var len = xmlNodeList.length;
+                Register: function (tag, func) {
+                    System.Windows.Controls.UIBuilder._elementCreators.set(tag.toUpperCase(), func);
+                },
+                BuildControlTemplate: function (xmlTemplate, control) {
+                    var $t;
+                    var builder = ($t = new System.Windows.Controls.UIBuilder(), $t._rootNode = xmlTemplate.Root, $t.DataContext = control, $t.Caller = control, $t._isBuildingTemplate = true, $t);
+
+                    var subControl = builder.BuildNode(builder._rootNode, control);
+
+                    var subControlAsFrameworkElement = Bridge.as(subControl, System.Windows.FrameworkElement);
+                    if (subControlAsFrameworkElement == null) {
+                        throw new System.InvalidOperationException("TemplateControlFirstItemMustBeHTMLElement");
+                    }
+
+                    control._root = subControlAsFrameworkElement._root;
+                    control.AddVisualChild(subControlAsFrameworkElement);
+                },
+                GetFirstNodeSkipCommentAndText: function (nodes) {
+                    var len = nodes.length;
 
                     for (var i = 0; i < len; i = (i + 1) | 0) {
-                        var node = xmlNodeList[i];
+                        var node = nodes[i];
                         var nodeType = node.nodeType;
 
                         if (nodeType === 8 || nodeType === 3) {
@@ -4999,8 +4999,6 @@ else if (document.queryCommandSupported && document.queryCommandSupported('copy'
 
                 var instance = this.CreateInstance(xmlNode);
 
-
-
                 this["_currentInstance"] = instance;
 
                 if (this["IsDesignMode"]) {
@@ -5010,8 +5008,6 @@ else if (document.queryCommandSupported && document.queryCommandSupported('copy'
                 }
 
                 this.InitializeDataContext(xmlNode, instance, parentInstance);
-
-
 
                 this.ProcessAttributes(xmlNode, instance);
 
@@ -5029,16 +5025,6 @@ else if (document.queryCommandSupported && document.queryCommandSupported('copy'
 
                 return instance;
             },
-            ProcessAttributes: function (xmlNode, instance) {
-                var attributes = xmlNode.attributes;
-
-                var len = attributes.length;
-                for (var i = 0; i < len; i = (i + 1) | 0) {
-                    var nodeAttribute = attributes[i];
-
-                    this.ProcessAttribute(instance, nodeAttribute.nodeName, nodeAttribute.nodeValue);
-                }
-            },
             BuildTextNode: function (xmlNode, parentInstance) {
                 // skip empty spaces
                 var html = Bridge.CustomUIMarkup.UI.Extensions.GetInnerText(xmlNode);
@@ -5051,7 +5037,6 @@ else if (document.queryCommandSupported && document.queryCommandSupported('copy'
                 if (bindingInfo != null) {
                     var textNode = $(document.createTextNode(""));
                     parentInstance._root.append(textNode);
-
 
                     bindingInfo.BindingMode = System.Windows.Data.BindingMode.OneWay;
 
@@ -5087,8 +5072,13 @@ else if (document.queryCommandSupported && document.queryCommandSupported('copy'
 
                 Bridge.unbox(parent).AddLogicalChild(subItemAsFrameworkElement);
             },
-            CreateInstanceInternal: function (xmlNode) {
+            CreateInstance: function (xmlNode) {
+                var instance = this.CreateInstanceInternal(xmlNode);
+                System.Windows.Controls.UIBuilder.InitDOM(instance);
 
+                return instance;
+            },
+            CreateInstanceInternal: function (xmlNode) {
                 var tag = xmlNode.nodeName.toUpperCase();
 
                 var creatorFunc = { v : null };
@@ -5097,18 +5087,11 @@ else if (document.queryCommandSupported && document.queryCommandSupported('copy'
                     return creatorFunc.v();
                 }
 
-
                 if (System.Windows.Controls.UIBuilder.IsUserDefinedTag(xmlNode.nodeName) === false) {
                     return new System.Windows.HtmlElement(xmlNode.nodeName);
                 }
 
                 throw new System.ArgumentException("NotRecognizedTag:" + (tag || ""));
-            },
-            CreateInstance: function (xmlNode) {
-                var instance = this.CreateInstanceInternal(xmlNode);
-                System.Windows.Controls.UIBuilder.InitDOM(instance);
-
-                return instance;
             },
             InitializeDataContext: function (xmlNode, instance, parentInstance) {
                 var $t;
@@ -5172,7 +5155,6 @@ else if (document.queryCommandSupported && document.queryCommandSupported('copy'
                             if (System.Windows.Data.HTMLBindingInfo.TargetCanUpdateSource(htmlBindingInfo.Target$1)) {
                                 htmlBindingInfo.BindingMode = System.Windows.Data.BindingMode.TwoWay;
                             }
-
 
                             htmlBindingInfo.Connect();
 
@@ -5261,11 +5243,20 @@ else if (document.queryCommandSupported && document.queryCommandSupported('copy'
 
                 Bridge.unbox(instance)._root.attr(name, value);
             },
-            TryToInitParentProperty: function (xmlNode) {
-                var $t, $t1;
-                var parentNodeName = ($t = xmlNode.parentNode) != null ? $t.nodeName : null;
-                var nodeName = xmlNode.nodeName;
+            ProcessAttributes: function (xmlNode, instance) {
+                var attributes = xmlNode.attributes;
 
+                var len = attributes.length;
+                for (var i = 0; i < len; i = (i + 1) | 0) {
+                    var nodeAttribute = attributes[i];
+
+                    this.ProcessAttribute(instance, nodeAttribute.nodeName, nodeAttribute.nodeValue);
+                }
+            },
+            TryToInitParentProperty: function (xmlNode) {
+                var $t;
+                var parentNodeName = xmlNode.parentNode != null ? xmlNode.parentNode.nodeName : null;
+                var nodeName = xmlNode.nodeName;
 
                 // <ItemsControl.ItemTemplate>
 
@@ -5283,7 +5274,6 @@ else if (document.queryCommandSupported && document.queryCommandSupported('copy'
                     return false;
                 }
 
-
                 var propertyType = propertyInfo.rt;
                 if (Bridge.referenceEquals(propertyType, System.Windows.Template)) {
                     var propertyValue = System.Windows.Template.CreateFrom(System.Windows.Controls.UIBuilder.GetFirstNodeSkipCommentAndText(xmlNode.childNodes));
@@ -5293,7 +5283,7 @@ else if (document.queryCommandSupported && document.queryCommandSupported('copy'
 
                 var processAsAttribute = System.Extensions.IsNumeric$1(propertyType) || Bridge.referenceEquals(propertyType, System.String);
                 if (!processAsAttribute) {
-                    processAsAttribute = System.Nullable.eq((($t1 = System.Nullable.getUnderlyingType(propertyType)) != null ? System.Extensions.IsNumeric$1($t1) : null), true);
+                    processAsAttribute = System.Nullable.eq((($t = System.Nullable.getUnderlyingType(propertyType)) != null ? System.Extensions.IsNumeric$1($t) : null), true);
                 }
 
                 if (processAsAttribute) {
@@ -5313,7 +5303,6 @@ else if (document.queryCommandSupported && document.queryCommandSupported('copy'
 
                     var addMethod = Bridge.Reflection.getMembers(Bridge.getType(collection), 8, 284, "Add");
 
-
                     var childNodes = xmlNode.childNodes;
 
                     var len = childNodes.length;
@@ -5327,7 +5316,6 @@ else if (document.queryCommandSupported && document.queryCommandSupported('copy'
 
                         var subItem = this.CreateInstance(childNode);
 
-
                         this.InitializeDataContext(childNode, subItem, Bridge.unbox(this["_currentInstance"]));
 
                         this.ProcessAttributes(childNode, subItem);
@@ -5336,11 +5324,9 @@ else if (document.queryCommandSupported && document.queryCommandSupported('copy'
                     }
 
                     return true;
-
                 }
 
                 throw new System.NotImplementedException(nodeName);
-
             }
         }
     });
@@ -6005,6 +5991,10 @@ else if (document.queryCommandSupported && document.queryCommandSupported('copy'
                 }
             },
             methods: {
+                CreateFrom: function (xmlNode) {
+                    var $t;
+                    return ($t = new System.Windows.Template(), $t._rootNode = xmlNode, $t);
+                },
                 CreateFromXml: function (xmlTemplate) {
                     var $t;
                     var rootNode = System.Xml.XmlHelper.GetRootNode(xmlTemplate);
@@ -6013,10 +6003,35 @@ else if (document.queryCommandSupported && document.queryCommandSupported('copy'
 
                     return template;
                 },
-                CreateFrom: function (xmlNode) {
-                    var $t;
+                Find$1: function (key) {
+                    return System.Windows.Template.Find(Bridge.Reflection.getTypeFullName(key));
+                },
+                Find: function (key) {
+                    var template = { v : null };
+                    System.Windows.Template.Cache.tryGetValue(key, template);
+                    return template.v;
+                },
+                Get$1: function (key) {
+                    return System.Windows.Template.Get(Bridge.Reflection.getTypeFullName(key));
+                },
+                Get: function (key) {
+                    var template = System.Windows.Template.Find(key);
+                    if (template == null) {
+                        throw new System.InvalidOperationException("TemplateNotFound. Key: " + (key || ""));
+                    }
 
-                    return ($t = new System.Windows.Template(), $t._rootNode = xmlNode, $t);
+                    return template;
+                },
+                Register: function (type) {
+                    if (type == null) {
+                        throw new System.ArgumentNullException("type");
+                    }
+
+                    var resourceKey = System.Windows.Template.GetResourceKey(type);
+
+                    var templateXml = Bridge.CustomUIMarkup.Resources.GetXmlFileContent(resourceKey);
+
+                    System.Windows.Template.RegisterAsXml(Bridge.Reflection.getTypeFullName(type), templateXml);
                 },
                 RegisterAsXml: function (key, xmlTemplate) {
                     var $t;
@@ -6047,7 +6062,6 @@ else if (document.queryCommandSupported && document.queryCommandSupported('copy'
 
                     template.v = System.Windows.Template.CreateFromXml(templateAsXmlString);
 
-
                     System.Windows.Template.Cache.set(cacheKey, template.v);
 
                     return template.v;
@@ -6058,43 +6072,13 @@ else if (document.queryCommandSupported && document.queryCommandSupported('copy'
                     }
 
                     return (System.String.replaceAll(System.Extensions.RemoveFromStart(Bridge.Reflection.getTypeFullName(type), "Bridge.CustomUIMarkup."), ".", "/") || "") + ".Template.xml";
-                },
-                Register: function (type) {
-                    if (type == null) {
-                        throw new System.ArgumentNullException("type");
-                    }
-
-                    var resourceKey = System.Windows.Template.GetResourceKey(type);
-
-                    var templateXml = Bridge.CustomUIMarkup.Resources.GetXmlFileContent(resourceKey);
-
-                    System.Windows.Template.RegisterAsXml(Bridge.Reflection.getTypeFullName(type), templateXml);
-                },
-                Get$1: function (key) {
-                    return System.Windows.Template.Get(Bridge.Reflection.getTypeFullName(key));
-                },
-                Get: function (key) {
-
-                    var template = System.Windows.Template.Find(key);
-                    if (template == null) {
-                        throw new System.InvalidOperationException("TemplateNotFound. Key: " + (key || ""));
-                    }
-                    return template;
-                },
-                Find$1: function (key) {
-                    return System.Windows.Template.Find(Bridge.Reflection.getTypeFullName(key));
-                },
-                Find: function (key) {
-                    var template = { v : null };
-                    System.Windows.Template.Cache.tryGetValue(key, template);
-                    return template.v;
                 }
             }
         },
         fields: {
             _key: null,
-            _xmlTemplate: null,
-            _rootNode: null
+            _rootNode: null,
+            _xmlTemplate: null
         },
         props: {
             Root: {
@@ -6106,7 +6090,6 @@ else if (document.queryCommandSupported && document.queryCommandSupported('copy'
         ctors: {
             ctor: function () {
                 this.$initialize();
-
             }
         }
     });
@@ -6172,16 +6155,6 @@ else if (document.queryCommandSupported && document.queryCommandSupported('copy'
         }
     });
 
-    Bridge.define("System.Xml.XmlException", {
-        inherits: [System.SystemException],
-        ctors: {
-            ctor: function (message, innerException) {
-                this.$initialize();
-                System.SystemException.ctor.call(this, message, innerException);
-            }
-        }
-    });
-
     Bridge.define("System.Xml.XmlHelper", {
         statics: {
             methods: {
@@ -6193,16 +6166,13 @@ else if (document.queryCommandSupported && document.queryCommandSupported('copy'
                     try {
                         xmlString = System.String.replaceAll(System.String.replaceAll(xmlString, "x:Name=", "x.Name = "), "x:Name =", "x.Name = ");
 
+                        // return jQuery.ParseHTML(xmlString.Trim())[0].As<Bridge.Html5.Element>();
 
-                        // return jQuery.ParseHTML(xmlString.Trim())[0].As<XmlNode>();
-
-                        var document = $.parseXML(xmlString);
-
-                        return document.firstChild;
+                        return $.parseXML(xmlString).firstChild;
                     }
                     catch (e) {
                         e = System.Exception.create(e);
-                        throw new System.Xml.XmlException("XmlParseErrorOccured.", e);
+                        throw new System.SystemException("XmlParseErrorOccured.", e);
                     }
                 }
             }
@@ -7703,16 +7673,9 @@ else if (document.queryCommandSupported && document.queryCommandSupported('copy'
 
                     this.SetOutput(component);
                 }
-                catch ($e1) {
-                    $e1 = System.Exception.create($e1);
-                    var e;
-                    if (Bridge.is($e1, System.Xml.XmlException)) {
-                        e = $e1;
-                        this.SetErrorMessage(e.toString());
-                    } else {
-                        e = $e1;
-                        this.SetErrorMessage(e.toString());
-                    }
+                catch (e) {
+                    e = System.Exception.create(e);
+                    this.SetErrorMessage(e.toString());
                 }
             },
             ClearOutput: function () {

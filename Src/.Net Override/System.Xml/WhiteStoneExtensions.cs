@@ -1,5 +1,6 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using Bridge;
+using Bridge.Html5;
 
 namespace System.Xml
 {
@@ -7,7 +8,7 @@ namespace System.Xml
     {
         #region Methods
         [SuppressMessage("ReSharper", "UnusedParameter.Global")]
-        internal static int GetOriginalLineNumber(this XmlNode element, XmlNode xmlRootNode, string sContent)
+        internal static int GetOriginalLineNumber(this Node element, Node xmlRootNode, string sContent)
         {
             // https://jsfiddle.net/g113c350/3/
 
