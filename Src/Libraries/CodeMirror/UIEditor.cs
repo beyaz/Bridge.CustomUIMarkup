@@ -54,7 +54,7 @@ namespace Bridge.CustomUIMarkup.Libraries.CodeMirror
             try
             {
                 var rootNode = XmlHelper.GetRootNode(SourceText);
-                var typeName = rootNode.GetAttribute("d:designerdataContext");
+                var typeName = rootNode.GetAttribute(UIBuilder.AttributeName_d_designerdataContext);
                 if (typeName != null)
                 {
                     var type     = Type.GetType(typeName);

@@ -327,9 +327,11 @@ namespace System.Windows.Controls
             }
         }
 
+        internal const string AttributeName_d_designerdataContext = "d:designerdataContext";
+
         void ProcessAttribute(object instance, string name, string value)
         {
-            if (name == "DataContext" || name == "datacontext")
+            if (name == "DataContext" || name == "datacontext" || name == AttributeName_d_designerdataContext)
             {
                 return;
             }
