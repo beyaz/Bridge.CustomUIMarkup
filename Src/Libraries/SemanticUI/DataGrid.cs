@@ -7,7 +7,6 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
-using Bridge.CustomUIMarkup.Common;
 
 namespace Bridge.CustomUIMarkup.Libraries.SemanticUI
 {
@@ -145,10 +144,12 @@ setTimeout(function()
                 return;
             }
 
-            var list = ItemsSource as IList;
-            if (list == null)
+            
+
+            var records = ItemsSource as IEnumerable;
+            if (records == null)
             {
-                throw new ArgumentException("MustbeList:" + nameof(ItemsSource) + "@ItemsSource.Type:" + ItemsSource?.GetType().FullName);
+                throw new ArgumentException("Mustbe implement 'IEnumerable':" + nameof(ItemsSource) + "@ItemsSource.Type:" + ItemsSource?.GetType().FullName);
             }
 
             ClearVisualChilds();
@@ -169,11 +170,8 @@ setTimeout(function()
 
             table.AddVisualChild(_tbody = new HtmlElement("tbody"));
 
-            var len = list.Count;
-            for (var i = 0; i < len; i++)
+            foreach (var itemData in records)
             {
-                var itemData = list[i];
-
                 var tr = new HtmlElement("tr");
 
                 foreach (var columnInfo in Columns)
@@ -186,7 +184,7 @@ setTimeout(function()
                     {
                         var propertyPath = new PropertyPath(columnInfo.Name);
                         propertyPath.Walk(itemData);
-                        var cellValue  = propertyPath.GetPropertyValue();
+                        var cellValue = propertyPath.GetPropertyValue();
 
                         td.InnerHTML = cellValue?.ToString();
                     }
@@ -212,9 +210,8 @@ setTimeout(function()
 
                 tr.On("click", () => { MarkSelectedRow(tr); });
 
-                tr.On("click", () => { RaiseEvent_ItemClicked(itemData); });
-
-                
+                var data = itemData;
+                tr.On("click", () => { RaiseEvent_ItemClicked(data); });
             }
 
 

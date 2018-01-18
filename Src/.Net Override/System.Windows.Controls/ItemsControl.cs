@@ -1,7 +1,5 @@
 ﻿using System.Collections;
 using System.ComponentModel;
-using Bridge.CustomUIMarkup.Libraries.SemanticUI;
-using Bridge.CustomUIMarkup.UI;
 
 namespace System.Windows.Controls
 {
@@ -41,7 +39,7 @@ namespace System.Windows.Controls
 
         protected ArgumentException ItemSourceMustbe_Enumerable()
         {
-            return new ArgumentException("MustbeList:" + nameof(ItemsSource) + "@ItemsSource.Type:" + ItemsSource.GetType().FullName);
+            return new ArgumentException("Mustbe implement 'IEnumerable':" + nameof(ItemsSource) + "@ItemsSource.Type:" + ItemsSource.GetType().FullName);
         }
 
         protected void RaiseEvent_ItemClicked(object itemDataContext)
@@ -56,8 +54,8 @@ namespace System.Windows.Controls
                 return;
             }
 
-            var list = ItemsSource as IList;
-            if (list == null)
+            var records = ItemsSource as IEnumerable;
+            if (records == null)
             {
                 throw ItemSourceMustbe_Enumerable();
             }
@@ -66,11 +64,8 @@ namespace System.Windows.Controls
 
             var itemTemplate = ItemTemplate;
 
-            var len = list.Count;
-            for (var i = 0; i < len; i++)
+            foreach (var itemData in records)
             {
-                var itemData = list[i];
-
                 FrameworkElement item = null;
                 if (itemTemplate != null)
                 {
@@ -91,7 +86,8 @@ namespace System.Windows.Controls
                     item = textBlock;
                 }
 
-                item.On("click", () => { ItemClicked?.Invoke(itemData); });
+                var data = itemData;
+                item.On("click", () => { ItemClicked?.Invoke(data); });
 
                 ConnectItem(item);
             }
