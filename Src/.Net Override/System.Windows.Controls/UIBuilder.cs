@@ -14,6 +14,10 @@ namespace System.Windows.Controls
 {
     public class UIBuilder
     {
+        #region Constants
+        internal const string AttributeName_d_designerdataContext = "d:designerdataContext";
+        #endregion
+
         #region Static Fields
         internal static readonly Dictionary<string, Func<FrameworkElement>> _elementCreators = new Dictionary<string, Func<FrameworkElement>>
         {
@@ -327,8 +331,6 @@ namespace System.Windows.Controls
             }
         }
 
-        internal const string AttributeName_d_designerdataContext = "d:designerdataContext";
-
         void ProcessAttribute(object instance, string name, string value)
         {
             if (name == "DataContext" || name == "datacontext" || name == AttributeName_d_designerdataContext)
@@ -353,7 +355,7 @@ namespace System.Windows.Controls
             var bi = BindingInfo.TryParseExpression(value);
             if (bi != null)
             {
-                var eventInfo = ReflectionHelper.FindEvent(instance, name,FindPropertyFlag);
+                var eventInfo = ReflectionHelper.FindEvent(instance, name, FindPropertyFlag);
                 if (eventInfo != null)
                 {
                     var methodInfo = ReflectionHelper.GetMethodInfo(DataContext, bi.SourcePath.Path);
@@ -438,9 +440,9 @@ namespace System.Windows.Controls
                     var methodName = viewInvocationExpressionInfo.MethodName;
 
                     var mi = Caller.GetType().GetMethod(methodName, BindingFlags.IgnoreCase | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
-                    if (mi==null)
+                    if (mi == null)
                     {
-                        throw new MissingMemberException(Caller.GetType().FullName + "->"+methodName);
+                        throw new MissingMemberException(Caller.GetType().FullName + "->" + methodName);
                     }
 
                     instance.As<FrameworkElement>().On(eventName, () => { mi.Invoke(Caller, viewInvocationExpressionInfo.Parameters.ToArray()); });
@@ -469,7 +471,7 @@ namespace System.Windows.Controls
                 // return;
             }
 
-            if (nameUpperCase == "X.NAME"|| nameUpperCase == "X:NAME")
+            if (nameUpperCase == "X.NAME" || nameUpperCase == "X:NAME")
             {
                 ReflectionHelper.SetNonStaticField(Caller, value, instance);
 

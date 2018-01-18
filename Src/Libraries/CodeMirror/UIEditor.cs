@@ -1,13 +1,15 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Xml;
 using Bridge.CustomUIMarkup.Common;
+using Bridge.Html5;
 
 namespace Bridge.CustomUIMarkup.Libraries.CodeMirror
 {
-
     class UIEditor : Control
     {
         #region Fields
@@ -51,54 +53,19 @@ namespace Bridge.CustomUIMarkup.Libraries.CodeMirror
                 return;
             }
 
-            try
+            Window.SetTimeout(() =>
             {
-                var rootNode = XmlHelper.GetRootNode(SourceText);
-                var typeName = rootNode.GetAttribute(UIBuilder.AttributeName_d_designerdataContext);
-                if (typeName != null)
+                try
                 {
-                    var type     = Type.GetType(typeName);
-                    if (type==null)
-                    {
-                        throw new MissingMemberException(typeName);
-                    }
-
-                    var instance = Activator.CreateInstance(type);
-
-                    RenderComponent(instance);
-
-                    return;
+                    RenderComponent(TryGetDesignerdataContext());
+                }
+                catch (Exception e)
+                {
+                    SetErrorMessage(e.ToString());
                 }
 
-
-                RenderComponent(SourceDataContext); //TODO gerenk var mý ? 
-                
-            }
-            catch (Exception e)
-            {
-                SetErrorMessage(e.ToString());
-            }
-        }
-
-        void RenderComponent(object dataContext)
-        {
-            try
-            {
-                var fe = new FrameworkElement
-                {
-                    DataContext = dataContext
-                };
-
-                UIBuilder.LoadComponent(fe, XmlHelper.GetRootNode(SourceText), true, (line, element) => { _lineNumberToControlMap[line] = element; }, SourceText);
-
-                var component = fe.GetLogicalChildAt(0);
-
-                SetOutput(component);
-            }
-            catch (Exception e)
-            {
-                SetErrorMessage(e.ToString());
-            }
+            },5);
+            
         }
         #endregion
 
@@ -123,6 +90,27 @@ namespace Bridge.CustomUIMarkup.Libraries.CodeMirror
             query.highlight();
         }
 
+        void RenderComponent(object dataContext)
+        {
+            try
+            {
+                var fe = new FrameworkElement
+                {
+                    DataContext = dataContext
+                };
+
+                UIBuilder.LoadComponent(fe, XmlHelper.GetRootNode(SourceText), true, (line, element) => { _lineNumberToControlMap[line] = element; }, SourceText);
+
+                var component = fe.GetLogicalChildAt(0);
+
+                SetOutput(component);
+            }
+            catch (Exception e)
+            {
+                SetErrorMessage(e.ToString());
+            }
+        }
+
         void SetErrorMessage(string message)
         {
             ClearOutput();
@@ -140,6 +128,61 @@ namespace Bridge.CustomUIMarkup.Libraries.CodeMirror
 
             Container.AddLogicalChild(element);
         }
+
+        object TryGetDesignerdataContext()
+        {
+            Type   type                = null;
+            object instance            = null;
+            var    rootNode            = XmlHelper.GetRootNode(SourceText);
+            var    designerdataContext = rootNode.GetAttribute(UIBuilder.AttributeName_d_designerdataContext);
+
+            if (designerdataContext == null)
+            {
+                return null;
+            }
+
+            var isMemberInfo = designerdataContext.Contains(":");
+
+            if (isMemberInfo)
+            {
+                var list       = designerdataContext.Split(':').Where(x => !x.IsNullOrWhiteSpace()).Select(x => x.Trim()).ToList();
+                var typeName   = list[0];
+                var memberName = list[1];
+
+                type = Type.GetType(typeName);
+                if (type == null)
+                {
+                    throw new MissingMemberException(typeName);
+                }
+
+                instance = Activator.CreateInstance(type);
+
+                if (memberName.EndsWith("()"))
+                {
+                    memberName     = memberName.RemoveFromEnd("()").Trim();
+                    var methodInfo = type.GetMethod(memberName, ReflectionHelper.AllBindings);
+                    if (methodInfo == null)
+                    {
+                        throw new MissingMemberException(designerdataContext);
+                    }
+
+                    if (methodInfo.IsStatic)
+                    {
+                        return methodInfo.Invoke(null);
+                    }
+
+                    return methodInfo.Invoke(instance);
+                }
+            }
+
+            type = Type.GetType(designerdataContext);
+            if (type == null)
+            {
+                throw new MissingMemberException(designerdataContext);
+            }
+
+            return Activator.CreateInstance(type);
+        }
         #endregion
 
         #region string SourceText
@@ -154,23 +197,6 @@ namespace Bridge.CustomUIMarkup.Libraries.CodeMirror
                 {
                     _sourceText = value;
                     OnPropertyChanged("SourceText");
-                }
-            }
-        }
-        #endregion
-
-        #region object SourceDataContext
-        object _sourceDataContext;
-
-        public object SourceDataContext
-        {
-            get { return _sourceDataContext; }
-            set
-            {
-                if (_sourceDataContext != value)
-                {
-                    _sourceDataContext = value;
-                    OnPropertyChanged("SourceDataContext");
                 }
             }
         }

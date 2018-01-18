@@ -23,7 +23,7 @@ namespace Bridge.CustomUIMarkup_DesignerSamples
     </row>
     
     <row HeightPercent = '100'>
-        <UIEditor SourceDataContext='{Inner}'   SourceText = '{CurrentTemplate}'/>
+        <UIEditor   SourceText = '{CurrentTemplate}'/>
     </row>
         
 </div>
