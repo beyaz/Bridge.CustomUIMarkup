@@ -2,6 +2,7 @@
 using System.Windows;
 using Bridge.CustomUIMarkup.Libraries.SemanticUI;
 using System.Text.Tokenizers;
+using BOA.Common.Helpers.Test;
 
 namespace Bridge.CustomUIMarkup.Test
 {
@@ -36,6 +37,8 @@ namespace Bridge.CustomUIMarkup.Test
             CastTest.RunAll();
 
             DatePickerTest.RunAll();
+
+            RandomValueTest.RunAll();
 
             Console.WriteLine("Success");
         }

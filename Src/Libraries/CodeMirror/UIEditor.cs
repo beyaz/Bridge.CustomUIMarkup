@@ -141,19 +141,21 @@ namespace Bridge.CustomUIMarkup.Libraries.CodeMirror
                 return null;
             }
 
+            if (designerdataContext.StartsWith("Random:"))
+            {
+                return  RandomValue.Object(GetTypeEnsure(designerdataContext.RemoveFromStart("Random:").Trim()));
+            }
+
             var isMemberInfo = designerdataContext.Contains(":");
 
             if (isMemberInfo)
             {
-                var list       = designerdataContext.Split(':').Where(x => !x.IsNullOrWhiteSpace()).Select(x => x.Trim()).ToList();
+                var list = SplitAndTrim(designerdataContext, ':');
                 var typeName   = list[0];
                 var memberName = list[1];
 
-                type = Type.GetType(typeName);
-                if (type == null)
-                {
-                    throw new MissingMemberException(typeName);
-                }
+                type = GetTypeEnsure(typeName);
+                
 
                 instance = Activator.CreateInstance(type);
 
@@ -174,14 +176,27 @@ namespace Bridge.CustomUIMarkup.Libraries.CodeMirror
                     return methodInfo.Invoke(instance);
                 }
             }
+            
 
-            type = Type.GetType(designerdataContext);
+            return Activator.CreateInstance(GetTypeEnsure(designerdataContext));
+        }
+
+
+        static List<string> SplitAndTrim(string value,char spliter)
+        {
+            return value.Split(spliter).Where(x => !x.IsNullOrWhiteSpace()).Select(x => x.Trim()).ToList();
+
+        }
+        static Type GetTypeEnsure(string typeName)
+        {
+            var type = Type.GetType(typeName);
             if (type == null)
             {
-                throw new MissingMemberException(designerdataContext);
+                throw new MissingMemberException(typeName);
             }
 
-            return Activator.CreateInstance(type);
+            return type;
+
         }
         #endregion
 

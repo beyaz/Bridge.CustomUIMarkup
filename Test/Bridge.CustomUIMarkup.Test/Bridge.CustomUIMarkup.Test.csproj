@@ -42,6 +42,7 @@
     <Compile Include="DatePickerTest.cs" />
     <Compile Include="Libraries.SemanticUI\DataGridTest.cs" />
     <Compile Include="Libraries.SemanticUI\ItemsControlTests.cs" />
+    <Compile Include="RandomValueTest.cs" />
     <Compile Include="System.Windows\ContentControlTest.cs" />
     <Compile Include="Libraries.SemanticUI\TabItemTest.cs" />
     <Compile Include="Tokenizers\TokenizerTest.cs" />

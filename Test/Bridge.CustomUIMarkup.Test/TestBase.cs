@@ -65,6 +65,7 @@ namespace Bridge.CustomUIMarkup.Test
 
         protected static class Assert
         {
+            
             #region Public Methods
             public static void IsNull(object value)
             {
@@ -84,7 +85,15 @@ namespace Bridge.CustomUIMarkup.Test
                     throw new InvalidOperationException("Test Failed.Expects False");
                 }
             }
+            public static void IsTrue(bool condition)
+            {
+                if (condition)
+                {
+                    return;
+                }
 
+                throw new InvalidOperationException("Test Failed.Expects True");
+            }
             public static void True(bool condition)
             {
                 if (condition)
@@ -102,8 +111,49 @@ namespace Bridge.CustomUIMarkup.Test
                     throw new InvalidCastException("@expected: " + expected + " , @actual: " + actual);
                 }
             }
-
+            public static void AreNotEqual(string expected, string actual)
+            {
+                if (expected == actual)
+                {
+                    throw new InvalidCastException("@expected: " + expected + " , @actual: " + actual);
+                }
+            }
+            public static void AreNotEqual(int expected, int actual)
+            {
+                if (expected == actual)
+                {
+                    throw new InvalidCastException("@expected: " + expected + " , @actual: " + actual);
+                }
+            }
+            public static void AreNotEqual(int? expected, int? actual)
+            {
+                if (expected == actual)
+                {
+                    throw new InvalidCastException("@expected: " + expected + " , @actual: " + actual);
+                }
+            }
+            public static void AreNotEqual(long? expected, long? actual)
+            {
+                if (expected == actual)
+                {
+                    throw new InvalidCastException("@expected: " + expected + " , @actual: " + actual);
+                }
+            }
+            public static void AreNotEqual(ulong? expected, ulong? actual)
+            {
+                if (expected == actual)
+                {
+                    throw new InvalidCastException("@expected: " + expected + " , @actual: " + actual);
+                }
+            }
             public static void AreEqual(int? expected, int? actual)
+            {
+                if (expected != actual)
+                {
+                    throw new InvalidCastException("@expected: " + expected + " , @actual: " + actual);
+                }
+            }
+            public static void AreEqual(int expected, int actual)
             {
                 if (expected != actual)
                 {
