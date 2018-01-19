@@ -240,18 +240,6 @@ namespace Bridge.CustomUIMarkup.Common
         }
 
         /// <summary>
-        ///     is the collection.
-        /// </summary>
-        public static List<object> ICollection(Type type, int? optionalLength = null)
-        {
-            var numberOfItems = CreateRandomLengthIfOptionLengthIsNull(optionalLength);
-
-            var enumerable = LazyIEnumerable(type).Take(numberOfItems);
-
-            return enumerable.ToList();
-        }
-
-        /// <summary>
         ///     is the dictionary.
         /// </summary>
         public static IDictionary<TKey, TValue> IDictionary<TKey, TValue>(int? optionalLength = null)
@@ -645,6 +633,18 @@ namespace Bridge.CustomUIMarkup.Common
             }
 
             return SupportType.NotSupported;
+        }
+
+        /// <summary>
+        ///     is the collection.
+        /// </summary>
+        static List<object> ICollection(Type type, int? optionalLength = null)
+        {
+            var numberOfItems = CreateRandomLengthIfOptionLengthIsNull(optionalLength);
+
+            var enumerable = LazyIEnumerable(type).Take(numberOfItems);
+
+            return enumerable.ToList();
         }
 
         /// <summary>
