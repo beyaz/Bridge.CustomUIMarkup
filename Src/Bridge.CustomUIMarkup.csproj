@@ -179,10 +179,10 @@
   </ItemGroup>
   <ItemGroup>
     <Reference Include="Bridge, Version=16.6.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Bridge.Core.16.6.0\lib\net40\Bridge.dll</HintPath>
+      <HintPath>..\packages\Bridge.Core.16.6.1\lib\net40\Bridge.dll</HintPath>
     </Reference>
     <Reference Include="Bridge.Html5, Version=16.6.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Bridge.Html5.16.6.0\lib\net40\Bridge.Html5.dll</HintPath>
+      <HintPath>..\packages\Bridge.Html5.16.6.1\lib\net40\Bridge.Html5.dll</HintPath>
     </Reference>
     <Reference Include="Bridge.jQuery2, Version=2.10.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Bridge.jQuery.2.11.0\lib\net40\Bridge.jQuery2.dll</HintPath>
@@ -194,7 +194,7 @@
       <HintPath>..\packages\Retyped.Core.1.4.6556\lib\net40\Retyped.Core.dll</HintPath>
     </Reference>
     <Reference Include="Retyped.dom, Version=2.3.4.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Retyped.dom.2.3.6556\lib\net40\Retyped.dom.dll</HintPath>
+      <HintPath>..\packages\Retyped.dom.2.3.6589\lib\net40\Retyped.dom.dll</HintPath>
     </Reference>
     <Reference Include="Retyped.es5, Version=2.3.4.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Retyped.es5.2.3.6556\lib\net40\Retyped.es5.dll</HintPath>
@@ -214,11 +214,11 @@
 
 </PostBuildEvent>
   </PropertyGroup>
-  <Import Project="..\packages\Bridge.Min.16.6.0\build\Bridge.Min.targets" Condition="Exists('..\packages\Bridge.Min.16.6.0\build\Bridge.Min.targets')" />
+  <Import Project="..\packages\Bridge.Min.16.6.1\build\Bridge.Min.targets" Condition="Exists('..\packages\Bridge.Min.16.6.1\build\Bridge.Min.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
       <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
     </PropertyGroup>
-    <Error Condition="!Exists('..\packages\Bridge.Min.16.6.0\build\Bridge.Min.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Bridge.Min.16.6.0\build\Bridge.Min.targets'))" />
+    <Error Condition="!Exists('..\packages\Bridge.Min.16.6.1\build\Bridge.Min.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Bridge.Min.16.6.1\build\Bridge.Min.targets'))" />
   </Target>
 </Project>
