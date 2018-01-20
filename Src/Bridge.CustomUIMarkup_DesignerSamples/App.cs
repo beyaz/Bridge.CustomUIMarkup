@@ -47,9 +47,12 @@ namespace Bridge.CustomUIMarkup_DesignerSamples
         #region Public Methods
         public static void Init()
         {
+            
+            Bridge.CustomUIMarkup.Libraries.SemanticUI.Elements.RegisterToBuilder();
             Bridge.CustomUIMarkup.Libraries.SemanticUI.Elements.RegisterToBuilder();
             Bridge.CustomUIMarkup.Libraries.split_js.Elements.RegisterToBuilder();
             Bridge.CustomUIMarkup.Libraries.CodeMirror.Elements.RegisterToBuilder();
+            UIBuilder.Register("XmlEditor", () => new Bridge.CustomUIMarkup.UI.XmlEditor());
             Bridge.CustomUIMarkup.Libraries.viewerjs.Elements.RegisterToBuilder();
             Bridge.CustomUIMarkup.Libraries.Swiper.Elements.RegisterToBuilder();
 
