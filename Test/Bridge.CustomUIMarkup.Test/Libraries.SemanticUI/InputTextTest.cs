@@ -2,18 +2,19 @@
 using System.Windows.Controls;
 using Bridge.CustomUIMarkup.Test;
 using Bridge.CustomUIMarkup.UI;
-using Extensions = Bridge.Html5.Extensions;
+using Bridge.Html5;
 
 namespace Bridge.CustomUIMarkup.Libraries.SemanticUI
 {
     public class TestElement : FrameworkElement
     {
+        
         #region Visibility LabelVisbility
-        public static readonly DependencyProperty LabelVisbilityProperty = DependencyProperty.Register(nameof(LabelVisbility), typeof(Visibility), typeof(TestElement), new PropertyMetadata(Visibility.Collapsed));
+        public static readonly DependencyProperty LabelVisbilityProperty = DependencyProperty.Register(nameof(LabelVisbility), typeof(System.Windows.Visibility), typeof(TestElement), new PropertyMetadata(System.Windows.Visibility.Collapsed));
 
-        public Visibility LabelVisbility
+        public System.Windows. Visibility LabelVisbility
         {
-            get { return (Visibility) GetValue(LabelVisbilityProperty); }
+            get { return (System.Windows.Visibility) GetValue(LabelVisbilityProperty); }
             set { SetValue(LabelVisbilityProperty, value); }
         }
         #endregion
@@ -374,11 +375,11 @@ namespace Bridge.CustomUIMarkup.Libraries.SemanticUI
 
 
 
-            MustEqual("<div>a</div>", Extensions.AsHtmlString(el._el));
+            MustEqual("<div>a</div>", el._el.AsHtmlString());
 
             model.Child.Child.Child.LastName = "b";
 
-            MustEqual("<div>b</div>", Extensions.AsHtmlString(el._el));
+            MustEqual("<div>b</div>", el._el.AsHtmlString());
 
             model = new SimpleClass1
             {
@@ -396,7 +397,7 @@ namespace Bridge.CustomUIMarkup.Libraries.SemanticUI
 
             el.DataContext = model;
 
-            MustEqual("<div>x</div>", Extensions.AsHtmlString(el._el));
+            MustEqual("<div>x</div>", el._el.AsHtmlString());
         }
 
         void SimpleBind_OnDataContext_Changed()
@@ -601,7 +602,7 @@ namespace Bridge.CustomUIMarkup.Libraries.SemanticUI
 
             MustEqual("B", fe.GetVisualChildAt(0,0,0).Attr("x"));
 
-            MustTrue(fe.GetVisualChildAt(0,0).Visibility == Visibility.Collapsed);
+            MustTrue(fe.GetVisualChildAt(0,0).Visibility == System.Windows.Visibility.Collapsed);
         }
         #endregion
     }

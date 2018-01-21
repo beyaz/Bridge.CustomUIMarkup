@@ -15,7 +15,7 @@ namespace Bridge.CustomUIMarkup.Libraries.SemanticUI
         #region Constructors
         public ui_rating()
         {
-            BeforeConnectToLogicalParent += parent => { _root.As<semantic_ui.JQuery>().rating(); };
+            BeforeConnectToLogicalParent += parent => { _root.rating(); };
         }
         #endregion
 

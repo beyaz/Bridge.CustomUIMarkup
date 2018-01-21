@@ -1,5 +1,6 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
+using Bridge.CustomUIMarkup.Libraries.CodeMirror;
 using Bridge.CustomUIMarkup.UI;
 using Bridge.jQuery2;
 
@@ -64,25 +65,7 @@ namespace Bridge.CustomUIMarkup_DesignerSamples
         
         static void RenderUIEditor()
         {
-            var appContainer = new AppContainer
-            {
-                DataContext = new ExampleDataContext
-                {
-                    CurrentTemplate = "Write xml code here.",
-                    Inner = new ExampleDataContext { CurrentTemplate = "Write xml code here" }
-                }
-            };
-
-            appContainer.DataContext = new ExampleDataContext
-            {
-                CurrentTemplate = "Write xml code here.",
-                Inner = new ExampleDataContext
-                {
-                    CurrentTemplate = "Write xml code here"
-                }
-            };
-
-            appContainer.RenderInBody();
+            UIBuilder.Create<UIEditor>().RenderInBody();
         }
         #endregion
     }

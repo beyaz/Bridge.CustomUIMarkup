@@ -12,7 +12,7 @@ namespace Bridge.CustomUIMarkup.Libraries.SemanticUI
         #region Constructors
         public Combo()
         {
-            BeforeConnectToLogicalParent += parent => { _wrapper = _root.As<semantic_ui.JQuery>().dropdown(); };
+            BeforeConnectToLogicalParent += parent => { _wrapper = _root.dropdown(); };
 
             this.OnPropertyChanged(nameof(DisplayMemberPath), InitializeItemTemplate);
             this.OnPropertyChanged(nameof(SelectedValuePath), InitializeItemTemplate);

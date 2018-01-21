@@ -68,7 +68,7 @@ namespace Bridge.CustomUIMarkup.Libraries.SemanticUI
 
         void OnBeforeConnectToParent(FrameworkElement parent)
         {
-            _root.As<semantic_ui.JQuery>().tab();
+            _root.tab();
             if (Tabs.Any())
             {
                 ActivateTab(Tabs.FirstOrDefault());

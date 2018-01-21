@@ -27,7 +27,7 @@ namespace Bridge.CustomUIMarkup.Libraries.CodeMirror
                     "        <XmlEditor Text ='{" + nameof(SourceText) + @"}' HeightPercent = '100' WidthPercent = '100' " +
                     "                   OnTextChanged = '{" + nameof(OnTextChanged) + @"}' " +
                     "                   OnCursorLineNumberChanged = '{" + nameof(OnCursorLineNumberChanged) + @"}' />" +
-                    "        <div Border = '1px solid Green' HeightPercent = '100' WidthPercent = '100' />" +
+                    "        <div Border = '1px solid Green' HeightPercent = '100' WidthPercent = '100' css.display='inline-table' />" +
                     "    </SplitPanel>" +
                     "</div>";
             }

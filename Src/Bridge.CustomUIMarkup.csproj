@@ -53,6 +53,7 @@
     <Compile Include=".Net Override\System.Windows\ContentPresenter.cs" />
     <Compile Include=".Net Override\System.Windows\FrameworkElementExtensions.cs" />
     <Compile Include=".Net Override\System.Windows\HtmlBodyElement.cs" />
+    <Compile Include=".Net Override\System.Windows\HtmlElement.cs" />
     <Compile Include=".Net Override\System.Xml\WhiteStoneExtensions.cs" />
     <Compile Include=".Net Override\System\Cast.cs" />
     <Compile Include=".Net Override\System\Exceptions.cs" />
@@ -62,6 +63,7 @@
     <Compile Include="Common\RandomValue.cs" />
     <Compile Include="Libraries\SemanticUI\DataGrid.cs" />
     <Compile Include="Libraries\SemanticUI\DatePicker.cs" />
+    <Compile Include="Libraries\SemanticUI\Extensions.cs" />
     <Compile Include="Libraries\SemanticUI\FieldString.cs" />
     <Compile Include="Libraries\SemanticUI\ItemsControl.cs" />
     <Compile Include=".Net Override\System.Windows.Controls\TextBlock.cs" />
@@ -199,12 +201,6 @@
     </Reference>
     <Reference Include="Retyped.es5, Version=2.3.4.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Retyped.es5.2.3.6556\lib\net40\Retyped.es5.dll</HintPath>
-    </Reference>
-    <Reference Include="Retyped.jquery, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Retyped.jquery.2.0.6556\lib\net40\Retyped.jquery.dll</HintPath>
-    </Reference>
-    <Reference Include="Retyped.semantic-ui, Version=2.2.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Retyped.semantic-ui.2.2.6556\lib\net40\Retyped.semantic-ui.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup />

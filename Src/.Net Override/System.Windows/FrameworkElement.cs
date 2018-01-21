@@ -14,14 +14,17 @@ namespace System.Windows
                 _root = DOM.CreateElement(tag, className);
             }
 
-            PropertyChanged += (s, e) =>
+            InitHandlerForOnPropertyChange(this);
+        }
+
+        public FrameworkElement(jQuery query)
+        {
+            if (query != null)
             {
-                var propertyChangeEventArgs = e as BagChangedEventArgs;
-                if (propertyChangeEventArgs != null)
-                {
-                    DependencyProperty.TryInvokeOnPropertyChange(this, propertyChangeEventArgs.PropertyName, propertyChangeEventArgs.NewValue, propertyChangeEventArgs.OldValue);
-                }
-            };
+                _root = query;
+            }
+
+            InitHandlerForOnPropertyChange(this);
         }
         #endregion
 
@@ -94,6 +97,18 @@ namespace System.Windows
         protected static DependencyProperty RegisterDependencyProperty(string name, Type propertyType, Type ownerType, PropertyChangedCallback propertyChangedCallback)
         {
             return DependencyProperty.Register(name, propertyType, ownerType, new PropertyMetadata(propertyChangedCallback));
+        }
+
+        static void InitHandlerForOnPropertyChange(DependencyObject element)
+        {
+            element.PropertyChanged += (s, e) =>
+            {
+                var propertyChangeEventArgs = e as BagChangedEventArgs;
+                if (propertyChangeEventArgs != null)
+                {
+                    DependencyProperty.TryInvokeOnPropertyChange(element, propertyChangeEventArgs.PropertyName, propertyChangeEventArgs.NewValue, propertyChangeEventArgs.OldValue);
+                }
+            };
         }
         #endregion
 
@@ -515,8 +530,6 @@ namespace System.Windows
             throw new ArgumentException(newValue.ToString());
         }
         #endregion
-
-       
 
         #region object DataContext
         object _dataContext;
