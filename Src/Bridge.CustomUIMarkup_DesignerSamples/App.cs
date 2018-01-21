@@ -1,15 +1,23 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
 using Bridge.CustomUIMarkup.Libraries.CodeMirror;
-using Bridge.CustomUIMarkup.UI;
 using Bridge.jQuery2;
+using Elements = Bridge.CustomUIMarkup.Libraries.SemanticUI.Elements;
+using XmlEditor = Bridge.CustomUIMarkup.UI.XmlEditor;
 
 namespace Bridge.CustomUIMarkup_DesignerSamples
 {
-
-
-    class AppContainer:HtmlElement
+    class AppContainer : HtmlElement
     {
+        #region Constructors
+        public AppContainer()
+        {
+            UIBuilder.LoadComponent(this, TestUI);
+            HeightPercent = 100;
+        }
+        #endregion
+
+        #region Properties
         static string TestUI => @"
 
 <div class='ui two row grid' HeightPercent = '100' WidthPercent = '100' >
@@ -31,38 +39,26 @@ namespace Bridge.CustomUIMarkup_DesignerSamples
 
 
 ";
-        public  AppContainer()
-        {
-            
-            UIBuilder.LoadComponent(this,TestUI);
-            HeightPercent = 100;
-        }
+        #endregion
     }
 
     public class App
     {
-        #region Properties
-     
-        #endregion
-
         #region Public Methods
         public static void Init()
         {
-            
-            Bridge.CustomUIMarkup.Libraries.SemanticUI.Elements.RegisterToBuilder();
-            Bridge.CustomUIMarkup.Libraries.SemanticUI.Elements.RegisterToBuilder();
-            Bridge.CustomUIMarkup.Libraries.split_js.Elements.RegisterToBuilder();
-            Bridge.CustomUIMarkup.Libraries.CodeMirror.Elements.RegisterToBuilder();
-            UIBuilder.Register("XmlEditor", () => new Bridge.CustomUIMarkup.UI.XmlEditor());
-            Bridge.CustomUIMarkup.Libraries.viewerjs.Elements.RegisterToBuilder();
-            Bridge.CustomUIMarkup.Libraries.Swiper.Elements.RegisterToBuilder();
+            Elements.RegisterToBuilder();
+            CustomUIMarkup.Libraries.split_js.Elements.RegisterToBuilder();
+            CustomUIMarkup.Libraries.CodeMirror.Elements.RegisterToBuilder();
+            UIBuilder.Register("XmlEditor", () => new XmlEditor());
+            CustomUIMarkup.Libraries.viewerjs.Elements.RegisterToBuilder();
+            CustomUIMarkup.Libraries.Swiper.Elements.RegisterToBuilder();
 
             jQuery.Ready(RenderUIEditor);
         }
         #endregion
 
         #region Methods
-        
         static void RenderUIEditor()
         {
             UIBuilder.Create<UIEditor>().RenderInBody();
