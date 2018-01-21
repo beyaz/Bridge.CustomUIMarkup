@@ -1,11 +1,44 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
-using Bridge.CustomUIMarkup.UI;
 
 namespace Bridge.CustomUIMarkup.Libraries.Swiper
 {
     public class Slider : Control
     {
+
+        static string style => @"
+
+<style>
+    
+    .swiper-container {
+      width: 100%;
+      height: 100%;
+    }
+    .swiper-slide {
+      text-align: center;
+      font-size: 18px;
+      background: #fff;
+
+      /* Center slide text vertically */
+      display: -webkit-box;
+      display: -ms-flexbox;
+      display: -webkit-flex;
+      display: flex;
+      -webkit-box-pack: center;
+      -ms-flex-pack: center;
+      -webkit-justify-content: center;
+      justify-content: center;
+      -webkit-box-align: center;
+      -ms-flex-align: center;
+      -webkit-align-items: center;
+      align-items: center;
+    }
+  </style>
+
+";
+        readonly HtmlElement _swiper_wrapper = null;
+        readonly HtmlElement _swiper_pagination = null; 
+
         #region Constructors
         public Slider()
         {
@@ -16,7 +49,9 @@ namespace Bridge.CustomUIMarkup.Libraries.Swiper
 
         #region Public Properties
         public override string DefaultTemplateAsXml => "<div class='swiper-container'>" +
-                                                       "    <div class='swiper-wrapper' />" +
+                                                       style+
+                                                       "    <div x:Name='_swiper_wrapper'    class='swiper-wrapper' />" +
+                                                       "    <div x:Name='_swiper_pagination' class='swiper-pagination' />" +
                                                        "</div>";
         #endregion
 
@@ -26,7 +61,7 @@ namespace Bridge.CustomUIMarkup.Libraries.Swiper
             var item = UIBuilder.Create<SwiperItemControl>();
             item.Content = element;
 
-            GetVisualChildAt(0).AddVisualChild(item);
+            _swiper_wrapper.AddLogicalChild(item);
         }
 
         void InitWrapper(FrameworkElement parent)
@@ -34,19 +69,28 @@ namespace Bridge.CustomUIMarkup.Libraries.Swiper
             // ReSharper disable once UnusedVariable
             var delay = Delay;
             // ReSharper disable once UnusedVariable
-            var me = this;
+            var root = _root;
+
+            // ReSharper disable once UnusedVariable
+            var swiper_pagination = _swiper_pagination;
+
 
             Script.Write(@"
 
 setTimeout(function(){
 
-    new Swiper(me._root, {
-      spaceBetween: 30,
-      centeredSlides: true,
-      autoplay: {
-        delay: delay,
-        disableOnInteraction: false,
-      }
+    new Swiper(root, 
+    {
+        pagination: 
+        {
+            el: swiper_pagination,
+        },
+        autoplay: 
+        {
+            delay: delay
+        },
+        loop: true,
+        effect:'coverflow'   
     });
 
 
@@ -67,7 +111,7 @@ setTimeout(function(){
         }
 
         #region int Delay
-        public static readonly DependencyProperty DelayProperty = DependencyProperty.Register(nameof(Delay), typeof(string), typeof(Slider), new PropertyMetadata(2000));
+        public static readonly DependencyProperty DelayProperty = DependencyProperty.Register(nameof(Delay), typeof(string), typeof(Slider), new PropertyMetadata(3000));
 
         public int Delay
         {
