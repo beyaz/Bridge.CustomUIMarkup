@@ -1,9 +1,8 @@
 ﻿using System.Windows.Controls;
-using Bridge.CustomUIMarkup.UI;
 
 namespace Bridge.CustomUIMarkup.Libraries.CodeMirror
 {
-    static class Elements
+    static class CodeMirrorElements
     {
         #region Public Methods
         public static void RegisterToBuilder()

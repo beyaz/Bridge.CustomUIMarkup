@@ -1,9 +1,8 @@
 ﻿using System.Windows.Controls;
-using Bridge.CustomUIMarkup.UI;
 
 namespace Bridge.CustomUIMarkup.Libraries.viewerjs
 {
-    static class Elements
+    static class ViewerJsElements
     {
         #region Public Methods
         public static void RegisterToBuilder()

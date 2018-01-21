@@ -1,10 +1,9 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
-using Bridge.CustomUIMarkup.UI;
 
 namespace Bridge.CustomUIMarkup.Libraries.SemanticUI
 {
-    public static class Elements
+    public static class SemanticUIElements
     {
 
         static HtmlElement CreateElement(string tag = null, string className = null)

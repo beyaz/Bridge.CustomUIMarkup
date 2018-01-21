@@ -1,9 +1,8 @@
 ﻿using System.Windows.Controls;
-using Bridge.CustomUIMarkup.UI;
 
 namespace Bridge.CustomUIMarkup.Libraries.split_js
 {
-    public  static class Elements
+    public static class SplitJsElements
     {
         #region Public Methods
         public static void RegisterToBuilder()

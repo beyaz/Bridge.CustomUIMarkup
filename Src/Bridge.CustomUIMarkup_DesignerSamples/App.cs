@@ -1,8 +1,11 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
 using Bridge.CustomUIMarkup.Libraries.CodeMirror;
+using Bridge.CustomUIMarkup.Libraries.split_js;
+using Bridge.CustomUIMarkup.Libraries.SemanticUI;
+using Bridge.CustomUIMarkup.Libraries.Swiper;
+using Bridge.CustomUIMarkup.Libraries.viewerjs;
 using Bridge.jQuery2;
-using Elements = Bridge.CustomUIMarkup.Libraries.SemanticUI.Elements;
 using XmlEditor = Bridge.CustomUIMarkup.UI.XmlEditor;
 
 namespace Bridge.CustomUIMarkup_DesignerSamples
@@ -47,12 +50,12 @@ namespace Bridge.CustomUIMarkup_DesignerSamples
         #region Public Methods
         public static void Init()
         {
-            Elements.RegisterToBuilder();
-            CustomUIMarkup.Libraries.split_js.Elements.RegisterToBuilder();
-            CustomUIMarkup.Libraries.CodeMirror.Elements.RegisterToBuilder();
+            SemanticUIElements.RegisterToBuilder();
+            SplitJsElements.RegisterToBuilder();
+            CodeMirrorElements.RegisterToBuilder();
             UIBuilder.Register("XmlEditor", () => new XmlEditor());
-            CustomUIMarkup.Libraries.viewerjs.Elements.RegisterToBuilder();
-            CustomUIMarkup.Libraries.Swiper.Elements.RegisterToBuilder();
+            ViewerJsElements.RegisterToBuilder();
+            SwiperElements.RegisterToBuilder();
 
             jQuery.Ready(RenderUIEditor);
         }
