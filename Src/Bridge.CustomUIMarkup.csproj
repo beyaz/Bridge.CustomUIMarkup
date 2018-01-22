@@ -204,10 +204,7 @@
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>start  d:\github\WhiteStone\bin\WhiteStone.Tasks.exe "$(SolutionDir)TasksForPrepareOutputs.json"
-
-
-</PostBuildEvent>
+    <PostBuildEvent>start  $(SolutionDir)Build\WhiteStone.Tasks.exe   "$(ProjectDir)PostBuild.json"</PostBuildEvent>
   </PropertyGroup>
   <Import Project="..\packages\Bridge.Min.16.7.0\build\Bridge.Min.targets" Condition="Exists('..\packages\Bridge.Min.16.7.0\build\Bridge.Min.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
