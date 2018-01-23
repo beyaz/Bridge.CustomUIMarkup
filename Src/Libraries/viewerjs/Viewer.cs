@@ -1,6 +1,5 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
-using Bridge.CustomUIMarkup.Common;
 
 namespace Bridge.CustomUIMarkup.Libraries.viewerjs
 {
@@ -15,7 +14,7 @@ namespace Bridge.CustomUIMarkup.Libraries.viewerjs
         public Viewer()
         {
             BeforeConnectToLogicalParent += InitWrapper;
-            AfterLogicalChildAdd += CreateImage;
+            AfterLogicalChildAdd         += CreateImage;
         }
         #endregion
 
@@ -32,8 +31,6 @@ namespace Bridge.CustomUIMarkup.Libraries.viewerjs
             var li = new HtmlElement("li");
             li.AddVisualChild(element);
             AddVisualChild(li);
-
-            // DOM.li().AppendTo(_root).Append(element._root);
         }
 
         void InitWrapper(FrameworkElement parent)
@@ -43,32 +40,6 @@ namespace Bridge.CustomUIMarkup.Libraries.viewerjs
             // ReSharper disable once UnusedVariable
             var me = this;
 
-
-            var css = @"
-.pictures {
-      margin: 0;
-      padding: 0;
-      list-style: none;
-      max-width: 30rem;
-      display:table-cell;
-    }
-
-    .pictures > li {
-      float: left;
-      width: 33.3%;
-      height: 33.3%;
-      margin: 0 -1px -1px 0;
-      border: 1px solid transparent;
-      overflow: hidden;
-    }
-
-    .pictures > li > img {
-      width: 100%;
-      cursor: -webkit-zoom-in;
-      cursor: zoom-in;
-    }
-";
-
             Script.Write(@"
 
 setTimeout(function(){
@@ -76,21 +47,9 @@ setTimeout(function(){
     var options = {};
     me._wrapper = new Viewer(root, options);
 
-
-
-
-
-$( '<style> '+css+'</style>' ).appendTo( 'head' );
-
 },0);
 
-
-
 ");
-
-            
-
-           
         }
         #endregion
     }
