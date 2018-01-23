@@ -2,7 +2,7 @@
 
 namespace Bridge.CustomUIMarkup.Libraries.viewerjs
 {
-    static class ViewerJsElements
+    public static class ViewerJsElements
     {
         #region Public Methods
         public static void RegisterToBuilder()

@@ -21,6 +21,7 @@ namespace System.Windows
         {
             element.AfterLogicalChildAdd    += element.AddVisualChild;
             element.AfterLogicalChildRemove += element.RemoveVisualChild;
+            element.AfterLogicalChildsCleared += element.ClearVisualChilds;
         }
         #endregion
     }

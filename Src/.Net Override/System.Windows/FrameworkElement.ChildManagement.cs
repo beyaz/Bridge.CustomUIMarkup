@@ -64,9 +64,13 @@ namespace System.Windows
             GetVisualChilderen().Add(child);
         }
 
+
+        protected event Action AfterLogicalChildsCleared;
         public void ClearLogicalChilds()
         {
             _logicalChilderen?.Clear();
+
+            AfterLogicalChildsCleared?.Invoke();
         }
 
         public void ClearVisualChilds()
