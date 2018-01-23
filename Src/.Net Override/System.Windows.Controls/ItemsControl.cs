@@ -80,10 +80,7 @@ namespace System.Windows.Controls
                 }
                 else
                 {
-                    var textBlock       = UIBuilder.Create<TextBlock>();
-                    textBlock.InnerHTML = itemData?.ToString();
-
-                    item = textBlock;
+                    item = CreateItemRendererControlForStringContent(itemData?.ToString());
                 }
 
                 var data = itemData;
@@ -91,6 +88,19 @@ namespace System.Windows.Controls
 
                 ConnectItem(item);
             }
+
+            AfterRenderCompleted?.Invoke();
+        }
+
+        public event Action AfterRenderCompleted;
+
+        protected virtual FrameworkElement CreateItemRendererControlForStringContent(string content)
+        {
+            var textBlock       = UIBuilder.Create<TextBlock>();
+
+            textBlock.InnerHTML = content;
+
+            return textBlock;
         }
 
         void OnBeforeConnectToLogicalParent(FrameworkElement arg)

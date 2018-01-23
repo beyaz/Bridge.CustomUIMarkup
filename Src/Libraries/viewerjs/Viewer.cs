@@ -1,51 +1,68 @@
-﻿using System.Windows;
+﻿using System.ComponentModel;
+using System.Windows;
 using System.Windows.Controls;
 
 namespace Bridge.CustomUIMarkup.Libraries.viewerjs
 {
-    public class Viewer : Control
+    public class Viewer : ListBox
     {
-        #region Fields
-        // ReSharper disable once UnassignedField.Global
-        public dynamic _wrapper;
+        #region Static Fields
+        public static readonly DependencyProperty ItemHeightProperty = DependencyProperty.Register("ItemHeight", typeof(double), typeof(Viewer), new PropertyMetadata(100));
+
+        public static readonly DependencyProperty ItemWidthProperty = DependencyProperty.Register("ItemWidth", typeof(double), typeof(Viewer), new PropertyMetadata(100));
         #endregion
 
         #region Constructors
         public Viewer()
         {
-            BeforeConnectToLogicalParent += InitWrapper;
-            AfterLogicalChildAdd         += CreateImage;
+            this.OnPropertyChanged(nameof(ItemHeight), Render);
+            this.OnPropertyChanged(nameof(ItemWidth), Render);
+
+            AfterRenderCompleted += InitWrapper;
         }
         #endregion
 
-        #region Public Methods
-        public override void InitDOM()
+        #region Public Properties
+        public double ItemHeight
         {
-            _root = DOM.ul("pictures");
+            get { return (double) GetValue(ItemHeightProperty); }
+            set { SetValue(ItemHeightProperty, value); }
+        }
+
+        public double ItemWidth
+        {
+            get { return (double) GetValue(ItemWidthProperty); }
+            set { SetValue(ItemWidthProperty, value); }
         }
         #endregion
 
         #region Methods
-        void CreateImage(FrameworkElement element)
+        protected override FrameworkElement CreateItemRendererControlForStringContent(string content)
         {
-            var li = new HtmlElement("li");
-            li.AddVisualChild(element);
-            AddVisualChild(li);
+            var fe = new HtmlElement("div", "ui card")
+            {
+                Width  = ItemWidth,
+                Height = ItemHeight
+            };
+
+            UIBuilder.LoadComponent(fe, "<div class = 'ui fluid image'>" +
+                                        "   <img src = '" + content + @"' />" +
+                                        "</div>");
+
+            return fe;
         }
 
-        void InitWrapper(FrameworkElement parent)
+        void InitWrapper()
         {
             // ReSharper disable once UnusedVariable
             var root = _root.Get(0);
-            // ReSharper disable once UnusedVariable
-            var me = this;
 
             Script.Write(@"
 
 setTimeout(function(){
 
     var options = {};
-    me._wrapper = new Viewer(root, options);
+    new Viewer(root, options);
 
 },0);
 
