@@ -136,7 +136,6 @@
     <Content Include="Lib\semantic-ui-DataTable\dataTables.TR.js" />
     <Content Include="Lib\semantic-ui-DataTable\jquery.dataTables.js" />
     <Content Include="Lib\sweetalert\sweetalert.js" />
-    <Content Include="Lib\viewerjs\viewer.custom.css" />
     <Content Include="Lib\viewerjs\viewer.css" />
     <Content Include="Lib\viewerjs\viewer.js" />
     <Content Include="Lib\Swiper\swiper.js" />
