@@ -391,9 +391,33 @@ namespace System.Windows
         }
         #endregion
 
+
+        #region IsNotVisible
+
+        public static readonly DependencyProperty IsNotVisibleProperty = DependencyProperty.Register(nameof(IsNotVisible), typeof(bool), typeof(FrameworkElement), new PropertyMetadata(false, OnIsNotVisibleChanged));
+
+        public bool IsNotVisible
+        {
+            get { return (bool) GetValue(IsNotVisibleProperty); }
+            set { SetValue(IsNotVisibleProperty, value); }
+        }
+
+        
+        static void OnIsNotVisibleChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            var me = (FrameworkElement)d;
+
+            var newValue = e.NewValue;
+
+            var value = (bool)newValue;
+
+            me.IsVisible = !value;
+        }
+        #endregion
+
+
         #region IsVisible
-        public static readonly DependencyProperty IsVisibleProperty = DependencyProperty.Register(
-                                                                                                  nameof(IsVisible), typeof(bool), typeof(FrameworkElement),
+        public static readonly DependencyProperty IsVisibleProperty = DependencyProperty.Register(nameof(IsVisible), typeof(bool), typeof(FrameworkElement),
                                                                                                   new PropertyMetadata(true, OnVisibleChanged));
 
         public bool IsVisible
@@ -423,36 +447,7 @@ namespace System.Windows
         }
         #endregion
 
-        #region VisibilityIsHidden
-        public static readonly DependencyProperty VisibilityIsHiddenProperty = DependencyProperty.Register(
-                                                                                                           nameof(VisibilityIsHidden), typeof(bool),
-                                                                                                           typeof(FrameworkElement),
-                                                                                                           new PropertyMetadata(false, OnVisibilityIsHiddenChanged));
-
-        public bool VisibilityIsHidden
-        {
-            get { return (bool) GetValue(VisibilityIsHiddenProperty); }
-            set { SetValue(VisibilityIsHiddenProperty, value); }
-        }
-
-        static void OnVisibilityIsHiddenChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-        {
-            var me = (FrameworkElement) d;
-
-            var newValue = e.NewValue;
-
-            var value = (bool) newValue;
-
-            if (value)
-            {
-                me.Visibility = Visibility.Hidden;
-            }
-            else
-            {
-                me.Visibility = Visibility.Visible;
-            }
-        }
-        #endregion
+        
 
         #region VisibilityProperty
         public static readonly DependencyProperty VisibilityProperty = DependencyProperty.Register(nameof(Visibility), typeof(Visibility), typeof(FrameworkElement), new PropertyMetadata(OnVisibilityChanged));
