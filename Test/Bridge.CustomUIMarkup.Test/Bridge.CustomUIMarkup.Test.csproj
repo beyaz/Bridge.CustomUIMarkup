@@ -40,6 +40,7 @@
     <Compile Include="BindingInfoTest.cs" />
     <Compile Include="CastTest.cs" />
     <Compile Include="DatePickerTest.cs" />
+    <Compile Include="JsonSerializerTest.cs" />
     <Compile Include="Libraries.SemanticUI\DataGridTest.cs" />
     <Compile Include="Libraries.SemanticUI\ItemsControlTests.cs" />
     <Compile Include="RandomValueTest.cs" />

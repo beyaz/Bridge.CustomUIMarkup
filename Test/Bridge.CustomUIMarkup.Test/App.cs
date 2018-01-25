@@ -40,6 +40,8 @@ namespace Bridge.CustomUIMarkup.Test
 
             RandomValueTest.RunAll();
 
+            JsonSerializerTest.RunAll();
+
             Console.WriteLine("Success");
         }
         #endregion
