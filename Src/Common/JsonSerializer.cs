@@ -34,13 +34,19 @@ namespace Bridge.CustomUIMarkup.Common
         {
             if (instance == null)
             {
-                throw new ArgumentNullException(nameof(instance));
+                return null;
             }
+
             return JsonConvert.SerializeObject(instance, JsonSerializerSettings);
         }
 
         public virtual string SerializeForPostOperation(object instance)
         {
+            if (instance == null)
+            {
+                return null;
+            }
+
             instance = Clone(instance);
 
             VisitProperties(instance);
@@ -56,8 +62,6 @@ namespace Bridge.CustomUIMarkup.Common
             {
                 return;
             }
-
-           
 
             var enumerable = instance as IEnumerable;
             if (enumerable != null)

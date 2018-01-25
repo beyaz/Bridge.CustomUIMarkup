@@ -34,8 +34,9 @@ namespace Bridge.CustomUIMarkup.Libraries.SemanticUI
 
 
         #region Fields
-        // ReSharper disable once UnassignedField.Global
-        protected FrameworkElement _inputElement;
+        #pragma warning disable 649
+        FrameworkElement _inputElement;
+        #pragma warning restore 649
         #endregion
 
         #region Constructors
