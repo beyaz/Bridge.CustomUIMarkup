@@ -10,10 +10,9 @@ namespace Bridge.CustomUIMarkup.Common
         {
             Debug.Assert(tagName != null);
             Debug.Assert(type != null);
-            
 
             TagName = tagName;
-            Type = type;
+            Type    = type;
         }
         #endregion
 
