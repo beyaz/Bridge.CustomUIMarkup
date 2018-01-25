@@ -747,9 +747,7 @@ namespace Bridge.CustomUIMarkup.Test
 
 ";
 
-            var fe = new FrameworkElement
-            {
-            };
+            var fe = new FrameworkElement();
 
             fe.LoadComponent(htmlString);
 

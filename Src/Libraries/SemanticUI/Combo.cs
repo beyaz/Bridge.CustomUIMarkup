@@ -1,9 +1,7 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls.Primitives;
-using Retyped;
 
 namespace Bridge.CustomUIMarkup.Libraries.SemanticUI
 {

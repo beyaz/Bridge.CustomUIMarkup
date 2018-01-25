@@ -3,41 +3,19 @@ using System.Diagnostics.CodeAnalysis;
 using System.Windows;
 using System.Windows.Controls;
 
-
-
-
 namespace Bridge.CustomUIMarkup.Libraries.SemanticUI
 {
     [SuppressMessage("ReSharper", "UnusedVariable")]
     [SuppressMessage("ReSharper", "NotAccessedVariable")]
     public class DatePicker : Control
     {
-
-        #region IsDisabled
-        public static readonly DependencyProperty IsDisabledProperty = DependencyProperty.Register(nameof(IsDisabled), typeof(bool), typeof(DatePicker), new PropertyMetadata(false, OnIsDisabledChanged));
-
-        public bool IsDisabled
-        {
-            get { return (bool)GetValue(IsDisabledProperty); }
-            set { SetValue(IsDisabledProperty, value); }
-        }
-        static void OnIsDisabledChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-        {
-            var me = (DatePicker)d;
-
-            me._ui_input.Class = e.NewValue.ToBoolean() ? "ui disabled input left icon" : "ui input left icon";
-        }
-        #endregion
-
-
-
         #region Fields
         #pragma warning disable 169
         FrameworkElement _inputText;
         #pragma warning restore 169
 
         #pragma warning disable 649
-        FrameworkElement  _ui_input;
+        FrameworkElement _ui_input;
         #pragma warning restore 649
         #endregion
 
@@ -73,9 +51,36 @@ root.calendar(settings);
         public override string DefaultTemplateAsXml => "<div class='ui calendar'>" +
                                                        "    <div x.Name='_ui_input'  class='ui input left icon'>" +
                                                        "        <i class='calendar icon'/>" +
-                                                       "        <input type = 'text' x.Name='_inputText'/>" +
+                                                       "        <input type = 'text' x.Name='_inputText'  placeHolder='{PlaceHolder}'   />" +
                                                        "    </div>" +
                                                        "</div>";
+        #endregion
+
+        #region PlaceHolder
+        public static readonly DependencyProperty PlaceHolderProperty = DependencyProperty.Register(nameof(PlaceHolder), typeof(string), typeof(DatePicker), new PropertyMetadata(null));
+
+        public string PlaceHolder
+        {
+            get { return (string) GetValue(PlaceHolderProperty); }
+            set { SetValue(PlaceHolderProperty, value); }
+        }
+        #endregion
+
+        #region IsDisabled
+        public static readonly DependencyProperty IsDisabledProperty = DependencyProperty.Register(nameof(IsDisabled), typeof(bool), typeof(DatePicker), new PropertyMetadata(false, OnIsDisabledChanged));
+
+        public bool IsDisabled
+        {
+            get { return (bool) GetValue(IsDisabledProperty); }
+            set { SetValue(IsDisabledProperty, value); }
+        }
+
+        static void OnIsDisabledChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            var me = (DatePicker) d;
+
+            me._ui_input.Class = e.NewValue.ToBoolean() ? "ui disabled input left icon" : "ui input left icon";
+        }
         #endregion
 
         #region DateTime? Value
