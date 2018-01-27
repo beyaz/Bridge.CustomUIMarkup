@@ -53,6 +53,7 @@ namespace Bridge.CustomUIMarkup.Libraries.SemanticUI
             UIBuilder.Register("ContentPresenter", () => new ContentPresenter());
             UIBuilder.Register("ui_rating", UIBuilder.Create<ui_rating>);
             UIBuilder.Register("ui-rating", UIBuilder.Create<ui_rating>);
+            UIBuilder.Register("ui-range", UIBuilder.Create<Range>);
 
             UIBuilder.Register("comment", UIBuilder.Create<comment>);
             UIBuilder.Register("ui_comments", () => new HtmlElement("div", "ui comments"));

@@ -116,7 +116,7 @@
     <Compile Include="Common\ScriptLoader.cs" />
     <Compile Include=".Net Override\System.Windows.Controls\UIBuilder.cs" />
     <Compile Include="Libraries\SemanticUI\Combo.cs" />
-    <Compile Include="Libraries\SemanticUI\ElementBase.cs" />
+    <Compile Include="Libraries\SemanticUI\Range.cs" />
     <Compile Include="Libraries\SemanticUI\InputText.cs" />
     <Compile Include="Libraries\SemanticUI\NumberToWord.cs" />
     <Compile Include="Libraries\SemanticUI\TabItem.cs" />
@@ -136,6 +136,8 @@
     <Content Include="Lib\semantic-ui-DataTable\dataTables.semanticui.js" />
     <Content Include="Lib\semantic-ui-DataTable\dataTables.TR.js" />
     <Content Include="Lib\semantic-ui-DataTable\jquery.dataTables.js" />
+    <Content Include="Lib\semantic-ui-range\range.css" />
+    <Content Include="Lib\semantic-ui-range\range.js" />
     <Content Include="Lib\sweetalert\sweetalert.js" />
     <Content Include="Lib\viewerjs\viewer.css" />
     <Content Include="Lib\viewerjs\viewer.js" />
