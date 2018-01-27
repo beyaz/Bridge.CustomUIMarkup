@@ -49,7 +49,7 @@ root.calendar(settings);
 
         #region Public Properties
         public override string DefaultTemplateAsXml => "<div class='ui calendar'>" +
-                                                       "    <div x.Name='_ui_input'  class='ui input left icon'>" +
+                                                       "    <div x:Name = '_ui_input'  class='ui input left icon'>" +
                                                        "        <i class='calendar icon'/>" +
                                                        "        <input type = 'text' x.Name='_inputText'  placeHolder='{PlaceHolder}'   />" +
                                                        "    </div>" +
