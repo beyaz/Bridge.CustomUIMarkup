@@ -102,6 +102,11 @@ namespace Bridge.CustomUIMarkup.Libraries.SemanticUI
 
         void UpdateUIValue()
         {
+            if (_wrapper == null)
+            {
+                return;
+            }
+
             if (Value < Min)
             {
                 throw new ArgumentException(nameof(Value) + $" is invalid. @Value:{Value} < {Min}");
