@@ -15,6 +15,11 @@ namespace Bridge.CustomUIMarkup.Test
         #region Public Methods
         public static void Main()
         {
+
+
+            CastTest.RunAll();
+
+
             SemanticUIElements.RegisterToBuilder();
             SplitJsElements.RegisterToBuilder();
             CodeMirrorElements.RegisterToBuilder();
@@ -36,7 +41,7 @@ namespace Bridge.CustomUIMarkup.Test
 
             ItemsControlTests.RunAll();
 
-            CastTest.RunAll();
+            
 
             DatePickerTest.RunAll();
 

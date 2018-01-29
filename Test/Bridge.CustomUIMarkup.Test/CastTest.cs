@@ -1,19 +1,19 @@
 ﻿using System;
-using Bridge.Html5;
+using Bridge.QUnit;
 
 namespace Bridge.CustomUIMarkup.Test
 {
-    class CastTest : TestBase
+    class CastTest
     {
         #region Public Methods
         public static void RunAll()
         {
-            QUnit.QUnit.Test(nameof(Int32ToNullableInt32), Int32ToNullableInt32);
+            QUnit.QUnit.Test(nameof(CastTest) + "->" + nameof(Int32ToNullableInt32), Int32ToNullableInt32);
         }
         #endregion
 
         #region Methods
-        static void Int32ToNullableInt32(QUnit.Assert assert)
+        static void Int32ToNullableInt32(Assert assert)
         {
             var i = 6;
 
