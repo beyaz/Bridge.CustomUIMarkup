@@ -11,6 +11,11 @@ namespace Bridge.CustomUIMarkup.Common
 
     public class JsonSerializer
     {
+        public void RestoreAfterPostOperation(object newObject, object firstVersion)
+        {
+            VisitProperties(newObject, VisitMode.Restore, firstVersion);
+        }
+
         #region Properties
         static JsonSerializerSettings JsonSerializerSettings => new JsonSerializerSettings
         {
@@ -49,14 +54,20 @@ namespace Bridge.CustomUIMarkup.Common
 
             instance = Clone(instance);
 
-            VisitProperties(instance);
+            VisitProperties(instance,VisitMode.Clean,null);
 
             return JsonConvert.SerializeObject(instance, JsonSerializerSettings);
         }
         #endregion
 
         #region Methods
-        static void VisitProperties(object instance)
+        enum VisitMode
+        {
+            Clean,
+            Restore
+        }
+
+        static void VisitProperties(object instance, VisitMode mode, object firstVersion)
         {
             if (instance == null)
             {
@@ -82,9 +93,21 @@ namespace Bridge.CustomUIMarkup.Common
                 if (customAttributes.Any())
                 {
                     propertyInfo.SetValue(instance, propertyInfo.PropertyType.GetDefaultValue());
+                    continue;
                 }
 
-                VisitProperties(propertyInfo.GetValue(instance));
+                var propertyType = propertyInfo.PropertyType;
+                if (propertyType.IsNumeric() || propertyType == typeof(string))
+                {
+                    continue;
+                }
+
+
+
+
+                var propertyValueOfInstance = propertyInfo.GetValue(instance);
+
+                VisitProperties(propertyValueOfInstance,mode,null);
             }
         }
 
