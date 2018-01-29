@@ -129,6 +129,8 @@
     <Compile Include="Common\XmlIntellisenseInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Lib\qunit\qunit.css" />
+    <Content Include="Lib\qunit\qunit.js" />
     <Content Include="Lib\semantic-ui-calendar\calendar.css" />
     <Content Include="Lib\semantic-ui-calendar\calendar.js" />
     <Content Include="Lib\semantic-ui-calendar\calendar.TR.js" />
