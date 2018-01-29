@@ -7,25 +7,20 @@ namespace Bridge.CustomUIMarkup.Test
         #region Public Methods
         public static void RunAll()
         {
-            new CastTest().Int32ToNullableInt32();
-            new CastTest().Nullabe_Types_Default_Values_Mustbe_Null();
+            QUnit.QUnit.Test(nameof(Int32ToNullableInt32), Int32ToNullableInt32);
         }
         #endregion
 
         #region Methods
-        void Int32ToNullableInt32()
+        static void Int32ToNullableInt32(QUnit.Assert assert)
         {
-            int i = 6;
+            var i = 6;
+
             var result = Cast.To<int?>(i);
 
-            MustTrue(result != null);
-            MustEqual(i, result.GetValueOrDefault());
-        }
+            assert.Ok(result != null);
 
-
-        void Nullabe_Types_Default_Values_Mustbe_Null()
-        {
-            Assert.IsNull(typeof(int?).GetDefaultValue());
+            assert.Equal(i, result.GetValueOrDefault());
         }
         #endregion
     }
