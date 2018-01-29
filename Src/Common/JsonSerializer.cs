@@ -40,11 +40,6 @@ namespace Bridge.CustomUIMarkup.Common
 
         public void RestoreAfterPostOperation(object newObject, object firstVersion)
         {
-            if (firstVersion == null)
-            {
-                return;
-            }
-
             VisitProperties(newObject, VisitMode.Restore, firstVersion);
         }
 
@@ -77,6 +72,11 @@ namespace Bridge.CustomUIMarkup.Common
         static void VisitProperties(object instance, VisitMode mode, object firstVersion)
         {
             if (instance == null)
+            {
+                return;
+            }
+
+            if (mode == VisitMode.Restore && firstVersion == null)
             {
                 return;
             }
@@ -116,7 +116,7 @@ namespace Bridge.CustomUIMarkup.Common
 
                         var defaultValue = propertyInfo.PropertyType.GetDefaultValue();
 
-                        if ( value == defaultValue || value.Equals(defaultValue))
+                        if (value == defaultValue || value.Equals(defaultValue))
                         {
                             propertyInfo.SetValue(instance, propertyInfo.GetValue(firstVersion));
                         }

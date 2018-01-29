@@ -1,7 +1,7 @@
-﻿using System;
+﻿using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
-using Retyped;
+using Bridge.Html5;
 
 namespace Bridge.CustomUIMarkup.Libraries.SemanticUI
 {
@@ -15,17 +15,38 @@ namespace Bridge.CustomUIMarkup.Libraries.SemanticUI
         #region Constructors
         public ui_rating()
         {
-            BeforeConnectToLogicalParent += parent => { _root.rating(); };
+            BeforeConnectToLogicalParent += parent => { UpdateUIValue(); };
+
+            this.OnPropertyChanged(nameof(Rate), UpdateUIValue);
+            this.OnPropertyChanged(nameof(MaxRate), UpdateUIValue);
         }
         #endregion
 
         #region Public Properties
-        public override string DefaultTemplateAsXml => "<div class='ui star rating'  data-max-rating = '{MaxRate}' data-rating ='{Rate}'  />";
+        public override string DefaultTemplateAsXml => "<div class='ui star rating'    />";
 
         public bool? IconIsStar
         {
             get { return (bool?) GetValue(IconIsStarProperty); }
             set { SetValue(IconIsStarProperty, value); }
+        }
+        #endregion
+
+        #region Methods
+        void UpdateUIValue()
+        {
+            if (_root == null)
+            {
+                return;
+            }
+
+            dynamic root = _root;
+
+            dynamic options       = ObjectLiteral.Create<object>();
+            options.maxRating     = MaxRate;
+            options.initialRating = Rate;
+
+            Window.SetTimeout(() => { root.rating(options); });
         }
         #endregion
 
