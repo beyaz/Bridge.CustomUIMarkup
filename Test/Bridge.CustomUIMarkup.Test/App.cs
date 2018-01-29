@@ -1,8 +1,12 @@
 ﻿using System;
-using System.Windows;
-using Bridge.CustomUIMarkup.Libraries.SemanticUI;
 using System.Text.Tokenizers;
+using System.Windows;
 using BOA.Common.Helpers.Test;
+using Bridge.CustomUIMarkup.Libraries.CodeMirror;
+using Bridge.CustomUIMarkup.Libraries.split_js;
+using Bridge.CustomUIMarkup.Libraries.SemanticUI;
+using Bridge.CustomUIMarkup.Libraries.Swiper;
+using Bridge.CustomUIMarkup.Libraries.viewerjs;
 
 namespace Bridge.CustomUIMarkup.Test
 {
@@ -11,13 +15,11 @@ namespace Bridge.CustomUIMarkup.Test
         #region Public Methods
         public static void Main()
         {
-            Bridge.CustomUIMarkup.Libraries.SemanticUI.SemanticUIElements.RegisterToBuilder();
-            Bridge.CustomUIMarkup.Libraries.split_js.SplitJsElements.RegisterToBuilder();
-            Bridge.CustomUIMarkup.Libraries.CodeMirror.CodeMirrorElements.RegisterToBuilder();
-            Bridge.CustomUIMarkup.Libraries.viewerjs.ViewerJsElements.RegisterToBuilder();
-            Bridge.CustomUIMarkup.Libraries.Swiper.SwiperElements.RegisterToBuilder();
-
-
+            SemanticUIElements.RegisterToBuilder();
+            SplitJsElements.RegisterToBuilder();
+            CodeMirrorElements.RegisterToBuilder();
+            ViewerJsElements.RegisterToBuilder();
+            SwiperElements.RegisterToBuilder();
 
             Z_Builder2Test.RunAll();
 
