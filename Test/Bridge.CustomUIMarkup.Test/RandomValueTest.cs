@@ -34,13 +34,13 @@ namespace BOA.Common.Helpers.Test
 
         public static void RunAll()
         {
-            new RandomValueTest().If_Property_Has_Already_Value_Do_Not_Change_It();
-            new RandomValueTest().Must_Support_Circular_Referenced_Types();
-            new RandomValueTest().Must_Support_Primitive_Types();
-            new RandomValueTest().String_With_Length_Parameter();
+            If_Property_Has_Already_Value_Do_Not_Change_It();
+            Must_Support_Circular_Referenced_Types();
+            Must_Support_Primitive_Types();
+            String_With_Length_Parameter();
         }
         #region Public Methods
-        public void If_Property_Has_Already_Value_Do_Not_Change_It()
+        static void If_Property_Has_Already_Value_Do_Not_Change_It()
         {
             var instance = RandomValue.Object<Class_With_Value_Set_In_Constructor>();
             Assert.AreEqual(56, instance.Property_int);
@@ -52,7 +52,7 @@ namespace BOA.Common.Helpers.Test
             Assert.IsNull(instance.Labels?.A2);
         }
 
-        public void Must_Support_Circular_Referenced_Types()
+        static void Must_Support_Circular_Referenced_Types()
         {
             // TODO: Burayı aç
 
@@ -74,7 +74,7 @@ namespace BOA.Common.Helpers.Test
             //Assert.AreEqual(0, RandomValue._objectCreationStack.Count);
         }
 
-        public void Must_Support_Primitive_Types()
+        static void Must_Support_Primitive_Types()
         {
             var instance = RandomValue.Object<MyClassHasPrimitiveTypes>();
 
@@ -85,7 +85,7 @@ namespace BOA.Common.Helpers.Test
             Assert.AreNotEqual(0, instance.UInt64);
         }
 
-        public void String_With_Length_Parameter()
+        static void String_With_Length_Parameter()
         {
             var len = 5432;
             Assert.AreEqual(len, RandomValue.String(len).Length);
