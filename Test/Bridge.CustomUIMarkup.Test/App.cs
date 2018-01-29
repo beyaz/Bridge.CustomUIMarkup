@@ -20,6 +20,8 @@ namespace Bridge.CustomUIMarkup.Test
 
 
             CastTest.RunAll();
+            RandomValueTest.RunAll();
+            JsonSerializerTest.RunAll();
 
 
             SemanticUIElements.RegisterToBuilder();
@@ -47,9 +49,9 @@ namespace Bridge.CustomUIMarkup.Test
 
             DatePickerTest.RunAll();
 
-            RandomValueTest.RunAll();
+            
 
-            JsonSerializerTest.RunAll();
+            
 
             Console.WriteLine("Success");
         }

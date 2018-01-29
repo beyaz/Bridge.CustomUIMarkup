@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
 using Bridge.CustomUIMarkup.Common;
+using Bridge.Html5;
+using Bridge.QUnit;
 
 namespace Bridge.CustomUIMarkup.Test
 {
@@ -25,17 +27,18 @@ namespace Bridge.CustomUIMarkup.Test
         #endregion
     }
 
-    class JsonSerializerTest : TestBase
+    class JsonSerializerTest
     {
         #region Public Methods
+        [Ready]
         public static void RunAll()
         {
-            new JsonSerializerTest().Should_Not_Serialize_When_Property_Has_JsonIgnoreSerializationOnPostOperation_Attribute();
+            QUnit.QUnit.Test(nameof(JsonSerializerTest) + "->" + nameof(Should_Not_Serialize_When_Property_Has_JsonIgnoreSerializationOnPostOperation_Attribute), Should_Not_Serialize_When_Property_Has_JsonIgnoreSerializationOnPostOperation_Attribute);
         }
         #endregion
 
         #region Methods
-        void Should_Not_Serialize_When_Property_Has_JsonIgnoreSerializationOnPostOperation_Attribute()
+        static void Should_Not_Serialize_When_Property_Has_JsonIgnoreSerializationOnPostOperation_Attribute(Assert Assert)
         {
             var instance = new JsonSerializerTest_Class1
             {

@@ -2,6 +2,8 @@
 using System.Diagnostics.CodeAnalysis;
 using Bridge.CustomUIMarkup.Common;
 using Bridge.CustomUIMarkup.Test;
+using Bridge.Html5;
+using Bridge.QUnit;
 
 namespace BOA.Common.Helpers.Test
 {
@@ -18,7 +20,7 @@ namespace BOA.Common.Helpers.Test
         public IReadOnlyCollection<A> IReadOnlyCollectionProperty { get; set; }
 
         public IReadOnlyList<A> ReadOnlyList { get; set; }
-        public string stringValue { get; set; }
+        public string           stringValue  { get; set; }
         #endregion
     }
 
@@ -29,18 +31,24 @@ namespace BOA.Common.Helpers.Test
         #endregion
     }
 
-    public class RandomValueTest:TestBase
+    public class RandomValueTest
     {
-
+        #region Public Methods
+        [Ready]
         public static void RunAll()
         {
-            If_Property_Has_Already_Value_Do_Not_Change_It();
-            Must_Support_Circular_Referenced_Types();
-            Must_Support_Primitive_Types();
-            String_With_Length_Parameter();
+            QUnit.Test(nameof(RandomValueTest) + "->" + nameof(If_Property_Has_Already_Value_Do_Not_Change_It), If_Property_Has_Already_Value_Do_Not_Change_It);
+
+            QUnit.Test(nameof(RandomValueTest) + "->" + nameof(Must_Support_Circular_Referenced_Types), Must_Support_Circular_Referenced_Types);
+
+            QUnit.Test(nameof(RandomValueTest) + "->" + nameof(Must_Support_Primitive_Types), Must_Support_Primitive_Types);
+
+            QUnit.Test(nameof(RandomValueTest) + "->" + nameof(String_With_Length_Parameter), String_With_Length_Parameter);
         }
-        #region Public Methods
-        static void If_Property_Has_Already_Value_Do_Not_Change_It()
+        #endregion
+
+        #region Methods
+        static void If_Property_Has_Already_Value_Do_Not_Change_It(Assert Assert)
         {
             var instance = RandomValue.Object<Class_With_Value_Set_In_Constructor>();
             Assert.AreEqual(56, instance.Property_int);
@@ -52,29 +60,29 @@ namespace BOA.Common.Helpers.Test
             Assert.IsNull(instance.Labels?.A2);
         }
 
-        static void Must_Support_Circular_Referenced_Types()
+        static void Must_Support_Circular_Referenced_Types(Assert Assert)
         {
-            // TODO: Burayı aç
 
-            //RandomValue.Object<A>();
-            //var a = RandomValue.Object<A>();
 
-            //Assert.IsTrue(a.AList.Count > 1);
+            RandomValue.Object<A>();
+            var a = RandomValue.Object<A>();
 
-            //Assert.IsTrue(a.ReadOnlyList.Count > 1);
-            //Assert.IsTrue(a.A2.ReadOnlyList.Count > 1);
+            Assert.IsTrue(a.AList.Count > 1);
 
-            //Assert.IsTrue(a.IReadOnlyCollectionProperty.Count > 1);
+            Assert.IsTrue(a.ReadOnlyList.Count > 1);
+            Assert.IsTrue(a.A2.ReadOnlyList.Count > 1);
 
-            //for (var i = 0; i < 10; i++)
-            //{
-            //    RandomValue.Object<A>();
-            //}
+            Assert.IsTrue(a.IReadOnlyCollectionProperty.Count > 1);
 
-            //Assert.AreEqual(0, RandomValue._objectCreationStack.Count);
+            for (var i = 0; i < 3; i++)
+            {
+                RandomValue.Object<A>();
+            }
+
+            Assert.AreEqual(0, RandomValue._objectCreationStack.Count);
         }
 
-        static void Must_Support_Primitive_Types()
+        static void Must_Support_Primitive_Types(Assert Assert)
         {
             var instance = RandomValue.Object<MyClassHasPrimitiveTypes>();
 
@@ -85,7 +93,7 @@ namespace BOA.Common.Helpers.Test
             Assert.AreNotEqual(0, instance.UInt64);
         }
 
-        static void String_With_Length_Parameter()
+        static void String_With_Length_Parameter(Assert Assert)
         {
             var len = 5432;
             Assert.AreEqual(len, RandomValue.String(len).Length);
@@ -95,11 +103,11 @@ namespace BOA.Common.Helpers.Test
         class MyClassHasPrimitiveTypes
         {
             #region Public Properties
-            public short? Int16 { get; set; }
-            public int? Int32 { get; set; }
-            public long? Int64 { get; set; }
+            public short?  Int16  { get; set; }
+            public int?    Int32  { get; set; }
+            public long?   Int64  { get; set; }
             public ushort? UInt16 { get; set; }
-            public ulong? UInt64 { get; set; }
+            public ulong?  UInt64 { get; set; }
             #endregion
         }
     }
@@ -114,7 +122,7 @@ namespace BOA.Common.Helpers.Test
         #endregion
 
         #region Public Properties
-        public string A { get; set; }
+        public string A  { get; set; }
         public string A2 { get; set; }
         #endregion
     }
@@ -124,17 +132,17 @@ namespace BOA.Common.Helpers.Test
         #region Constructors
         public Class_With_Value_Set_In_Constructor()
         {
-            Property_int = 56;
+            Property_int          = 56;
             Property_int_nullable = 78;
-            Labels = new Labels();
+            Labels                = new Labels();
         }
         #endregion
 
         #region Public Properties
-        public Labels Labels { get; set; }
-        public int Property_int { get; set; }
-        public int? Property_int_nullable { get; set; }
-        public int? Property_int_nullable2 { get; set; }
+        public Labels Labels                 { get; set; }
+        public int    Property_int           { get; set; }
+        public int?   Property_int_nullable  { get; set; }
+        public int?   Property_int_nullable2 { get; set; }
         #endregion
     }
 }
