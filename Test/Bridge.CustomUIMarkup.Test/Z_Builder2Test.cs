@@ -105,7 +105,6 @@ namespace Bridge.CustomUIMarkup.Test
             new Z_Builder2Test().innerHTML_Bindings_Mustbe_Support();
 
             new Z_Builder2Test().img_src_test();
-            new Z_Builder2Test().img_src_test_with_binding();
             new Z_Builder2Test().class_attribute_must_support_binding();
             new Z_Builder2Test().ComponentCreationTest();
             new Z_Builder2Test().ComponentCreationTestWithChilds();
@@ -773,28 +772,7 @@ namespace Bridge.CustomUIMarkup.Test
         }
 
 
-        void img_src_test_with_binding()
-        {
-            var model = new SimpleClass1
-            {
-                LastName = SampleImageUrl_350_150
-            };
-
-            var fe = new FrameworkElement
-            {
-                DataContext = model
-            };
-
-            UIBuilder.LoadComponent(fe, "<img src='{LastName}' />");
-
-            var ui = fe.GetLogicalChildAt(0);
-
-            MustEqual(SampleImageUrl_350_150, ui.Attr("src"));
-
-            model.LastName = SampleImageUrl_350_151;
-
-            MustEqual(SampleImageUrl_350_151, ui.Attr("src"));
-        }
+       
 
         void innerHTML_Bindings_Mustbe_Support()
         {

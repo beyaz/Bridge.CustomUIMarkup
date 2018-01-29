@@ -1,4 +1,5 @@
 ﻿using System;
+using Bridge.Html5;
 using Bridge.QUnit;
 
 namespace Bridge.CustomUIMarkup.Test
@@ -6,6 +7,7 @@ namespace Bridge.CustomUIMarkup.Test
     class CastTest
     {
         #region Public Methods
+        [Ready]
         public static void RunAll()
         {
             QUnit.QUnit.Test(nameof(CastTest) + "->" + nameof(Int32ToNullableInt32), Int32ToNullableInt32);

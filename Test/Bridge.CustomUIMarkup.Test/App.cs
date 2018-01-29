@@ -7,13 +7,15 @@ using Bridge.CustomUIMarkup.Libraries.split_js;
 using Bridge.CustomUIMarkup.Libraries.SemanticUI;
 using Bridge.CustomUIMarkup.Libraries.Swiper;
 using Bridge.CustomUIMarkup.Libraries.viewerjs;
+using Bridge.Html5;
 
 namespace Bridge.CustomUIMarkup.Test
 {
     public class App
     {
         #region Public Methods
-        public static void Main()
+        
+        public static void RunAll()
         {
 
 

@@ -1,0 +1,12 @@
+{
+  "Framework": "qunit",
+
+
+
+  "TestFileTimeout": 60000,
+
+  
+  "References": [
+    { "Path": "Test.js" }
+  ]
+}
