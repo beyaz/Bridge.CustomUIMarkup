@@ -48,8 +48,8 @@ namespace BOA.Common.Helpers.Test
             Assert.IsTrue(instance.Property_int_nullable2 != null);
 
             Assert.IsTrue(instance.Labels != null);
-            Assert.AreEqual("Aloha", instance.Labels.A);
-            Assert.IsNull(instance.Labels.A2);
+            Assert.AreEqual("Aloha", instance.Labels?.A);
+            Assert.IsNull(instance.Labels?.A2);
         }
 
         public void Must_Support_Circular_Referenced_Types()
