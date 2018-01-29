@@ -74,7 +74,7 @@ namespace BOA.Common.Helpers.Test
 
             Assert.IsTrue(a.IReadOnlyCollectionProperty.Count > 1);
 
-            for (var i = 0; i < 3; i++)
+            for (var i = 0; i < 2; i++)
             {
                 RandomValue.Object<A>();
             }
