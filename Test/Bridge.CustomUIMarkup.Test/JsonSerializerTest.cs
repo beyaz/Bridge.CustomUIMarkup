@@ -34,13 +34,14 @@ namespace Bridge.CustomUIMarkup.Test
         public static void RunAll()
         {
             QUnit.QUnit.Test(nameof(JsonSerializerTest) + "->" + nameof(Should_Not_Serialize_When_Property_Has_JsonIgnoreSerializationOnPostOperation_Attribute), Should_Not_Serialize_When_Property_Has_JsonIgnoreSerializationOnPostOperation_Attribute);
+            QUnit.QUnit.Test(nameof(JsonSerializerTest) + "->" + nameof(Should_Restore_Values), Should_Restore_Values); 
         }
         #endregion
 
         #region Methods
-        static void Should_Not_Serialize_When_Property_Has_JsonIgnoreSerializationOnPostOperation_Attribute(Assert Assert)
+        static JsonSerializerTest_Class1 CreateTestInstance()
         {
-            var instance = new JsonSerializerTest_Class1
+            return new JsonSerializerTest_Class1
             {
                 Int32Property_1  = 5,
                 Int32Property_2  = 6,
@@ -77,6 +78,11 @@ namespace Bridge.CustomUIMarkup.Test
                     }
                 }
             };
+        }
+
+        static void Should_Not_Serialize_When_Property_Has_JsonIgnoreSerializationOnPostOperation_Attribute(Assert Assert)
+        {
+            var instance = CreateTestInstance();
 
             var jsonSerializer = new JsonSerializer();
 
@@ -94,11 +100,26 @@ namespace Bridge.CustomUIMarkup.Test
             Assert.AreEqual(5, postValue.Inner.Int32Property_1);
 
             Assert.AreEqual("A", postValue.Inner.InnerList[0].StringProperty_1);
-            Assert.AreEqual("B",postValue.Inner.InnerList[0].StringProperty_2);
+            Assert.AreEqual("B", postValue.Inner.InnerList[0].StringProperty_2);
             Assert.AreEqual(6, postValue.Inner.InnerList[0].Int32Property_2);
             Assert.AreEqual(5, postValue.Inner.InnerList[0].Int32Property_1);
 
             Assert.IsNull(postValue.Inner.InnerDictionary);
+        }
+
+
+        static JsonSerializer Serializer => new JsonSerializer();
+
+        static void Should_Restore_Values(Assert Assert)
+        {
+            var instance = CreateTestInstance();
+            
+            var postValue = Serializer.Deserialize<JsonSerializerTest_Class1>(Serializer.SerializeForPostOperation(instance));
+
+            // ACT
+            Serializer.RestoreAfterPostOperation(postValue,instance);
+
+            Assert.Equal(Serializer.Serialize(postValue), Serializer.Serialize(CreateTestInstance()));
         }
         #endregion
     }

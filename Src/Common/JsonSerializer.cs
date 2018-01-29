@@ -99,8 +99,27 @@ namespace Bridge.CustomUIMarkup.Common
 
                 if (customAttributes.Any())
                 {
-                    propertyInfo.SetValue(instance, propertyInfo.PropertyType.GetDefaultValue());
-                    continue;
+                    if (mode == VisitMode.Clean)
+                    {
+                        propertyInfo.SetValue(instance, propertyInfo.PropertyType.GetDefaultValue());
+                        continue;
+                    }
+
+                    if (mode == VisitMode.Restore)
+                    {
+                        var value = propertyInfo.GetValue(instance);
+
+                        var defaultValue = propertyInfo.PropertyType.GetDefaultValue();
+
+                        if ( value == defaultValue || value.Equals(defaultValue))
+                        {
+                            propertyInfo.SetValue(instance, propertyInfo.GetValue(firstVersion));
+                        }
+
+                        continue;
+                    }
+
+                    throw new InvalidOperationException(mode.ToString());
                 }
 
                 var propertyType = propertyInfo.PropertyType;
@@ -109,9 +128,20 @@ namespace Bridge.CustomUIMarkup.Common
                     continue;
                 }
 
-                var propertyValueOfInstance = propertyInfo.GetValue(instance);
+                if (mode == VisitMode.Clean)
+                {
+                    VisitProperties(propertyInfo.GetValue(instance), mode, null);
 
-                VisitProperties(propertyValueOfInstance, mode, null);
+                    continue;
+                }
+
+                if (mode == VisitMode.Restore)
+                {
+                    VisitProperties(propertyInfo.GetValue(instance), mode, propertyInfo.GetValue(firstVersion));
+                    continue;
+                }
+
+                throw new InvalidOperationException(mode.ToString());
             }
         }
 

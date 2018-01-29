@@ -1,4 +1,5 @@
 ﻿using System.Globalization;
+using Bridge;
 
 namespace System
 {
@@ -38,6 +39,8 @@ namespace System
             return Convert.ToDecimal(left, formatProvider).CompareTo(Convert.ToDecimal(right, formatProvider));
         }
 
+        
+
         /// <summary>
         ///     Gets default value of <paramref name="type" />
         /// </summary>
@@ -47,6 +50,13 @@ namespace System
             {
                 return null;
             }
+
+
+            if (type.IsNumeric())
+            {
+                return Script.Write<object>("Bridge.box(0,type)");
+            }
+
 
             return Activator.CreateInstance(type);
         }
