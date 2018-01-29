@@ -5,10 +5,10 @@
 /// <reference path="D:/github/Bridge.CustomUIMarkup/bin/Lib/semantic-ui-DataTable/jquery.dataTables.js" />
 /// <reference path="D:/github/Bridge.CustomUIMarkup/bin/Lib/semantic-ui-DataTable/dataTables.semanticui.js" />
 /// <reference path="D:/github/Bridge.CustomUIMarkup/bin/Lib/semantic-ui-DataTable/dataTables.TR.js" />
+
+
 /// <reference path="D:/github/Bridge.CustomUIMarkup/bin/Lib/semantic-ui-calendar/calendar.js" />
-
-
-
+ 
 
 /// <reference path="D:/github/Bridge.CustomUIMarkup/bin/js/bridge.js" />
 /// <reference path="D:/github/Bridge.CustomUIMarkup/bin/js/bridge.console.js" />
@@ -22,8 +22,8 @@
 /// <reference path="D:/github/Bridge.CustomUIMarkup/Test/Bridge.CustomUIMarkup.Test/bin/Debug/bridge/Bridge.CustomUIMarkup.Test.js" />
 /// <reference path="D:/github/Bridge.CustomUIMarkup/Test/Bridge.CustomUIMarkup.Test/bin/Debug/bridge/Bridge.CustomUIMarkup.Test.meta.js" />
 
-/// <reference path="D:/github/Bridge.CustomUIMarkup/bin/Lib/semantic-ui/semantic.css" />
 
 
 
 
+  
