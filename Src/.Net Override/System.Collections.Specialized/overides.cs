@@ -1,10 +1,4 @@
-﻿using System;
-using System.Runtime.CompilerServices;
-using System;
-using System.Collections;
-using System.Collections.ObjectModel;
-using System.Runtime.CompilerServices;
-
+﻿
 namespace System.Collections.Specialized
 {
     public delegate void NotifyCollectionChangedEventHandler(object sender, NotifyCollectionChangedEventArgs e);
