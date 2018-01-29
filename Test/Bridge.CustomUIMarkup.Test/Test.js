@@ -8,6 +8,7 @@
 
 
 /// <reference path="D:/github/Bridge.CustomUIMarkup/bin/Lib/semantic-ui-calendar/calendar.js" />
+/// <reference path="D:/github/Bridge.CustomUIMarkup/bin/Lib/semantic-ui-calendar/calendar.TR.js" />
  
 
 /// <reference path="D:/github/Bridge.CustomUIMarkup/bin/js/bridge.js" />
