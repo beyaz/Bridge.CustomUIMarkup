@@ -11,10 +11,13 @@ namespace Bridge.CustomUIMarkup.Common
 
     public class JsonSerializer
     {
-        public void RestoreAfterPostOperation(object newObject, object firstVersion)
+        #region Enums
+        enum VisitMode
         {
-            VisitProperties(newObject, VisitMode.Restore, firstVersion);
+            Clean,
+            Restore
         }
+        #endregion
 
         #region Properties
         static JsonSerializerSettings JsonSerializerSettings => new JsonSerializerSettings
@@ -33,6 +36,11 @@ namespace Bridge.CustomUIMarkup.Common
         public virtual object Deserialize(string value, Type type)
         {
             return JsonConvert.DeserializeObject(value, type);
+        }
+
+        public void RestoreAfterPostOperation(object newObject, object firstVersion)
+        {
+            VisitProperties(newObject, VisitMode.Restore, firstVersion);
         }
 
         public virtual string Serialize(object instance)
@@ -54,19 +62,13 @@ namespace Bridge.CustomUIMarkup.Common
 
             instance = Clone(instance);
 
-            VisitProperties(instance,VisitMode.Clean,null);
+            VisitProperties(instance, VisitMode.Clean, null);
 
             return JsonConvert.SerializeObject(instance, JsonSerializerSettings);
         }
         #endregion
 
         #region Methods
-        enum VisitMode
-        {
-            Clean,
-            Restore
-        }
-
         static void VisitProperties(object instance, VisitMode mode, object firstVersion)
         {
             if (instance == null)
@@ -86,8 +88,13 @@ namespace Bridge.CustomUIMarkup.Common
                 return;
             }
 
-            foreach (var propertyInfo in type.GetProperties().Where(p => p.CanWrite && p.CanRead))
+            foreach (var propertyInfo in type.GetProperties())
             {
+                if (!(propertyInfo.CanWrite && propertyInfo.CanRead))
+                {
+                    continue;
+                }
+
                 var customAttributes = propertyInfo.GetCustomAttributes(typeof(JsonIgnoreSerializationOnPostOperationAttribute), false);
 
                 if (customAttributes.Any())
@@ -102,12 +109,9 @@ namespace Bridge.CustomUIMarkup.Common
                     continue;
                 }
 
-
-
-
                 var propertyValueOfInstance = propertyInfo.GetValue(instance);
 
-                VisitProperties(propertyValueOfInstance,mode,null);
+                VisitProperties(propertyValueOfInstance, mode, null);
             }
         }
 
