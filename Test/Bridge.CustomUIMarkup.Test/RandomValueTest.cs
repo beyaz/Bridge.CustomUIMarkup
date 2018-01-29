@@ -2,7 +2,6 @@
 using System.Diagnostics.CodeAnalysis;
 using Bridge.CustomUIMarkup.Common;
 using Bridge.CustomUIMarkup.Test;
-using Bridge.Html5;
 using Bridge.QUnit;
 
 namespace BOA.Common.Helpers.Test
@@ -34,8 +33,8 @@ namespace BOA.Common.Helpers.Test
     public class RandomValueTest
     {
         #region Public Methods
-        [Ready]
-        public static void RunAll()
+       
+        public static void Register()
         {
             QUnit.Test(nameof(RandomValueTest) + "->" + nameof(If_Property_Has_Already_Value_Do_Not_Change_It), If_Property_Has_Already_Value_Do_Not_Change_It);
 

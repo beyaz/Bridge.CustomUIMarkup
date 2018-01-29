@@ -7,8 +7,7 @@ namespace Bridge.CustomUIMarkup.Test
     class CastTest
     {
         #region Public Methods
-        [Ready]
-        public static void RunAll()
+        public static void Register()
         {
             QUnit.QUnit.Test(nameof(CastTest) + "->" + nameof(Int32ToNullableInt32), Int32ToNullableInt32);
         }
