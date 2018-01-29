@@ -40,6 +40,11 @@ namespace Bridge.CustomUIMarkup.Common
 
         public void RestoreAfterPostOperation(object newObject, object firstVersion)
         {
+            if (firstVersion == null)
+            {
+                return;
+            }
+
             VisitProperties(newObject, VisitMode.Restore, firstVersion);
         }
 
