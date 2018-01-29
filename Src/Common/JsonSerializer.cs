@@ -66,11 +66,6 @@ namespace Bridge.CustomUIMarkup.Common
             var enumerable = instance as IEnumerable;
             if (enumerable != null)
             {
-                foreach (var item in enumerable)
-                {
-                    VisitProperties(item);
-                }
-
                 return;
             }
 

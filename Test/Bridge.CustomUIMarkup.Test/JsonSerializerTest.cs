@@ -94,8 +94,8 @@ namespace Bridge.CustomUIMarkup.Test
             Assert.AreEqual(5, postValue.Inner.Int32Property_1);
 
             Assert.AreEqual("A", postValue.Inner.InnerList[0].StringProperty_1);
-            Assert.IsNull(postValue.Inner.InnerList[0].StringProperty_2);
-            Assert.AreEqual(0, postValue.Inner.InnerList[0].Int32Property_2);
+            Assert.AreEqual("B",postValue.Inner.InnerList[0].StringProperty_2);
+            Assert.AreEqual(6, postValue.Inner.InnerList[0].Int32Property_2);
             Assert.AreEqual(5, postValue.Inner.InnerList[0].Int32Property_1);
 
             Assert.IsNull(postValue.Inner.InnerDictionary);
