@@ -26,6 +26,8 @@ namespace Bridge.CustomUIMarkup.Test
             CastTest.Register();
             RandomValueTest.Register();
             JsonSerializerTest.Register();
+            RangeTest.Register();
+
 
             QUnit.QUnit.Test(nameof(RunOldTests), RunOldTests);
         }

@@ -71,6 +71,11 @@ namespace Bridge.CustomUIMarkup.Libraries.SemanticUI
         #region Methods
         void InitRange()
         {
+            if (_isInMethod_OnUIValueChanged)
+            {
+                return;
+            }
+
             dynamic options = ObjectLiteral.Create<object>();
 
             // ReSharper disable once UnusedVariable
@@ -84,7 +89,7 @@ namespace Bridge.CustomUIMarkup.Libraries.SemanticUI
 
             dynamic root = _root;
 
-            Window.SetTimeout(() => { _wrapper = root.range(options); }, 0);
+            Window.SetTimeout(() => { _wrapper = root.range(options); }, 1);
         }
 
         [SuppressMessage("ReSharper", "UnusedMember.Local")]
@@ -100,8 +105,13 @@ namespace Bridge.CustomUIMarkup.Libraries.SemanticUI
             _isInMethod_OnUIValueChanged = false;
         }
 
+        
+
         void UpdateUIValue()
         {
+
+            _isInMethod_OnUIValueChanged = true;
+
             if (_wrapper == null)
             {
                 return;
@@ -118,6 +128,8 @@ namespace Bridge.CustomUIMarkup.Libraries.SemanticUI
             }
 
             _wrapper?.range("set value", Value, true);
+
+            _isInMethod_OnUIValueChanged = false;
         }
         #endregion
     }

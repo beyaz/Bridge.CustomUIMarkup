@@ -43,6 +43,7 @@
     <Compile Include="JsonSerializerTest.cs" />
     <Compile Include="Libraries.SemanticUI\DataGridTest.cs" />
     <Compile Include="Libraries.SemanticUI\ItemsControlTests.cs" />
+    <Compile Include="Libraries.SemanticUI\RangeTest.cs" />
     <Compile Include="QUnitExtensions.cs" />
     <Compile Include="RandomValueTest.cs" />
     <Compile Include="System.Windows\ContentControlTest.cs" />
