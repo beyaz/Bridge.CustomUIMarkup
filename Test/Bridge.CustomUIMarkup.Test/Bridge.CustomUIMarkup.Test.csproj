@@ -86,6 +86,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="chutzpah.json" />
+    <Content Include="Run.html" />
     <Content Include="Test.js" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
