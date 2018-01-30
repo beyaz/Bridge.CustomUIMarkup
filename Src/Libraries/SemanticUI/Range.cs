@@ -105,8 +105,8 @@ namespace Bridge.CustomUIMarkup.Libraries.SemanticUI
             _isInMethod_OnUIValueChanged = false;
         }
 
-        
 
+        internal event Action OnUIValueUpdatedByCode;
         void UpdateUIValue()
         {
 
@@ -128,6 +128,8 @@ namespace Bridge.CustomUIMarkup.Libraries.SemanticUI
             }
 
             _wrapper?.range("set value", Value, true);
+
+            OnUIValueUpdatedByCode?.Invoke();
 
             _isInMethod_OnUIValueChanged = false;
         }
