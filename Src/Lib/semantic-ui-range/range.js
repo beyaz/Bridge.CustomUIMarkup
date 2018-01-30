@@ -128,7 +128,8 @@ $.fn.range = function(parameters) {
 					return Math.round(ratio * $(inner).width()) + $(trackLeft).position().left - offset;
 				},
 
-				setValue: function(newValue, triggeredByUser = true) {
+                setValue: function (newValue, triggeredByUser ) {
+                    triggeredByUser = triggeredByUser === undefined ? true : triggeredByUser;
 					if(settings.input) {
 						$(settings.input).val(newValue);
 					}
