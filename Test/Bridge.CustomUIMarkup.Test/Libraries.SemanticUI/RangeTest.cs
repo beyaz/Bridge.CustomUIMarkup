@@ -1,5 +1,6 @@
 ﻿using System.Windows;
 using Bridge.CustomUIMarkup.UI;
+using Bridge.Html5;
 using Bridge.QUnit;
 
 namespace Bridge.CustomUIMarkup.Libraries.SemanticUI
@@ -33,21 +34,24 @@ namespace Bridge.CustomUIMarkup.Libraries.SemanticUI
             var range = (Range) ui.GetLogicalChildAt(0);
             assert.Equal(range.Value, 5);
 
-
-
-            var uiUpdateCount = 0;
+            var uiUpdateCount            = 0;
             range.OnUIValueUpdatedByCode += () => { uiUpdateCount++; };
 
-            ui.DataContext = new MyClass
+            var done = assert.Async();
+
+            Window.SetTimeout(() =>
             {
-                RangeValue = 6
-            };
+                ui.DataContext = new MyClass
+                {
+                    RangeValue = 6
+                };
 
-            assert.Equal(range.Value, 6);
+                done();
 
-            assert.Equal(uiUpdateCount,1);
+                assert.Ok(range.Value == 6);
 
-
+                assert.Ok(uiUpdateCount == 1);
+            }, 5);
         }
         #endregion
 

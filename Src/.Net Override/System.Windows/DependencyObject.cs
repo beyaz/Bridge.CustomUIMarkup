@@ -6,6 +6,14 @@ namespace System.Windows
     {
         public void SetValue(DependencyProperty dp, object value)
         {
+            var existingValue = GetValue(dp);
+
+            if (existingValue == value)
+            {
+                return;
+            }
+
+
             this[dp.Name] = value;
         }
 

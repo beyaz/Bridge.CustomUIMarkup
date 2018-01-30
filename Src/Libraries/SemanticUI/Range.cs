@@ -28,13 +28,14 @@ namespace Bridge.CustomUIMarkup.Libraries.SemanticUI
         #region Constructors
         public Range()
         {
-            BeforeConnectToLogicalParent += parent => { InitRange(); };
+            AfterConnectToLogicalParent += InitRange;
 
-            this.OnPropertyChanged(nameof(Min), InitRange);
-            this.OnPropertyChanged(nameof(Max), InitRange);
-            this.OnPropertyChanged(nameof(Step), InitRange);
             this.OnPropertyChanged(nameof(Value), UpdateUIValue);
         }
+        #endregion
+
+        #region Events
+        internal event Action OnUIValueUpdatedByCode;
         #endregion
 
         #region Public Properties
@@ -71,25 +72,28 @@ namespace Bridge.CustomUIMarkup.Libraries.SemanticUI
         #region Methods
         void InitRange()
         {
-            if (_isInMethod_OnUIValueChanged)
-            {
-                return;
-            }
-
-            dynamic options = ObjectLiteral.Create<object>();
-
             // ReSharper disable once UnusedVariable
             dynamic me = this;
 
-            options.min      = Min;
-            options.max      = Max;
-            options.step     = Step;
-            options.start    = Value;
-            options.onChange = Script.Write<Function>("function(value){  me.OnUIValueChanged(value);   };");
-
             dynamic root = _root;
 
-            Window.SetTimeout(() => { _wrapper = root.range(options); }, 1);
+            Window.SetTimeout(() =>
+            {
+                if (_wrapper != null)
+                {
+                    return;
+                }
+
+                dynamic options  = ObjectLiteral.Create<object>();
+                options.min      = Min;
+                options.max      = Max;
+                options.step     = Step;
+                options.start    = Value;
+                options.onChange = Script.Write<Function>("function(value){  me.OnUIValueChanged(value);   };");
+
+
+                _wrapper = root.range(options);
+            }, 1);
         }
 
         [SuppressMessage("ReSharper", "UnusedMember.Local")]
@@ -105,12 +109,12 @@ namespace Bridge.CustomUIMarkup.Libraries.SemanticUI
             _isInMethod_OnUIValueChanged = false;
         }
 
-
-        internal event Action OnUIValueUpdatedByCode;
         void UpdateUIValue()
         {
-
-            _isInMethod_OnUIValueChanged = true;
+            if (_isInMethod_OnUIValueChanged)
+            {
+                return;
+            }
 
             if (_wrapper == null)
             {
@@ -130,8 +134,6 @@ namespace Bridge.CustomUIMarkup.Libraries.SemanticUI
             _wrapper?.range("set value", Value, true);
 
             OnUIValueUpdatedByCode?.Invoke();
-
-            _isInMethod_OnUIValueChanged = false;
         }
         #endregion
     }

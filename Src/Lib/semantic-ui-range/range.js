@@ -2,6 +2,7 @@
  * # Range slider for Semantic UI.
  * 
  */
+
  
 ;(function ( $, window, document, undefined ) {
 
@@ -244,3 +245,5 @@ $.fn.range.settings = {
 
 
 })( jQuery, window, document );
+
+
