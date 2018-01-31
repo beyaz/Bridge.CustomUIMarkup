@@ -25,7 +25,7 @@ namespace System.Windows
 
         #region Properties
         internal bool IsNotReadyToUpdate => !_pathLastNodeIsReachable;
-        Trigger LastTrigger => Triggers[Triggers.Count - 1];
+        Trigger       LastTrigger        => Triggers[Triggers.Count - 1];
         #endregion
 
         #region Public Methods
@@ -48,8 +48,8 @@ namespace System.Windows
                 throw new InvalidOperationException("PropertyPathProblem:" + Path);
             }
 
-            var lastTrigger = LastTrigger;
-            var instance = lastTrigger.Instance;
+            var lastTrigger  = LastTrigger;
+            var instance     = lastTrigger.Instance;
             var propertyName = lastTrigger.PropertyName;
 
             var value = ReflectionHelper.GetPropertyValue(instance, propertyName);
@@ -78,8 +78,8 @@ namespace System.Windows
 
         public void SetPropertyValue(object value)
         {
-            var lastTrigger = LastTrigger;
-            var instance = lastTrigger.Instance;
+            var lastTrigger  = LastTrigger;
+            var instance     = lastTrigger.Instance;
             var propertyName = lastTrigger.PropertyName;
 
             var propertyType = ReflectionHelper.FindProperty(instance, propertyName)?.PropertyType;
@@ -116,7 +116,7 @@ namespace System.Windows
                 {
                     Triggers.Add(new Trigger
                     {
-                        Instance = instance,
+                        Instance     = instance,
                         PropertyName = path
                     });
                     return;
@@ -126,7 +126,7 @@ namespace System.Windows
 
                 Triggers.Add(new Trigger
                 {
-                    Instance = instance,
+                    Instance     = instance,
                     PropertyName = propertyName
                 });
 

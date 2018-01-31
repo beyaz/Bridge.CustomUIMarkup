@@ -1,3 +1,4 @@
+using System.Globalization;
 using Bridge.Html5;
 using Bridge.jQuery2;
 
@@ -5,6 +6,10 @@ namespace System.Windows.Data
 {
     public class HTMLBindingInfo : BindingInfo
     {
+
+       
+
+
         #region Public Properties
         public new jQuery Target
         {
@@ -111,6 +116,35 @@ namespace System.Windows.Data
 
             return val;
         }
+
+        Type _sourceValueType;
+        public override void UpdateSource()
+        {
+            if (SourcePath.IsNotReadyToUpdate)
+            {
+                return;
+            }
+
+            var targetValue = GetTargetValue();
+
+            var sourceValueType = SourcePath.GetPropertyValue()?.GetType();
+            if (sourceValueType == null)
+            {
+                sourceValueType = _sourceValueType;
+            }
+            else
+            {
+                _sourceValueType = sourceValueType;
+            }
+
+            if ( targetValue != null &&  sourceValueType?.IsNumeric() == true)
+            {
+                targetValue =  Cast.To(targetValue, sourceValueType,CultureInfo.CurrentCulture);
+            }
+
+            SourcePath.SetPropertyValue(targetValue);
+        }
+
         #endregion
     }
 }
