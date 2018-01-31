@@ -28,27 +28,41 @@ namespace Bridge.CustomUIMarkup.Test
             JsonSerializerTest.Register();
             RangeTest.Register();
 
+            QUnit.QUnit.Test(nameof(BindingTests), BindingTests);
 
+            QUnit.QUnit.Test(nameof(BindingInfoTest2), BindingInfoTest2.RunAll);
+            
+            QUnit.QUnit.Test(nameof(BuilderTest), BuilderTest);
             QUnit.QUnit.Test(nameof(RunOldTests), RunOldTests);
         }
         #endregion
 
         #region Methods
-        static void RunOldTests(Assert assert)
+        static void BindingTests(Assert assert)
         {
-
             TokenizerTest.Run();
 
             BindingInfoTest.RunAll();
 
             HTMLBindingInfoTest.RunAll();
 
+            assert.Equal(1, 1);
+        }
 
+
+        static void BuilderTest(Assert assert)
+        {
             Z_Builder2Test.RunAll();
+
+            assert.Equal(1, 1);
+        }
+
+
+        static void RunOldTests(Assert assert)
+        {
 
             ContentControlTest.RunAll();
 
-            
             InputTextTest.RunAll();
 
             TabItemTest.RunAll();

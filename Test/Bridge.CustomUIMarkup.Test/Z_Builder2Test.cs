@@ -117,10 +117,12 @@ namespace Bridge.CustomUIMarkup.Test
             new Z_Builder2Test().InputTypeHidden();
             new Z_Builder2Test().Input_Type_text(); 
 
-            new Z_Builder2Test().combo_SelectedValueTest();
-            new Z_Builder2Test().combo_SelectedValueTest_with_converter();
+            
             new Z_Builder2Test().Parse_ViewInvocationExpressionInfo();
             new Z_Builder2Test().TextNode_must_be_support_binding_expression();
+
+            new Z_Builder2Test().combo_SelectedValueTest();
+            new Z_Builder2Test().combo_SelectedValueTest_with_converter();
 
 
         }
