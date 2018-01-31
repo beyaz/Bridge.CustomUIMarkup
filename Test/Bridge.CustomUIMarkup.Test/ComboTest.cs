@@ -57,7 +57,11 @@ namespace Bridge.CustomUIMarkup.Test
 
             var ui = (Combo) TestHelper.BuildAndGetFirstLogicalChild(htmlString, model);
 
-            Assert.AreEqual(5, Cast.To<int>(ui.SelectedValue));
+            Assert.IsTrue(null != ui.SelectedValue);
+
+            Assert.IsTrue(ui.SelectedValue is int);
+
+            Assert.AreEqual(5, (int?)(ui.SelectedValue));
 
             Assert.True(model.Items[0] == ui.SelectedItem);
 
