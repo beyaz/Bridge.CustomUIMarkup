@@ -4,6 +4,17 @@ using Bridge.CustomUIMarkup.UI;
 
 namespace Bridge.CustomUIMarkup.Test
 {
+
+    static class TestHelper
+    {
+        public static  FrameworkElement BuildAndGetFirstLogicalChild(string xmlString, object dataContext)
+        {
+            return new FrameworkElement
+            {
+                DataContext = dataContext
+            }.LoadComponent(xmlString).GetLogicalChildAt(0);
+        }
+    }
     public class TestBase
     {
         #region Fields

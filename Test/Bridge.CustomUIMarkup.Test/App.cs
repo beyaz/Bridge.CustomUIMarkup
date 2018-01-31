@@ -34,6 +34,8 @@ namespace Bridge.CustomUIMarkup.Test
             
             QUnit.QUnit.Test(nameof(BuilderTest), BuilderTest);
             QUnit.QUnit.Test(nameof(RunOldTests), RunOldTests);
+
+            ComboTest.RegisterAll();
         }
         #endregion
 
