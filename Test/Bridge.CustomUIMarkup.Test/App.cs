@@ -36,14 +36,19 @@ namespace Bridge.CustomUIMarkup.Test
         #region Methods
         static void RunOldTests(Assert assert)
         {
+
+            TokenizerTest.Run();
+
+            BindingInfoTest.RunAll();
+
+            HTMLBindingInfoTest.RunAll();
+
+
             Z_Builder2Test.RunAll();
 
             ContentControlTest.RunAll();
 
-            TokenizerTest.Run();
-            BindingInfoTest.RunAll();
-
-            HTMLBindingInfoTest.RunAll();
+            
             InputTextTest.RunAll();
 
             TabItemTest.RunAll();

@@ -194,7 +194,10 @@ $.fn.range = function(parameters) {
 					}
 				},
 				
-				setValuePosition: function(val, triggeredByUser = true) {
+                setValuePosition: function (val, triggeredByUser ) {
+
+                    triggeredByUser = triggeredByUser === undefined ? true : triggeredByUser;
+
 					var position = module.determinePosition(val);
 					module.setPosition(position);
 					module.setValue(val, triggeredByUser);

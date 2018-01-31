@@ -78,13 +78,16 @@ namespace Bridge.CustomUIMarkup.Libraries.SemanticUI
 
                 var propertyValue = propertyPath.GetPropertyValue();
 
-                if ((selectedValue == null && propertyValue == null) ||   selectedValue?.Equals(propertyValue) == true)
+                if (selectedValue ==  propertyValue || (selectedValue != null && selectedValue.Equals(propertyValue)))
                 {
                     SelectedItem = data;
                     return;
                 }
             }
         }
+
+
+
         #region Methods
         internal override void ConnectItem(FrameworkElement item)
         {
