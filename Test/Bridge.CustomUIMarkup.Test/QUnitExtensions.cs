@@ -19,6 +19,10 @@ namespace Bridge.CustomUIMarkup.Test
         {
             assert.Equal(actual, expected);
         }
+        public static void AreEqual(this Assert assert, int expected, int actual,string message)
+        {
+            assert.Equal(actual, expected,message);
+        }
 
         public static void AreEqual(this Assert assert, decimal expected, decimal actual)
         {
@@ -63,6 +67,10 @@ namespace Bridge.CustomUIMarkup.Test
         public static void IsTrue(this Assert assert, bool condition)
         {
             assert.Equal(condition, true);
+        }
+        public static void IsTrue(this Assert assert, bool condition,string message)
+        {
+            assert.Equal(condition, true, message);
         }
 
         public static void True(this Assert assert, bool condition)

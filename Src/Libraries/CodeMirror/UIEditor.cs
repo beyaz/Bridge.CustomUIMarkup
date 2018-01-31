@@ -143,7 +143,7 @@ namespace Bridge.CustomUIMarkup.Libraries.CodeMirror
 
             if (designerdataContext.StartsWith("Random:"))
             {
-                return  RandomValue.Object(GetTypeEnsure(designerdataContext.RemoveFromStart("Random:").Trim()));
+                return  new RandomValue().Object(GetTypeEnsure(designerdataContext.RemoveFromStart("Random:").Trim()));
             }
 
             var isMemberInfo = designerdataContext.Contains(":");
