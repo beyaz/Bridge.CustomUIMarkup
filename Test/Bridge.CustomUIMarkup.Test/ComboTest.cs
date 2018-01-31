@@ -48,13 +48,11 @@ namespace Bridge.CustomUIMarkup.Test
                 SelectedYear = 5
             };
 
-            var htmlString = @"
-
- <combo ItemsSource ='{Items}' 
-                         DisplayMemberPath='LastName' 
-                         SelectedValuePath='YearNullable'
-                         SelectedValue='{SelectedYear}' />
-
+            var htmlString = @" 
+<combo  ItemsSource ='{Items}' 
+        DisplayMemberPath = 'LastName' 
+        SelectedValuePath = 'YearNullable'
+        SelectedValue     = '{SelectedYear}' />
 ";
 
             var ui = (Combo) TestHelper.BuildAndGetFirstLogicalChild(htmlString, model);
