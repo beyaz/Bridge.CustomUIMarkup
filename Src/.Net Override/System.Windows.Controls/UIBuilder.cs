@@ -14,6 +14,12 @@ namespace System.Windows.Controls
 {
     public class UIBuilder
     {
+        readonly bool _isMobile;
+        public UIBuilder()
+        {
+            _isMobile = Window.Navigator.IsMobile();
+        }
+
         #region Constants
         internal const string AttributeName_d_designerdataContext = "d:designerdataContext";
         #endregion
@@ -52,6 +58,7 @@ namespace System.Windows.Controls
         #region Public Methods
         public static T ApplyTemplate<T>(T control) where T : Control
         {
+            
             control?.ApplyTemplate();
 
             return control;
@@ -195,18 +202,46 @@ namespace System.Windows.Controls
 
             var childNodes = xmlNode.ChildNodes;
 
+            BuildChildNodes(instance, childNodes);
+
+            return instance;
+        }
+
+        void BuildChildNodes(FrameworkElement instance, NodeList childNodes)
+        {
             var len = childNodes.Length;
 
             for (var i = 0; i < len; i++)
             {
                 var childNode = childNodes[i];
 
+                var childNodeTag = childNode.NodeName.ToUpperCase();
+                if (childNodeTag == "IF-MOBILE")
+                {
+                    if (!_isMobile)
+                    {
+                        continue;
+                    }
+
+                    BuildChildNodes(instance,childNode.ChildNodes);
+                    continue;
+                }
+
+                if (childNodeTag == "IF-NOT-MOBILE")
+                {
+                    if (_isMobile)
+                    {
+                        continue;
+                    }
+
+                    BuildChildNodes(instance, childNode.ChildNodes);
+                    continue;
+                }
+
                 var subItem = BuildNode(childNode.As<Element>(), instance);
 
                 Connect(instance, subItem);
             }
-
-            return instance;
         }
 
         object BuildTextNode(Element xmlNode, FrameworkElement parentInstance)

@@ -1,13 +1,79 @@
-﻿using System.Globalization;
+﻿using System.Diagnostics.CodeAnalysis;
+using System.Globalization;
 using Bridge;
+using Bridge.Html5;
 
 namespace System
 {
+
+
+    [External]
+    [Namespace(false)]
+    class isMobile
+    {
+
+    }
     /// <summary>
     ///     The extensions
     /// </summary>
     public static class Extensions
     {
+
+        static object _isMobile;
+        [SuppressMessage("ReSharper", "UnusedParameter.Global")]
+        public static bool IsMobile(this Navigator navigator)
+        {
+            if (_isMobile == null)
+            {
+
+                _isMobile =  Script.Write<object>(@"
+{
+    Android: function() {
+        return navigator.userAgent.match(/Android/i);
+    },
+    BlackBerry: function() {
+        return navigator.userAgent.match(/BlackBerry/i);
+    },
+    iOS: function() {
+        return navigator.userAgent.match(/iPhone|iPad|iPod/i);
+    },
+    Opera: function() {
+        return navigator.userAgent.match(/Opera Mini/i);
+    },
+    Windows: function() {
+        return navigator.userAgent.match(/IEMobile/i);
+    },
+    any: function() {
+        return (isMobile.Android() || isMobile.BlackBerry() || isMobile.iOS() || isMobile.Opera() || isMobile.Windows());
+    }
+};
+
+
+");
+
+
+
+
+
+                
+            }
+
+            dynamic isMobile = _isMobile;
+            if (isMobile.any())
+            {
+                return true;
+            }
+
+
+
+            if (Window.InnerWidth <= 800 && Window.InnerHeight <= 600)
+            {
+                return true;
+            }
+
+            return false;
+        }
+
         #region Properties
         /// <summary>
         ///     Gets the default format provider.
@@ -21,6 +87,7 @@ namespace System
         /// </summary>
         public static int Compare(this object left, object right, IFormatProvider formatProvider = null)
         {
+           
             if (ReferenceEquals(left, null) && ReferenceEquals(right, null))
             {
                 return 0;
