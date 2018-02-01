@@ -17,6 +17,8 @@ namespace Bridge.CustomUIMarkup.Libraries.SemanticUI
 
             this.OnPropertyChanged(nameof(DisplayMemberPath), Render);
             this.OnPropertyChanged(nameof(SelectedValuePath), Render);
+            this.OnPropertyChanged(nameof(SelectedValuePath), InitSelectedItemByUsingSelectedValue);
+
             this.OnPropertyChanged(nameof(ItemsSource), Render);
 
             this.OnPropertyChanged(nameof(ItemsSource), ()=>OnPropertyChanged(nameof(SelectedValue)));
