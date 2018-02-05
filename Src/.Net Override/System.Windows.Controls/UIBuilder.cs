@@ -14,12 +14,6 @@ namespace System.Windows.Controls
 {
     public class UIBuilder
     {
-        readonly bool _isMobile;
-        public UIBuilder()
-        {
-            _isMobile = Window.Navigator.IsMobile();
-        }
-
         #region Constants
         internal const string AttributeName_d_designerdataContext = "d:designerdataContext";
         #endregion
@@ -37,10 +31,20 @@ namespace System.Windows.Controls
         public string XmlString;
 
         internal Element _rootNode;
+        readonly bool    _isMobile;
 
         object _currentInstance;
 
         bool _isBuildingTemplate;
+
+        bool _isDesignMode;
+        #endregion
+
+        #region Constructors
+        public UIBuilder()
+        {
+            _isMobile = Window.Navigator.IsMobile();
+        }
         #endregion
 
         #region Events
@@ -51,14 +55,11 @@ namespace System.Windows.Controls
         public object Caller { get; set; }
 
         public object DataContext { get; set; }
-
-        public bool IsDesignMode { get; set; }
         #endregion
 
         #region Public Methods
         public static T ApplyTemplate<T>(T control) where T : Control
         {
-            
             control?.ApplyTemplate();
 
             return control;
@@ -105,15 +106,15 @@ namespace System.Windows.Controls
             control.AddVisualChild(subControlAsFrameworkElement);
         }
 
-        internal static void LoadComponent(FrameworkElement control, Element node, bool IsDesignMode = false, Action<int, FrameworkElement> ElementCreatedAtLine = null, string xml = null)
+        internal static void LoadComponent(FrameworkElement control, Element node, bool isDesignMode = false, Action<int, FrameworkElement> ElementCreatedAtLine = null, string xml = null)
         {
             var builder = new UIBuilder
             {
-                _rootNode    = node,
-                DataContext  = control,
-                Caller       = control,
-                IsDesignMode = IsDesignMode,
-                XmlString    = xml
+                _rootNode     = node,
+                DataContext   = control,
+                Caller        = control,
+                _isDesignMode = isDesignMode,
+                XmlString     = xml
             };
 
             if (ElementCreatedAtLine != null)
@@ -167,6 +168,43 @@ namespace System.Windows.Controls
             return tag.Contains('.') || tag.Contains('-') || tag.Contains(':');
         }
 
+        void BuildChildNodes(FrameworkElement instance, NodeList childNodes)
+        {
+            var len = childNodes.Length;
+
+            for (var i = 0; i < len; i++)
+            {
+                var childNode = childNodes[i];
+
+                var childNodeTag = childNode.NodeName.ToUpperCase();
+                if (childNodeTag == "IF-MOBILE")
+                {
+                    if (!_isMobile)
+                    {
+                        continue;
+                    }
+
+                    BuildChildNodes(instance, childNode.ChildNodes);
+                    continue;
+                }
+
+                if (childNodeTag == "IF-NOT-MOBILE")
+                {
+                    if (_isMobile)
+                    {
+                        continue;
+                    }
+
+                    BuildChildNodes(instance, childNode.ChildNodes);
+                    continue;
+                }
+
+                var subItem = BuildNode(childNode.As<Element>(), instance);
+
+                Connect(instance, subItem);
+            }
+        }
+
         object BuildNode(Element xmlNode, FrameworkElement parentInstance)
         {
             if (xmlNode.NodeType == NodeType.Comment)
@@ -189,7 +227,7 @@ namespace System.Windows.Controls
 
             _currentInstance = instance;
 
-            if (IsDesignMode)
+            if (_isDesignMode)
             {
                 var lineNumber = xmlNode.GetOriginalLineNumber(_rootNode, XmlString);
 
@@ -205,43 +243,6 @@ namespace System.Windows.Controls
             BuildChildNodes(instance, childNodes);
 
             return instance;
-        }
-
-        void BuildChildNodes(FrameworkElement instance, NodeList childNodes)
-        {
-            var len = childNodes.Length;
-
-            for (var i = 0; i < len; i++)
-            {
-                var childNode = childNodes[i];
-
-                var childNodeTag = childNode.NodeName.ToUpperCase();
-                if (childNodeTag == "IF-MOBILE")
-                {
-                    if (!_isMobile)
-                    {
-                        continue;
-                    }
-
-                    BuildChildNodes(instance,childNode.ChildNodes);
-                    continue;
-                }
-
-                if (childNodeTag == "IF-NOT-MOBILE")
-                {
-                    if (_isMobile)
-                    {
-                        continue;
-                    }
-
-                    BuildChildNodes(instance, childNode.ChildNodes);
-                    continue;
-                }
-
-                var subItem = BuildNode(childNode.As<Element>(), instance);
-
-                Connect(instance, subItem);
-            }
         }
 
         object BuildTextNode(Element xmlNode, FrameworkElement parentInstance)
@@ -475,7 +476,7 @@ namespace System.Windows.Controls
                     var methodName = viewInvocationExpressionInfo.MethodName;
 
                     var mi = Caller.GetType().GetMethod(methodName, BindingFlags.IgnoreCase | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
-                    
+
                     instance.As<FrameworkElement>().On(eventName, () =>
                     {
                         if (mi == null)
