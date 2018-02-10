@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
 using System.Reflection;
 using System.Text;
@@ -352,16 +351,10 @@ namespace Bridge.CustomUIMarkup.Common
         /// </summary>
         public T[] Array<T>(int? optionalLength = null)
         {
-            return Collection<T>(optionalLength).ToArray();
+            return ICollection<T>(optionalLength).ToArray();
         }
 
-        /// <summary>
-        ///     Collections the specified optional length.
-        /// </summary>
-        public Collection<T> Collection<T>(int? optionalLength = null)
-        {
-            return (Collection<T>) ICollection<T>(optionalLength);
-        }
+        
 
         /// <summary>
         ///     Dictionaries the specified optional length.
@@ -378,7 +371,7 @@ namespace Bridge.CustomUIMarkup.Common
         {
             var collection = ICollection(typeof(T), optionalLength);
 
-            return new Collection<T>(collection.ConvertAll(x => (T) x));
+            return collection.ConvertAll(x => (T) x);
         }
 
         /// <summary>
@@ -483,13 +476,7 @@ namespace Bridge.CustomUIMarkup.Common
             return genericObject;
         }
 
-        /// <summary>
-        ///     Observables the collection.
-        /// </summary>
-        public ObservableCollection<T> ObservableCollection<T>(int? optionalLength = null)
-        {
-            return new ObservableCollection<T>(List<T>(optionalLength));
-        }
+      
         #endregion
 
         #region Methods
@@ -592,26 +579,12 @@ namespace Bridge.CustomUIMarkup.Common
                 return instance;
             }
 
-            if (type.GetGenericTypeDefinition() == typeof(ObservableCollection<>))
-            {
-                var instance = (IList) Activator.CreateInstance(typeof(ObservableCollection<>).MakeGenericType(genericArgumentType));
-                foreach (var item in (IEnumerable) IList(genericArgumentType))
-                {
-                    instance.Add(item);
-                }
-
-                return instance;
-            }
-
             if (type.GetGenericTypeDefinition() == typeof(IList<>))
             {
                 return IList(genericArgumentType);
             }
 
-            if (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(Collection<>))
-            {
-                return ICollection(genericArgumentType).ToList();
-            }
+           
 
             if (type.GetGenericTypeDefinition() == typeof(ICollection<>))
             {
