@@ -38,7 +38,6 @@
   <ItemGroup>
     <Compile Include=".Net Override\SR.cs" />
     <Compile Include=".Net Override\System.Collections.Generic\Extensions.cs" />
-    <Compile Include=".Net Override\System.Collections.Specialized\overides.cs" />
     <Compile Include=".Net Override\System.ComponentModel\TypeConverterAttribute.cs" />
     <Compile Include=".Net Override\System.Reflection\Extensions.cs" />
     <Compile Include=".Net Override\System.Windows.Controls\ItemsControl.cs" />
