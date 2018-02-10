@@ -192,15 +192,6 @@
     <Reference Include="Newtonsoft.Json">
       <HintPath>$(SolutionDir)packages\Bridge.Newtonsoft.Json.1.5.0\lib\net40\Newtonsoft.Json.dll</HintPath>
     </Reference>
-    <Reference Include="Retyped.Core">
-      <HintPath>$(SolutionDir)packages\Retyped.Core.1.4.6556\lib\net40\Retyped.Core.dll</HintPath>
-    </Reference>
-    <Reference Include="Retyped.dom">
-      <HintPath>$(SolutionDir)packages\Retyped.dom.2.3.6589\lib\net40\Retyped.dom.dll</HintPath>
-    </Reference>
-    <Reference Include="Retyped.es5">
-      <HintPath>$(SolutionDir)packages\Retyped.es5.2.3.6556\lib\net40\Retyped.es5.dll</HintPath>
-    </Reference>
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
