@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics;
 
 namespace Bridge.CustomUIMarkup.Common
 {
@@ -8,8 +7,15 @@ namespace Bridge.CustomUIMarkup.Common
         #region Constructors
         public XmlIntellisenseInfo(string tagName, Type type)
         {
-            Debug.Assert(tagName != null);
-            Debug.Assert(type != null);
+            if (tagName == null)
+            {
+                throw new ArgumentNullException(nameof(tagName));
+            }
+
+            if (type == null)
+            {
+                throw new ArgumentNullException(nameof(type));
+            }
 
             TagName = tagName;
             Type    = type;
