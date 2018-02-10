@@ -105,10 +105,7 @@ namespace System.Windows
             Cache[key] = template;
         }
 
-        public static void RegisterAsXml(Type key, string xmlTemplate)
-        {
-            RegisterAsXml(key.FullName, xmlTemplate);
-        }
+        
         #endregion
 
         #region Methods
