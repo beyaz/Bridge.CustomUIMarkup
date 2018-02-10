@@ -31,7 +31,7 @@ namespace System.ComponentModel
             return type.GetEvent(eventName);
         }
 
-        public static EventInfo FindEvent(object instance, string eventName,BindingFlags bindingFlags)
+        public static EventInfo FindEvent(object instance, string eventName, BindingFlags bindingFlags)
         {
             if (instance == null)
             {
@@ -51,7 +51,6 @@ namespace System.ComponentModel
 
             return type.GetEvent(eventName, bindingFlags);
         }
-
 
         public static MethodInfo FindMethodInfo(object instance, string methodName)
         {
@@ -116,7 +115,7 @@ namespace System.ComponentModel
             return type.GetProperty(propertyName);
         }
 
-        public static PropertyInfo FindProperty(object instance, string propertyName,BindingFlags flags)
+        public static PropertyInfo FindProperty(object instance, string propertyName, BindingFlags flags)
         {
             if (instance == null)
             {
@@ -136,7 +135,6 @@ namespace System.ComponentModel
 
             return type.GetProperty(propertyName, flags);
         }
-
 
         public static MethodInfo GetMethodInfo(object instance, string methodName)
         {
@@ -189,7 +187,6 @@ namespace System.ComponentModel
             return methodInfo.Invoke(instance, parameters);
         }
 
-
         /// <summary>
         ///     Invokes the public non static method.
         /// </summary>
@@ -197,18 +194,18 @@ namespace System.ComponentModel
         {
             if (instance == null)
             {
-                throw new ArgumentNullException("instance");
+                throw new ArgumentNullException(nameof(instance));
             }
 
             if (methodName == null)
             {
-                throw new ArgumentNullException("methodName");
+                throw new ArgumentNullException(nameof(methodName));
             }
 
             var methodInfo = instance.GetType().GetMethod(methodName);
             if (methodInfo == null)
             {
-                throw new MissingMemberException(instance.GetType().FullName+":"+ methodName);
+                throw new MissingMemberException(instance.GetType().FullName + ":" + methodName);
             }
 
             return methodInfo.Invoke(instance, null);

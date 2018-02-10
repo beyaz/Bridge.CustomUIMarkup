@@ -15,7 +15,7 @@ namespace System.Windows.Controls
     public class UIBuilder
     {
         #region Constants
-        internal const string AttributeName_d_designerdataContext = "d:designerdataContext";
+        internal const string AttributeName_d_designerdataContext = "D:DESIGNERDATACONTEXT";
         #endregion
 
         #region Static Fields
@@ -28,16 +28,12 @@ namespace System.Windows.Controls
         #endregion
 
         #region Fields
-        public string XmlString;
-
         internal Element _rootNode;
+        internal string  XmlString;
         readonly bool    _isMobile;
-
-        object _currentInstance;
-
-        bool _isBuildingTemplate;
-
-        bool _isDesignMode;
+        object           _currentInstance;
+        bool             _isBuildingTemplate;
+        bool             _isDesignMode;
         #endregion
 
         #region Constructors
@@ -132,6 +128,22 @@ namespace System.Windows.Controls
 
             InitDOM(control);
             control.AddLogicalChild(subControlAsFrameworkElement);
+        }
+
+        static void Connect(object parent, object subItem)
+        {
+            if (subItem == null)
+            {
+                return;
+            }
+
+            var subItemAsFrameworkElement = subItem as FrameworkElement;
+            if (subItemAsFrameworkElement == null)
+            {
+                return;
+            }
+
+            parent.As<FrameworkElement>().AddLogicalChild(subItemAsFrameworkElement);
         }
 
         static Element GetFirstNodeSkipCommentAndText(ElementList nodes)
@@ -237,9 +249,7 @@ namespace System.Windows.Controls
 
             ProcessAttributes(xmlNode, instance);
 
-            var childNodes = xmlNode.ChildNodes;
-
-            BuildChildNodes(instance, childNodes);
+            BuildChildNodes(instance, xmlNode.ChildNodes);
 
             return instance;
         }
@@ -284,22 +294,6 @@ namespace System.Windows.Controls
             return null;
         }
 
-        void Connect(object parent, object subItem)
-        {
-            if (subItem == null)
-            {
-                return;
-            }
-
-            var subItemAsFrameworkElement = subItem as FrameworkElement;
-            if (subItemAsFrameworkElement == null)
-            {
-                return;
-            }
-
-            parent.As<FrameworkElement>().AddLogicalChild(subItemAsFrameworkElement);
-        }
-
         FrameworkElement CreateInstance(Element xmlNode)
         {
             var instance = CreateInstanceInternal(xmlNode);
@@ -332,48 +326,46 @@ namespace System.Windows.Controls
             if (_isBuildingTemplate)
             {
                 instance.DataContext = DataContext;
+                return;
             }
-            else
-            {
-                var subControlDataContextAttribute = xmlNode.Attributes["DataContext"] ?? xmlNode.Attributes["datacontext"];
-                if (subControlDataContextAttribute == null)
-                {
-                    var bindingInfo = new BindingInfo
-                    {
-                        BindingMode = BindingMode.OneWay,
-                        Source      = parentInstance,
-                        SourcePath  = "DataContext",
-                        Target      = instance,
-                        TargetPath  = "DataContext"
-                    };
-                    bindingInfo.Connect();
-                }
-                else
-                {
-                    var bi = BindingInfo.TryParseExpression(subControlDataContextAttribute.NodeValue);
-                    if (bi == null)
-                    {
-                        throw new InvalidOperationException("InvalidBindingExpression:" + subControlDataContextAttribute.NodeValue);
-                    }
 
-                    bi.BindingMode = BindingMode.OneWay;
-                    bi.Source      = parentInstance;
-                    bi.SourcePath  = "DataContext." + bi.SourcePath.Path;
-                    bi.Target      = instance;
-                    bi.TargetPath  = "DataContext";
-                    bi.Connect();
-                }
+            var subControlDataContextAttribute = xmlNode.Attributes["DataContext"];
+            if (subControlDataContextAttribute == null)
+            {
+                var bindingInfo = new BindingInfo
+                {
+                    BindingMode = BindingMode.OneWay,
+                    Source      = parentInstance,
+                    SourcePath  = "DataContext",
+                    Target      = instance,
+                    TargetPath  = "DataContext"
+                };
+                bindingInfo.Connect();
+                return;
             }
+
+            var bi = BindingInfo.TryParseExpression(subControlDataContextAttribute.NodeValue);
+            if (bi == null)
+            {
+                throw new InvalidOperationException("InvalidBindingExpression:" + subControlDataContextAttribute.NodeValue);
+            }
+
+            bi.BindingMode = BindingMode.OneWay;
+            bi.Source      = parentInstance;
+            bi.SourcePath  = "DataContext." + bi.SourcePath.Path;
+            bi.Target      = instance;
+            bi.TargetPath  = "DataContext";
+            bi.Connect();
         }
 
         void ProcessAttribute(object instance, string name, string value)
         {
-            if (name == "DataContext" || name == "datacontext" || name == AttributeName_d_designerdataContext)
+            var nameUpperCase = name.ToUpperCase();
+
+            if (nameUpperCase == "DATACONTEXT" || name == AttributeName_d_designerdataContext)
             {
                 return;
             }
-
-            var nameUpperCase = name.ToUpperCase();
 
             if (name == "class")
             {
@@ -489,7 +481,15 @@ namespace System.Windows.Controls
 
                 var methodInfo = Caller.GetType().GetMethod(value, ReflectionHelper.AllBindings);
 
-                instance.As<FrameworkElement>().On(eventName, () => { methodInfo.Invoke(Caller); });
+                instance.As<FrameworkElement>().On(eventName, () =>
+                {
+                    if (methodInfo == null)
+                    {
+                        throw new MissingMemberException(Caller.GetType().FullName + "::" + value);
+                    }
+
+                    methodInfo.Invoke(Caller);
+                });
                 return;
             }
 
