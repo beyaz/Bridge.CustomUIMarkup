@@ -1,8 +1,13 @@
-﻿
+﻿using System.Collections.Generic;
+
 namespace System.Windows.Controls
 {
     public class Control : FrameworkElement
     {
+        #region Static Fields
+        internal static readonly Dictionary<string, Template> TemplateCache = new Dictionary<string, Template>();
+        #endregion
+
         #region Events
         protected internal event Action AfterTemplateApplied;
         #endregion
@@ -25,7 +30,7 @@ namespace System.Windows.Controls
 
                 Template template = null;
 
-                if (Template.Cache.TryGetValue(key, out template))
+                if (TemplateCache.TryGetValue(key, out template))
                 {
                     return template;
                 }
@@ -33,13 +38,13 @@ namespace System.Windows.Controls
                 var defaultTemplateAsXml = DefaultTemplateAsXml;
                 if (defaultTemplateAsXml == null)
                 {
-                    Template.Cache[key] = null;
+                    TemplateCache[key] = null;
                     return null;
                 }
 
                 template = Template.CreateFromXml(defaultTemplateAsXml);
 
-                Template.Cache[key] = template;
+                TemplateCache[key] = template;
 
                 return template;
             }
