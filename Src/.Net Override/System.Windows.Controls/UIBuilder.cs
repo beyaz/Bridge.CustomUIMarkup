@@ -217,7 +217,6 @@ namespace System.Windows.Controls
                 return BuildTextNode(xmlNode, parentInstance);
             }
 
-            //
             if (TryToInitParentProperty(xmlNode))
             {
                 return null;
@@ -430,7 +429,6 @@ namespace System.Windows.Controls
                 bi.SourcePath = new PropertyPath("DataContext." + bi.SourcePath.Path);
                 bi.Source     = instance;
 
-                // bi.Source = DataContext;
                 bi.Target     = instance;
                 bi.TargetPath = name;
 
@@ -500,15 +498,6 @@ namespace System.Windows.Controls
                 var styleAttributeName = name.Substring(4);
                 instance.As<FrameworkElement>()._root.Css(styleAttributeName, value);
                 return;
-            }
-
-            // css.Pseudo.backgroundImage
-            if (nameUpperCase.StartsWith("CSS.PSEUDO."))
-            {
-                throw new ArgumentException();
-                // var pseudoAttributeName = name.Substring(11);
-                // DOM.head.Append("<style>#" + instance.Id + "::" + pseudoAttributeName + "{ content:'bar' }</style>");
-                // return;
             }
 
             if (nameUpperCase == "X.NAME" || nameUpperCase == "X:NAME")
@@ -581,10 +570,10 @@ namespace System.Windows.Controls
             }
 
             /*
-                                <DataGrid.Columns>
-                                    <DataGridColumn Name='FullName' Label='Adı SoyAdı' />
-                                </DataGrid.Columns>
-                            */
+                 <DataGrid.Columns>
+                     <DataGridColumn Name='FullName' Label='Adı SoyAdı' />
+                 </DataGrid.Columns>
+              */
             if (propertyInfo.SetMethod == null)
             {
                 var collection = propertyInfo.GetValue(_currentInstance);
