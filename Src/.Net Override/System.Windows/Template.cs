@@ -5,10 +5,6 @@ namespace System.Windows
 {
     public class Template
     {
-        #region Fields
-        Element _rootNode;
-        #endregion
-
         #region Constructors
         Template()
         {
@@ -16,7 +12,7 @@ namespace System.Windows
         #endregion
 
         #region Public Properties
-        public Element Root => _rootNode;
+        public Element Root { get; private set; }
         #endregion
 
         #region Public Methods
@@ -24,7 +20,7 @@ namespace System.Windows
         {
             return new Template
             {
-                _rootNode = xmlNode
+                Root = xmlNode
             };
         }
 
@@ -34,7 +30,7 @@ namespace System.Windows
 
             var template = new Template
             {
-                _rootNode = rootNode
+                Root = rootNode
             };
 
             return template;
