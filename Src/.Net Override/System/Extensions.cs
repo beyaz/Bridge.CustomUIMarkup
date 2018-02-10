@@ -5,28 +5,53 @@ using Bridge.Html5;
 
 namespace System
 {
-
-
     [External]
     [Namespace(false)]
     class isMobile
     {
-
     }
+
     /// <summary>
     ///     The extensions
     /// </summary>
     public static class Extensions
     {
-
+        #region Static Fields
         static object _isMobile;
+        #endregion
+
+        #region Properties
+        /// <summary>
+        ///     Gets the default format provider.
+        /// </summary>
+        static IFormatProvider DefaultFormatProvider => CultureInfo.CurrentCulture;
+        #endregion
+
+        #region Public Methods
+        /// <summary>
+        ///     Gets default value of <paramref name="type" />
+        /// </summary>
+        public static object GetDefaultValue(this Type type)
+        {
+            if (type.IsClass)
+            {
+                return null;
+            }
+
+            if (type.IsNumeric())
+            {
+                return Script.Write<object>("Bridge.box(0,type)");
+            }
+
+            return Activator.CreateInstance(type);
+        }
+
         [SuppressMessage("ReSharper", "UnusedParameter.Global")]
         public static bool IsMobile(this Navigator navigator)
         {
             if (_isMobile == null)
             {
-
-                _isMobile =  Script.Write<object>(@"
+                _isMobile = Script.Write<object>(@"
 {
     Android: function() {
         return navigator.userAgent.match(/Android/i);
@@ -50,12 +75,6 @@ namespace System
 
 
 ");
-
-
-
-
-
-                
             }
 
             dynamic isMobile = _isMobile;
@@ -64,92 +83,12 @@ namespace System
                 return true;
             }
 
-
-
             if (Window.InnerWidth <= 800 && Window.InnerHeight <= 600)
             {
                 return true;
             }
 
             return false;
-        }
-
-        #region Properties
-        /// <summary>
-        ///     Gets the default format provider.
-        /// </summary>
-        static IFormatProvider DefaultFormatProvider => CultureInfo.CurrentCulture;
-        #endregion
-
-        #region Public Methods
-        /// <summary>
-        ///     Compares the specified right.
-        /// </summary>
-        public static int Compare(this object left, object right, IFormatProvider formatProvider = null)
-        {
-           
-            if (ReferenceEquals(left, null) && ReferenceEquals(right, null))
-            {
-                return 0;
-            }
-
-            if (!left.IsNumeric())
-            {
-                throw ValueMustbeNumeric(left);
-            }
-
-            if (!right.IsNumeric())
-            {
-                throw ValueMustbeNumeric(right);
-            }
-
-            return Convert.ToDecimal(left, formatProvider).CompareTo(Convert.ToDecimal(right, formatProvider));
-        }
-
-        
-
-        /// <summary>
-        ///     Gets default value of <paramref name="type" />
-        /// </summary>
-        public static object GetDefaultValue(this Type type)
-        {
-            if (type.IsClass)
-            {
-                return null;
-            }
-
-
-            if (type.IsNumeric())
-            {
-                return Script.Write<object>("Bridge.box(0,type)");
-            }
-
-
-            return Activator.CreateInstance(type);
-        }
-
-        /// <summary>
-        ///     Determines whether [is bigger than] [the specified right].
-        /// </summary>
-        /// <param name="left">The left.</param>
-        /// <param name="right">The right.</param>
-        /// <param name="formatProvider">The format provider.</param>
-        /// <returns>
-        ///     <c>true</c> if [is bigger than] [the specified right]; otherwise, <c>false</c>.
-        /// </returns>
-        /// <exception cref="System.ArgumentException"></exception>
-        public static bool IsBiggerThan(this object left, object right, IFormatProvider formatProvider = null)
-        {
-            if (ReferenceEquals(left, null) || ReferenceEquals(right, null))
-            {
-                return false;
-            }
-
-            if (left.IsNumeric() && right.IsNumeric())
-            {
-                return Convert.ToDecimal(left, formatProvider) > Convert.ToDecimal(right, formatProvider);
-            }
-            throw new ArgumentException(left.ToString());
         }
 
         /// <summary>
@@ -233,40 +172,6 @@ namespace System
         }
 
         /// <summary>
-        ///     Determines whether the specified right is same.
-        /// </summary>
-        /// <param name="left">The left.</param>
-        /// <param name="right">The right.</param>
-        /// <param name="formatProvider">The format provider.</param>
-        /// <returns>
-        ///     <c>true</c> if the specified right is same; otherwise, <c>false</c>.
-        /// </returns>
-        public static bool IsSame(this object left, object right, IFormatProvider formatProvider = null)
-        {
-            if (ReferenceEquals(left, null))
-            {
-                return ReferenceEquals(right, null);
-            }
-
-            var leftAsString = left as string;
-            if (leftAsString != null)
-            {
-                return leftAsString.Equals(right);
-            }
-            if (right is string)
-            {
-                return false;
-            }
-
-            if (left.IsNumeric() && right.IsNumeric())
-            {
-                return Convert.ToDecimal(left, formatProvider) == Convert.ToDecimal(right, formatProvider);
-            }
-
-            return left.Equals(right);
-        }
-
-        /// <summary>
         ///     Determines whether this instance is string.
         /// </summary>
         /// <param name="value">The value.</param>
@@ -330,6 +235,7 @@ namespace System
             {
                 throw new ArgumentNullException(nameof(value));
             }
+
             return Convert.ToBoolean(value, formatProvider);
         }
 
@@ -355,6 +261,7 @@ namespace System
             {
                 return null;
             }
+
             return Convert.ToBoolean(value, formatProvider);
         }
 
@@ -371,6 +278,7 @@ namespace System
             {
                 throw new ArgumentNullException(nameof(value));
             }
+
             return Convert.ToDecimal(value, formatProvider);
         }
 
@@ -386,6 +294,7 @@ namespace System
             {
                 throw new ArgumentNullException(nameof(value));
             }
+
             return ToDecimal(value, DefaultFormatProvider);
         }
 
@@ -401,6 +310,7 @@ namespace System
             {
                 return null;
             }
+
             return Convert.ToDecimal(value, formatProvider);
         }
 
@@ -426,6 +336,7 @@ namespace System
             {
                 throw new ArgumentNullException(nameof(value));
             }
+
             return Convert.ToInt32(value, DefaultFormatProvider);
         }
 
@@ -441,6 +352,7 @@ namespace System
             {
                 return null;
             }
+
             return Convert.ToInt32(value, formatProvider);
         }
 

@@ -36,7 +36,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include=".Net Override\SR.cs" />
     <Compile Include=".Net Override\System.Collections.Generic\Extensions.cs" />
     <Compile Include=".Net Override\System.ComponentModel\TypeConverterAttribute.cs" />
     <Compile Include=".Net Override\System.Windows.Controls\ItemsControl.cs" />
@@ -52,7 +51,6 @@
     <Compile Include=".Net Override\System.Windows\HtmlElement.cs" />
     <Compile Include=".Net Override\System.Xml\WhiteStoneExtensions.cs" />
     <Compile Include=".Net Override\System\Cast.cs" />
-    <Compile Include=".Net Override\System\Exceptions.cs" />
     <Compile Include="Bridge.Html5\Extensions.cs" />
     <Compile Include="Common\AsyncAjax.cs" />
     <Compile Include="Common\JsonSerializer.cs" />
