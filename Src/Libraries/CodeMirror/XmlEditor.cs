@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
 using System.Windows;
 using System.Windows.Controls;
 using Bridge.Html5;
@@ -7,6 +8,7 @@ using Bridge.jQuery2;
 
 namespace Bridge.CustomUIMarkup.Libraries.CodeMirror
 {
+    [SuppressMessage("ReSharper", "UnusedVariable")]
     public class XmlEditor : Control
     {
         public XmlEditor()
@@ -37,6 +39,7 @@ namespace Bridge.CustomUIMarkup.Libraries.CodeMirror
         #endregion
 
         #region Fields
+        [SuppressMessage("ReSharper", "UnassignedField.Global")]
         public object _editor;
 
         bool isFiring_OnTextChanged;
@@ -70,6 +73,7 @@ namespace Bridge.CustomUIMarkup.Libraries.CodeMirror
             Window.SetTimeout(() => { Render(_textArea.Get(0)); },0);
         }
 
+        [SuppressMessage("ReSharper", "UnusedParameter.Local")]
         void Fire_OnTextChanged(object editor, object changeObj)
         {
             if (isFiring_OnTextChanged)
@@ -91,6 +95,7 @@ namespace Bridge.CustomUIMarkup.Libraries.CodeMirror
         }
 
         int _cursorCurrentLineNumber;
+        [SuppressMessage("ReSharper", "UnusedParameter.Local")]
         void Fire_onCursorActivity( object e)
         {
             _cursorCurrentLineNumber = Script.Write<int>("e.doc.getCursor().line");
@@ -101,6 +106,7 @@ namespace Bridge.CustomUIMarkup.Libraries.CodeMirror
 
         public virtual object SchemaInfo { get; set; }
 
+        [SuppressMessage("ReSharper", "UnusedParameter.Local")]
         void Render(Element textAreaElement)
         {
             var fontSize = this[nameof(FontSize)] == null ? 15:FontSize;

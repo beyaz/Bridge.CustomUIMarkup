@@ -531,10 +531,7 @@ namespace System
             throw new InvalidOperationException(Environment.GetResourceString(ThrowHelper.GetResourceName(resource)));
         }
 
-        internal static void ThrowObjectDisposedException(string objectName, ExceptionResource resource)
-        {
-            throw new ObjectDisposedException(objectName, Environment.GetResourceString(ThrowHelper.GetResourceName(resource)));
-        }
+        
 
         internal static void ThrowSecurityException(ExceptionResource resource)
         {

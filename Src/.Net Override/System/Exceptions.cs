@@ -25,26 +25,7 @@ namespace System
     }
     
    
-    public class ObjectDisposedException : SystemException
-    {
-        readonly string objectName;
-        public string ObjectName
-        {
-            get
-            {
-                return this.objectName;
-            }
-        }
-        #region Constructors
-        public ObjectDisposedException(string message = null, Exception innerException = null) : base(message, innerException)
-        {
-        }
-        public ObjectDisposedException(string objectName, string message) : base(message)
-        {
-            this.objectName = objectName;
-        }
-        #endregion
-    }
+   
 
     public class UnauthorizedAccessException : SystemException
     {

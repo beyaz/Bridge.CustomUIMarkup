@@ -15,13 +15,7 @@ namespace System.Xml
 
             try
             {
-                
-
-                return jQuery.ParseHTML(xmlString.Trim())[0].As<Bridge.Html5.Element>();
-
-                // xmlString = xmlString.Replace("x:Name=", "x.Name = ").Replace("x:Name =", "x.Name = ");
-
-                // return jQuery.ParseXML(xmlString).FirstChild.As<Element>();
+                return jQuery.ParseHTML(xmlString.Trim())[0].As<Element>();
             }
             catch (Exception e)
             {
