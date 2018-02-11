@@ -12,15 +12,7 @@ namespace System.ComponentModel
         #region Public Methods
         public static EventInfo FindEvent(object instance, string eventName)
         {
-            if (instance == null)
-            {
-                throw new ArgumentNullException(nameof(instance));
-            }
-
-            if (eventName == null)
-            {
-                throw new ArgumentNullException(nameof(eventName));
-            }
+            AssertParameters(instance, eventName);
 
             var type = instance.GetType();
             if (type == null)
@@ -33,15 +25,7 @@ namespace System.ComponentModel
 
         public static EventInfo FindEvent(object instance, string eventName, BindingFlags bindingFlags)
         {
-            if (instance == null)
-            {
-                throw new ArgumentNullException(nameof(instance));
-            }
-
-            if (eventName == null)
-            {
-                throw new ArgumentNullException(nameof(eventName));
-            }
+            AssertParameters(instance, eventName);
 
             var type = instance.GetType();
             if (type == null)
@@ -54,15 +38,7 @@ namespace System.ComponentModel
 
         public static MethodInfo FindMethodInfo(object instance, string methodName)
         {
-            if (instance == null)
-            {
-                throw new ArgumentNullException(nameof(instance));
-            }
-
-            if (methodName == null)
-            {
-                throw new ArgumentNullException(nameof(methodName));
-            }
+            AssertParameters(instance, methodName);
 
             var type = instance.GetType();
             if (type == null)
@@ -75,15 +51,7 @@ namespace System.ComponentModel
 
         public static MethodInfo FindMethodInfo(object instance, string methodName, params Type[] parameterTypes)
         {
-            if (instance == null)
-            {
-                throw new ArgumentNullException(nameof(instance));
-            }
-
-            if (methodName == null)
-            {
-                throw new ArgumentNullException(nameof(methodName));
-            }
+            AssertParameters(instance, methodName);
 
             var type = instance.GetType();
             if (type == null)
@@ -96,15 +64,7 @@ namespace System.ComponentModel
 
         public static PropertyInfo FindProperty(object instance, string propertyName)
         {
-            if (instance == null)
-            {
-                throw new ArgumentNullException(nameof(instance));
-            }
-
-            if (propertyName == null)
-            {
-                throw new ArgumentNullException(nameof(propertyName));
-            }
+            AssertParameters(instance, propertyName);
 
             var type = instance.GetType();
             if (type == null)
@@ -117,15 +77,7 @@ namespace System.ComponentModel
 
         public static PropertyInfo FindProperty(object instance, string propertyName, BindingFlags flags)
         {
-            if (instance == null)
-            {
-                throw new ArgumentNullException(nameof(instance));
-            }
-
-            if (propertyName == null)
-            {
-                throw new ArgumentNullException(nameof(propertyName));
-            }
+            AssertParameters(instance, propertyName);
 
             var type = instance.GetType();
             if (type == null)
@@ -150,19 +102,18 @@ namespace System.ComponentModel
         public static object GetPropertyValue(object instance, string propertyName)
         {
             var propertyInfo = FindProperty(instance, propertyName);
-
-            if (propertyInfo == null)
+            if (propertyInfo != null)
             {
-                var bag = instance as Bag;
-                if (bag != null)
-                {
-                    return bag.GetValue(propertyName);
-                }
-
-                throw new MissingMemberException(instance.GetType().FullName + "->" + propertyName);
+                return propertyInfo.GetValue(instance);
             }
 
-            return propertyInfo.GetValue(instance);
+            var bag = instance as Bag;
+            if (bag != null)
+            {
+                return bag.GetValue(propertyName);
+            }
+
+            throw new MissingMemberException(instance.GetType().FullName + "->" + propertyName);
         }
 
         public static object Invoke(object instance, string methodName)
@@ -192,15 +143,7 @@ namespace System.ComponentModel
         /// </summary>
         public static object InvokePublicNonStaticMethod(object instance, string methodName)
         {
-            if (instance == null)
-            {
-                throw new ArgumentNullException(nameof(instance));
-            }
-
-            if (methodName == null)
-            {
-                throw new ArgumentNullException(nameof(methodName));
-            }
+            AssertParameters(instance, methodName);
 
             var methodInfo = instance.GetType().GetMethod(methodName);
             if (methodInfo == null)
@@ -294,6 +237,11 @@ namespace System.ComponentModel
             if (instance == null)
             {
                 return null;
+            }
+
+            if (propertyName == null)
+            {
+                throw new ArgumentNullException(nameof(propertyName));
             }
 
             return instance.GetType().GetProperties().FirstOrDefault(p => p.Name == propertyName);
