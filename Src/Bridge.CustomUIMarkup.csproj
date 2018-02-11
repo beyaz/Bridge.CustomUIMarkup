@@ -88,7 +88,6 @@
     <Compile Include="Libraries\Swiper\SwiperElements.cs" />
     <Compile Include="Libraries\viewerjs\ViewerJsElements.cs" />
     <Compile Include="Libraries\viewerjs\Viewer.cs" />
-    <Compile Include="Resources.cs" />
     <Compile Include=".Net Override\System.Text.Tokenizers\Tokenizer.cs" />
     <Compile Include="Libraries\SemanticUI\Align.cs" />
     <Compile Include="Libraries\SemanticUI\Field.cs" />
