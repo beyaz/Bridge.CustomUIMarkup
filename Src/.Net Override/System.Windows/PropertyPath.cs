@@ -51,10 +51,18 @@ namespace System.Windows
             var lastTrigger  = LastTrigger;
             var instance     = lastTrigger.Instance;
             var propertyName = lastTrigger.PropertyName;
+            
+            return GetPropertyValue(instance, propertyName);
+        }
 
-            var value = ReflectionHelper.GetPropertyValue(instance, propertyName);
+        static object GetPropertyValue(object instance, string propertyName)
+        {
+            if (instance.GetType() == typeof(object))
+            {
+                return instance[propertyName];
+            }
 
-            return value;
+            return ReflectionHelper.GetPropertyValue(instance, propertyName);
         }
 
         public void Listen(object instance, Action onPropertyValueChanged)
@@ -130,7 +138,7 @@ namespace System.Windows
                     PropertyName = propertyName
                 });
 
-                instance = ReflectionHelper.GetPropertyValue(instance, propertyName);
+                instance = GetPropertyValue(instance, propertyName);
 
                 path = path.Substring(firstDat + 1);
             }

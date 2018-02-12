@@ -51,6 +51,8 @@
     <Compile Include=".Net Override\System.Windows\HtmlElement.cs" />
     <Compile Include=".Net Override\System.Xml\WhiteStoneExtensions.cs" />
     <Compile Include=".Net Override\System\Cast.cs" />
+    <Compile Include="Bridge.CustomUIMarkupOnReact\External.cs" />
+    <Compile Include="Bridge.CustomUIMarkupOnReact\RaactUIBuilder.cs" />
     <Compile Include="Bridge.Html5\Extensions.cs" />
     <Compile Include="Common\AsyncAjax.cs" />
     <Compile Include="Common\JsonSerializer.cs" />
@@ -123,6 +125,8 @@
   <ItemGroup>
     <Content Include="Lib\qunit\qunit.css" />
     <Content Include="Lib\qunit\qunit.js" />
+    <Content Include="Lib\React\React.Dom.js" />
+    <Content Include="Lib\React\React.js" />
     <Content Include="Lib\semantic-ui-calendar\calendar.css" />
     <Content Include="Lib\semantic-ui-calendar\calendar.js" />
     <Content Include="Lib\semantic-ui-calendar\calendar.TR.js" />
