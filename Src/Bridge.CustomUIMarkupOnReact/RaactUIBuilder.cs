@@ -102,7 +102,7 @@ namespace Bridge.CustomUIMarkupOnReact
             if (node.NodeType == NodeType.Text)
             {
                 var innerText   = node.GetInnerText();
-                var bindingInfo = HTMLBindingInfo.TryParseExpression(innerText);
+                var bindingInfo = BindingInfo.TryParseExpression(innerText);
 
                 if (bindingInfo == null)
                 {
@@ -140,7 +140,7 @@ namespace Bridge.CustomUIMarkupOnReact
                 var    value         = attribute.NodeValue;
                 object valueAsObject = value;
 
-                var bindingInfo = HTMLBindingInfo.TryParseExpression(value);
+                var bindingInfo = BindingInfo.TryParseExpression(value);
 
                 if (bindingInfo != null)
                 {

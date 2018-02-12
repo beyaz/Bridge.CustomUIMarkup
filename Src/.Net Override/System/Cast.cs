@@ -11,7 +11,6 @@ namespace System
         /// <summary>
         ///     To the specified value.
         /// </summary>
-        // ReSharper disable once UnusedParameter.Global
         public static object To(object value, Type targetType, IFormatProvider provider)
         {
             if (targetType == null)
