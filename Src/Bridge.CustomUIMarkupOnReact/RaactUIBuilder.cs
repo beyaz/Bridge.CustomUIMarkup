@@ -26,6 +26,44 @@ namespace Bridge.CustomUIMarkupOnReact
         #endregion
 
         #region Methods
+        /// <summary>
+        ///     var nodeModuleCache  = __webpack_require__.c;
+        /// </summary>
+        internal object FindInNodeModuleCache(object nodeModuleCache, string nodeTagName)
+        {
+            var i = -1;
+
+            while (true)
+            {
+                i++;
+                dynamic module = nodeModuleCache[i.ToString()];
+
+                if (module == null)
+                {
+                    return null;
+                }
+
+                var exports = module.exports;
+                if (exports == null)
+                {
+                    continue;
+                }
+
+                var defaultt = exports["default"];
+                if (defaultt == null)
+                {
+                    continue;
+                }
+
+                string name = defaultt["name"].As<string>();
+
+                if (nodeTagName.ToUpper() == name.ToUpper())
+                {
+                    return defaultt;
+                }
+            }
+        }
+
         static Element GetRootNode(string xmlString)
         {
             if (xmlString == null)
