@@ -6,7 +6,6 @@ using Bridge.CustomUIMarkup.Libraries.split_js;
 using Bridge.CustomUIMarkup.Libraries.SemanticUI;
 using Bridge.CustomUIMarkup.Libraries.Swiper;
 using Bridge.CustomUIMarkup.Libraries.viewerjs;
-using Bridge.CustomUIMarkupOnReact;
 using Bridge.Html5;
 using Bridge.QUnit;
 
@@ -18,7 +17,6 @@ namespace Bridge.CustomUIMarkup.Test
         [Ready]
         public static void RunAll()
         {
-            AllTest.Register();
             SemanticUIElements.RegisterToBuilder();
             SplitJsElements.RegisterToBuilder();
             CodeMirrorElements.RegisterToBuilder();
