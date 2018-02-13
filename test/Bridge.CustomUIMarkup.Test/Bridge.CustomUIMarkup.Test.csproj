@@ -39,7 +39,6 @@
     <Compile Include="App.cs" />
     <Compile Include="BindingInfoTest.cs" />
     <Compile Include="BindingInfoTest2.cs" />
-    <Compile Include="Bridge.CustomUIMarkupOnReact\AllTest.cs" />
     <Compile Include="CastTest.cs" />
     <Compile Include="ComboTest.cs" />
     <Compile Include="DatePickerTest.cs" />
