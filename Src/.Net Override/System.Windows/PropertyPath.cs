@@ -52,18 +52,8 @@ namespace System.Windows
             var lastTrigger  = LastTrigger;
             var instance     = lastTrigger.Instance;
             var propertyName = lastTrigger.PropertyName;
-            
+
             return GetPropertyValue(instance, propertyName);
-        }
-
-        static object GetPropertyValue(object instance, string propertyName)
-        {
-            if (instance.GetType() == typeof(object))
-            {
-                return instance[propertyName];
-            }
-
-            return ReflectionHelper.GetPropertyValue(instance, propertyName);
         }
 
         public void Listen(object instance, Action onPropertyValueChanged)
@@ -97,7 +87,7 @@ namespace System.Windows
                 value = Cast.To(value, propertyType, CultureInfo.CurrentCulture);
             }
 
-            ReflectionHelper.SetPropertyValue(instance, propertyName, value);
+            SetPropertyValue(instance, propertyName, value);
         }
 
         public void Walk(object instance)
@@ -143,6 +133,27 @@ namespace System.Windows
 
                 path = path.Substring(firstDat + 1);
             }
+        }
+
+        static object GetPropertyValue(object instance, string propertyName)
+        {
+            if (instance.GetType() == typeof(object))
+            {
+                return instance[propertyName];
+            }
+
+            return ReflectionHelper.GetPropertyValue(instance, propertyName);
+        }
+
+        static void SetPropertyValue(object instance, string propertyName, object value)
+        {
+            if (instance.GetType() == typeof(object))
+            {
+                instance[propertyName] = value;
+                return;
+            }
+
+            ReflectionHelper.SetPropertyValue(instance, propertyName, value);
         }
         #endregion
 
