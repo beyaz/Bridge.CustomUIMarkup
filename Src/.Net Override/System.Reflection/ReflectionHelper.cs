@@ -116,6 +116,26 @@ namespace System.Reflection
             throw new MissingMemberException(instance.GetType().FullName + "->" + propertyName);
         }
 
+
+
+        public static object GetPropertyValue(object instance, string propertyName, BindingFlags flags)
+        {
+            var propertyInfo = FindProperty(instance, propertyName, flags);
+            if (propertyInfo != null)
+            {
+                return propertyInfo.GetValue(instance);
+            }
+
+            var bag = instance as Bag;
+            if (bag != null)
+            {
+                return bag.GetValue(propertyName);
+            }
+
+            throw new MissingMemberException(instance.GetType().FullName + "->" + propertyName);
+        }
+
+
         public static object Invoke(object instance, string methodName)
         {
             var methodInfo = FindMethodInfo(instance, methodName);
