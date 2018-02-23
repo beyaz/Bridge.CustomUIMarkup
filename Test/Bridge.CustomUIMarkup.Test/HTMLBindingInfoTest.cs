@@ -1,16 +1,15 @@
 ﻿using System.ComponentModel;
 using System.Windows;
 using System.Windows.Data;
-using Bridge.CustomUIMarkup.Common;
-using Bridge.CustomUIMarkup.UI;
+using Bridge.QUnit;
 
 namespace Bridge.CustomUIMarkup.Test
 {
     public class Model : Bag
     {
-        
         #region UserInfoContract UserInfo
         UserInfoContract _userInfo;
+
         public UserInfoContract UserInfo
         {
             get { return _userInfo; }
@@ -24,13 +23,13 @@ namespace Bridge.CustomUIMarkup.Test
             }
         }
         #endregion
-
-
     }
+
     public class UserInfoContract : Bag
     {
         #region string StringProperty0
         string _stringProperty0;
+
         public string StringProperty0
         {
             get { return _stringProperty0; }
@@ -47,6 +46,7 @@ namespace Bridge.CustomUIMarkup.Test
 
         #region string StringProperty1
         string _stringProperty1;
+
         public string StringProperty1
         {
             get { return _stringProperty1; }
@@ -63,6 +63,7 @@ namespace Bridge.CustomUIMarkup.Test
 
         #region int Int32Property0
         int _int32Property0;
+
         public int Int32Property0
         {
             get { return _int32Property0; }
@@ -79,6 +80,7 @@ namespace Bridge.CustomUIMarkup.Test
 
         #region int Int32Property1
         int _int32Property1;
+
         public int Int32Property1
         {
             get { return _int32Property1; }
@@ -92,21 +94,21 @@ namespace Bridge.CustomUIMarkup.Test
             }
         }
         #endregion
-
-
     }
 
-    class HTMLBindingInfoTest : TestBase
+    class HTMLBindingInfoTest
     {
         #region Public Methods
         public static void RunAll()
         {
-            new HTMLBindingInfoTest().simpleBindingfor_src();
-            new HTMLBindingInfoTest().simpleBindingfor_innerHtml();
-            new HTMLBindingInfoTest().InnerHTML_binding_With_longPropertyPath();
+            QUnit.QUnit.Test(nameof(HTMLBindingInfoTest) + "->" + nameof(simpleBindingfor_src), simpleBindingfor_src);
+            QUnit.QUnit.Test(nameof(HTMLBindingInfoTest) + "->" + nameof(simpleBindingfor_innerHtml), simpleBindingfor_innerHtml);
+            QUnit.QUnit.Test(nameof(HTMLBindingInfoTest) + "->" + nameof(InnerHTML_binding_With_longPropertyPath), InnerHTML_binding_With_longPropertyPath);
         }
+        #endregion
 
-        public void InnerHTML_binding_With_longPropertyPath()
+        #region Methods
+        static void InnerHTML_binding_With_longPropertyPath(Assert Assert)
         {
             var model = new Model
             {
@@ -116,14 +118,13 @@ namespace Bridge.CustomUIMarkup.Test
                 }
             };
 
-
             var div = DOM.CreateElement("div");
             var htmlBindingInfo = new HTMLBindingInfo
             {
-                Source = model,
-                SourcePath = "UserInfo.StringProperty0",
-                Target = div,
-                TargetPath = "innerHTML",
+                Source      = model,
+                SourcePath  = "UserInfo.StringProperty0",
+                Target      = div,
+                TargetPath  = "innerHTML",
                 BindingMode = BindingMode.OneWay
             };
 
@@ -131,66 +132,57 @@ namespace Bridge.CustomUIMarkup.Test
 
             model.UserInfo.StringProperty0 = "A";
 
-            MustEqual("A", div.Html());
+            Assert.AreEqual("A", div.Html());
 
+            div = TestHelper.BuildAndGetFirstLogicalChild("<div>{UserInfo.StringProperty0}</div>", model).Root;
 
-            div = BuildAndGetFirstLogicalChild("<div>{UserInfo.StringProperty0}</div>", model).Root;
-
-
-
-
-
-
-
-
-            MustEqual("A", div.Html());
+            Assert.AreEqual("A", div.Html());
 
             model.UserInfo.StringProperty0 = "B";
 
-            MustEqual("B", div.Html());
-
+            Assert.AreEqual("B", div.Html());
         }
 
-        public void simpleBindingfor_innerHtml()
+        static void simpleBindingfor_innerHtml(Assert Assert)
         {
             var simpleClass1 = new SimpleClass1();
 
             var img = DOM.CreateElement("div");
             var htmlBindingInfo = new HTMLBindingInfo
             {
-                Source = simpleClass1,
-                SourcePath = "LastName",
-                Target = img,
-                TargetPath = "innerHTML",
+                Source      = simpleClass1,
+                SourcePath  = "LastName",
+                Target      = img,
+                TargetPath  = "innerHTML",
                 BindingMode = BindingMode.OneWay
             };
 
             htmlBindingInfo.Connect();
 
-            simpleClass1.LastName = SampleImageUrl_350_150;
+            simpleClass1.LastName = TestHelper.SampleImageUrl_350_150;
 
-            MustEqual(SampleImageUrl_350_150, img.Html());
+            Assert.AreEqual(TestHelper.SampleImageUrl_350_150, img.Html());
         }
 
-        public void simpleBindingfor_src()
+        static void simpleBindingfor_src(Assert Assert)
         {
             var simpleClass1 = new SimpleClass1();
 
             var img = DOM.CreateElement("img");
             var htmlBindingInfo = new HTMLBindingInfo
             {
-                Source = simpleClass1,
-                SourcePath = "LastName",
-                Target = img,
-                TargetPath = "src",
+                Source      = simpleClass1,
+                SourcePath  = "LastName",
+                Target      = img,
+                TargetPath  = "src",
                 BindingMode = BindingMode.OneWay
             };
 
             htmlBindingInfo.Connect();
 
-            simpleClass1.LastName = SampleImageUrl_350_150;
+            simpleClass1.LastName = TestHelper.SampleImageUrl_350_150;
 
-            MustEqual(SampleImageUrl_350_150, img.Attr("src"));
+            Assert.AreEqual(TestHelper.SampleImageUrl_350_150, img.Attr("src"));
         }
         #endregion
     }

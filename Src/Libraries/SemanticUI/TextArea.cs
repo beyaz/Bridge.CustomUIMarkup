@@ -9,10 +9,9 @@ namespace Bridge.CustomUIMarkup.Libraries.SemanticUI
         {
             get
             {
-                return
-                    "<div>" +
-                    "   <textarea rows='{Rows}' x:Name = '_inputElement' />" +
-                    "</div>";
+                return "<div>" +
+                       "   <textarea rows='{Rows}' x:Name = '_inputElement' />" +
+                       "</div>";
             }
         }
         #endregion

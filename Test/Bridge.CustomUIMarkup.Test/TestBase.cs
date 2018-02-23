@@ -14,12 +14,15 @@ namespace Bridge.CustomUIMarkup.Test
                 DataContext = dataContext
             }.LoadComponent(xmlString).GetLogicalChildAt(0);
         }
+
+        public static string SampleImageUrl_350_150 = "http://via.placeholder.com/350x150";
+        public  static string SampleImageUrl_350_151 = "http://via.placeholder.com/350x151";
     }
     public class TestBase
     {
         #region Fields
-        protected string SampleImageUrl_350_150 = "http://via.placeholder.com/350x150";
-        protected string SampleImageUrl_350_151 = "http://via.placeholder.com/350x151";
+        protected static string SampleImageUrl_350_150 = "http://via.placeholder.com/350x150";
+        protected static string SampleImageUrl_350_151 = "http://via.placeholder.com/350x151";
         #endregion
 
         #region Methods
