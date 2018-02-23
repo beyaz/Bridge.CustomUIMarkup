@@ -79,12 +79,13 @@ namespace Bridge.CustomUIMarkup.Test
         }
 
         static void Should_Not_Serialize_When_Property_Has_JsonIgnoreSerializationOnPostOperation_Attribute(Assert Assert)
-        {
+        { 
+            // ACT
             var instance = CreateTestInstance();
 
             var jsonSerializer = new JsonSerializer();
 
-            // ACT
+            
             var postValue = jsonSerializer.Deserialize<JsonSerializerTest_Class1>(jsonSerializer.SerializeForPostOperation(instance));
 
             Assert.AreEqual("A", postValue.StringProperty_1);
