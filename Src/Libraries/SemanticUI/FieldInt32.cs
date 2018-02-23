@@ -2,7 +2,7 @@
 
 namespace Bridge.CustomUIMarkup.Libraries.SemanticUI
 {
-    public class FieldString : Field
+    public class FieldInt32 : Field
     {
         #region Public Properties
         public override string DefaultTemplateAsXml
@@ -13,7 +13,7 @@ namespace Bridge.CustomUIMarkup.Libraries.SemanticUI
                     "<div class='field' on.click = 'ClearErrorMessage' >" +
                     "   <label Visibility = '{LabelVisibility}'>{Label}</label>" +
                     "   <ContentPresenter>" +
-                    "       <textBox Text = '{Value}' IsDisabled='{IsDisabled}'  />" +
+                    "       <textBox Text = '{Value}' AllowOnlyNumericInputs = 'True' />" +
                     "   </ContentPresenter>" +
                     "   <div class = 'ui red pointing label transition' Visibility = '{ErrorMessageVisibility}'> {ErrorMessage} </div>" +
                     "</div>";
@@ -23,11 +23,11 @@ namespace Bridge.CustomUIMarkup.Libraries.SemanticUI
 
         #region string Value
         public static readonly DependencyProperty ValueProperty = DependencyProperty.Register(
-            "Value", typeof(string), typeof(FieldString), new PropertyMetadata(default(string)));
+                                                                                              "Value", typeof(int?), typeof(FieldInt32), new PropertyMetadata(default(int?)));
 
-        public string Value
+        public int? Value
         {
-            get { return (string) GetValue(ValueProperty); }
+            get { return (int?)GetValue(ValueProperty); }
             set { SetValue(ValueProperty, value); }
         }
         #endregion

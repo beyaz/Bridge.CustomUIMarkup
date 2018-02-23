@@ -1,9 +1,14 @@
-﻿using System.Windows;
+﻿using System;
+using System.Windows;
 
 namespace Bridge.CustomUIMarkup.Libraries.SemanticUI
 {
-    public class FieldString : Field
+    public class FieldDate : Field
     {
+        #region Static Fields
+        public static readonly DependencyProperty ValueProperty = DependencyProperty.Register(nameof(Value), typeof(DateTime?), typeof(FieldDate), new PropertyMetadata(default(DateTime?)));
+        #endregion
+
         #region Public Properties
         public override string DefaultTemplateAsXml
         {
@@ -13,21 +18,16 @@ namespace Bridge.CustomUIMarkup.Libraries.SemanticUI
                     "<div class='field' on.click = 'ClearErrorMessage' >" +
                     "   <label Visibility = '{LabelVisibility}'>{Label}</label>" +
                     "   <ContentPresenter>" +
-                    "       <textBox Text = '{Value}' IsDisabled='{IsDisabled}'  />" +
+                    "       <DatePicker Value = '{Value}' IsDisabled='{IsDisabled}' />" +
                     "   </ContentPresenter>" +
                     "   <div class = 'ui red pointing label transition' Visibility = '{ErrorMessageVisibility}'> {ErrorMessage} </div>" +
                     "</div>";
             }
         }
-        #endregion
 
-        #region string Value
-        public static readonly DependencyProperty ValueProperty = DependencyProperty.Register(
-            "Value", typeof(string), typeof(FieldString), new PropertyMetadata(default(string)));
-
-        public string Value
+        public DateTime? Value
         {
-            get { return (string) GetValue(ValueProperty); }
+            get { return (DateTime?) GetValue(ValueProperty); }
             set { SetValue(ValueProperty, value); }
         }
         #endregion

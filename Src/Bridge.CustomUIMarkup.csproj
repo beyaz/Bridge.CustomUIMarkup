@@ -58,7 +58,11 @@
     <Compile Include="Libraries\SemanticUI\DataGrid.cs" />
     <Compile Include="Libraries\SemanticUI\DatePicker.cs" />
     <Compile Include="Libraries\SemanticUI\Extensions.cs" />
+    <Compile Include="Libraries\SemanticUI\FieldDate.cs" />
+    <Compile Include="Libraries\SemanticUI\FieldDecimal.cs" />
+    <Compile Include="Libraries\SemanticUI\FieldInt32.cs" />
     <Compile Include="Libraries\SemanticUI\FieldString.cs" />
+    <Compile Include="Libraries\SemanticUI\FieldTextArea.cs" />
     <Compile Include="Libraries\SemanticUI\ItemsControl.cs" />
     <Compile Include=".Net Override\System.Windows.Controls\TextBlock.cs" />
     <Compile Include=".Net Override\System.Windows.Data\BindingInfo.cs" />
@@ -89,7 +93,6 @@
     <Compile Include="Libraries\viewerjs\ViewerJsElements.cs" />
     <Compile Include="Libraries\viewerjs\Viewer.cs" />
     <Compile Include=".Net Override\System.Text.Tokenizers\Tokenizer.cs" />
-    <Compile Include="Libraries\SemanticUI\Align.cs" />
     <Compile Include="Libraries\SemanticUI\Field.cs" />
     <Compile Include="Libraries\SemanticUI\IconType.cs" />
     <Compile Include="Libraries\SemanticUI\Size.cs" />

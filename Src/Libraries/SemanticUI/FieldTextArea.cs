@@ -2,9 +2,19 @@
 
 namespace Bridge.CustomUIMarkup.Libraries.SemanticUI
 {
-    public class FieldString : Field
+    public class FieldTextArea : FieldString
     {
-        #region Public Properties
+
+        #region Rows
+        public static readonly DependencyProperty RowsProperty = DependencyProperty.Register(nameof(Rows), typeof(int?), typeof(FieldTextArea), new PropertyMetadata(default(int?)));
+
+        public int? Rows
+        {
+            get { return (int?) GetValue(RowsProperty); }
+            set { SetValue(RowsProperty, value); }
+        }
+        #endregion
+
         public override string DefaultTemplateAsXml
         {
             get
@@ -13,23 +23,11 @@ namespace Bridge.CustomUIMarkup.Libraries.SemanticUI
                     "<div class='field' on.click = 'ClearErrorMessage' >" +
                     "   <label Visibility = '{LabelVisibility}'>{Label}</label>" +
                     "   <ContentPresenter>" +
-                    "       <textBox Text = '{Value}' IsDisabled='{IsDisabled}'  />" +
+                    "       <ui-input-textarea  Text = '{Value}' IsDisabled='{IsDisabled}' Rows='{Rows}' />" +
                     "   </ContentPresenter>" +
                     "   <div class = 'ui red pointing label transition' Visibility = '{ErrorMessageVisibility}'> {ErrorMessage} </div>" +
                     "</div>";
             }
         }
-        #endregion
-
-        #region string Value
-        public static readonly DependencyProperty ValueProperty = DependencyProperty.Register(
-            "Value", typeof(string), typeof(FieldString), new PropertyMetadata(default(string)));
-
-        public string Value
-        {
-            get { return (string) GetValue(ValueProperty); }
-            set { SetValue(ValueProperty, value); }
-        }
-        #endregion
     }
 }

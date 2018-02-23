@@ -2,7 +2,7 @@
 
 namespace Bridge.CustomUIMarkup.Libraries.SemanticUI
 {
-    public class FieldString : Field
+    public class FieldDecimal : Field
     {
         #region Public Properties
         public override string DefaultTemplateAsXml
@@ -13,7 +13,7 @@ namespace Bridge.CustomUIMarkup.Libraries.SemanticUI
                     "<div class='field' on.click = 'ClearErrorMessage' >" +
                     "   <label Visibility = '{LabelVisibility}'>{Label}</label>" +
                     "   <ContentPresenter>" +
-                    "       <textBox Text = '{Value}' IsDisabled='{IsDisabled}'  />" +
+                    "       <textBox Text = '{Value}' AllowOnlyDecimalInputs = 'True' />" +
                     "   </ContentPresenter>" +
                     "   <div class = 'ui red pointing label transition' Visibility = '{ErrorMessageVisibility}'> {ErrorMessage} </div>" +
                     "</div>";
@@ -21,13 +21,13 @@ namespace Bridge.CustomUIMarkup.Libraries.SemanticUI
         }
         #endregion
 
-        #region string Value
+        #region decimal? Value
         public static readonly DependencyProperty ValueProperty = DependencyProperty.Register(
-            "Value", typeof(string), typeof(FieldString), new PropertyMetadata(default(string)));
+                                                                                              "Value", typeof(decimal?), typeof(FieldDecimal), new PropertyMetadata(default(decimal?)));
 
-        public string Value
+        public decimal? Value
         {
-            get { return (string) GetValue(ValueProperty); }
+            get { return (decimal?)GetValue(ValueProperty); }
             set { SetValue(ValueProperty, value); }
         }
         #endregion
