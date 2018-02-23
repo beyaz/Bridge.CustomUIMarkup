@@ -110,11 +110,12 @@ namespace Bridge.CustomUIMarkup.Test
 
         static void Should_Restore_Values(Assert Assert)
         {
+            // ARRANGE
             var instance = CreateTestInstance();
             
             var postValue = Serializer.Deserialize<JsonSerializerTest_Class1>(Serializer.SerializeForPostOperation(instance));
 
-            // ACT
+            // ACT 
             Serializer.RestoreAfterPostOperation(postValue,instance);
 
             Assert.Equal(Serializer.Serialize(postValue), Serializer.Serialize(CreateTestInstance()));
