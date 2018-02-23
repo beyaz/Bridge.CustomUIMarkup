@@ -1,20 +1,8 @@
-﻿using System.Collections.Generic;
-
-namespace Bridge.jQuery2
+﻿namespace Bridge.jQuery2
 {
     public static class Extensions
     {
-
-        
-
         #region Public Methods
-        public static jQuery AppendTo(this jQuery query, ICollection<jQuery> list)
-        {
-            list.Add(query);
-
-            return query;
-        }
-
         public static jQuery Css_display_Inline_Block(this jQuery query)
         {
             query.Css("display", "inline-block");
