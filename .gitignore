@@ -12,3 +12,7 @@
 *.dgml
 /Test/Bridge.CustomUIMarkup.Test/bin/Debug
 /Test/Bridge.CustomUIMarkup.Test/obj
+/Bridge.CustomUIMarkup/bin/
+/Bridge.CustomUIMarkup/obj/
+/Bridge.CustomUIMarkup.Test/bin/
+/Bridge.CustomUIMarkup.Test/obj/
