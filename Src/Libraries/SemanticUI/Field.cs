@@ -32,6 +32,8 @@ namespace Bridge.CustomUIMarkup.Libraries.SemanticUI
 
                 LabelVisibility = Visibility.Visible;
             });
+
+            BeforeConnectToLogicalParent += parent => { RemoveRelatedAttributeIfToolTipIsNull(); };
         }
         #endregion
 
@@ -41,7 +43,7 @@ namespace Bridge.CustomUIMarkup.Libraries.SemanticUI
             get
             {
                 return
-                    "<div class = 'field' on.click = 'ClearErrorMessage' >" +
+                    "<div class = 'field' on.click = 'ClearErrorMessage'  data-tooltip = '{ToolTip, Mode = OneWay}' >" +
                     "   <label Visibility = '{LabelVisibility}'>{Label}</label>" +
                     "   <ContentPresenter />" +
                     "   <div class = 'ui red pointing label transition' Visibility = '{ErrorMessageVisibility}'> {ErrorMessage} </div>" +
@@ -56,6 +58,19 @@ namespace Bridge.CustomUIMarkup.Libraries.SemanticUI
             if (ErrorMessage != null)
             {
                 ErrorMessage = null;
+            }
+        }
+
+        static void OnToolTipChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            ((Field) d).RemoveRelatedAttributeIfToolTipIsNull();
+        }
+
+        void RemoveRelatedAttributeIfToolTipIsNull()
+        {
+            if (ToolTip == null)
+            {
+                Root.RemoveAttr("data-tooltip");
             }
         }
         #endregion
@@ -107,6 +122,16 @@ namespace Bridge.CustomUIMarkup.Libraries.SemanticUI
         {
             get { return (string) GetValue(LabelProperty); }
             set { SetValue(LabelProperty, value); }
+        }
+        #endregion
+
+        #region ToolTipProperty
+        public static readonly DependencyProperty ToolTipProperty = DependencyProperty.Register(nameof(ToolTip), typeof(string), typeof(Field), new PropertyMetadata(OnToolTipChanged));
+
+        public object ToolTip
+        {
+            get { return GetValue(ToolTipProperty); }
+            set { SetValue(ToolTipProperty, value); }
         }
         #endregion
     }

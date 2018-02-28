@@ -51,7 +51,7 @@ root.calendar(settings);
         public override string DefaultTemplateAsXml => "<div class='ui calendar'>" +
                                                        "    <div x:Name = '_ui_input'  class='ui input left icon'>" +
                                                        "        <i class='calendar icon'/>" +
-                                                       "        <input type = 'text' x.Name='_inputText'  placeHolder='{PlaceHolder}'   />" +
+                                                       "        <input type = 'text' x.Name='_inputText'  placeHolder='{PlaceHolder,Mode=OneWay}'   />" +
                                                        "    </div>" +
                                                        "</div>";
         #endregion
@@ -93,14 +93,28 @@ root.calendar(settings);
             set { SetValue(ValueProperty, value); }
         }
 
+        bool _isUpdatingUI;
+
+        // ReSharper disable once UnusedParameter.Local
+        void UpdateUI(DateTime? newValue)
+        {
+            if (_isUpdatingUI)
+            {
+                return;
+            }
+
+            _isUpdatingUI = !_isUpdatingUI;
+
+            var root = _root;
+
+            Script.Write("root.calendar('set date', newValue);");
+
+            _isUpdatingUI = false;
+        }
+
         static void OnValueChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            var datePicker = (DatePicker) d;
-
-            var root  = datePicker._root;
-            var value = e.NewValue as DateTime?;
-
-            Script.Write("root.calendar('set date',value);");
+            ((DatePicker) d).UpdateUI((DateTime?) e.NewValue);
         }
         #endregion
     }

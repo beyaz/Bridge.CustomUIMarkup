@@ -15,7 +15,7 @@ namespace Bridge.CustomUIMarkup.Libraries.SemanticUI
             get
             {
                 return
-                    "<div class='field' on.click = 'ClearErrorMessage' >" +
+                    "<div class='field' on.click = 'ClearErrorMessage' data-tooltip = '{ToolTip, Mode = OneWay}' >" +
                     "   <label Visibility = '{LabelVisibility}'>{Label}</label>" +
                     "   <ContentPresenter>" +
                     "       <DatePicker Value = '{Value}' IsDisabled='{IsDisabled}' />" +

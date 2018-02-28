@@ -407,7 +407,7 @@ namespace System.Windows.Controls
                             BindingMode = BindingMode.OneWay
                         };
 
-                        if (HTMLBindingInfo.TargetCanUpdateSource(htmlBindingInfo.Target))
+                        if ( bi.BindingMode == BindingMode.TwoWay &&  HTMLBindingInfo.TargetCanUpdateSource(htmlBindingInfo.Target))
                         {
                             htmlBindingInfo.BindingMode = BindingMode.TwoWay;
                         }
