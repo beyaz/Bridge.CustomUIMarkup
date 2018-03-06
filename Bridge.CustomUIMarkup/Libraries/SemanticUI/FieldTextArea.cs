@@ -23,7 +23,7 @@ namespace Bridge.CustomUIMarkup.Libraries.SemanticUI
                     "<div class='field' on.click = 'ClearErrorMessage' data-tooltip = '{ToolTip, Mode = OneWay}'>" +
                     "   <label Visibility = '{LabelVisibility}'>{Label}</label>" +
                     "   <ContentPresenter>" +
-                    "       <ui-input-textarea  Text = '{Value}' IsDisabled='{IsDisabled}' Rows='{Rows}' />" +
+                    "       <ui-input-textarea  Text = '{Value}' IsDisabled='{IsDisabled}' Rows='{Rows}'  PlaceHolder='{PlaceHolder,Mode=OneWay}' />" +
                     "   </ContentPresenter>" +
                     "   <div class = 'ui red pointing label transition' Visibility = '{ErrorMessageVisibility}'> {ErrorMessage} </div>" +
                     "</div>";

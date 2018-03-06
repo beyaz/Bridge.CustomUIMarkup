@@ -31,5 +31,17 @@ namespace Bridge.CustomUIMarkup.Libraries.SemanticUI
             set { SetValue(ValueProperty, value); }
         }
         #endregion
+
+
+
+        #region PlaceHolder
+        public static readonly DependencyProperty PlaceHolderProperty = DependencyProperty.Register(nameof(PlaceHolder), typeof(string), typeof(FieldString), new PropertyMetadata(null));
+
+        public string PlaceHolder
+        {
+            get { return (string)GetValue(PlaceHolderProperty); }
+            set { SetValue(PlaceHolderProperty, value); }
+        }
+        #endregion
     }
 }

@@ -59,6 +59,62 @@ namespace System.Windows.Data
             #endregion
         }
 
+
+
+        public class NullOrWhiteSpaceToBooleanConverter : IValueConverter
+        {
+            #region Public Methods
+            public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+            {
+                if (value == null)
+                {
+                    return true;
+                }
+                var valueIsString = value is string;
+                if (!valueIsString)
+                {
+                    throw new ArgumentException("value type must be string.@value:"+value);
+                }
+
+                return string.IsNullOrWhiteSpace((string) value);
+            }
+
+            public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+            {
+                throw new ArgumentException("ThisConverterCanBeUseOnlyOneWayBinding:"+ nameof(NullOrWhiteSpaceToBooleanConverter));
+            }
+            #endregion
+        }
+
+
+        public class NotNullOrWhiteSpaceToBooleanConverter : IValueConverter
+        {
+            #region Public Methods
+            public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+            {
+                if (value == null)
+                {
+                    return false;
+                }
+
+                var valueIsString = value is string;
+                if (!valueIsString)
+                {
+                    throw new ArgumentException("value type must be string.@value:" + value);
+                }
+
+                return !string.IsNullOrWhiteSpace((string)value);
+            }
+
+            public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+            {
+                throw new ArgumentException("ThisConverterCanBeUseOnlyOneWayBinding:" + nameof(NotNullOrWhiteSpaceToBooleanConverter));
+            }
+            #endregion
+        }
+
+
+
         public sealed class BooleanToCssClassConverter : IValueConverter
         {
             #region Public Methods

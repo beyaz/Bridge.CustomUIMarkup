@@ -6,6 +6,8 @@ namespace System.Windows
     public class Clipboard
     {
         #region Public Methods
+       
+
         [SuppressMessage("ReSharper", "UnusedParameter.Global")]
         public static void SetText(string text)
         {
