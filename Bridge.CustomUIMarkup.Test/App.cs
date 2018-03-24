@@ -31,8 +31,11 @@ namespace Bridge.CustomUIMarkup.Test
             QUnit.QUnit.Test(nameof(BindingTests), BindingTests);
 
             QUnit.QUnit.Test(nameof(BindingInfoTest2), BindingInfoTest2.RunAll);
-            
+
             QUnit.QUnit.Test(nameof(BuilderTest), BuilderTest);
+
+            QUnit.QUnit.Test(nameof(ContentControlTest), ContentControlTest.AssingStringValueToContent);
+
             QUnit.QUnit.Test(nameof(RunOldTests), RunOldTests);
 
             ComboTest.RegisterAll();
@@ -51,7 +54,6 @@ namespace Bridge.CustomUIMarkup.Test
             assert.Equal(1, 1);
         }
 
-
         static void BuilderTest(Assert assert)
         {
             Z_Builder2Test.RunAll();
@@ -59,12 +61,8 @@ namespace Bridge.CustomUIMarkup.Test
             assert.Equal(1, 1);
         }
 
-
         static void RunOldTests(Assert assert)
         {
-
-            ContentControlTest.RunAll();
-
             InputTextTest.RunAll();
 
             TabItemTest.RunAll();

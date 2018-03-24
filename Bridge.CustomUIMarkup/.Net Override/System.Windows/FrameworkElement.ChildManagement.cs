@@ -5,8 +5,42 @@ using Bridge.jQuery2;
 
 namespace System.Windows
 {
+    public class RoutedEventArgs : EventArgs
+    {
+
+    }
+    public delegate void RoutedEventHandler(object sender, RoutedEventArgs e);
     partial class FrameworkElement
     {
+        public bool IsLoaded { get; set; }
+
+        public event RoutedEventHandler Loaded;
+
+        internal void InvokeEvent_Loaded(object sender, RoutedEventArgs e)
+        {
+            if (IsLoaded)
+            {
+                return;
+            }
+
+            IsLoaded = true;
+
+            Loaded?.Invoke(this,e);
+        }
+
+        static void Connect_Loaded_events(FrameworkElement parent, FrameworkElement child)
+        {
+            if (parent.IsLoaded)
+            {
+                child.InvokeEvent_Loaded(child, new RoutedEventArgs());
+
+                return;
+            }
+
+            parent.Loaded += child.InvokeEvent_Loaded;
+        }
+
+
         #region Fields
         protected internal jQuery           _root;
         protected          FrameworkElement _logicalParent;
@@ -62,7 +96,12 @@ namespace System.Windows
             child.AfterConnectToVisualParent?.Invoke();
 
             GetVisualChilderen().Add(child);
+
+
+            Connect_Loaded_events(this,child);
         }
+
+
 
 
         protected event Action AfterLogicalChildsCleared;
@@ -91,6 +130,8 @@ namespace System.Windows
             _visualChilderen?.Remove(child);
 
             child._root.RemoveFromParent();
+
+            Loaded -= child.Loaded;
         }
 
         public void RenderInBody()

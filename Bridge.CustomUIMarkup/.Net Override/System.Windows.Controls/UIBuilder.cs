@@ -54,18 +54,11 @@ namespace System.Windows.Controls
         #endregion
 
         #region Public Methods
-        public static T ApplyTemplate<T>(T control) where T : Control
-        {
-            control?.ApplyTemplate();
-
-            return control;
-        }
+      
 
         public static T Create<T>() where T : Control, new()
         {
-            var control = new T();
-
-            return ApplyTemplate(control);
+            return new T();
         }
 
         public static void LoadComponent(FrameworkElement control, string xml)

@@ -4,13 +4,14 @@ namespace System.Windows.Controls
 {
     public class Control : FrameworkElement
     {
+        public Control()
+        {
+            ApplyTemplate();
+        }
         #region Static Fields
         internal static readonly Dictionary<string, Template> TemplateCache = new Dictionary<string, Template>();
         #endregion
-
-        #region Events
-        protected internal event Action AfterTemplateApplied;
-        #endregion
+        
 
         #region Public Properties
         public virtual string DefaultTemplateAsXml
@@ -63,7 +64,6 @@ namespace System.Windows.Controls
 
             UIBuilder.BuildControlTemplate(template, this);
 
-            AfterTemplateApplied?.Invoke();
         }
         #endregion
     }

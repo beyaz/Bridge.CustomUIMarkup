@@ -44,7 +44,7 @@ namespace Bridge.CustomUIMarkup.Libraries.SemanticUI
         {
             BeforeConnectToLogicalParent += parent => { AttachEvents(); };
 
-            AfterTemplateApplied += () => { Class = "ui input"; };
+             Class = "ui input"; 
         }
         #endregion
 

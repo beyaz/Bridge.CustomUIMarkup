@@ -12,7 +12,8 @@
                 {
                     _value = new HtmlElement
                     {
-                        _root = DOM.body
+                        _root = DOM.body,
+                        IsLoaded = true
                     };
                 }
 

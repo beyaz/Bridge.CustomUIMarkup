@@ -1,4 +1,5 @@
-﻿using Bridge.QUnit;
+﻿using System;
+using Bridge.QUnit;
 
 namespace Bridge.CustomUIMarkup.Test
 {
@@ -8,6 +9,15 @@ namespace Bridge.CustomUIMarkup.Test
         public static void AreEqual(this Assert assert, string expected, string actual)
         {
             assert.Equal(actual, expected);
+        }
+
+        public static void MustEqualByReference(this Assert assert, object expected, object actual)
+        {
+            if (!ReferenceEquals(expected, actual))
+            {
+                assert.AreEqual(1,2);
+                throw new InvalidCastException("@expected: " + expected + " , @actual: " + actual);
+            }
         }
 
         public static void AreEqual(this Assert assert, int? expected, int? actual)

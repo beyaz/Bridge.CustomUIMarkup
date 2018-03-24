@@ -5,15 +5,11 @@ namespace System.Windows
 {
     class ContentControlTest : TestBase
     {
-        #region Public Methods
-        public static void RunAll()
-        {
-            new ContentControlTest().AssingStringValueToContent();
-        }
-        #endregion
+    
 
+        const string Rule_Content_Control_can_have_only_one_Logical_child = nameof(Rule_Content_Control_can_have_only_one_Logical_child);
         #region Methods
-        void AssingStringValueToContent()
+        internal static void AssingStringValueToContent(Bridge.QUnit.Assert assert)
         {
             var contentControl = new ContentControl
             {
@@ -21,21 +17,21 @@ namespace System.Windows
                 Content = "A"
             };
 
-            MustEqual(1, contentControl.LogicalChilderenCount);
+            assert.AreEqual(1, contentControl.LogicalChilderenCount, Rule_Content_Control_can_have_only_one_Logical_child);
 
             var fe = new FrameworkElement("T");
             contentControl.Content = fe;
 
-            MustEqual(1, contentControl.LogicalChilderenCount);
+            assert.AreEqual(1, contentControl.LogicalChilderenCount);
 
-            MustEqualByReference(fe, contentControl.GetLogicalChildAt(0));
+            assert.Equal(fe, contentControl.GetLogicalChildAt(0));
 
             fe = new FrameworkElement("X");
             contentControl.Content = fe;
 
-            MustEqual(1, contentControl.LogicalChilderenCount);
+            assert.AreEqual(1, contentControl.LogicalChilderenCount);
 
-            MustEqualByReference(fe, contentControl.GetLogicalChildAt(0));
+            assert.MustEqualByReference(fe, contentControl.GetLogicalChildAt(0));
         }
         #endregion
     }

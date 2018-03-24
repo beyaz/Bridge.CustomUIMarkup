@@ -4,27 +4,33 @@
     {
         #region Fields
         internal ContentPresenter _contentPresenter;
+
+        bool _isContentChanging;
         #endregion
 
         #region Constructors
         public ContentControl()
         {
-           
             AfterLogicalChildAdd += CanOnlyBeOneChild;
             AfterLogicalChildAdd += AssignFirstLogicalChildToContent;
-            AfterTemplateApplied += InitializeContentPresenter;
-        }
 
-        void InitializeContentPresenter()
+            InitializeContentPresenter();
+        }
+        #endregion
+
+        #region Public Properties
+        public override string DefaultTemplateAsXml
         {
-            _contentPresenter = Find(this);
-            if (_contentPresenter == null)
+            get
             {
-                throw new InvalidOperationException("ContentPresenter must be defined in template.");
+                return "<div>" +
+                       "<ContentPresenter />" +
+                       "</div>";
             }
-
         }
+        #endregion
 
+        #region Methods
         static ContentPresenter Find(FrameworkElement element)
         {
             var elementAsContentPresenter = element as ContentPresenter;
@@ -47,9 +53,7 @@
 
             return null;
         }
-        #endregion
 
-        #region Methods
         static void OnContentChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             ((ContentControl) d).OnContentChanged();
@@ -73,12 +77,17 @@
             }
         }
 
-        
+        void InitializeContentPresenter()
+        {
+            _contentPresenter = Find(this);
+            if (_contentPresenter == null)
+            {
+                throw new InvalidOperationException("ContentPresenter must be defined in template.");
+            }
+        }
 
-        bool _isContentChanging;
         void OnContentChanged()
         {
-
             if (_contentPresenter == null)
             {
                 throw new InvalidOperationException("'ContentPresenter' element not found.");
@@ -94,7 +103,6 @@
                 _contentPresenter.InnerHTML = null;
                 return;
             }
-           
 
             var frameworkElement = content as FrameworkElement;
             if (frameworkElement != null)
@@ -110,12 +118,12 @@
                 }
 
                 _contentPresenter.AddLogicalChild(frameworkElement);
-                
+
                 if (LogicalChilderenCount == 1)
                 {
                     RemoveLogicalChild(GetLogicalChildAt(0));
                 }
-                
+
                 AddLogicalChild(frameworkElement);
 
                 _isContentChanging = false;
@@ -124,7 +132,7 @@
 
             var contentAsString = content.ToString();
 
-            var textBlock  = UIBuilder.Create<TextBlock>();
+            var textBlock = UIBuilder.Create<TextBlock>();
             textBlock.Text = contentAsString;
             _contentPresenter.AddLogicalChild(textBlock);
 
