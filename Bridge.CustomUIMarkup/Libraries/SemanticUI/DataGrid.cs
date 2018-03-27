@@ -66,7 +66,14 @@ namespace Bridge.CustomUIMarkup.Libraries.SemanticUI
                 rowIndex++;
             }
 
-            var tr = _tbody.GetLogicalChildAt(rowIndex);
+            var childs = _tbody.GetLogicalChilderen();
+
+            if (childs.Count<=rowIndex)
+            {
+                return;
+            }
+
+            var tr = childs[rowIndex];
 
             MarkSelectedRow(tr);
         }
