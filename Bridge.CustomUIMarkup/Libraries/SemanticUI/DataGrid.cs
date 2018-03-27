@@ -5,56 +5,10 @@ using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 
 namespace Bridge.CustomUIMarkup.Libraries.SemanticUI
 {
-    public enum DataGridCellEditorType
-    {
-        Text
-    }
-
-    public class DataGridColumn : Control
-    {
-        #region Public Properties
-        public override string DefaultTemplateAsXml => "<th>{Label}</th>";
-        #endregion
-
-        #region DataGridCellEditorType EditorType
-        public static readonly DependencyProperty EditorTypeProperty = DependencyProperty.Register(
-            "EditorType", typeof(DataGridCellEditorType), typeof(DataGridColumn), new PropertyMetadata(default(DataGridCellEditorType)));
-
-        public DataGridCellEditorType EditorType
-        {
-            get { return (DataGridCellEditorType) GetValue(EditorTypeProperty); }
-            set { SetValue(EditorTypeProperty, value); }
-        }
-        #endregion
-
-        #region string Label
-        public static readonly DependencyProperty LabelProperty = DependencyProperty.Register(
-            "Label", typeof(string), typeof(DataGridColumn), new PropertyMetadata(default(string)));
-
-        public string Label
-        {
-            get { return (string) GetValue(LabelProperty); }
-            set { SetValue(LabelProperty, value); }
-        }
-        #endregion
-
-        #region string Name
-        public static readonly DependencyProperty NameProperty = DependencyProperty.Register(
-            "Name", typeof(string), typeof(DataGridColumn), new PropertyMetadata(default(string)));
-
-        public string Name
-        {
-            get { return (string) GetValue(NameProperty); }
-            set { SetValue(NameProperty, value); }
-        }
-        #endregion
-    }
-
     class DataGrid : MultiSelector
     {
         public override string DefaultTemplateAsXml => "<div  />";
@@ -78,10 +32,44 @@ namespace Bridge.CustomUIMarkup.Libraries.SemanticUI
             this.OnPropertyChanged(nameof(ColumnNames), ParseColumnNames);
 
             AfterConnectToLogicalParent += () => { this.OnPropertyChanged(nameof(ItemsSource), ReRender); };
-            
+
+            Loaded += (s, e) => { this.OnPropertyChanged(nameof(SelectedItem), OnSelectedItemChanged); };
+
 
         }
         #endregion
+
+        void OnSelectedItemChanged()
+        {
+            if (SelectedItem == null)
+            {
+                ClearSelectedRow();
+                _selectedRow = null;
+                return;
+            }
+
+            var records = ItemsSource as IEnumerable;
+            if (records == null)
+            {
+                return;
+            }
+
+            var rowIndex = 0;
+            foreach (var record in records)
+            {
+                if (SelectedItem.Equals(record))
+                {
+                    SelectedItem = record;
+                    break;
+                }
+
+                rowIndex++;
+            }
+
+            var tr = _tbody.GetLogicalChildAt(rowIndex);
+
+            MarkSelectedRow(tr);
+        }
 
         #region Public Properties
         public IList<DataGridColumn> Columns { get; } = new List<DataGridColumn>();
@@ -106,9 +94,18 @@ setTimeout(function()
 },0) ");
         }
 
-        void MarkSelectedRow(FrameworkElement element)
+        void ClearSelectedRow()
         {
             _selectedRow?._root.Css("background", "");
+        }
+
+        void MarkSelectedRow(FrameworkElement element)
+        {
+            if (_selectedRow == element )
+            {
+                return;
+            }
+            ClearSelectedRow();
 
             element.Root.Css("background", SelectedRowBackground);
 
@@ -216,6 +213,8 @@ setTimeout(function()
 
 
             var me = this;
+
+            OnSelectedItemChanged();
 
             Wrap(me, table._root);
         }

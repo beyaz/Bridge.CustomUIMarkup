@@ -1,4 +1,6 @@
-﻿namespace System.Windows.Controls.Primitives
+﻿using System.ComponentModel;
+
+namespace System.Windows.Controls.Primitives
 {
     public class Selector : ItemsControl
     {
@@ -6,9 +8,11 @@
         public Selector()
         {
             ItemClicked += OnItemClicked;
+
         }
         #endregion
 
+        
         #region Methods
         void OnItemClicked(object itemDataContext)
         {

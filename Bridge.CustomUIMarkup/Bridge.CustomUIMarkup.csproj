@@ -56,6 +56,8 @@
     <Compile Include="Common\JsonSerializer.cs" />
     <Compile Include="Common\RandomValue.cs" />
     <Compile Include="Libraries\SemanticUI\DataGrid.cs" />
+    <Compile Include="Libraries\SemanticUI\DataGridCellEditorType.cs" />
+    <Compile Include="Libraries\SemanticUI\DataGridColumn.cs" />
     <Compile Include="Libraries\SemanticUI\DatePicker.cs" />
     <Compile Include="Libraries\SemanticUI\Extensions.cs" />
     <Compile Include="Libraries\SemanticUI\FieldDate.cs" />
